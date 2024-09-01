@@ -2862,6 +2862,8 @@
 				INFOPLIST_FILE = iov/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "开源车联网";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "我们需要访问您的蓝牙以提供车辆蓝牙钥匙的完整功能";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "我们需要访问您的蓝牙以提供车辆蓝牙钥匙的完整功能";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -2898,6 +2900,8 @@
 				INFOPLIST_FILE = iov/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "开源车联网";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "我们需要访问您的蓝牙以提供车辆蓝牙钥匙的完整功能";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "我们需要访问您的蓝牙以提供车辆蓝牙钥匙的完整功能";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
