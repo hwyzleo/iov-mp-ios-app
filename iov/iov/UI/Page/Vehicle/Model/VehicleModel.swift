@@ -40,6 +40,26 @@ extension VehicleModel: VehicleModelActionProtocol {
     }
     func updateVehicle(vehicle: Vehicle, button: String) {
         self.vehicle = vehicle
+        resetButton(button: button)
+        contentState = .content
+    }
+    func updateContent(vehicleIndex: VehicleIndex) {
+        self.vehicle = vehicleIndex.vehicle
+        contentState = .content
+    }
+    func displayInfo(text: String, button: String) {
+        resetButton(button: button)
+        contentState = .info(text: text)
+    }
+    func displayError(text: String, button: String) {
+        resetButton(button: button)
+        contentState = .error(text: text)
+    }
+    func displayError(text: String) {
+        contentState = .error(text: text)
+    }
+    
+    private func resetButton(button: String) {
         switch button {
         case "lock":
             self.lockLoading = false
@@ -55,14 +75,6 @@ extension VehicleModel: VehicleModelActionProtocol {
             self.trunkLoading = false
             self.findLoading = false
         }
-        contentState = .content
-    }
-    func updateContent(vehicleIndex: VehicleIndex) {
-        self.vehicle = vehicleIndex.vehicle
-        contentState = .content
-    }
-    func displayError(text: String) {
-        contentState = .error(text: text)
     }
 }
 
@@ -80,6 +92,7 @@ extension VehicleTypes.Model {
         case loading
         case buttonLoading
         case content
+        case info(text: String)
         case error(text: String)
     }
 }

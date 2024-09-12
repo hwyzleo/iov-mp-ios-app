@@ -28,6 +28,10 @@ protocol VehicleModelActionProtocol: MviModelActionProtocol {
     func updateVehicle(vehicle: Vehicle, button: String)
     /// 更新内容
     func updateContent(vehicleIndex: VehicleIndex)
+    /// 显示信息并恢复按钮
+    func displayInfo(text: String, button: String)
+    /// 显示错误并恢复按钮
+    func displayError(text: String, button: String)
 }
 
 // MARK: - Route

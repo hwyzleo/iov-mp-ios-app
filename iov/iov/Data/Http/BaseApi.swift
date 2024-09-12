@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import UIKit
 
-class BaseAPI {
+class BaseApi {
     // POST请求
     static func requestPost<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
         TspNetworkManager.shared.requestPost(path: path, parameters: parameters) { result in

@@ -26,7 +26,11 @@ struct VehicleView: View {
                 Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
             case .content:
                 Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
+            case let .info(text):
+                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
+                InfoTip(text: text)
             case let .error(text):
+                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
                 ErrorTip(text: text)
             }
         }

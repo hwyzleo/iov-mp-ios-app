@@ -192,17 +192,16 @@ extension VehicleIntent: VehicleIntentProtocol {
                 }
             }
         } else {
-            TspApi.findVehicle() { (result: Result<TspResponse<NoReply>, Error>) in
+            TspApi.findVehicle(vin: "HWYZTEST000000001") { (result: Result<TspResponse<RemoteControlState>, Error>) in
                 switch result {
                 case .success(let response):
                     if(response.code == 0) {
-                        let vehicle = mockVehicle()
-                        self.modelAction?.updateVehicle(vehicle: vehicle, button: "find")
+                        self.modelAction?.displayInfo(text: response.message ?? "操作成功", button: "find")
                     } else {
-                        self.modelAction?.displayError(text: response.message ?? "异常")
+                        self.modelAction?.displayError(text: response.message ?? "异常", button: "find")
                     }
                 case let .failure(error):
-                    self.modelAction?.displayError(text: "请求异常")
+                    self.modelAction?.displayError(text: error.localizedDescription, button: "find")
                 }
             }
         }

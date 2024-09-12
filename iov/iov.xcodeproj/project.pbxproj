@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		755FC02ABF529F44CB803BE3 /* Pods_iov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */; };
+		BF4908E32C9325430071C527 /* InfoTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4908E22C9325430071C527 /* InfoTip.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
 		BFA187742C83111F004D625D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFA187732C83111F004D625D /* Assets.xcassets */; };
@@ -97,7 +98,7 @@
 		BFA1885F2C841B23004D625D /* OrderView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1885E2C841B23004D625D /* OrderView+Build.swift */; };
 		BFA188612C841B3C004D625D /* OrderIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188602C841B3C004D625D /* OrderIntent.swift */; };
 		BFA188642C841B6D004D625D /* TspApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188632C841B6D004D625D /* TspApi.swift */; };
-		BFA188662C841B98004D625D /* BaseAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188652C841B98004D625D /* BaseAPI.swift */; };
+		BFA188662C841B98004D625D /* BaseApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188652C841B98004D625D /* BaseApi.swift */; };
 		BFA188682C841BB3004D625D /* TspNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188672C841BB3004D625D /* TspNetworkManager.swift */; };
 		BFA1886A2C841C55004D625D /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188692C841C55004D625D /* NetworkManager.swift */; };
 		BFA1886C2C841C8F004D625D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1886B2C841C8F004D625D /* DateExtension.swift */; };
@@ -322,6 +323,7 @@
 
 /* Begin PBXFileReference section */
 		54DD010BC41FE25B2673160D /* Pods-iov.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.debug.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.debug.xcconfig"; sourceTree = "<group>"; };
+		BF4908E22C9325430071C527 /* InfoTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTip.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
 		BFA1876F2C83111E004D625D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -412,7 +414,7 @@
 		BFA1885E2C841B23004D625D /* OrderView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderView+Build.swift"; sourceTree = "<group>"; };
 		BFA188602C841B3C004D625D /* OrderIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderIntent.swift; sourceTree = "<group>"; };
 		BFA188632C841B6D004D625D /* TspApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TspApi.swift; sourceTree = "<group>"; };
-		BFA188652C841B98004D625D /* BaseAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseAPI.swift; sourceTree = "<group>"; };
+		BFA188652C841B98004D625D /* BaseApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseApi.swift; sourceTree = "<group>"; };
 		BFA188672C841BB3004D625D /* TspNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TspNetworkManager.swift; sourceTree = "<group>"; };
 		BFA188692C841C55004D625D /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		BFA1886B2C841C8F004D625D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
@@ -1191,6 +1193,7 @@
 			isa = PBXGroup;
 			children = (
 				BFA1882F2C84165A004D625D /* ErrorTip.swift */,
+				BF4908E22C9325430071C527 /* InfoTip.swift */,
 				BFA1881C2C841497004D625D /* LoadingTip.swift */,
 			);
 			path = Tip;
@@ -1334,7 +1337,7 @@
 		BFA188622C841B5D004D625D /* Http */ = {
 			isa = PBXGroup;
 			children = (
-				BFA188652C841B98004D625D /* BaseAPI.swift */,
+				BFA188652C841B98004D625D /* BaseApi.swift */,
 				BFA188692C841C55004D625D /* NetworkManager.swift */,
 				BFA188632C841B6D004D625D /* TspApi.swift */,
 				BFA188672C841BB3004D625D /* TspNetworkManager.swift */,
@@ -2475,6 +2478,7 @@
 				BFA189622C842CB9004D625D /* WebViewUtil.swift in Sources */,
 				BFA187952C840861004D625D /* CommunityModel.swift in Sources */,
 				BFA1881F2C8414C9004D625D /* LoginView_MobileLogin.swift in Sources */,
+				BF4908E32C9325430071C527 /* InfoTip.swift in Sources */,
 				BFA189EA2C84332E004D625D /* TestDriveReportModelProtocol.swift in Sources */,
 				BFA1886E2C841CEC004D625D /* TopCloseTitleBar.swift in Sources */,
 				BFA18A4F2C843900004D625D /* MallView.swift in Sources */,
@@ -2518,7 +2522,7 @@
 				BFA189932C842F47004D625D /* MyPointsModelProtocol.swift in Sources */,
 				BFA18A662C843C67004D625D /* BaseViewModel.swift in Sources */,
 				BFA189032C84277C004D625D /* MySettingAccountChangeView.swift in Sources */,
-				BFA188662C841B98004D625D /* BaseAPI.swift in Sources */,
+				BFA188662C841B98004D625D /* BaseApi.swift in Sources */,
 				BFA188B42C8421CE004D625D /* CommunityTopicView_Article.swift in Sources */,
 				BFA18A792C843E27004D625D /* CodableDefault.swift in Sources */,
 				BFA188CA2C8423B7004D625D /* MyView_NotLoginContent.swift in Sources */,

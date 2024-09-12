@@ -17,7 +17,7 @@ class TspApi {
     /// 发送手机号登录验证码
     static func sendMobileVerifyCode(countryRegionCode: String, mobile: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/login/sendVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/login/sendVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -30,7 +30,7 @@ class TspApi {
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/login/verifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/login/verifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
                 completion(result)
             }
         } else {
@@ -52,7 +52,7 @@ class TspApi {
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
                 completion(result)
             }
         } else {
@@ -75,7 +75,7 @@ class TspApi {
     /// 生成头像预上传地址
     static func generateAvatarUrl(completion: @escaping (Result<TspResponse<PreSignedUrl>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/generateAvatarUrl", parameters: [:]) { (result: Result<TspResponse<PreSignedUrl>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/generateAvatarUrl", parameters: [:]) { (result: Result<TspResponse<PreSignedUrl>, Error>) in
                 completion(result)
             }
         } else {
@@ -92,7 +92,7 @@ class TspApi {
     /// 修改头像
     static func modifyAvatar(imageUrl: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/modifyAvatar", parameters: ["avatar":imageUrl]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/modifyAvatar", parameters: ["avatar":imageUrl]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -105,7 +105,7 @@ class TspApi {
     /// 修改昵称
     static func modifyNickname(nickname: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -120,7 +120,7 @@ class TspApi {
     /// 修改性别
     static func modifyGender(gender: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/modifyGender", parameters: ["gender": gender]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/modifyGender", parameters: ["gender": gender]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -135,7 +135,7 @@ class TspApi {
     /// 修改生日
     static func modifyBirthday(birthday: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["birthday": birthday]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["birthday": birthday]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -150,7 +150,7 @@ class TspApi {
     /// 修改地区
     static func modifyArea(area: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/modifyArea", parameters: ["area": area]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/modifyArea", parameters: ["area": area]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -165,7 +165,7 @@ class TspApi {
     // 上传COS
     static func uploadCos(url: String, image: UIImage, objectKey: String, completion: @escaping (Result<String, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.uploadCos(url: url, image: image, parameters: ["key":objectKey]) { (result: Result<String, Error>) in
+            BaseApi.uploadCos(url: url, image: image, parameters: ["key":objectKey]) { (result: Result<String, Error>) in
                 completion(result)
             }
         }
@@ -174,7 +174,7 @@ class TspApi {
     /// 获取内容块
     static func getContentBlock(channel: String, completion: @escaping (Result<TspResponse<Array<ContentBlock>>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Array<ContentBlock>>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Array<ContentBlock>>, Error>) in
                 completion(result)
             }
         } else {
@@ -225,7 +225,7 @@ class TspApi {
     /// 获取文章
     static func getArticle(id: String, completion: @escaping (Result<TspResponse<Article>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Article>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Article>, Error>) in
                 completion(result)
             }
         } else {
@@ -241,7 +241,7 @@ class TspApi {
     /// 获取话题
     static func getSubject(id: String, completion: @escaping (Result<TspResponse<Subject>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Subject>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Subject>, Error>) in
                 completion(result)
             }
         } else {
@@ -281,7 +281,7 @@ class TspApi {
     /// 获取专题
     static func getTopic(id: String, completion: @escaping (Result<TspResponse<Topic>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Topic>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Topic>, Error>) in
                 completion(result)
             }
         } else {
@@ -306,7 +306,7 @@ class TspApi {
     /// 点赞文章
     static func likeArticle(id: String, liked: Bool, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["id": id]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["id": id]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -321,7 +321,7 @@ class TspApi {
     /// 获取爱车首页
     static func getVehicleIndex(completion: @escaping (Result<TspResponse<VehicleIndex>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<VehicleIndex>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<VehicleIndex>, Error>) in
                 completion(result)
             }
         } else {
@@ -337,7 +337,7 @@ class TspApi {
     /// 解锁车辆
     static func unlockVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/unlockVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/unlockVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -352,7 +352,7 @@ class TspApi {
     /// 上锁车辆
     static func lockVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/lockVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/lockVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -367,7 +367,7 @@ class TspApi {
     /// 设置车窗
     static func setWindow(percent: Int, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/setWindow", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/setWindow", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -382,7 +382,7 @@ class TspApi {
     /// 设置尾门
     static func setTrunk(percent: Int, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestPost(path: "/setTrunk", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+            BaseApi.requestPost(path: "/setTrunk", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -395,14 +395,17 @@ class TspApi {
     }
     
     /// 寻车
-    static func findVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
-            BaseAPI.requestPost(path: "/findVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func findVehicle(vin: String, completion: @escaping (Result<TspResponse<RemoteControlState>, Error>) -> Void) {
+        if(isMock) {
+            let parameters = [
+                "vin": vin
+            ]
+            BaseApi.requestPost(path: "/mp/rvc/action/findVehicle", parameters: parameters) { (result: Result<TspResponse<RemoteControlState>, Error>) in
                 completion(result)
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<NoReply>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<RemoteControlState>(code: 0, ts: Date().timestamp())
                 debugPrint("Mock HTTP API[findVehicle] Response")
                 completion(.success(res))
             }
@@ -412,7 +415,7 @@ class TspApi {
     /// 获取商城首页
     static func getMallIndex(completion: @escaping (Result<TspResponse<MallIndex>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<MallIndex>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<MallIndex>, Error>) in
                 completion(result)
             }
         } else {
@@ -428,7 +431,7 @@ class TspApi {
     /// 获取商品
     static func getProduct(id: String, completion: @escaping (Result<TspResponse<Product>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Product>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Product>, Error>) in
                 completion(result)
             }
         } else {
@@ -444,7 +447,7 @@ class TspApi {
     /// 购买商品确认
     static func buyProductConfirm(id: String, buyCount: Int, completion: @escaping (Result<TspResponse<ProductOrder>, Error>) -> Void) {
         if(!isMock) {
-            BaseAPI.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<ProductOrder>, Error>) in
+            BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<ProductOrder>, Error>) in
                 completion(result)
             }
         } else {

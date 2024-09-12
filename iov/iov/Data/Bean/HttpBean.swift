@@ -184,3 +184,13 @@ struct ProductOrder: Codable {
     var freight: Int
     var remainingPoints: Int32
 }
+
+/// 远控状态
+struct RemoteControlState: Codable {
+    /// 车架号
+    var vin: String
+    /// 指令ID
+    var cmdId: String
+    /// 指令状态
+    var cmdState: String
+}

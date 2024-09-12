@@ -12,7 +12,8 @@ import UIKit
 typealias TspNetworkRequestResult = Result<Data, Error>
 typealias TspNetworkRequestCompletion = (TspNetworkRequestResult) -> Void
 
-public let NetworkAPIBaseURL = "http://127.0.0.1:8081"
+//public let NetworkAPIBaseURL = "http://127.0.0.1:8081"
+public let NetworkAPIBaseURL = "http://192.168.2.223:8081"
 
 // TSP网络模块,设计为单例模式
 class TspNetworkManager {
@@ -22,7 +23,7 @@ class TspNetworkManager {
     // 获取有token的请求头
     // 你应当在合适的时机, 将 token 存入 UserDefaults 中
     var commonHeaders: HTTPHeaders { [
-        "token": UserDefaults.standard.string(forKey: "token") ?? "",
+        "token": UserDefaults.standard.string(forKey: "token") ?? "accessToken",
         "clientId": UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
     ] }
     
@@ -54,8 +55,8 @@ class TspNetworkManager {
         AF.request(NetworkAPIBaseURL + path,
                    method: .post,
                    parameters: parameters,
-//                   encoding: JSONEncoding.prettyPrinted, // parameters的编码方式,默认为JSON
-                   encoding: URLEncoding.default, // parameters的编码方式,默认为JSON
+                   encoding: JSONEncoding.prettyPrinted, // parameters的编码方式,默认为JSON
+//                   encoding: URLEncoding.default, // parameters的编码方式,默认为JSON
                    headers: commonHeaders,
                    requestModifier: { $0.timeoutInterval = 30 })
             .responseData { response in
