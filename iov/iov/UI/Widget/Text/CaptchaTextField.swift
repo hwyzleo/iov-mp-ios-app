@@ -31,6 +31,7 @@ struct CaptchaTextField: View {
     var maxDigits: Int = 6
         @Binding var pin: String
         @State var showPin = true
+        @State var isSubmit = false
         var handler: () -> Void
         
         var body: some View {
@@ -84,8 +85,9 @@ struct CaptchaTextField: View {
             if pin.count > maxDigits {
                 // 如果超出长度就忽略本次输入
                 pin = String(pin.prefix(maxDigits))
-            } else if pin.count == maxDigits {
+            } else if pin.count == maxDigits && !isSubmit {
                 handler()
+                isSubmit = true
             }
         }
 }

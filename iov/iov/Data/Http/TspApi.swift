@@ -16,8 +16,8 @@ class TspApi {
     
     /// 发送手机号登录验证码
     static func sendMobileVerifyCode(countryRegionCode: String, mobile: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
-            BaseApi.requestPost(path: "/account/mp/login/sendVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
+        if(isMock) {
+            BaseApi.requestPost(path: "/mp/login/action/sendSmsVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
@@ -29,8 +29,8 @@ class TspApi {
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        if(!isMock) {
-            BaseApi.requestPost(path: "/account/mp/login/verifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
+        if(isMock) {
+            BaseApi.requestPost(path: "/mp/login/action/smsVerifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
                 completion(result)
             }
         } else {
