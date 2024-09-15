@@ -18,9 +18,9 @@ struct ContentView: View {
                     CommunityView.build()
                         .tabItem {
                             if globalState.selectedTab == 0 {
-                                Image(systemName: "circle.hexagonpath")
+                                Image("icon_explore_fill")
                             } else {
-                                Image(systemName: "circle.hexagonpath.fill")
+                                Image("icon_explore")
                             }
                             Text("探索")
                         }
@@ -28,9 +28,9 @@ struct ContentView: View {
                     ServiceView.build()
                         .tabItem {
                             if globalState.selectedTab == 1 {
-                                Image(systemName: "list.bullet.rectangle.portrait")
+                                Image("icon_service_fill")
                             } else {
-                                Image(systemName: "list.bullet.rectangle.portrait.fill")
+                                Image("icon_service")
                             }
                             Text("服务")
                         }
@@ -38,9 +38,9 @@ struct ContentView: View {
                     VehicleView.build()
                         .tabItem {
                             if globalState.selectedTab == 2 {
-                                Image(systemName: "car")
+                                Image("icon_vehicle_fill")
                             } else {
-                                Image(systemName: "car.fill")
+                                Image("icon_vehicle")
                             }
                             Text("爱车")
                         }
@@ -48,9 +48,9 @@ struct ContentView: View {
                     MallView.build()
                         .tabItem {
                             if globalState.selectedTab == 3 {
-                                Image(systemName: "bag")
+                                Image("icon_mall_fill")
                             } else {
-                                Image(systemName: "bag.fill")
+                                Image("icon_mall")
                             }
                             Text("商城")
                         }
@@ -58,9 +58,9 @@ struct ContentView: View {
                     MyView.build()
                         .tabItem {
                             if globalState.selectedTab == 4 {
-                                Image(systemName: "person")
+                                Image("icon_person_fill")
                             } else {
-                                Image(systemName: "person.fill")
+                                Image("icon_person")
                             }
                             Text("我的")
                         }

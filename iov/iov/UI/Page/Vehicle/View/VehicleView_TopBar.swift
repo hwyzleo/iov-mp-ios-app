@@ -22,13 +22,17 @@ struct VehicleView_TopBar: View {
                 .ignoresSafeArea()
                 .navigationBarBackButtonHidden()
             ) {
-                Image(systemName: "qrcode.viewfinder")
+                Image("icon_scan_qrcode")
+                    .resizable()
+                    .frame(width: 30, height: 30)
             }
             .buttonStyle(.plain)
             Spacer()
                 .frame(width: 20)
             NavigationLink(destination: VehicleSettingView().navigationBarBackButtonHidden()) {
-                Image(systemName: "gearshape")
+                Image("icon_setting")
+                    .resizable()
+                    .frame(width: 30, height: 30)
             }
             .buttonStyle(.plain)
         }

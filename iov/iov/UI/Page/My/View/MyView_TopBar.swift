@@ -24,7 +24,9 @@ extension MyView {
                             tapLoginAction?()
                         }
                     }) {
-                        Image("message")
+                        Image("icon_bell")
+                            .resizable()
+                            .frame(width: 30, height: 30)
                     }
                     .buttonStyle(.plain)
                     Spacer()
@@ -32,7 +34,9 @@ extension MyView {
                     Button(action: {
                         tapSettingAction?()
                     }) {
-                        Image("setting")
+                        Image("icon_setting")
+                            .resizable()
+                            .frame(width: 30, height: 30)
                     }
                     .buttonStyle(.plain)
                 }
