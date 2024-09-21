@@ -12,9 +12,14 @@ final class VehicleModel: ObservableObject, VehicleModelStateProtocol {
     let routerSubject = VehicleRouter.Subjects()
     var vehicle: Vehicle?
     var lockLoading: Bool = false
+    var lockDuration: Double = 0.0
     var windowLoading: Bool = false
+    var windowDuration: Double = 0.0
     var trunkLoading: Bool = false
-    var findLoading: Bool = false
+    var trunkDuration: Double = 0.0
+    @Published var findLoading: Bool = false
+    @Published var findDuration: Double = 0.0
+    var cmdMapping: [String : String] = [:]
 }
 
 // MARK: - Action Protocol
@@ -23,24 +28,21 @@ extension VehicleModel: VehicleModelActionProtocol {
     func displayLoading() {
         contentState = .loading
     }
+    func mappingCmdId(cmdId: String, button: String) {
+        self.cmdMapping[cmdId] = button
+    }
+    func getCmdIdMapping(cmdId: String) -> String? {
+        self.cmdMapping[cmdId]
+    }
     func buttonLoading(button: String) {
-        switch button {
-        case "lock":
-            self.lockLoading = true
-        case "window":
-            self.windowLoading = true
-        case "trunk":
-            self.trunkLoading = true
-        case "find":
-            self.findLoading = true
-        default:
-            self.lockLoading = false
-        }
-        contentState = .buttonLoading
+        setButton(button: button, loading: true, duration: 0)
+    }
+    func buttonExecuting(button: String) {
+        setButton(button: button, loading: false, duration: 10)
     }
     func updateVehicle(vehicle: Vehicle, button: String) {
         self.vehicle = vehicle
-        resetButton(button: button)
+        setButton(button: button, loading: false, duration: 0)
         contentState = .content
     }
     func updateContent(vehicleIndex: VehicleIndex) {
@@ -48,32 +50,32 @@ extension VehicleModel: VehicleModelActionProtocol {
         contentState = .content
     }
     func displayInfo(text: String, button: String) {
-        resetButton(button: button)
+        setButton(button: button, loading: false, duration: 0)
         contentState = .info(text: text)
     }
     func displayError(text: String, button: String) {
-        resetButton(button: button)
+        setButton(button: button, loading: false, duration: 0)
         contentState = .error(text: text)
     }
     func displayError(text: String) {
         contentState = .error(text: text)
     }
     
-    private func resetButton(button: String) {
+    private func setButton(button: String, loading: Bool, duration: Double) {
         switch button {
         case "lock":
-            self.lockLoading = false
+            self.lockLoading = loading
+            self.lockDuration = duration
         case "window":
-            self.windowLoading = false
+            self.windowLoading = loading
+            self.windowDuration = duration
         case "trunk":
-            self.trunkLoading = false
+            self.trunkLoading = loading
+            self.trunkDuration = duration
         case "find":
-            self.findLoading = false
-        default:
-            self.lockLoading = false
-            self.windowLoading = false
-            self.trunkLoading = false
-            self.findLoading = false
+            self.findLoading = loading
+            self.findDuration = duration
+        default:break
         }
     }
 }
@@ -90,7 +92,6 @@ extension VehicleModel: VehicleModelRouterProtocol {
 extension VehicleTypes.Model {
     enum ContentState {
         case loading
-        case buttonLoading
         case content
         case info(text: String)
         case error(text: String)

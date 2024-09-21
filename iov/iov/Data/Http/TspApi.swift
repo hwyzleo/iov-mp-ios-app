@@ -460,4 +460,18 @@ class TspApi {
         }
     }
     
+    // 获取远控指令状态
+    static func getCmdState(vin: String, cmdId: String, completion: @escaping (Result<TspResponse<RemoteControlState>, Error>) -> Void) {
+        if(isMock) {
+            BaseApi.requestGet(path: "/mp/rvc/cmd", parameters: ["vin": vin, "cmdId": cmdId]) {(result: Result<TspResponse<RemoteControlState>, Error>) in
+                completion(result)}
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                let res = TspResponse<RemoteControlState>(code: 0, ts: Date().timestamp())
+                debugPrint("Mock HTTP API[findVehicle] Response")
+                completion(.success(res))
+            }
+        }
+    }
+    
 }

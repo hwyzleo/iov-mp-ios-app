@@ -10,6 +10,7 @@ import SwiftUI
 class VehicleIntent: MviIntentProtocol {
     private weak var modelAction: VehicleModelActionProtocol?
     private weak var modelRouter: VehicleModelRouterProtocol?
+    private var findVehicleTimer: Timer?
     
     
     init(model: VehicleModelActionProtocol & VehicleModelRouterProtocol) {
@@ -196,13 +197,61 @@ extension VehicleIntent: VehicleIntentProtocol {
                 switch result {
                 case .success(let response):
                     if(response.code == 0) {
-                        self.modelAction?.displayInfo(text: response.message ?? "操作成功", button: "find")
+                        if let cmdId = response.data?.cmdId as? String {
+                            self.modelAction?.mappingCmdId(cmdId: cmdId, button: "find")
+                            self.startGetFindVehicleState(cmdId: cmdId)
+                        }
                     } else {
                         self.modelAction?.displayError(text: response.message ?? "异常", button: "find")
                     }
                 case let .failure(error):
                     self.modelAction?.displayError(text: error.localizedDescription, button: "find")
                 }
+            }
+        }
+    }
+    private func startGetFindVehicleState(cmdId: String) {
+        let queue = DispatchQueue.global(qos: .background)
+        queue.async {
+            self.findVehicleTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { timer in
+                self.getCmdState(cmdId: cmdId)
+            }
+            RunLoop.current.run()
+        }
+    }
+    func stopGetFindVehicleState() {
+        findVehicleTimer?.invalidate()
+        findVehicleTimer = nil
+    }
+    private func getCmdState(cmdId: String) {
+        TspApi.getCmdState(vin: "HWYZTEST000000001", cmdId: cmdId) { (result: Result<TspResponse<RemoteControlState>, Error>) in
+            switch result {
+            case .success(let response):
+                if response.code == 0 {
+                    let cmdId = response.data?.cmdId
+                    let button: String = (self.modelAction?.getCmdIdMapping(cmdId: cmdId!)!)!
+                    let cmdState = response.data?.cmdState
+                    if(cmdState == "EXECUTING") {
+                        self.modelAction?.buttonExecuting(button: button)
+                    }
+                    if(cmdState == "SUCCESS") {
+                        self.stopGetFindVehicleState()
+                        self.modelAction?.displayInfo(text: "执行成功", button: button)
+                    }
+                    if(cmdState == "FAILURE") {
+                        self.stopGetFindVehicleState()
+                        self.modelAction?.displayError(text: "执行失败", button: button)
+                    }
+                    DispatchQueue.main.async {
+                        
+                    }
+                } else {
+                    // Handle error
+                    print("Error polling find vehicle status: \(response.message ?? "Unknown error")")
+                }
+            case .failure(let error):
+                // Handle network error
+                print("Network error while polling find vehicle status: \(error.localizedDescription)")
             }
         }
     }

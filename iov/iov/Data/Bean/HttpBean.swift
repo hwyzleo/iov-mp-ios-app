@@ -193,4 +193,6 @@ struct RemoteControlState: Codable {
     var cmdId: String
     /// 指令状态
     var cmdState: String
+    /// 远控指令错误信息
+    var failureMsg: String?
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		755FC02ABF529F44CB803BE3 /* Pods_iov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */; };
+		BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */; };
 		BF4908E32C9325430071C527 /* InfoTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4908E22C9325430071C527 /* InfoTip.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
@@ -289,7 +290,6 @@
 		BFA18A402C843805004D625D /* VehicleCenterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A3F2C843805004D625D /* VehicleCenterView.swift */; };
 		BFA18A422C843819004D625D /* VehicleCenterView_VehicleStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A412C843819004D625D /* VehicleCenterView_VehicleStatus.swift */; };
 		BFA18A442C843831004D625D /* VehicleCenterView_Maintainance.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A432C843831004D625D /* VehicleCenterView_Maintainance.swift */; };
-		BFA18A462C84385A004D625D /* VehicleView_ControlButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A452C84385A004D625D /* VehicleView_ControlButton.swift */; };
 		BFA18A482C84387E004D625D /* VehicleView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A472C84387E004D625D /* VehicleView+Build.swift */; };
 		BFA18A4A2C843891004D625D /* VehicleIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A492C843891004D625D /* VehicleIntent.swift */; };
 		BFA18A4C2C8438BA004D625D /* BluetoothApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A4B2C8438BA004D625D /* BluetoothApi.swift */; };
@@ -323,6 +323,7 @@
 
 /* Begin PBXFileReference section */
 		54DD010BC41FE25B2673160D /* Pods-iov.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.debug.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.debug.xcconfig"; sourceTree = "<group>"; };
+		BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageButton.swift; sourceTree = "<group>"; };
 		BF4908E22C9325430071C527 /* InfoTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTip.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
@@ -605,7 +606,6 @@
 		BFA18A3F2C843805004D625D /* VehicleCenterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleCenterView.swift; sourceTree = "<group>"; };
 		BFA18A412C843819004D625D /* VehicleCenterView_VehicleStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleCenterView_VehicleStatus.swift; sourceTree = "<group>"; };
 		BFA18A432C843831004D625D /* VehicleCenterView_Maintainance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleCenterView_Maintainance.swift; sourceTree = "<group>"; };
-		BFA18A452C84385A004D625D /* VehicleView_ControlButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleView_ControlButton.swift; sourceTree = "<group>"; };
 		BFA18A472C84387E004D625D /* VehicleView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VehicleView+Build.swift"; sourceTree = "<group>"; };
 		BFA18A492C843891004D625D /* VehicleIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleIntent.swift; sourceTree = "<group>"; };
 		BFA18A4B2C8438BA004D625D /* BluetoothApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothApi.swift; sourceTree = "<group>"; };
@@ -1223,6 +1223,7 @@
 			isa = PBXGroup;
 			children = (
 				BFA188292C8415C1004D625D /* ClearButton.swift */,
+				BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */,
 			);
 			path = Button;
 			sourceTree = "<group>";
@@ -2210,7 +2211,6 @@
 			children = (
 				BFA18A242C84367C004D625D /* VehicleView.swift */,
 				BFA18A352C843767004D625D /* VehicleView_TopBar.swift */,
-				BFA18A452C84385A004D625D /* VehicleView_ControlButton.swift */,
 				BFA18A372C843783004D625D /* VehicleSettingView.swift */,
 				BFA18A392C8437AA004D625D /* VehicleServiceView.swift */,
 				BFA18A3B2C8437C9004D625D /* VehicleAcSeatView.swift */,
@@ -2436,7 +2436,6 @@
 				BFA1891B2C842897004D625D /* MySettingAccountSecurityIntentProtocol.swift in Sources */,
 				BFA1881A2C84144D004D625D /* MviModelRouterProtocol.swift in Sources */,
 				BFA1882C2C8415FA004D625D /* LoginView_MobileVerifyCode.swift in Sources */,
-				BFA18A462C84385A004D625D /* VehicleView_ControlButton.swift in Sources */,
 				BFA187912C832D75004D625D /* CommunityModelProtocol.swift in Sources */,
 				BFA189822C842E77004D625D /* MyArticleModel.swift in Sources */,
 				BFA188082C8412F7004D625D /* MyMessageIntentProtocol.swift in Sources */,
@@ -2708,6 +2707,7 @@
 				BFA187D42C841032004D625D /* OrderIntentProtocol.swift in Sources */,
 				BFA188182C841434004D625D /* MviModelActionProtocol.swift in Sources */,
 				BFA18A212C84362C004D625D /* ServiceIntent.swift in Sources */,
+				BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */,
 				BFA189FC2C843406004D625D /* ChargingPileIntentProtocol.swift in Sources */,
 				BFA188B22C84219B004D625D /* CommunityTopicIntent.swift in Sources */,
 				BFA18A702C843D48004D625D /* StringExtension.swift in Sources */,

@@ -22,15 +22,13 @@ struct VehicleView: View {
                 ProgressView()
                     .progressViewStyle(.circular)
                     .scaleEffect(2)
-            case .buttonLoading:
-                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
             case .content:
-                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
+                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, lockDuration: state.lockDuration, windowLoading: state.windowLoading, windowDuration: state.windowDuration, trunkLoading: state.trunkLoading, trunkDuration: state.trunkDuration, findLoading: Binding.constant(state.findLoading), findDuration: Binding.constant(state.findDuration))
             case let .info(text):
-                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
+                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, lockDuration: state.lockDuration, windowLoading: state.windowLoading, windowDuration: state.windowDuration, trunkLoading: state.trunkLoading, trunkDuration: state.trunkDuration, findLoading: Binding.constant(state.findLoading), findDuration: Binding.constant(state.findDuration))
                 InfoTip(text: text)
             case let .error(text):
-                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, windowLoading: state.windowLoading, trunkLoading: state.trunkLoading, findLoading: state.findLoading)
+                Content(intent: intent, vehicle: state.vehicle, lockLoading: state.lockLoading, lockDuration: state.lockDuration, windowLoading: state.windowLoading, windowDuration: state.windowDuration, trunkLoading: state.trunkLoading, trunkDuration: state.trunkDuration, findLoading: Binding.constant(state.findLoading), findDuration: Binding.constant(state.findDuration))
                 ErrorTip(text: text)
             }
         }
@@ -52,9 +50,13 @@ extension VehicleView {
         var intent: VehicleIntentProtocol
         var vehicle: Vehicle?
         @State var lockLoading = false
+        @State var lockDuration = 0.0
         @State var windowLoading = false
+        @State var windowDuration = 0.0
         @State var trunkLoading = false
-        @State var findLoading = false
+        @State var trunkDuration = 0.0
+        @Binding var findLoading: Bool
+        @Binding var findDuration: Double
         
         var body: some View {
             VStack {
@@ -159,36 +161,36 @@ extension VehicleView {
                                 .frame(height: 30)
                             HStack {
                                 if vehicle.lockState {
-                                    VehicleView.ControlButton(icon: "lock.open", name: "解锁", isLoading: $lockLoading) {
+                                    CircularImageButton(icon: "icon_lock", name: "解锁", isLoading: $lockLoading, duration: $lockDuration) {
                                         intent.onTapUnlock()
                                     }
                                 } else {
-                                    VehicleView.ControlButton(icon: "lock", name: "上锁", isLoading: $lockLoading) {
+                                    CircularImageButton(icon: "icon_lock", name: "上锁", isLoading: $lockLoading, duration: $lockDuration) {
                                         intent.onTapLock()
                                     }
                                 }
                                 Spacer()
                                 if vehicle.windowPercentage > 0 {
-                                    VehicleView.ControlButton(icon: "car.window.left", name: "关窗", isLoading: $windowLoading) {
+                                    CircularImageButton(icon: "icon_window", name: "关窗", isLoading: $windowLoading, duration: $windowDuration) {
                                         intent.onTapSetWindow(percent: 0)
                                     }
                                 } else {
-                                    VehicleView.ControlButton(icon: "car.window.left", name: "通风", isLoading: $windowLoading) {
+                                    CircularImageButton(icon: "icon_window", name: "通风", isLoading: $windowLoading, duration: $windowDuration) {
                                         intent.onTapSetWindow(percent: 10)
                                     }
                                 }
                                 Spacer()
                                 if vehicle.trunkPercentage > 0 {
-                                    VehicleView.ControlButton(icon: "suv.side", iconSize: 15, name: "关尾门", isLoading: $trunkLoading) {
+                                    CircularImageButton(icon: "icon_trunk", iconSize: 15, name: "关尾门", isLoading: $trunkLoading, duration: $trunkDuration) {
                                         intent.onTapSetTrunk(percent: 0)
                                     }
                                 } else {
-                                    VehicleView.ControlButton(icon: "suv.side.rear.open", iconSize: 15, name: "开尾门", isLoading: $trunkLoading) {
+                                    CircularImageButton(icon: "icon_trunk", iconSize: 15, name: "开尾门", isLoading: $trunkLoading, duration: $trunkDuration) {
                                         intent.onTapSetTrunk(percent: 80)
                                     }
                                 }
                                 Spacer()
-                                VehicleView.ControlButton(icon: "horn.blast", iconSize: 15, name: "寻车", isLoading: $findLoading) {
+                                CircularImageButton(icon: "icon_vehicle_search", iconSize: 15, name: "寻车", isLoading: $findLoading, duration: $findDuration) {
                                     intent.onTapFind()
                                 }
                             }

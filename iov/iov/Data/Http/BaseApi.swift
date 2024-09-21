@@ -25,7 +25,7 @@ class BaseApi {
     
     // GET请求
     static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        TspNetworkManager.shared.requestGet(path: path, parameters: nil) { result in
+        TspNetworkManager.shared.requestGet(path: path, parameters: parameters) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)
