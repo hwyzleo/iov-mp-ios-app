@@ -12,6 +12,7 @@ struct MySettingView: View {
     @StateObject var container: MviContainer<MySettingIntentProtocol, MySettingModelStateProtocol>
     private var intent: MySettingIntentProtocol { container.intent }
     private var state: MySettingModelStateProtocol { container.model }
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     
     var body: some View {
         ZStack {
@@ -25,7 +26,8 @@ struct MySettingView: View {
                 tapCommunityConvention: { intent.onTapCommunityConvention() },
                 tapPrivacyAgreement: { intent.onTapPrivacyAgreement() },
                 loginAction: { intent.onTapLogin() },
-                logoutAction: { intent.onTapLogout() }
+                logoutAction: { intent.onTapLogout() }, 
+                appVersion: appVersion
             )
         }
         .modifier(MySettingRouter(
@@ -50,52 +52,72 @@ extension MySettingView {
         var tapPrivacyAgreement: (()->Void)?
         var loginAction: (()->Void)?
         var logoutAction: (()->Void)?
+        let settingStr = NSLocalizedString("setting", comment: "app setting")
+        let versionStr = NSLocalizedString("version", comment: "app version")
+        var appVersion: String
         
         var body: some View {
             VStack {
-                TopBackTitleBar(title: "设置")
+                TopBackTitleBar(title: "\(settingStr)")
                 ScrollView {
                     VStack {
-                        MySettingView.List(title: "个人资料") {
-                            if User.isLogin() {
-                                tapProfile?()
-                            } else {
-                                loginAction?()
+//                        MySettingView.List(title: "个人资料") {
+//                            if User.isLogin() {
+//                                tapProfile?()
+//                            } else {
+//                                loginAction?()
+//                            }
+//                        }
+//                        MySettingView.List(title: "主使用人变更") {
+//                            if User.isLogin() {
+//                                tapAccountChange?()
+//                            } else {
+//                                loginAction?()
+//                            }
+//                        }
+//                        MySettingView.List(title: "账号安全") {
+//                            if User.isLogin() {
+//                                tapAccountSecurity?()
+//                            } else {
+//                                loginAction?()
+//                            }
+//                        }
+//                        MySettingView.List(title: "账号绑定") {
+//                            if User.isLogin() {
+//                                tapAccountBinding?()
+//                            } else {
+//                                loginAction?()
+//                            }
+//                        }
+//                        MySettingView.List(title: "权限管理") {
+//                            tapPrivillegeAction?()
+//                        }
+//                        MySettingView.List(title: "用户协议") {
+//                            tapUserProtocolAction?()
+//                        }
+//                        MySettingView.List(title: "社区公约") {
+//                            tapCommunityConvention?()
+//                        }
+//                        MySettingView.List(title: "隐私协议") {
+//                            tapPrivacyAgreement?()
+//                        }
+                        Button(action: {  }) {
+                            VStack {
+                                HStack {
+                                    Text("\(versionStr)")
+                                        .foregroundStyle(Theme.color.mainText)
+                                        .font(Theme.font.listTitle)
+                                    Spacer()
+                                    Text("\(appVersion)")
+                                        .foregroundStyle(Theme.color.secondaryText)
+                                        .font(Theme.font.listTitle)
+                                }
+                                .padding(.top, 20)
+                                .padding(.bottom, 15)
                             }
+                            .contentShape(Rectangle())
                         }
-                        MySettingView.List(title: "主使用人变更") {
-                            if User.isLogin() {
-                                tapAccountChange?()
-                            } else {
-                                loginAction?()
-                            }
-                        }
-                        MySettingView.List(title: "账号安全") {
-                            if User.isLogin() {
-                                tapAccountSecurity?()
-                            } else {
-                                loginAction?()
-                            }
-                        }
-                        MySettingView.List(title: "账号绑定") {
-                            if User.isLogin() {
-                                tapAccountBinding?()
-                            } else {
-                                loginAction?()
-                            }
-                        }
-                        MySettingView.List(title: "权限管理") {
-                            tapPrivillegeAction?()
-                        }
-                        MySettingView.List(title: "用户协议") {
-                            tapUserProtocolAction?()
-                        }
-                        MySettingView.List(title: "社区公约") {
-                            tapCommunityConvention?()
-                        }
-                        MySettingView.List(title: "隐私协议") {
-                            tapPrivacyAgreement?()
-                        }
+                        .buttonStyle(.plain)
                         if(User.isLogin()) {
                             Spacer()
                                 .frame(height: 20)
@@ -133,6 +155,6 @@ extension MySettingView {
 
 struct MySettingView_Previews: PreviewProvider {
     static var previews: some View {
-        MySettingView.Content()
+        MySettingView.Content(appVersion: "0.0.1")
     }
 }

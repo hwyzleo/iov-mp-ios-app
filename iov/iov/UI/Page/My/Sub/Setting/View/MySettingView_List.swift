@@ -17,10 +17,12 @@ extension MySettingView {
                 VStack {
                     HStack {
                         Text(title)
-                            .font(.system(size: 18))
+                            .foregroundStyle(Theme.color.mainText)
+                            .font(Theme.font.listTitle)
                         Spacer()
                         Image(systemName: "chevron.right")
-                            .font(.system(size: 18))
+                            .foregroundColor(Theme.color.secondaryText)
+                            .font(Theme.font.listTitle)
                     }
                     .padding(.top, 20)
                     Divider()

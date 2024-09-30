@@ -15,13 +15,13 @@ public protocol ThemeProtocol {}
 public struct Theme: ThemeProtocol {
     
     // 主色
-    public static var mainColor: MainColorTheme {
+    public static var color: MainColorTheme {
         return MainColorTheme()
     }
 
     // 字体
-    public static var titleFont: TitleFontTheme {
-        return TitleFontTheme()
+    public static var font: MainFontTheme {
+        return MainFontTheme()
     }
 
 }
@@ -40,8 +40,13 @@ public struct MainColorTheme {
     }
     
     // 文本颜色
-    var textColor: Color {
+    var mainText: Color {
         return Color(hex: 0x1A171B)
+    }
+    
+    // 次要文本颜色
+    var secondaryText: Color {
+        return Color(hex: 0x8E8E8E)
     }
     
 }
@@ -51,10 +56,14 @@ extension MainColorTheme {
 }
 
 // 字体
-public struct TitleFontTheme {
-
+public struct MainFontTheme {
+    
+    // 列表标题字体
+    var listTitle: Font {
+        return .system(size: 16)
+    }
 }
 
-extension TitleFontTheme {
+extension MainFontTheme {
     
 }
