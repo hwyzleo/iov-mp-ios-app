@@ -692,15 +692,10 @@
 				BFA188572C841A4C004D625D /* Constants */,
 				BFA188512C8419C5004D625D /* Data */,
 				BFA188222C84152C004D625D /* Extensions */,
+				BFADC2A82CABCDAF00834608 /* Module */,
 				BFA187812C83176C004D625D /* Theme */,
 				BFA187822C831781004D625D /* Widget */,
 				BFA1884E2C84188E004D625D /* Utils */,
-				BFA187832C832C3C004D625D /* Community */,
-				BFA18A0D2C843555004D625D /* Service */,
-				BFA18A222C843663004D625D /* Vehicle */,
-				BFA187BB2C840E18004D625D /* Mall */,
-				BFA187F02C8411BD004D625D /* My */,
-				BFA187DF2C8410DD004D625D /* Login */,
 				BF24BB712C9FC40C007519B4 /* AppDelegate.swift */,
 				BFA1877D2C8316DB004D625D /* AppGlobalState.swift */,
 				BFA1876D2C83111E004D625D /* IovApp.swift */,
@@ -2285,6 +2280,19 @@
 				BFA18A742C843DC3004D625D /* TextIFieldtem.swift */,
 			);
 			path = Item;
+			sourceTree = "<group>";
+		};
+		BFADC2A82CABCDAF00834608 /* Module */ = {
+			isa = PBXGroup;
+			children = (
+				BFA187832C832C3C004D625D /* Community */,
+				BFA18A0D2C843555004D625D /* Service */,
+				BFA18A222C843663004D625D /* Vehicle */,
+				BFA187BB2C840E18004D625D /* Mall */,
+				BFA187F02C8411BD004D625D /* My */,
+				BFA187DF2C8410DD004D625D /* Login */,
+			);
+			path = Module;
 			sourceTree = "<group>";
 		};
 		FC44DBB084FFE8C63EABD32C /* Frameworks */ = {
