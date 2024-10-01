@@ -43,7 +43,7 @@ extension LoginView {
                 Text("请输入手机号")
                     .padding(25)
                     .font(.system(size: 24))
-                    .foregroundColor(Theme.color.mainText)
+                    .foregroundColor(AppTheme.colors.mainText)
                 HStack {
                     Text("+86")
                         .foregroundColor(Color(hex: 0x333333))

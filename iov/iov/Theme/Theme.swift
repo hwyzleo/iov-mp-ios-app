@@ -7,63 +7,50 @@
 
 import SwiftUI
 
-public protocol ThemeProtocol {}
+// 应用主题接口
+public protocol AppThemeProtocol {}
 
-/**
- * 主要配置App颜色、字体
- */
-public struct Theme: ThemeProtocol {
-    
-    // 主色
-    public static var color: MainColorTheme {
-        return MainColorTheme()
-    }
-
-    // 字体
-    public static var font: MainFontTheme {
-        return MainFontTheme()
-    }
-
-}
-
-// 主色
-public struct MainColorTheme {
-
-    // 主题颜色
-    var mainColor: Color {
-        return Color(hex: 0xFFFFFF)
-    }
-    
-    // 主背景色
-    var baseColor: Color {
-        return Color(hex: 0xFFFFFF)
-    }
-    
-    // 文本颜色
-    var mainText: Color {
-        return Color(hex: 0x1A171B)
-    }
-    
+// 应用颜色集接口
+public protocol AppColorsProtocol {
+    // 主题风格颜色
+    var themeUi: Color { get set }
+    // 背景颜色
+    var background: Color { get set }
+    // 主要文本颜色
+    var mainText: Color { get set }
     // 次要文本颜色
-    var secondaryText: Color {
-        return Color(hex: 0x8E8E8E)
-    }
-    
+    var secondaryText: Color { get set }
 }
 
-extension MainColorTheme {
-    
+// 应用字体集接口
+public protocol AppFontsProtocol {
+    // 列表标题
+    var listTitle: Font { get set }
 }
 
-// 字体
-public struct MainFontTheme {
-    
-    // 列表标题字体
-    var listTitle: Font {
-        return .system(size: 16)
-    }
+// 应用主题
+public struct AppTheme: AppThemeProtocol {
+    public static var colors: AppColorsProtocol = LightAppColors() as AppColorsProtocol
+    public static var fonts: AppFontsProtocol = AppFonts() as AppFontsProtocol
 }
 
-extension MainFontTheme {
-    
+// 白天应用颜色集
+struct LightAppColors : AppColorsProtocol {
+    var themeUi: Color = Color.white
+    var background: Color = Color.white
+    var mainText: Color = Color(hex: 0x1A171B)
+    var secondaryText: Color = Color(hex: 0x8E8E8E)
+}
+
+// 夜晚应用颜色集
+struct DarkAppColors : AppColorsProtocol {
+    var themeUi: Color = Color.black
+    var background: Color = Color.black
+    var mainText: Color = Color.white
+    var secondaryText: Color = Color.gray
+}
+
+// 字体集
+struct AppFonts : AppFontsProtocol {
+    var listTitle: Font = .system(size: 16)
 }
