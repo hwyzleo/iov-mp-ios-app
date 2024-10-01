@@ -17,7 +17,7 @@ extension MySettingView {
                 VStack {
                     HStack {
                         Text(title)
-                            .foregroundStyle(AppTheme.colors.mainText)
+                            .foregroundStyle(AppTheme.colors.primaryText)
                             .font(AppTheme.fonts.listTitle)
                         Spacer()
                         Image(systemName: "chevron.right")

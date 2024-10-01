@@ -27,7 +27,7 @@ extension LoginView {
                     .padding(.leading, 25)
                     .padding(.top, 25)
                     .font(.system(size: 24))
-                    .foregroundColor(AppTheme.colors.mainText)
+                    .foregroundColor(AppTheme.colors.primaryText)
                 Text("验证码已发送至您的手机：" + state.mobile)
                     .padding(.leading, 25)
                     .padding(.top, 5)

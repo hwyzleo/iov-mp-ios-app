@@ -106,7 +106,7 @@ extension MySettingView {
                             VStack {
                                 HStack {
                                     Text(LocalizedStringKey("version"))
-                                        .foregroundStyle(AppTheme.colors.mainText)
+                                        .foregroundStyle(AppTheme.colors.primaryText)
                                         .font(AppTheme.fonts.listTitle)
                                     Spacer()
                                     Text("\(appVersion)")
