@@ -52,13 +52,14 @@ extension MySettingView {
         var tapPrivacyAgreement: (()->Void)?
         var loginAction: (()->Void)?
         var logoutAction: (()->Void)?
-        let settingStr = NSLocalizedString("setting", comment: "app setting")
-        let versionStr = NSLocalizedString("version", comment: "app version")
         var appVersion: String
+        var version: LocalizedStringKey = "version"
+        var setting: LocalizedStringKey = "setting"
+        
         
         var body: some View {
             VStack {
-                TopBackTitleBar(title: "\(settingStr)")
+                TopBackTitleBar(titleLocal: LocalizedStringKey("setting"))
                 ScrollView {
                     VStack {
 //                        MySettingView.List(title: "个人资料") {
@@ -104,7 +105,7 @@ extension MySettingView {
                         Button(action: {  }) {
                             VStack {
                                 HStack {
-                                    Text("\(versionStr)")
+                                    Text(LocalizedStringKey("version"))
                                         .foregroundStyle(Theme.color.mainText)
                                         .font(Theme.font.listTitle)
                                     Spacer()
@@ -156,5 +157,6 @@ extension MySettingView {
 struct MySettingView_Previews: PreviewProvider {
     static var previews: some View {
         MySettingView.Content(appVersion: "0.0.1")
+            .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

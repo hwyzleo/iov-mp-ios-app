@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		755FC02ABF529F44CB803BE3 /* Pods_iov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */; };
 		BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */; };
+		BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB712C9FC40C007519B4 /* AppDelegate.swift */; };
 		BF4908E32C9325430071C527 /* InfoTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4908E22C9325430071C527 /* InfoTip.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
@@ -319,11 +320,14 @@
 		BFA18A822C8446A2004D625D /* CommunityView_Carousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A812C8446A2004D625D /* CommunityView_Carousel.swift */; };
 		BFA18A842C8446D3004D625D /* CommunityView_Navi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A832C8446D3004D625D /* CommunityView_Navi.swift */; };
 		BFA18A862C8446F8004D625D /* CommunityView_Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A852C8446F7004D625D /* CommunityView_Topic.swift */; };
+		BFACD05C2CAAF73100EF69E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BFACD05A2CAAF73100EF69E4 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		54DD010BC41FE25B2673160D /* Pods-iov.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.debug.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.debug.xcconfig"; sourceTree = "<group>"; };
 		BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageButton.swift; sourceTree = "<group>"; };
+		BF24BB702C9FC1EE007519B4 /* Iov-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Iov-Bridging-Header.h"; sourceTree = "<group>"; };
+		BF24BB712C9FC40C007519B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BF4908E22C9325430071C527 /* InfoTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTip.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
@@ -636,6 +640,8 @@
 		BFA18A812C8446A2004D625D /* CommunityView_Carousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView_Carousel.swift; sourceTree = "<group>"; };
 		BFA18A832C8446D3004D625D /* CommunityView_Navi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView_Navi.swift; sourceTree = "<group>"; };
 		BFA18A852C8446F7004D625D /* CommunityView_Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView_Topic.swift; sourceTree = "<group>"; };
+		BFD177B82CABBA2A0028941E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BFD177B92CABBBDB0028941E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -682,17 +688,27 @@
 		BFA1876C2C83111E004D625D /* iov */ = {
 			isa = PBXGroup;
 			children = (
-				BFA18A802C844274004D625D /* Info.plist */,
 				BFA187872C832CA2004D625D /* Base */,
 				BFA188572C841A4C004D625D /* Constants */,
 				BFA188512C8419C5004D625D /* Data */,
 				BFA188222C84152C004D625D /* Extensions */,
-				BFA1877F2C83171C004D625D /* UI */,
+				BFA187812C83176C004D625D /* Theme */,
+				BFA187822C831781004D625D /* Widget */,
 				BFA1884E2C84188E004D625D /* Utils */,
+				BFA187832C832C3C004D625D /* Community */,
+				BFA18A0D2C843555004D625D /* Service */,
+				BFA18A222C843663004D625D /* Vehicle */,
+				BFA187BB2C840E18004D625D /* Mall */,
+				BFA187F02C8411BD004D625D /* My */,
+				BFA187DF2C8410DD004D625D /* Login */,
+				BF24BB712C9FC40C007519B4 /* AppDelegate.swift */,
 				BFA1877D2C8316DB004D625D /* AppGlobalState.swift */,
 				BFA1876D2C83111E004D625D /* IovApp.swift */,
 				BFA1876F2C83111E004D625D /* ContentView.swift */,
 				BFA187732C83111F004D625D /* Assets.xcassets */,
+				BFACD05A2CAAF73100EF69E4 /* Localizable.strings */,
+				BFA18A802C844274004D625D /* Info.plist */,
+				BF24BB702C9FC1EE007519B4 /* Iov-Bridging-Header.h */,
 				BFA187752C83111F004D625D /* Preview Content */,
 			);
 			path = iov;
@@ -704,29 +720,6 @@
 				BFA187762C83111F004D625D /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		BFA1877F2C83171C004D625D /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				BFA187802C83175E004D625D /* Page */,
-				BFA187812C83176C004D625D /* Theme */,
-				BFA187822C831781004D625D /* Widget */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		BFA187802C83175E004D625D /* Page */ = {
-			isa = PBXGroup;
-			children = (
-				BFA187832C832C3C004D625D /* Community */,
-				BFA18A0D2C843555004D625D /* Service */,
-				BFA18A222C843663004D625D /* Vehicle */,
-				BFA187BB2C840E18004D625D /* Mall */,
-				BFA187F02C8411BD004D625D /* My */,
-				BFA187DF2C8410DD004D625D /* Login */,
-			);
-			path = Page;
 			sourceTree = "<group>";
 		};
 		BFA187812C83176C004D625D /* Theme */ = {
@@ -2341,11 +2334,12 @@
 			};
 			buildConfigurationList = BFA187652C83111E004D625D /* Build configuration list for PBXProject "iov" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
+				"zh-Hans",
 			);
 			mainGroup = BFA187612C83111E004D625D;
 			productRefGroup = BFA1876B2C83111E004D625D /* Products */;
@@ -2363,6 +2357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFA187772C83111F004D625D /* Preview Assets.xcassets in Resources */,
+				BFACD05C2CAAF73100EF69E4 /* Localizable.strings in Resources */,
 				BFA187742C83111F004D625D /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2624,6 +2619,7 @@
 				BFA1899E2C842FC5004D625D /* MyPointsIntent.swift in Sources */,
 				BFA18A0A2C8434AA004D625D /* ChargingPileIntent.swift in Sources */,
 				BFA187E82C84114C004D625D /* LoginModelProtocol.swift in Sources */,
+				BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */,
 				BFA189E42C8432F6004D625D /* TestDriveReportView.swift in Sources */,
 				BFA187892C832CB8004D625D /* MviContainer.swift in Sources */,
 				BFA18A2F2C8436E8004D625D /* VehicleModel.swift in Sources */,
@@ -2730,12 +2726,25 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		BFACD05A2CAAF73100EF69E4 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BFD177B82CABBA2A0028941E /* en */,
+				BFD177B92CABBBDB0028941E /* zh-Hans */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		BFA187782C83111F004D625D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2799,6 +2808,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -2879,10 +2889,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov;
+				MARKETING_VERSION = 0.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "iov/Iov-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -2917,10 +2928,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov;
+				MARKETING_VERSION = 0.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "iov/Iov-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

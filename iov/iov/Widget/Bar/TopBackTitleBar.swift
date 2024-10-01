@@ -11,34 +11,35 @@ import SwiftUI
 /// 顶部带返回的标题Bar
 struct TopBackTitleBar: View {
     @Environment(\.dismiss) private var dismiss
-    var title: String = ""
+    var title: String?
+    var titleLocal: LocalizedStringKey?
     var color: Color = .black
     var action: (() -> Void)?
     var body: some View {
         ZStack {
             HStack {
-                HStack {
-                    Spacer()
-                    Text(title)
-                        .bold()
-                        .foregroundColor(color)
-                    Spacer()
+                Spacer()
+                if(title != nil) {
+                    Text(title!)
+                } else if(titleLocal != nil) {
+                    Text(titleLocal!)
                 }
+                Spacer()
             }
+            .bold()
             HStack {
                 Button(action: {
                     action?() ?? dismiss()
                 }) {
                     Image(systemName: "chevron.left")
                         .padding(.leading, 20)
-                        .foregroundColor(color)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 Spacer()
             }
         }
-        .padding(.bottom, 10)
+        .foregroundColor(color)
     }
 }
 
@@ -46,7 +47,8 @@ struct TopBackTitleBar: View {
 // MARK: - Previews
 struct TopBar_Previews: PreviewProvider {
     static var previews: some View {
-        TopBackTitleBar(title: "标题")
+        TopBackTitleBar(titleLocal: LocalizedStringKey("title"))
+            .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }
 #endif

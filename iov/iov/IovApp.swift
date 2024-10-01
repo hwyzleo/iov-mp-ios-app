@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct IovApp: App {
     @StateObject var appGlobalState = AppGlobalState()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {
         WindowGroup {

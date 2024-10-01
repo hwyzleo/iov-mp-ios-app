@@ -7,6 +7,7 @@ target 'iov' do
 
   # Pods for iov
   pod 'Alamofire', '~> 5.7.1' #网络请求
+  pod 'JPush' #极光推送
   pod 'Kingfisher' #网络图片加载缓存
   pod 'MBProgressHUD' #加载动效
   pod 'RealmSwift' #本地数据库
