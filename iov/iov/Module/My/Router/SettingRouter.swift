@@ -1,5 +1,5 @@
 //
-//  MySettingRouter.swift
+//  SettingRouter.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -7,17 +7,17 @@
 
 import SwiftUI
 
-struct MySettingRouter: RouterProtocol {
+struct SettingRouter: RouterProtocol {
     typealias RouterScreenType = ScreenType
     typealias RouterAlertType = AlertScreen
 
     let subjects: Subjects
-    let intent: MySettingIntentProtocol
+    let intent: SettingIntentProtocol
 }
 
 // MARK: - Navigation Screens
 
-extension MySettingRouter {
+extension SettingRouter {
     enum ScreenType: RouterScreenProtocol {
         case login
         case my
@@ -93,7 +93,7 @@ extension MySettingRouter {
             MySettingPrivacyAgreementView.build()
                 .navigationBarHidden(true)
         case .setting:
-            MySettingView.build()
+            SettingView.build()
                 .navigationBarHidden(true)
         }
     }
@@ -103,7 +103,7 @@ extension MySettingRouter {
 
 // MARK: - Alerts
 
-extension MySettingRouter {
+extension SettingRouter {
     enum AlertScreen: RouterAlertScreenProtocol {
         case defaultAlert(title: String, message: String?)
     }

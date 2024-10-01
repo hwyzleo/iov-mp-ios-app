@@ -74,7 +74,7 @@ extension MyRouter {
             MyMessageView.build()
                 .navigationBarHidden(true)
         case .setting:
-            MySettingView.build()
+            SettingView.build()
                 .navigationBarHidden(true)
         case .profile:
             MySettingProfileView.build()

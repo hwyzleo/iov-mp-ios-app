@@ -1,5 +1,5 @@
 //
-//  MySettingModel.swift
+//  SettingModel.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-final class MySettingModel: ObservableObject, MySettingModelStateProtocol {
-    @Published var contentState: MySettingTypes.Model.ContentState = .content
-    let routerSubject = MySettingRouter.Subjects()
+final class SettingModel: ObservableObject, SettingModelStateProtocol {
+    @Published var contentState: SettingTypes.Model.ContentState = .content
+    let routerSubject = SettingRouter.Subjects()
 }
 
 // MARK: - Action Protocol
 
-extension MySettingModel: MySettingModelActionProtocol {
+extension SettingModel: SettingModelActionProtocol {
     func displayLoading() {}
     
     func update() {
@@ -31,7 +31,7 @@ extension MySettingModel: MySettingModelActionProtocol {
 
 // MARK: - Route
 
-extension MySettingModel: MySettingModelRouterProtocol {
+extension SettingModel: SettingModelRouterProtocol {
     func closeScreen() {
         routerSubject.close.send()
     }
@@ -70,7 +70,7 @@ extension MySettingModel: MySettingModelRouterProtocol {
     }
 }
 
-extension MySettingTypes.Model {
+extension SettingTypes.Model {
     enum ContentState {
         case loading
         case content

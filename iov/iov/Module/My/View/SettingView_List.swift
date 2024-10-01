@@ -1,5 +1,5 @@
 //
-//  MySettingView_List.swift
+//  SettingView_List.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-extension MySettingView {
+extension SettingView {
     struct List: View {
         var title: String
         var action: (() -> Void)?
@@ -36,5 +36,5 @@ extension MySettingView {
 }
 
 #Preview {
-    MySettingView.List(title: "标题")
+    SettingView.List(title: "标题")
 }

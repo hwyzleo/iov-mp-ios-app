@@ -1,5 +1,5 @@
 //
-//  MySettingModelProtocol.swift
+//  SettingModelProtocol.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -9,21 +9,21 @@ import Foundation
 
 // MARK: - View State
 
-protocol MySettingModelStateProtocol {
-    var contentState: MySettingTypes.Model.ContentState { get }
-    var routerSubject: MySettingRouter.Subjects { get }
+protocol SettingModelStateProtocol {
+    var contentState: SettingTypes.Model.ContentState { get }
+    var routerSubject: SettingRouter.Subjects { get }
 }
 
 // MARK: - Intent Action
 
-protocol MySettingModelActionProtocol: MviModelActionProtocol {
+protocol SettingModelActionProtocol: MviModelActionProtocol {
     /// 用户登出
     func logout()
 }
 
 // MARK: - Route
 
-protocol MySettingModelRouterProtocol: MviModelRouterProtocol {
+protocol SettingModelRouterProtocol: MviModelRouterProtocol {
     /// 跳转至登录页
     func routeToLogin()
     /// 跳转至个人资料

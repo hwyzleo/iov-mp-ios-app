@@ -1,5 +1,5 @@
 //
-//  MySettingView.swift
+//  SettingView.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -7,16 +7,16 @@
 
 import SwiftUI
 
-struct MySettingView: View {
+struct SettingView: View {
     
-    @StateObject var container: MviContainer<MySettingIntentProtocol, MySettingModelStateProtocol>
-    private var intent: MySettingIntentProtocol { container.intent }
-    private var state: MySettingModelStateProtocol { container.model }
+    @StateObject var container: MviContainer<SettingIntentProtocol, SettingModelStateProtocol>
+    private var intent: SettingIntentProtocol { container.intent }
+    private var state: SettingModelStateProtocol { container.model }
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
     
     var body: some View {
         ZStack {
-            MySettingView.Content(
+            SettingView.Content(
                 tapProfile: { intent.onTapProfile() },
                 tapAccountChange: { intent.onTapAccountChange() },
                 tapAccountSecurity: { intent.onTapAccountSecurity() },
@@ -30,7 +30,7 @@ struct MySettingView: View {
                 appVersion: appVersion
             )
         }
-        .modifier(MySettingRouter(
+        .modifier(SettingRouter(
             subjects: state.routerSubject,
             intent: intent
         ))
@@ -38,7 +38,7 @@ struct MySettingView: View {
     
 }
 
-extension MySettingView {
+extension SettingView {
     
     struct Content: View {
         @State private var showAlert = false
@@ -156,7 +156,7 @@ extension MySettingView {
 
 struct MySettingView_Previews: PreviewProvider {
     static var previews: some View {
-        MySettingView.Content(appVersion: "0.0.1")
+        SettingView.Content(appVersion: "0.0.1")
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

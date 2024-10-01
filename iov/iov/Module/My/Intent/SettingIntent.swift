@@ -1,5 +1,5 @@
 //
-//  MySettingIntent.swift
+//  SettingIntent.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-class MySettingIntent: MviIntentProtocol {
-    private weak var modelAction: MySettingModelActionProtocol?
-    private weak var modelRouter: MySettingModelRouterProtocol?
+class SettingIntent: MviIntentProtocol {
+    private weak var modelAction: SettingModelActionProtocol?
+    private weak var modelRouter: SettingModelRouterProtocol?
     
-    init(model: MySettingModelActionProtocol & MySettingModelRouterProtocol) {
+    init(model: SettingModelActionProtocol & SettingModelRouterProtocol) {
         self.modelAction = model
         self.modelRouter = model
     }
@@ -19,7 +19,7 @@ class MySettingIntent: MviIntentProtocol {
     func viewOnAppear() {}
 }
 
-extension MySettingIntent: MySettingIntentProtocol {
+extension SettingIntent: SettingIntentProtocol {
     func onTapLogin() {
         modelRouter?.routeToLogin()
     }
