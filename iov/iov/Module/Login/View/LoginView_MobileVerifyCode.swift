@@ -20,19 +20,23 @@ extension LoginView {
         
         var body: some View {
             VStack(alignment: .leading) {
-                LoginView.TopBar(intent: intent, backAction: {
+                TopBackTitleBar() {
                     intent.onTapBackMobileLoginIcon()
-                })
-                Text("请输入验证码")
-                    .padding(.leading, 25)
-                    .padding(.top, 25)
+                }
+                Spacer().frame(height: 20)
+                Text(LocalizedStringKey("input_verify_code"))
                     .font(.system(size: 24))
-                    .foregroundColor(AppTheme.colors.primaryText)
-                Text("验证码已发送至您的手机：" + state.mobile)
-                    .padding(.leading, 25)
-                    .padding(.top, 5)
-                    .font(.system(size: 15))
-                    .foregroundColor(Color.gray)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+                Spacer().frame(height: 20)
+                HStack {
+                    Text(LocalizedStringKey("verify_code_has_sent"))
+                        .font(.system(size: 15))
+                        .foregroundColor(AppTheme.colors.fontSecondary)
+                    Text(state.mobile)
+                        .font(.system(size: 15))
+                        .foregroundColor(AppTheme.colors.fontSecondary)
+                }
+                Spacer().frame(height: 30)
                 CaptchaTextField(maxDigits: 6, pin: $verifyCode, showPin: true) {
                     intent.onTapVerifyCodeLoginButton(
                         countryRegionCode: state.countryRegionCode,
@@ -40,27 +44,30 @@ extension LoginView {
                         verifyCode: verifyCode
                     )
                 }
-                .padding(25)
+                Spacer().frame(height: 50)
                 if isCountingDown {
-                    Text("重新获取验证码(\(countdown))")
-                        .padding(.top, 50)
-                        .font(.system(size: 14))
-                        .foregroundColor(Color.gray)
-                        .frame(maxWidth: .infinity)
+                    HStack {
+                        Text(LocalizedStringKey("reget_verigy_code"))
+                        Text("(\(countdown))")
+                    }
+                    .font(.system(size: 14))
+                    .foregroundColor(AppTheme.colors.fontSecondary)
+                    .frame(maxWidth: .infinity)
                 } else {
                     Button(action: {
                         intent.onTapResendVerifyCodeText(countryRegionCode: state.countryRegionCode, mobile: state.mobile)
                         isCountingDown = true
                         startCountdown()
                     }) {
-                        Text("重新获取验证码")
-                            .padding(.top, 50)
+                        Text(LocalizedStringKey("reget_verigy_code"))
                             .font(.system(size: 14))
                             .frame(maxWidth: .infinity)
                     }
                 }
                 Spacer()
             }
+            .padding(.leading, 20)
+            .padding(.trailing, 20)
             .onAppear {
                 startCountdown()
             }
@@ -81,9 +88,10 @@ extension LoginView {
 }
 
 struct LoginView_MobileVerifyCode_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         LoginView.buildMobileVerifyCode()
             .environmentObject(appGlobalState)
+            .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

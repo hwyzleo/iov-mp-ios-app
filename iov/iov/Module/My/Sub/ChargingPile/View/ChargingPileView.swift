@@ -413,7 +413,7 @@ private extension ChargingPileView {
 }
 
 struct ChargingPileView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         ChargingPileView(container: ChargingPileView.buildContainer())
             .environmentObject(appGlobalState)

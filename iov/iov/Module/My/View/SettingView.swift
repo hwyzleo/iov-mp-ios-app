@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingView: View {
     
+    @EnvironmentObject var appGlobalState: AppGlobalState
     @StateObject var container: MviContainer<SettingIntentProtocol, SettingModelStateProtocol>
     private var intent: SettingIntentProtocol { container.intent }
     private var state: SettingModelStateProtocol { container.model }
@@ -27,7 +28,9 @@ struct SettingView: View {
                 tapPrivacyAgreement: { intent.onTapPrivacyAgreement() },
                 loginAction: { intent.onTapLogin() },
                 logoutAction: { intent.onTapLogout() }, 
-                appVersion: appVersion
+                appVersion: appVersion,
+                isMock: $appGlobalState.isMock,
+                apiUrl: $appGlobalState.networkAPIBaseURL
             )
         }
         .modifier(SettingRouter(
@@ -41,7 +44,7 @@ struct SettingView: View {
 extension SettingView {
     
     struct Content: View {
-        @State private var showAlert = false
+        
         var tapProfile: (()->Void)?
         var tapAccountChange: (()->Void)?
         var tapAccountSecurity: (()->Void)?
@@ -53,9 +56,11 @@ extension SettingView {
         var loginAction: (()->Void)?
         var logoutAction: (()->Void)?
         var appVersion: String
-        var version: LocalizedStringKey = "version"
-        var setting: LocalizedStringKey = "setting"
-        
+        @State private var showAlert = false
+        @State private var showMock = false
+        @State private var mockCount: Int = 0
+        @Binding var isMock: Bool
+        @Binding var apiUrl: String
         
         var body: some View {
             VStack {
@@ -102,49 +107,56 @@ extension SettingView {
 //                        MySettingView.List(title: "隐私协议") {
 //                            tapPrivacyAgreement?()
 //                        }
-                        Button(action: {  }) {
+                        Button(action: { 
+                            mockCount = mockCount + 1
+                            if(isMock && mockCount > 10) {
+                                showMock = true
+                                isMock.toggle()
+                            }
+                        }) {
                             VStack {
+                                Spacer().frame(height: 20)
                                 HStack {
                                     Text(LocalizedStringKey("version"))
-                                        .foregroundStyle(AppTheme.colors.primaryText)
+                                        .foregroundStyle(AppTheme.colors.fontPrimary)
                                         .font(AppTheme.fonts.listTitle)
                                     Spacer()
                                     Text("\(appVersion)")
-                                        .foregroundStyle(AppTheme.colors.secondaryText)
+                                        .foregroundStyle(AppTheme.colors.fontSecondary)
                                         .font(AppTheme.fonts.listTitle)
+                                    if(isMock) {
+                                        Text("(Mock)")
+                                            .foregroundStyle(AppTheme.colors.fontSecondary)
+                                            .font(AppTheme.fonts.listTitle)
+                                    }
                                 }
-                                .padding(.top, 20)
-                                .padding(.bottom, 15)
+                                Spacer().frame(height: 20)
                             }
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        if(showMock) {
+                            TextField("", text: $apiUrl)
+                                .frame(height: 35)
+                                .textFieldStyle(.plain)
+                                .onChange(of: apiUrl) { newApiUrl in
+                                }
+                        }
                         if(User.isLogin()) {
                             Spacer()
                                 .frame(height: 20)
-                            Button(action: { showAlert = true }) {
-                                Text("退出登录")
-                                    .font(.system(size: 15))
-                                    .padding(10)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundColor(Color.black)
-                                    .background(Color.white)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 20)
-                                            .stroke(Color.gray, lineWidth: 1)
-                                    )
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                                    .scaleEffect(1)
+                            RoundedCornerButton(nameLocal: LocalizedStringKey("logout")) {
+                                showAlert = true
                             }
                         }
                     }
-                    .alert(Text("提示"), isPresented: $showAlert) {
-                        Button("取消", role: .cancel) { }
-                        Button("确认") {
+                    .alert(Text(LocalizedStringKey("tip")), isPresented: $showAlert) {
+                        Button(LocalizedStringKey("cancel"), role: .cancel) { }
+                        Button(LocalizedStringKey("confirm")) {
                             logoutAction?()
                         }
                     } message: {
-                        Text("您确定登出？")
+                        Text(LocalizedStringKey("logout_confirm"))
                     }
                 }
                 .scrollIndicators(.hidden)
@@ -155,8 +167,13 @@ extension SettingView {
 }
 
 struct MySettingView_Previews: PreviewProvider {
+    
     static var previews: some View {
-        SettingView.Content(appVersion: "0.0.1")
+        @StateObject var appGlobalState = AppGlobalState.shared
+        @State var isMock = true
+        @State var apiUrl = ""
+        SettingView.Content(appVersion: "0.0.1", isMock: $isMock, apiUrl: $apiUrl)
             .environment(\.locale, .init(identifier: "zh-Hans"))
+            .environmentObject(appGlobalState)
     }
 }

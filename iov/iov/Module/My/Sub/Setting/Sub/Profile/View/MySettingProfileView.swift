@@ -126,7 +126,7 @@ private extension MySettingProfileView {
 
 
 struct MySettingProfileView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MySettingProfileView(container: MySettingProfileView.buildContainer())
             .environmentObject(appGlobalState)

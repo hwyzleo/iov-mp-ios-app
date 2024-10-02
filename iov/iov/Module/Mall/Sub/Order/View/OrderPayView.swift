@@ -93,7 +93,7 @@ struct OrderPayView: View {
 }
 
 struct OrderPayView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         OrderPayView()
     }

@@ -26,42 +26,31 @@ extension LoginView {
             self._agree = State(initialValue: state.agree)
         }
         
-        var agreement: AttributedString {
-            var agreement = AttributedString("我已阅读并同意《用户协议》《隐私政策》，用户首次登录将会同步注册APP账号")
-            let prot = agreement.range(of: "《用户协议》")
-            agreement[prot!].link = URL(string: "https://www.baidu.com")
-            let priv = agreement.range(of: "《隐私政策》")
-            agreement[priv!].link = URL(string: "https://www.baidu.com")
-            return agreement;
-        }
-        
         var body: some View {
             VStack(alignment: .leading) {
-                LoginView.TopBar(intent: intent, backAction: {
+                TopBackTitleBar() {
                     intent.onTapExitLoginIcon()
-                })
-                Text("请输入手机号")
-                    .padding(25)
+                }
+                Spacer().frame(height: 20)
+                Text(LocalizedStringKey("input_mobile"))
                     .font(.system(size: 24))
-                    .foregroundColor(AppTheme.colors.primaryText)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+                Spacer().frame(height: 20)
                 HStack {
                     Text("+86")
-                        .foregroundColor(Color(hex: 0x333333))
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                         .font(.system(size: 20))
                     Divider()
                         .frame(height: 30)
-                        .background(Color(hex: 0x333333))
+                        .background(AppTheme.colors.fontPrimary)
                         .padding(.leading, 5)
                         .padding(.trailing, 5)
                     MobileTextField(mobile: $mobile)
                 }
-                .padding(.top, 5)
-                .padding(.leading, 25)
-                .padding(.trailing, 25)
-                .padding(.bottom, 10)
+                Spacer().frame(height: 20)
                 HStack(alignment: .center) {
                     Spacer()
-                    Button("获取验证码") {
+                    Button(LocalizedStringKey("get_verify_code")) {
                         if !agree {
                             self.showAgreeAlert = true
                             return
@@ -80,65 +69,56 @@ extension LoginView {
                     .foregroundColor(Color.white)
                     .background(mobile.isEmpty || mobile.count != 13 ? Color.gray : Color.black)
                     .cornerRadius(22.5)
-                    .alert(Text("提示"), isPresented: $showAgreeAlert) {
-                        Button("取消", role: .cancel) { }
-                        Button("确认") {}
+                    .alert(Text(LocalizedStringKey("tip")), isPresented: $showAgreeAlert) {
+                        Button(LocalizedStringKey("cancel"), role: .cancel) { }
+                        Button(LocalizedStringKey("confirm")) {}
                     } message: {
-                        Text("请勾选同意用户协议")
+                        Text(LocalizedStringKey("agree_user_agreement"))
                     }
-                    .alert(Text("提示"), isPresented: $showMobileAlert) {
-                        Button("取消", role: .cancel) { }
-                        Button("确认") {}
+                    .alert(Text(LocalizedStringKey("tip")), isPresented: $showMobileAlert) {
+                        Button(LocalizedStringKey("cancel"), role: .cancel) { }
+                        Button(LocalizedStringKey("confirm")) {}
                     } message: {
-                        Text("请输入手机号")
+                        Text(LocalizedStringKey("input_mobile"))
                     }
                     Spacer()
                 }
-                .padding(.leading, 15)
-                .padding(.trailing, 15)
+                Spacer().frame(height: 20)
                 HStack(alignment: .top) {
                     Button(action: {
                         self.agree.toggle()
                     }) {
                         if agree {
-                            Image("red_select")
+                            Image("icon_circle_check")
                             .resizable()
-                            .frame(width: 12, height: 12)
+                            .frame(width: 14, height: 14)
                         } else {
-                            Image("black_unSelect")
+                            Image("icon_circle")
                             .resizable()
-                            .frame(width: 12, height: 12)
+                            .frame(width: 14, height: 14)
                         }
                     }
-                    Text(agreement)
-                    .font(.system(size: 10))
+                    Text(LocalizedStringKey("login_confirm_tip"))
+                    .font(.system(size: 12))
                     .lineSpacing(4)
                 }
-                .padding(.top, 15)
-                .padding(.leading, 25)
-                .padding(.trailing, 25)
+                .padding(.leading, 10)
+                .padding(.trailing, 10)
                 Spacer()
-                VStack(alignment: .center) {
-                    HStack {
-                        Image("black_weixin")
-                            .padding(.trailing, 10)
-                        Image("black_apple")
-                            .padding(.leading, 10)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, 10)
             }
+            .padding(.leading, 20)
+            .padding(.trailing, 20)
         }
-    
+        
     }
     
 }
 
 struct LoginView_MobileLogin_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         LoginView.buildMobileLogin()
             .environmentObject(appGlobalState)
+            .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

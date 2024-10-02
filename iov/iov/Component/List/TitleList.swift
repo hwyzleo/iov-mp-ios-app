@@ -40,7 +40,7 @@ struct TitleList: View {
 }
 
 struct TitleList_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         TitleList()
     }

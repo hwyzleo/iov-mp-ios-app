@@ -10,7 +10,7 @@ import SwiftData
 
 @main
 struct IovApp: App {
-    @StateObject var appGlobalState = AppGlobalState()
+    @StateObject var appGlobalState = AppGlobalState.shared
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     var body: some Scene {

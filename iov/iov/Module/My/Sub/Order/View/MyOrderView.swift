@@ -33,7 +33,7 @@ struct MyOrderView: View {
 }
 
 struct MyOrderView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MyOrderView(container: MyOrderView.buildContainer())
             .environmentObject(appGlobalState)

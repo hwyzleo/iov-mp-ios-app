@@ -86,7 +86,7 @@ extension MallView {
 }
 
 struct MallView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         let container = MallView.buildContainer()
         let mallIndex = mockMallIndex()

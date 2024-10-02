@@ -12,13 +12,11 @@ import UIKit
 typealias TspNetworkRequestResult = Result<Data, Error>
 typealias TspNetworkRequestCompletion = (TspNetworkRequestResult) -> Void
 
-//public let NetworkAPIBaseURL = "http://127.0.0.1:8081"
-public let NetworkAPIBaseURL = "http://192.168.2.223:8081"
-
 // TSP网络模块,设计为单例模式
 class TspNetworkManager {
     // 共享对象
     static let shared = TspNetworkManager()
+    static let appGlobalState = AppGlobalState.shared
     
     // 获取有token的请求头
     // 你应当在合适的时机, 将 token 存入 UserDefaults 中
@@ -35,7 +33,7 @@ class TspNetworkManager {
                     parameters: Parameters?,
                     // @escaping,逃逸闭包: 一个闭包被作为一个参数传递给一个函数，并且在函数return之后才被唤起执行
                     completion: @escaping TspNetworkRequestCompletion) -> DataRequest {
-        AF.request(NetworkAPIBaseURL + path,
+        AF.request(TspNetworkManager.appGlobalState.networkAPIBaseURL + path,
                    parameters: parameters,
                    headers: commonHeaders,
                    requestModifier: { $0.timeoutInterval = 30 })
@@ -52,7 +50,7 @@ class TspNetworkManager {
     func requestPost(path: String,
                      parameters: Parameters?,
                      completion: @escaping TspNetworkRequestCompletion) -> DataRequest {
-        AF.request(NetworkAPIBaseURL + path,
+        AF.request(TspNetworkManager.appGlobalState.networkAPIBaseURL + path,
                    method: .post,
                    parameters: parameters,
                    encoding: JSONEncoding.prettyPrinted, // parameters的编码方式,默认为JSON
@@ -76,7 +74,7 @@ class TspNetworkManager {
                    completion: @escaping TspNetworkRequestCompletion) -> DataRequest
     {
         AF.upload(multipartFormData: { multiPart in
-            print(NetworkAPIBaseURL + url)
+            print(TspNetworkManager.appGlobalState.networkAPIBaseURL + url)
             for (key, value) in params {
                 if let temp = value as? String {
                     multiPart.append(temp.data(using: .utf8)!, withName: key)
@@ -98,7 +96,7 @@ class TspNetworkManager {
                 }
             }
             multiPart.append(image.jpegData(compressionQuality: 0.9)!, withName: "file", fileName: "file.png", mimeType: "image/png")
-        }, to: NetworkAPIBaseURL + url)
+        }, to: TspNetworkManager.appGlobalState.networkAPIBaseURL + url)
             .uploadProgress(queue: .main, closure: { progress in
                 print("Upload Progress: \(progress.fractionCompleted)")
             })

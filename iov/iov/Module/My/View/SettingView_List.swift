@@ -17,11 +17,11 @@ extension SettingView {
                 VStack {
                     HStack {
                         Text(title)
-                            .foregroundStyle(AppTheme.colors.primaryText)
+                            .foregroundStyle(AppTheme.colors.fontPrimary)
                             .font(AppTheme.fonts.listTitle)
                         Spacer()
                         Image(systemName: "chevron.right")
-                            .foregroundColor(AppTheme.colors.secondaryText)
+                            .foregroundColor(AppTheme.colors.fontSecondary)
                             .font(AppTheme.fonts.listTitle)
                     }
                     .padding(.top, 20)

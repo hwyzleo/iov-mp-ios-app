@@ -97,7 +97,7 @@ private extension MySettingAccountChangeView {
 
 
 struct MySettingAccountChangeView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MySettingAccountChangeView(container: MySettingAccountChangeView.buildContainer())
             .environmentObject(appGlobalState)

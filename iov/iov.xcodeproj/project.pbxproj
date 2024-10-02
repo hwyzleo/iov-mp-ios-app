@@ -321,6 +321,7 @@
 		BFA18A842C8446D3004D625D /* CommunityView_Navi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A832C8446D3004D625D /* CommunityView_Navi.swift */; };
 		BFA18A862C8446F8004D625D /* CommunityView_Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A852C8446F7004D625D /* CommunityView_Topic.swift */; };
 		BFACD05C2CAAF73100EF69E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BFACD05A2CAAF73100EF69E4 /* Localizable.strings */; };
+		BFADC2AB2CAD2B4E00834608 /* RoundedCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -640,6 +641,7 @@
 		BFA18A812C8446A2004D625D /* CommunityView_Carousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView_Carousel.swift; sourceTree = "<group>"; };
 		BFA18A832C8446D3004D625D /* CommunityView_Navi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView_Navi.swift; sourceTree = "<group>"; };
 		BFA18A852C8446F7004D625D /* CommunityView_Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityView_Topic.swift; sourceTree = "<group>"; };
+		BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerButton.swift; sourceTree = "<group>"; };
 		BFD177B82CABBA2A0028941E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BFD177B92CABBBDB0028941E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
@@ -689,12 +691,12 @@
 			isa = PBXGroup;
 			children = (
 				BFA187872C832CA2004D625D /* Base */,
+				BFA187822C831781004D625D /* Component */,
 				BFA188572C841A4C004D625D /* Constants */,
 				BFA188512C8419C5004D625D /* Data */,
 				BFA188222C84152C004D625D /* Extensions */,
 				BFADC2A82CABCDAF00834608 /* Module */,
 				BFA187812C83176C004D625D /* Theme */,
-				BFA187822C831781004D625D /* Widget */,
 				BFA1884E2C84188E004D625D /* Utils */,
 				BF24BB712C9FC40C007519B4 /* AppDelegate.swift */,
 				BFA1877D2C8316DB004D625D /* AppGlobalState.swift */,
@@ -726,7 +728,7 @@
 			path = Theme;
 			sourceTree = "<group>";
 		};
-		BFA187822C831781004D625D /* Widget */ = {
+		BFA187822C831781004D625D /* Component */ = {
 			isa = PBXGroup;
 			children = (
 				BFA188482C8417E7004D625D /* Bar */,
@@ -740,7 +742,7 @@
 				BFA1881B2C841488004D625D /* Tip */,
 				BFA188772C841E0B004D625D /* View */,
 			);
-			path = Widget;
+			path = Component;
 			sourceTree = "<group>";
 		};
 		BFA187832C832C3C004D625D /* Community */ = {
@@ -1220,6 +1222,7 @@
 			children = (
 				BFA188292C8415C1004D625D /* ClearButton.swift */,
 				BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */,
+				BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */,
 			);
 			path = Button;
 			sourceTree = "<group>";
@@ -2615,6 +2618,7 @@
 				BFA188562C841A1B004D625D /* RealmManager.swift in Sources */,
 				BFA18A602C8439E6004D625D /* MallView_Category.swift in Sources */,
 				BFA189102C8427FB004D625D /* MySettingAccountChangeRouter.swift in Sources */,
+				BFADC2AB2CAD2B4E00834608 /* RoundedCornerButton.swift in Sources */,
 				BFA1879B2C8408BF004D625D /* RouterProtocol.swift in Sources */,
 				BFA1896E2C842D68004D625D /* MySettingPrivacyAgreementView+Build.swift in Sources */,
 				BFA18A362C843767004D625D /* VehicleView_TopBar.swift in Sources */,
@@ -2851,7 +2855,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"iov/Preview Content\"";
 				DEVELOPMENT_TEAM = 59LC28836W;
 				ENABLE_PREVIEWS = YES;
@@ -2873,7 +2877,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -2890,7 +2894,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"iov/Preview Content\"";
 				DEVELOPMENT_TEAM = 59LC28836W;
 				ENABLE_PREVIEWS = YES;
@@ -2912,7 +2916,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

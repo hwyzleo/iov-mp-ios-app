@@ -17,9 +17,9 @@ public protocol AppColorsProtocol {
     // 背景颜色
     var background: Color { get set }
     // 主要文本颜色
-    var primaryText: Color { get set }
+    var fontPrimary: Color { get set }
     // 次要文本颜色
-    var secondaryText: Color { get set }
+    var fontSecondary: Color { get set }
 }
 
 // 应用字体集接口
@@ -38,16 +38,16 @@ public struct AppTheme: AppThemeProtocol {
 struct LightAppColors : AppColorsProtocol {
     var themeUi: Color = Color.white
     var background: Color = Color.white
-    var primaryText: Color = Color(hex: 0x1A171B)
-    var secondaryText: Color = Color(hex: 0x8E8E8E)
+    var fontPrimary: Color = Color(hex: 0x1A171B)
+    var fontSecondary: Color = Color(hex: 0x8E8E8E)
 }
 
 // 夜晚应用颜色集
 struct DarkAppColors : AppColorsProtocol {
     var themeUi: Color = Color.black
     var background: Color = Color.black
-    var primaryText: Color = Color.white
-    var secondaryText: Color = Color.gray
+    var fontPrimary: Color = Color.white
+    var fontSecondary: Color = Color.gray
 }
 
 // 字体集

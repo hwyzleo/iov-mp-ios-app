@@ -11,17 +11,14 @@ import UIKit
 /// TSP接口
 class TspApi {
     
-    /// Mock状态
-    static private var isMock = true
-    
     /// 发送手机号登录验证码
     static func sendMobileVerifyCode(countryRegionCode: String, mobile: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/mp/login/action/sendSmsVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 completion(.success(TspResponse.init(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
             }
         }
@@ -29,21 +26,13 @@ class TspApi {
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        if(isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/mp/login/action/smsVerifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
                 completion(result)
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = LoginResponse.init(
-                    mobile: "13000000000",
-                    nickname: "hwyz_leo",
-                    avatar: "https://profile-photo.s3.cn-north-1.amazonaws.com.cn/files/avatar/50531/MTAxMDYzNDY0Nzd4d2h2cWFt/avatar.png?v=c4af49f3cbedbc00f76256a03298b663",
-                    token: "token12345678",
-                    tokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000),
-                    refreshToken: "refreshToken12345678",
-                    refreshTokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000)
-                )
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let res = mockLoginResponse()
                 completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
             }
         }
@@ -51,7 +40,7 @@ class TspApi {
     
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
                 completion(result)
             }
@@ -74,7 +63,7 @@ class TspApi {
     
     /// 生成头像预上传地址
     static func generateAvatarUrl(completion: @escaping (Result<TspResponse<PreSignedUrl>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/generateAvatarUrl", parameters: [:]) { (result: Result<TspResponse<PreSignedUrl>, Error>) in
                 completion(result)
             }
@@ -91,7 +80,7 @@ class TspApi {
     
     /// 修改头像
     static func modifyAvatar(imageUrl: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/modifyAvatar", parameters: ["avatar":imageUrl]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -104,7 +93,7 @@ class TspApi {
     
     /// 修改昵称
     static func modifyNickname(nickname: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -119,7 +108,7 @@ class TspApi {
     
     /// 修改性别
     static func modifyGender(gender: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/modifyGender", parameters: ["gender": gender]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -134,7 +123,7 @@ class TspApi {
     
     /// 修改生日
     static func modifyBirthday(birthday: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["birthday": birthday]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -149,7 +138,7 @@ class TspApi {
     
     /// 修改地区
     static func modifyArea(area: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/modifyArea", parameters: ["area": area]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -164,7 +153,7 @@ class TspApi {
     
     // 上传COS
     static func uploadCos(url: String, image: UIImage, objectKey: String, completion: @escaping (Result<String, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.uploadCos(url: url, image: image, parameters: ["key":objectKey]) { (result: Result<String, Error>) in
                 completion(result)
             }
@@ -173,7 +162,7 @@ class TspApi {
     
     /// 获取内容块
     static func getContentBlock(channel: String, completion: @escaping (Result<TspResponse<Array<ContentBlock>>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Array<ContentBlock>>, Error>) in
                 completion(result)
             }
@@ -224,7 +213,7 @@ class TspApi {
     
     /// 获取文章
     static func getArticle(id: String, completion: @escaping (Result<TspResponse<Article>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Article>, Error>) in
                 completion(result)
             }
@@ -240,7 +229,7 @@ class TspApi {
     
     /// 获取话题
     static func getSubject(id: String, completion: @escaping (Result<TspResponse<Subject>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Subject>, Error>) in
                 completion(result)
             }
@@ -280,7 +269,7 @@ class TspApi {
     
     /// 获取专题
     static func getTopic(id: String, completion: @escaping (Result<TspResponse<Topic>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Topic>, Error>) in
                 completion(result)
             }
@@ -305,7 +294,7 @@ class TspApi {
     
     /// 点赞文章
     static func likeArticle(id: String, liked: Bool, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["id": id]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -320,7 +309,7 @@ class TspApi {
     
     /// 获取爱车首页
     static func getVehicleIndex(completion: @escaping (Result<TspResponse<VehicleIndex>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<VehicleIndex>, Error>) in
                 completion(result)
             }
@@ -336,7 +325,7 @@ class TspApi {
     
     /// 解锁车辆
     static func unlockVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/unlockVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -351,7 +340,7 @@ class TspApi {
     
     /// 上锁车辆
     static func lockVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/lockVehicle", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -366,7 +355,7 @@ class TspApi {
     
     /// 设置车窗
     static func setWindow(percent: Int, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/setWindow", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -381,7 +370,7 @@ class TspApi {
     
     /// 设置尾门
     static func setTrunk(percent: Int, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestPost(path: "/setTrunk", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
                 completion(result)
             }
@@ -396,7 +385,7 @@ class TspApi {
     
     /// 寻车
     static func findVehicle(vin: String, completion: @escaping (Result<TspResponse<RemoteControlState>, Error>) -> Void) {
-        if(isMock) {
+        if(AppGlobalState.shared.isMock) {
             let parameters = [
                 "vin": vin
             ]
@@ -414,7 +403,7 @@ class TspApi {
     
     /// 获取商城首页
     static func getMallIndex(completion: @escaping (Result<TspResponse<MallIndex>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<MallIndex>, Error>) in
                 completion(result)
             }
@@ -430,7 +419,7 @@ class TspApi {
     
     /// 获取商品
     static func getProduct(id: String, completion: @escaping (Result<TspResponse<Product>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<Product>, Error>) in
                 completion(result)
             }
@@ -446,7 +435,7 @@ class TspApi {
     
     /// 购买商品确认
     static func buyProductConfirm(id: String, buyCount: Int, completion: @escaping (Result<TspResponse<ProductOrder>, Error>) -> Void) {
-        if(!isMock) {
+        if(!AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<ProductOrder>, Error>) in
                 completion(result)
             }
@@ -462,7 +451,7 @@ class TspApi {
     
     // 获取远控指令状态
     static func getCmdState(vin: String, cmdId: String, completion: @escaping (Result<TspResponse<RemoteControlState>, Error>) -> Void) {
-        if(isMock) {
+        if(AppGlobalState.shared.isMock) {
             BaseApi.requestGet(path: "/mp/rvc/cmd", parameters: ["vin": vin, "cmdId": cmdId]) {(result: Result<TspResponse<RemoteControlState>, Error>) in
                 completion(result)}
         } else {

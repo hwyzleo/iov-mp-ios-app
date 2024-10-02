@@ -1,5 +1,8 @@
 PODS:
   - Alamofire (5.7.1)
+  - JCore (4.7.1)
+  - JPush (5.3.0):
+    - JCore (>= 2.0.0)
   - Kingfisher (7.12.0)
   - MBProgressHUD (1.2.0)
   - Realm (10.53.0):
@@ -12,6 +15,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 5.7.1)
+  - JPush
   - Kingfisher
   - MBProgressHUD
   - RealmSwift
@@ -21,6 +25,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
+    - JCore
+    - JPush
     - Kingfisher
     - MBProgressHUD
     - Realm
@@ -30,6 +36,8 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 0123a34370cb170936ae79a8df46cc62b2edeb88
+  JCore: 8a8afeb68438b8424864252c7fb4514b8f10135f
+  JPush: b71f497a3c1b825c7843fd97f290b05d5cd75f2e
   Kingfisher: 53a10ea35051a436b5fb626ca2dd8f3144d755e9
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   Realm: e3d9f52df62d7479cf921e5d70294da4fdd2081f
@@ -37,6 +45,6 @@ SPEC CHECKSUMS:
   RxSwift: b9a93a26031785159e11abd40d1a55bcb8057e52
   SwiftyJSON: f5b1bf1cd8dd53cd25887ac0eabcfd92301c6a5a
 
-PODFILE CHECKSUM: e81f63357c5d2204baf4cb13cfb763ed4f1237a7
+PODFILE CHECKSUM: 5c81fa5a055ab5f2e97c75fd83d0619dc7477361
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.15.2

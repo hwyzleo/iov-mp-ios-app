@@ -62,7 +62,7 @@ private struct ErrorContent: View {
 }
 
 struct AddressView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         AddressView(container: AddressView.buildContainer())
             .environmentObject(appGlobalState)

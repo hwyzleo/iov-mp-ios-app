@@ -247,7 +247,7 @@ private extension MyInviteView {
 }
 
 struct MyInviteView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MyInviteView(container: MyInviteView.buildContainer())
             .environmentObject(appGlobalState)

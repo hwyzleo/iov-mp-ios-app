@@ -115,7 +115,7 @@ private extension MySettingAccountBindingView {
 
 
 struct MySettingAccountBindingView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MySettingAccountBindingView(container: MySettingAccountBindingView.buildContainer())
             .environmentObject(appGlobalState)

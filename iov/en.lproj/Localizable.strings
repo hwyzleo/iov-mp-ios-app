@@ -5,6 +5,21 @@
   Created by 叶荣杰 on 2024/9/30.
   
 */
+"agree_user_agreement" = "Please check the box to agree to the User Agreement";
+"cancel" = "cancel";
+"confirm" = "confirm";
+"get_verify_code" = "Get verification code";
+"input_mobile" = "Please enter your phone number";
+"input_verify_code" = "Please enter the verification code";
+"login_confirm_tip" = "I have read and agreed to the <User Agreement> and <Privacy Policy>. When logging in for the first time, an APP account will be registered simultaneously.";
+"login_register" = "login / register";
+"logout" = "logout";
+"logout_confirm" = "Are you sure you want to log out?";
+"not_login_welcome" = "Hi，\nWelcome";
+"reget_verigy_code" = "Get verification code again";
 "setting" = "setting";
+"sign_in" = "sign in";
+"tip" = "tip";
 "title" = "title";
+"verify_code_has_sent" = "A verification code has been sent to your phone:";
 "version" = "version";

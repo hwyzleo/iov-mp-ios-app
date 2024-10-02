@@ -40,7 +40,6 @@ extension MyView {
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.trailing, 20)
             }
         }
     }

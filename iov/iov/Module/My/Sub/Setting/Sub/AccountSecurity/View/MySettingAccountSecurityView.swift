@@ -88,7 +88,7 @@ private extension MySettingAccountSecurityView {
 
 
 struct MySettingAccountSecurityView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MySettingAccountSecurityView(container: MySettingAccountSecurityView.buildContainer())
             .environmentObject(appGlobalState)

@@ -55,7 +55,7 @@ struct MyArticleView: View {
 }
 
 struct MyArticleView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MyArticleView(container: MyArticleView.buildContainer())
             .environmentObject(appGlobalState)

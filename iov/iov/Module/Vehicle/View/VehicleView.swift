@@ -394,7 +394,7 @@ extension VehicleView {
 }
 
 struct VehicleView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         VehicleView(container: VehicleView.buildContainer())
             .environmentObject(appGlobalState)

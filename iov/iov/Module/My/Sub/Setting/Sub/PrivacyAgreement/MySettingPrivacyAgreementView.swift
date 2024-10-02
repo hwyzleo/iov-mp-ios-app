@@ -26,7 +26,7 @@ struct MySettingPrivacyAgreementView: View {
 }
 
 struct MySettingPrivacyAgreementView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MySettingPrivacyAgreementView.build()
             .environmentObject(appGlobalState)

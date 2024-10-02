@@ -161,7 +161,7 @@ struct MyPointsView: View {
 }
 
 struct MyPointsView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MyPointsView(container: MyPointsView.buildContainer())
             .environmentObject(appGlobalState)

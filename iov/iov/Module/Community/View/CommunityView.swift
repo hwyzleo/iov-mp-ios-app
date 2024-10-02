@@ -122,7 +122,7 @@ extension CommunityView {
 }
 
 struct CommunityView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var data: [ContentBlock] = [
         ContentBlock.init(id: "1", type: "carousel", data: [
             BaseContent.init(id: "1", type: "article", title: "尽享雪地之美", intro: "", images: ["https://pic.imgdb.cn/item/65df049a9f345e8d031861c3.png"], ts: 1709114457603),

@@ -256,7 +256,7 @@ private extension TestDriveReportView {
 }
 
 struct TestDriveReportView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         TestDriveReportView(container: TestDriveReportView.buildContainer())
             .environmentObject(appGlobalState)

@@ -61,7 +61,6 @@ extension LoginView {
                         backAction()
                     }) {
                         Image(systemName: "chevron.backward")
-                            .padding(.leading, 20)
                     }
                     .foregroundColor(.black)
                     Spacer()
@@ -71,13 +70,3 @@ extension LoginView {
     }
     
 }
-
-#if DEBUG
-// MARK: - Previews
-struct LoginView_Previews: PreviewProvider {
-    @State static var mobile: String = ""
-    static var previews: some View {
-        LoginView.buildMobileLogin()
-    }
-}
-#endif

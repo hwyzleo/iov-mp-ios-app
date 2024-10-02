@@ -35,7 +35,7 @@ struct MyRightsView: View {
 }
 
 struct MyRightsView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         MyRightsView(container: MyRightsView.buildContainer())
             .environmentObject(appGlobalState)

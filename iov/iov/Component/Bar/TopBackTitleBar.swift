@@ -31,8 +31,9 @@ struct TopBackTitleBar: View {
                 Button(action: {
                     action?() ?? dismiss()
                 }) {
-                    Image(systemName: "chevron.left")
-                        .padding(.leading, 20)
+                    Image("icon_arrow_left")
+                        .resizable()
+                        .frame(width: 30, height: 30)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)

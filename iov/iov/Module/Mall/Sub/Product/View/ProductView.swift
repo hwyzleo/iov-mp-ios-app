@@ -185,7 +185,7 @@ extension ProductView {
 }
 
 struct ProductView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState()
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         let container = ProductView.buildContainer()
         let product = mockProduct()
