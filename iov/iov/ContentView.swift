@@ -15,7 +15,7 @@ struct ContentView: View {
         NavigationStack {
             ZStack {
                 TabView(selection: $globalState.selectedTab) {
-                    CommunityView.build()
+                    CommunityPage.build()
                         .tabItem {
                             if globalState.selectedTab == 0 {
                                 Image("icon_explore_fill")
@@ -25,7 +25,7 @@ struct ContentView: View {
                             Text("探索")
                         }
                         .tag(0)
-                    ServiceView.build()
+                    ServicePage.build()
                         .tabItem {
                             if globalState.selectedTab == 1 {
                                 Image("icon_service_fill")
@@ -35,7 +35,7 @@ struct ContentView: View {
                             Text("服务")
                         }
                         .tag(1)
-                    VehicleView.build()
+                    VehiclePage.build()
                         .tabItem {
                             if globalState.selectedTab == 2 {
                                 Image("icon_vehicle_fill")
@@ -45,7 +45,7 @@ struct ContentView: View {
                             Text("爱车")
                         }
                         .tag(2)
-                    MallView.build()
+                    MallPage.build()
                         .tabItem {
                             if globalState.selectedTab == 3 {
                                 Image("icon_mall_fill")
@@ -55,7 +55,7 @@ struct ContentView: View {
                             Text("商城")
                         }
                         .tag(3)
-                    MyView.build()
+                    MyPage.build()
                         .tabItem {
                             if globalState.selectedTab == 4 {
                                 Image("icon_person_fill")

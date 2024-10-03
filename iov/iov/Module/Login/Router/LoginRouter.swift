@@ -33,7 +33,7 @@ extension LoginRouter {
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
         case .my:
-            MyView.build()
+            MyPage.build()
                 .navigationBarHidden(true)
         }
     }

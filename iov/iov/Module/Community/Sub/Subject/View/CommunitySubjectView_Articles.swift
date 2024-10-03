@@ -16,7 +16,7 @@ extension CommunitySubjectView {
         var body: some View {
             VStack {
                 ForEach(baseContents, id:\.id) { baseContent in
-                    CommunityView.Article(baseContent: baseContent) { id, type in
+                    CommunityPage.Article(baseContent: baseContent) { id, type in
                         action?(id, type)
                     }
                     Divider()

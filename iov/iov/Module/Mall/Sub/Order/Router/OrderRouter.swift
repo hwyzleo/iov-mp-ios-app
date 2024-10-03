@@ -36,7 +36,7 @@ extension OrderRouter {
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
         case .login:
-            LoginView.buildMobileLogin()
+            LoginPage.buildMobileLogin()
                 .navigationBarHidden(true)
         case .address:
             AddressView.build()

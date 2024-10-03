@@ -33,7 +33,7 @@ extension MySettingAccountBindingRouter {
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
         case .login:
-            LoginView.buildMobileLogin()
+            LoginPage.buildMobileLogin()
         }
     }
 

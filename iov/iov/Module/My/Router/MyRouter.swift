@@ -66,15 +66,15 @@ extension MyRouter {
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
         case .login:
-            LoginView.buildMobileLogin()
+            LoginPage.buildMobileLogin()
                 .navigationBarHidden(true)
         case .my:
-            MyView.build()
+            MyPage.build()
         case .message:
             MyMessageView.build()
                 .navigationBarHidden(true)
         case .setting:
-            SettingView.build()
+            SettingPage.build()
                 .navigationBarHidden(true)
         case .profile:
             MySettingProfileView.build()
