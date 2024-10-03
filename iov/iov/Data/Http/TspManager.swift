@@ -9,10 +9,12 @@ import Foundation
 import Alamofire
 import UIKit
 
-class BaseApi {
+/// TSP管理
+class TspManager {
+    
     // POST请求
     static func requestPost<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        TspNetworkManager.shared.requestPost(path: path, parameters: parameters) { result in
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters) { result in
             switch result {
             case let.success(data):
                 let parseResult: Result<T, Error> = parseData(data)
@@ -25,7 +27,7 @@ class BaseApi {
     
     // GET请求
     static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        TspNetworkManager.shared.requestGet(path: path, parameters: parameters) { result in
+        NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)
@@ -37,7 +39,7 @@ class BaseApi {
     }
     
     static func uploadCos(url: String, image: UIImage, parameters: Parameters, completion: @escaping (Result<String, Error>) -> Void) {
-        NetworkManager.shared.uploadImg(image: image, url: url, params: parameters) { result in
+        NetworkManager.shared.uploadImg(image: image, to: AppGlobalState.shared.tspUrl + url, params: parameters) { result in
             switch result {
             case .success(_):
                 completion(.success(""))

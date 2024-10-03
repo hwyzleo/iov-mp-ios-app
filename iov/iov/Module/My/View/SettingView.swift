@@ -30,7 +30,7 @@ struct SettingView: View {
                 logoutAction: { intent.onTapLogout() }, 
                 appVersion: appVersion,
                 isMock: $appGlobalState.isMock,
-                apiUrl: $appGlobalState.networkAPIBaseURL
+                apiUrl: $appGlobalState.tspUrl
             )
         }
         .modifier(SettingRouter(

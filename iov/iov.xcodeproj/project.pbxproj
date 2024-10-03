@@ -100,9 +100,8 @@
 		BFA1885F2C841B23004D625D /* OrderView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1885E2C841B23004D625D /* OrderView+Build.swift */; };
 		BFA188612C841B3C004D625D /* OrderIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188602C841B3C004D625D /* OrderIntent.swift */; };
 		BFA188642C841B6D004D625D /* TspApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188632C841B6D004D625D /* TspApi.swift */; };
-		BFA188662C841B98004D625D /* BaseApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188652C841B98004D625D /* BaseApi.swift */; };
-		BFA188682C841BB3004D625D /* TspNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188672C841BB3004D625D /* TspNetworkManager.swift */; };
-		BFA1886A2C841C55004D625D /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188692C841C55004D625D /* NetworkManager.swift */; };
+		BFA188662C841B98004D625D /* TspManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188652C841B98004D625D /* TspManager.swift */; };
+		BFA188682C841BB3004D625D /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA188672C841BB3004D625D /* NetworkManager.swift */; };
 		BFA1886C2C841C8F004D625D /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1886B2C841C8F004D625D /* DateExtension.swift */; };
 		BFA1886E2C841CEC004D625D /* TopCloseTitleBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1886D2C841CEC004D625D /* TopCloseTitleBar.swift */; };
 		BFA188702C841D39004D625D /* ProductView_BuyConfirm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1886F2C841D39004D625D /* ProductView_BuyConfirm.swift */; };
@@ -420,9 +419,8 @@
 		BFA1885E2C841B23004D625D /* OrderView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderView+Build.swift"; sourceTree = "<group>"; };
 		BFA188602C841B3C004D625D /* OrderIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderIntent.swift; sourceTree = "<group>"; };
 		BFA188632C841B6D004D625D /* TspApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TspApi.swift; sourceTree = "<group>"; };
-		BFA188652C841B98004D625D /* BaseApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseApi.swift; sourceTree = "<group>"; };
-		BFA188672C841BB3004D625D /* TspNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TspNetworkManager.swift; sourceTree = "<group>"; };
-		BFA188692C841C55004D625D /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		BFA188652C841B98004D625D /* TspManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TspManager.swift; sourceTree = "<group>"; };
+		BFA188672C841BB3004D625D /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		BFA1886B2C841C8F004D625D /* DateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		BFA1886D2C841CEC004D625D /* TopCloseTitleBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopCloseTitleBar.swift; sourceTree = "<group>"; };
 		BFA1886F2C841D39004D625D /* ProductView_BuyConfirm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductView_BuyConfirm.swift; sourceTree = "<group>"; };
@@ -1337,10 +1335,9 @@
 		BFA188622C841B5D004D625D /* Http */ = {
 			isa = PBXGroup;
 			children = (
-				BFA188652C841B98004D625D /* BaseApi.swift */,
-				BFA188692C841C55004D625D /* NetworkManager.swift */,
 				BFA188632C841B6D004D625D /* TspApi.swift */,
-				BFA188672C841BB3004D625D /* TspNetworkManager.swift */,
+				BFA188652C841B98004D625D /* TspManager.swift */,
+				BFA188672C841BB3004D625D /* NetworkManager.swift */,
 				BFA18A6B2C843D16004D625D /* ServerResponse.swift */,
 			);
 			path = Http;
@@ -2414,7 +2411,6 @@
 				BFA1897E2C842E4C004D625D /* MyArticleModelProtocol.swift in Sources */,
 				BFA189A62C84302B004D625D /* MyRightsIntentProtocol.swift in Sources */,
 				BFA18A012C843438004D625D /* ChargingPileTypes.swift in Sources */,
-				BFA1886A2C841C55004D625D /* NetworkManager.swift in Sources */,
 				BFA1891B2C842897004D625D /* MySettingAccountSecurityIntentProtocol.swift in Sources */,
 				BFA1881A2C84144D004D625D /* MviModelRouterProtocol.swift in Sources */,
 				BFA1882C2C8415FA004D625D /* LoginView_MobileVerifyCode.swift in Sources */,
@@ -2503,7 +2499,7 @@
 				BFA189932C842F47004D625D /* MyPointsModelProtocol.swift in Sources */,
 				BFA18A662C843C67004D625D /* BaseViewModel.swift in Sources */,
 				BFA189032C84277C004D625D /* MySettingAccountChangeView.swift in Sources */,
-				BFA188662C841B98004D625D /* BaseApi.swift in Sources */,
+				BFA188662C841B98004D625D /* TspManager.swift in Sources */,
 				BFA188B42C8421CE004D625D /* CommunityTopicView_Article.swift in Sources */,
 				BFA18A792C843E27004D625D /* CodableDefault.swift in Sources */,
 				BFA188CA2C8423B7004D625D /* MyView_NotLoginContent.swift in Sources */,
@@ -2613,7 +2609,7 @@
 				BFA189B42C8430B7004D625D /* MyRightsIntent.swift in Sources */,
 				BFA187FD2C84125B004D625D /* MyModel.swift in Sources */,
 				BFA189542C842BA7004D625D /* MySettingPrivillegeRouter.swift in Sources */,
-				BFA188682C841BB3004D625D /* TspNetworkManager.swift in Sources */,
+				BFA188682C841BB3004D625D /* NetworkManager.swift in Sources */,
 				BFA188A12C84209D004D625D /* CommunityTopicTypes.swift in Sources */,
 				BFA188562C841A1B004D625D /* RealmManager.swift in Sources */,
 				BFA18A602C8439E6004D625D /* MallView_Category.swift in Sources */,
