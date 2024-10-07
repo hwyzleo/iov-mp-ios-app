@@ -10,7 +10,7 @@ import RealmSwift
 import RxSwift
 
 @objcMembers
-class User: Object {
+class UserManager: Object {
     
     /// 用户令牌
     dynamic var token: String = ""
@@ -19,13 +19,7 @@ class User: Object {
     /// 用户头像
     dynamic var avatar: String = ""
     
-    convenience init(json: JSON) {
-        self.init()
-        self.nickname = json["nickname"].stringValue
-        self.avatar = json["avatar"].stringValue
-    }
-    
-    convenience init(response: LoginResponse) {
+    private convenience init(response: LoginResponse) {
         self.init()
         self.nickname = response.nickname
         self.avatar = response.avatar
@@ -33,15 +27,8 @@ class User: Object {
     }
     
     /// 获取用户信息
-    class func getUser() -> User? {
-        return RealmManager.user.realm.objects(User.self).first
-    }
-    
-    /// 获取测试用户信息
-    class func getMockUser() -> User {
-        let user = User()
-        user.nickname = "hwyz_leo"
-        return user
+    class func getUser() -> UserManager? {
+        return RealmManager.user.realm.objects(UserManager.self).first
     }
     
     /// 是否登录
@@ -60,7 +47,7 @@ class User: Object {
     }
     
     /// 修改昵称
-    class func modifyNickname(nickname: String) -> Observable<User> {
+    class func modifyNickname(nickname: String) -> Observable<UserManager> {
         do {
             if let user = getUser() {
                 let realm = RealmManager.user.realm
@@ -75,10 +62,11 @@ class User: Object {
         }
     }
     
-    /// 创建用户信息
+    /// 登录
     @discardableResult
-    class func create(user: User) -> Observable<User> {
+    class func login(response: LoginResponse) -> Observable<UserManager> {
         clear()
+        let user = UserManager(response: response)
         let realm = RealmManager.user.realm
         do {
             try realm.write {
@@ -90,9 +78,15 @@ class User: Object {
         }
     }
     
+    /// 退出登录
+    @discardableResult
+    class func logout() -> Observable<Void> {
+        return clear()
+    }
+    
     /// 清除用户信息
     @discardableResult
-    class func clear() -> Observable<Void> {
+    private class func clear() -> Observable<Void> {
         let realm = RealmManager.user.realm
         do {
             try realm.write {

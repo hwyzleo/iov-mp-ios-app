@@ -8,7 +8,7 @@
 import SwiftUI
 
 final class MyModel: ObservableObject, MyModelStateProtocol {
-    @Published var contentState: MyTypes.Model.ContentState = .content
+    @Published var contentState: MyTypes.Model.MyContentState = .notLogin
     let routerSubject = MyRouter.Subjects()
     var nickname: String = ""
     var avatar: String = ""
@@ -17,12 +17,16 @@ final class MyModel: ObservableObject, MyModelStateProtocol {
 // MARK: - Action Protocol
 
 extension MyModel: MyModelActionProtocol {
+    func displayNotLogin() {
+        contentState = .notLogin
+    }
+    
+    func displayLogin() {
+        contentState = .login
+    }
+    
     func displayLoading() {
         contentState = .loading
-    }
-    func logout() {
-        User.clear()
-        routerSubject.screen.send(.my)
     }
     func displayError(text: String) {
         contentState = .error(text: text)
@@ -69,9 +73,10 @@ extension MyModel: MyModelRouterProtocol {
 }
 
 extension MyTypes.Model {
-    enum ContentState {
+    enum MyContentState {
         case loading
-        case content
+        case notLogin
+        case login
         case error(text: String)
     }
 }

@@ -20,10 +20,7 @@ extension MyMessageModel: MyMessageModelActionProtocol {
     func update() {
         contentState = .content
     }
-    func logout() {
-        User.clear()
-        routerSubject.close.send()
-    }
+
     func displayError(text: String) {
         
     }

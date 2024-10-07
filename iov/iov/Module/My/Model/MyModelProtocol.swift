@@ -10,7 +10,7 @@ import SwiftUI
 // MARK: - View State
 
 protocol MyModelStateProtocol {
-    var contentState: MyTypes.Model.ContentState { get }
+    var contentState: MyTypes.Model.MyContentState { get }
     var routerSubject: MyRouter.Subjects { get }
     var nickname: String { get }
     var avatar: String { get }
@@ -19,8 +19,10 @@ protocol MyModelStateProtocol {
 // MARK: - Intent Action
 
 protocol MyModelActionProtocol: MviModelActionProtocol {
-    /// 用户登出
-    func logout()
+    /// 显示未登录
+    func displayNotLogin()
+    /// 显示已登录
+    func displayLogin()
 }
 
 // MARK: - Route

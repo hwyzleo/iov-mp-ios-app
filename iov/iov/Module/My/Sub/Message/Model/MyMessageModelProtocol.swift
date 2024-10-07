@@ -17,8 +17,7 @@ protocol MyMessageModelStateProtocol {
 // MARK: - Intent Action
 
 protocol MyMessageModelActionProtocol: MviModelActionProtocol {
-    /// 用户登出
-    func logout()
+
 }
 
 // MARK: - Route

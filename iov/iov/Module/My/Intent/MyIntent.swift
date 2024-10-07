@@ -17,6 +17,12 @@ class MyIntent: MviIntentProtocol {
     }
     
     func viewOnAppear() {
+        modelAction?.displayLoading()
+        if UserManager.isLogin() {
+            modelAction?.displayLogin()
+        } else {
+            modelAction?.displayNotLogin()
+        }
     }
 }
 

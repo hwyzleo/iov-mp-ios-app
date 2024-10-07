@@ -53,7 +53,7 @@ extension VehicleIntent: VehicleIntentProtocol {
                     } else {
                         self.modelAction?.displayError(text: response.message ?? "异常")
                     }
-                case let .failure(error):
+                case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
             }

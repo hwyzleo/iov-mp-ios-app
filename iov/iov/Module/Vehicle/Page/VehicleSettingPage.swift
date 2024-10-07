@@ -8,15 +8,31 @@
 import SwiftUI
 
 struct VehicleSettingPage: View {
+    @State var clearCount: Int = 0
+    
     var body: some View {
         TopBackTitleBar(title: "车辆设置")
         VStack {
-            HStack {
-                Text("车辆信息")
-                    .font(.system(size: 18))
-                    .bold()
-                Spacer()
+            Button(action: {
+                clearCount = clearCount + 1
+                if(clearCount > 5) {
+                    VehicleManager.clear()
+                    print("============")
+                }
+            }) {
+                HStack {
+                    Text("车辆信息")
+                        .font(.system(size: 18))
+                        .bold()
+                    if(VehicleManager.hasVehicle()) {
+                        Text("(1)")
+                            .font(.system(size: 18))
+                            .bold()
+                    }
+                    Spacer()
+                }
             }
+            .buttonStyle(.plain)
             Spacer()
                 .frame(height: 40)
             HStack {

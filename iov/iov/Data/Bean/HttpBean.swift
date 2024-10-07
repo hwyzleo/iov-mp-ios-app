@@ -5,9 +5,7 @@
 //  Created by 叶荣杰 on 2024/9/1.
 //
 
-/**
- * TSP平台通用响应实体
- */
+/// TSP平台通用响应实体
 struct TspResponse<Model: Codable>: Codable {
     var code: Int
     var message: String?
@@ -15,14 +13,10 @@ struct TspResponse<Model: Codable>: Codable {
     var data: Model?
 }
 
-/**
- * 无响应内容
- */
+/// 无响应内容
 struct NoReply: Codable {}
 
-/**
- * 登录响应
- */
+/// 登录响应
 struct LoginResponse: Codable {
     var mobile: String
     var nickname: String
@@ -31,6 +25,11 @@ struct LoginResponse: Codable {
     var tokenExpires: Int64
     var refreshToken: String
     var refreshTokenExpires: Int64
+}
+
+/// 订单响应
+struct OrderResponse: Codable {
+    var orderNum: String
 }
 
 /**

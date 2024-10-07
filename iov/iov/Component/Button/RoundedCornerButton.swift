@@ -12,12 +12,13 @@ struct RoundedCornerButton: View {
     var name: String?
     var nameLocal: LocalizedStringKey?
     var color: Color = AppTheme.colors.fontPrimary
+    var bgColor: Color = Color.white
     var action: (() -> Void)?
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color.white)
+                .fill(bgColor)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
                         .stroke(Color.gray, lineWidth: 1)

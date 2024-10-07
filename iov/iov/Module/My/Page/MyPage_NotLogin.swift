@@ -10,7 +10,7 @@ import SwiftyJSON
 import MBProgressHUD
 
 extension MyPage {
-    struct NotLoginContent: View {
+    struct NotLogin: View {
         var tapLoginAction: (() -> Void)?
         var tapMessageAction: (() -> Void)?
         var tapSettingAction: (() -> Void)?
@@ -56,7 +56,7 @@ extension MyPage {
 
 struct MyView_NotLogin_Previews: PreviewProvider {
     static var previews: some View {
-        MyPage.NotLoginContent()
+        MyPage.NotLogin()
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

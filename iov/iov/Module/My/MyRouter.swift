@@ -1,5 +1,5 @@
 //
-//  SettingRouter.swift
+//  MyRouter.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/9/1.
@@ -7,53 +7,56 @@
 
 import SwiftUI
 
-struct SettingRouter: RouterProtocol {
+/// 我的模块路由
+struct MyRouter: RouterProtocol {
     typealias RouterScreenType = ScreenType
     typealias RouterAlertType = AlertScreen
 
     let subjects: Subjects
-    let intent: SettingIntentProtocol
 }
 
 // MARK: - Navigation Screens
 
-extension SettingRouter {
+extension MyRouter {
     enum ScreenType: RouterScreenProtocol {
         case login
         case my
-        case profile
-        case accountChange
-        case accountSecurity
-        case accountBinding
-        case privillege
-        case userProtocol
-        case communityConvention
-        case privacyAgreement
+        case message
         case setting
+        case profile
+        case myArticle
+        case myPoints
+        case myRights
+        case myOrder
+        case myInvite
+        case testDriveReport
+        case chargingPile
 
         var routeType: RouterScreenPresentationType {
             switch self {
             case .login:
                 return .navigationLink
             case .my:
+                return .fullScreenCover
+            case .message:
+                return .navigationLink
+            case .setting:
                 return .navigationLink
             case .profile:
                 return .navigationLink
-            case .accountChange:
+            case .myArticle:
                 return .navigationLink
-            case .accountSecurity:
+            case .myPoints:
                 return .navigationLink
-            case .accountBinding:
+            case .myRights:
                 return .navigationLink
-            case .privillege:
+            case .myOrder:
                 return .navigationLink
-            case .userProtocol:
+            case .myInvite:
                 return .navigationLink
-            case .communityConvention:
+            case .testDriveReport:
                 return .navigationLink
-            case .privacyAgreement:
-                return .navigationLink
-            case .setting:
+            case .chargingPile:
                 return .navigationLink
             }
         }
@@ -67,33 +70,35 @@ extension SettingRouter {
                 .navigationBarHidden(true)
         case .my:
             MyPage.build()
+        case .message:
+            MyMessageView.build()
+                .navigationBarHidden(true)
+        case .setting:
+            SettingPage.build()
                 .navigationBarHidden(true)
         case .profile:
             MySettingProfileView.build()
                 .navigationBarHidden(true)
-        case .accountChange:
-            MySettingAccountChangeView.build()
+        case .myArticle:
+            MyArticleView.build()
                 .navigationBarHidden(true)
-        case .accountSecurity:
-            MySettingAccountSecurityView.build()
+        case .myPoints:
+            MyPointsView.build()
                 .navigationBarHidden(true)
-        case .accountBinding:
-            MySettingAccountBindingView.build()
+        case .myRights:
+            MyRightsView.build()
                 .navigationBarHidden(true)
-        case .privillege:
-            MySettingPrivillegeView.build()
+        case .myOrder:
+            MyOrderView.build()
                 .navigationBarHidden(true)
-        case .userProtocol:
-            MySettingUserProtocolView.build()
+        case .myInvite:
+            MyInviteView.build()
                 .navigationBarHidden(true)
-        case .communityConvention:
-            MySettingCommunityConventionView.build()
+        case .testDriveReport:
+            TestDriveReportView.build()
                 .navigationBarHidden(true)
-        case .privacyAgreement:
-            MySettingPrivacyAgreementView.build()
-                .navigationBarHidden(true)
-        case .setting:
-            SettingPage.build()
+        case .chargingPile:
+            ChargingPileView.build()
                 .navigationBarHidden(true)
         }
     }
@@ -103,7 +108,7 @@ extension SettingRouter {
 
 // MARK: - Alerts
 
-extension SettingRouter {
+extension MyRouter {
     enum AlertScreen: RouterAlertScreenProtocol {
         case defaultAlert(title: String, message: String?)
     }

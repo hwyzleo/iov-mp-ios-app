@@ -38,6 +38,24 @@ class TspApi {
         }
     }
     
+    /// 创建车辆小订
+    static func createSmallOrder(
+        licenseCityCode: String,
+        vehicleSeries: String,
+        vehicleModel: String,
+        paymentType: String,
+        agreementId: String,
+        completion: @escaping (Result<TspResponse<OrderResponse>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let res = mockOrderResponse()
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {

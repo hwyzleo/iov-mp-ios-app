@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension MyPage {
-    struct LoginContent: View {
+    struct Login: View {
         var nickname: String
         var avatar: String
         var tapMessageAction: (() -> Void)?
@@ -58,7 +58,7 @@ extension MyPage {
 
 struct MyView_Login_Previews: PreviewProvider {
     static var previews: some View {
-        MyPage.LoginContent(nickname: "hwyz_leo", avatar: "https://pic.imgdb.cn/item/66e667a0d9c307b7e93075e8.png")
+        MyPage.Login(nickname: "hwyz_leo", avatar: "https://pic.imgdb.cn/item/66e667a0d9c307b7e93075e8.png")
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

@@ -35,16 +35,29 @@ struct ContentView: View {
                             Text("服务")
                         }
                         .tag(1)
-                    VehiclePage.build()
-                        .tabItem {
-                            if globalState.selectedTab == 2 {
-                                Image("icon_vehicle_fill")
-                            } else {
-                                Image("icon_vehicle")
+                    if VehicleManager.hasVehicle() {
+                        VehiclePage.build()
+                            .tabItem {
+                                if globalState.selectedTab == 2 {
+                                    Image("icon_vehicle_fill")
+                                } else {
+                                    Image("icon_vehicle")
+                                }
+                                Text("爱车")
                             }
-                            Text("爱车")
-                        }
-                        .tag(2)
+                            .tag(2)
+                    } else {
+                        MarketingIndexPage.build()
+                            .tabItem {
+                                if globalState.selectedTab == 2 {
+                                    Image("icon_vehicle_fill")
+                                } else {
+                                    Image("icon_vehicle")
+                                }
+                                Text("购车")
+                            }
+                            .tag(2)
+                    }
                     MallPage.build()
                         .tabItem {
                             if globalState.selectedTab == 3 {
@@ -69,6 +82,11 @@ struct ContentView: View {
                 .accentColor(Color.black)
             }
             .disableAutocorrection(true)
+        }
+        .onChange(of: globalState.needRefresh) { _ in
+            if globalState.needRefresh {
+                globalState.needRefresh = false
+            }
         }
     }
 }

@@ -7,6 +7,7 @@
 */
 "agree_user_agreement" = "Please check the box to agree to the User Agreement";
 "cancel" = "cancel";
+"choose_vehicle" = "choose vehicle";
 "confirm" = "confirm";
 "get_verify_code" = "Get verification code";
 "input_mobile" = "Please enter your phone number";
@@ -16,10 +17,12 @@
 "logout" = "logout";
 "logout_confirm" = "Are you sure you want to log out?";
 "not_login_welcome" = "Hi，\nWelcome";
+"order_now" = "order now";
 "reget_verigy_code" = "Get verification code again";
 "setting" = "setting";
 "sign_in" = "sign in";
 "tip" = "tip";
 "title" = "title";
+"vehicle_standard" = "standard";
 "verify_code_has_sent" = "A verification code has been sent to your phone:";
 "version" = "version";

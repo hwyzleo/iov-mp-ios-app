@@ -18,7 +18,7 @@ extension MyPage {
                 HStack {
                     Spacer()
                     Button(action: {
-                        if User.isLogin() {
+                        if UserManager.isLogin() {
                             tapMessageAction?()
                         } else {
                             tapLoginAction?()

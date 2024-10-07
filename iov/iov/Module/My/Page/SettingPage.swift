@@ -18,14 +18,14 @@ struct SettingPage: View {
     var body: some View {
         ZStack {
             SettingPage.Content(
-                tapProfile: { intent.onTapProfile() },
-                tapAccountChange: { intent.onTapAccountChange() },
-                tapAccountSecurity: { intent.onTapAccountSecurity() },
-                tapAccountBinding: { intent.onTapAccountBinding() },
-                tapPrivillegeAction: { intent.onTapPrivillege() },
-                tapUserProtocolAction: { intent.onTapUserProtocol() },
-                tapCommunityConvention: { intent.onTapCommunityConvention() },
-                tapPrivacyAgreement: { intent.onTapPrivacyAgreement() },
+//                tapProfile: { intent.onTapProfile() },
+//                tapAccountChange: { intent.onTapAccountChange() },
+//                tapAccountSecurity: { intent.onTapAccountSecurity() },
+//                tapAccountBinding: { intent.onTapAccountBinding() },
+//                tapPrivillegeAction: { intent.onTapPrivillege() },
+//                tapUserProtocolAction: { intent.onTapUserProtocol() },
+//                tapCommunityConvention: { intent.onTapCommunityConvention() },
+//                tapPrivacyAgreement: { intent.onTapPrivacyAgreement() },
                 loginAction: { intent.onTapLogin() },
                 logoutAction: { intent.onTapLogout() }, 
                 appVersion: appVersion,
@@ -33,10 +33,7 @@ struct SettingPage: View {
                 apiUrl: $appGlobalState.tspUrl
             )
         }
-        .modifier(SettingRouter(
-            subjects: state.routerSubject,
-            intent: intent
-        ))
+        .modifier(MyRouter(subjects: state.routerSubject))
     }
     
 }
@@ -142,7 +139,7 @@ extension SettingPage {
                                 .onChange(of: apiUrl) { newApiUrl in
                                 }
                         }
-                        if(User.isLogin()) {
+                        if(UserManager.isLogin()) {
                             Spacer()
                                 .frame(height: 20)
                             RoundedCornerButton(nameLocal: LocalizedStringKey("logout")) {

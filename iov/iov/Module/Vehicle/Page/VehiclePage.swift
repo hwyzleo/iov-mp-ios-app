@@ -33,9 +33,7 @@ struct VehiclePage: View {
             }
         }
         .onAppear {
-            if state.vehicle == nil {
-                intent.viewOnAppear()
-            }
+            intent.viewOnAppear()
         }
         .modifier(VehicleRouter(
             subjects: state.routerSubject,
@@ -391,12 +389,4 @@ extension VehiclePage {
         }
     }
     
-}
-
-struct VehicleView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState.shared
-    static var previews: some View {
-        VehiclePage(container: VehiclePage.buildContainer())
-            .environmentObject(appGlobalState)
-    }
 }

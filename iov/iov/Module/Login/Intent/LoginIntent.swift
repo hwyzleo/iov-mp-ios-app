@@ -63,7 +63,7 @@ extension LoginIntent: LoginIntentProtocol {
             switch result {
             case let .success(response):
                 if response.code == 0 {
-                    User.create(user: User(response: response.data!))
+                    UserManager.login(response: response.data!)
                     self.modelRouter?.closeScreen()
                 } else if response.code > 0 {
                     self.modelAction?.displayError(text: response.message ?? "异常")

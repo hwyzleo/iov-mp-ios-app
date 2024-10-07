@@ -20,6 +20,13 @@ func mockLoginResponse() -> LoginResponse {
     )
 }
 
+/// 订单响应
+func mockOrderResponse() -> OrderResponse {
+    return OrderResponse.init(
+        orderNum: "000000000001"
+    )
+}
+
 /// 文章
 func mockArticle() -> Article {
     return Article.init(

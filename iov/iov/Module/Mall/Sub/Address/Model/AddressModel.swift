@@ -24,10 +24,7 @@ extension AddressModel: AddressModelActionProtocol {
     func update() {
         contentState = .content
     }
-    func logout() {
-        User.clear()
-        routerSubject.screen.send(.Address)
-    }
+    
     func displayError(text: String) {
         
     }

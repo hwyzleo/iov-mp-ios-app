@@ -26,11 +26,25 @@ struct RealmManager {
             fileURL: url,
             schemaVersion: 1,
             migrationBlock: nil,
-            objectTypes: [User.self])
+            objectTypes: [UserManager.self])
         return config
     }()
     public static let user: RealmManager = {
         return RealmManager(configuration: userConfig)
+    }()
+    
+    // MARK: - 车辆
+    private static let vehiclesConfig: Realm.Configuration = {
+        let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0].appendingPathComponent("Vehicles")
+        let config = Realm.Configuration(
+            fileURL: url,
+            schemaVersion: 1,
+            migrationBlock: nil,
+            objectTypes: [VehiclePo.self])
+        return config
+    }()
+    public static let vehicle: RealmManager = {
+        return RealmManager(configuration: vehiclesConfig)
     }()
     
 }

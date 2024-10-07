@@ -89,7 +89,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
             switch result {
             case .success(let response):
                 if(response.code == 0) {
-                    User.modifyNickname(nickname: nickname)
+                    UserManager.modifyNickname(nickname: nickname)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
