@@ -319,8 +319,6 @@
 		BFACD05C2CAAF73100EF69E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BFACD05A2CAAF73100EF69E4 /* Localizable.strings */; };
 		BFADC2AB2CAD2B4E00834608 /* RoundedCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */; };
 		BFADC2AD2CB23B0400834608 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AC2CB23B0400834608 /* VehicleManager.swift */; };
-		BFADC2AF2CB24D5700834608 /* VehiclePage_NoVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AE2CB24D5700834608 /* VehiclePage_NoVehicle.swift */; };
-		BFADC2B12CB26EBB00834608 /* VehiclePage_BuyVehicleDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2B02CB26EBB00834608 /* VehiclePage_BuyVehicleDetail.swift */; };
 		BFADC2B32CB280F700834608 /* MarketingIndexPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */; };
 		BFADC2C22CB28A2E00834608 /* VehicleOrderPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2C12CB28A2E00834608 /* VehicleOrderPage.swift */; };
 		BFADC2DA2CB2CD6900834608 /* MarketingIndexIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */; };
@@ -656,8 +654,6 @@
 		BFA18A852C8446F7004D625D /* CommunityPage_Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPage_Topic.swift; sourceTree = "<group>"; };
 		BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerButton.swift; sourceTree = "<group>"; };
 		BFADC2AC2CB23B0400834608 /* VehicleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleManager.swift; sourceTree = "<group>"; };
-		BFADC2AE2CB24D5700834608 /* VehiclePage_NoVehicle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePage_NoVehicle.swift; sourceTree = "<group>"; };
-		BFADC2B02CB26EBB00834608 /* VehiclePage_BuyVehicleDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehiclePage_BuyVehicleDetail.swift; sourceTree = "<group>"; };
 		BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexPage.swift; sourceTree = "<group>"; };
 		BFADC2C12CB28A2E00834608 /* VehicleOrderPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage.swift; sourceTree = "<group>"; };
 		BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexIntentProtocol.swift; sourceTree = "<group>"; };
@@ -2192,8 +2188,6 @@
 			isa = PBXGroup;
 			children = (
 				BFA18A242C84367C004D625D /* VehiclePage.swift */,
-				BFADC2AE2CB24D5700834608 /* VehiclePage_NoVehicle.swift */,
-				BFADC2B02CB26EBB00834608 /* VehiclePage_BuyVehicleDetail.swift */,
 				BFA18A352C843767004D625D /* VehiclePage_TopBar.swift */,
 				BFA18A372C843783004D625D /* VehicleSettingPage.swift */,
 				BFA18A392C8437AA004D625D /* VehicleServicePage.swift */,
@@ -2476,7 +2470,6 @@
 				BFA18A102C843573004D625D /* ServicePage.swift in Sources */,
 				BFA188B82C842237004D625D /* CommunitySubjectView_Articles.swift in Sources */,
 				BFA189692C842D1B004D625D /* MySettingCommunityConventionView+Build.swift in Sources */,
-				BFADC2AF2CB24D5700834608 /* VehiclePage_NoVehicle.swift in Sources */,
 				BFA188FB2C8426D1004D625D /* MySettingProfileView_List.swift in Sources */,
 				BFA188EE2C8425B9004D625D /* MySettingProfileRouter.swift in Sources */,
 				BFADC2C22CB28A2E00834608 /* VehicleOrderPage.swift in Sources */,
@@ -2724,7 +2717,6 @@
 				BFA187CA2C840ED1004D625D /* ProductModel.swift in Sources */,
 				BFA187A42C84095B004D625D /* RouterSheetModifier.swift in Sources */,
 				BFA18A722C843D80004D625D /* Extension.swift in Sources */,
-				BFADC2B12CB26EBB00834608 /* VehiclePage_BuyVehicleDetail.swift in Sources */,
 				BFA189512C842B89004D625D /* MySettingPrivillegeModel.swift in Sources */,
 				BFA189AD2C84306B004D625D /* MyRightsModel.swift in Sources */,
 				BFA188052C8412D5004D625D /* MyMessageView.swift in Sources */,
