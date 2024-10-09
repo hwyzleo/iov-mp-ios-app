@@ -38,6 +38,20 @@ class TspApi {
         }
     }
     
+    /// 获取销售车型列表
+    static func getSaleModelList(saleCode: String, completion: @escaping (Result<TspResponse<SaleModelResponse>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+            TspManager.requestPost(path: "/mp/saleModel/" + saleCode, parameters: [:]) { (result: Result<TspResponse<SaleModelResponse>, Error>) in
+                completion(result)
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let res = mockSaleModelResponse()
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
     /// 创建车辆小订
     static func createSmallOrder(
         licenseCityCode: String,

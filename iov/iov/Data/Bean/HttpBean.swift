@@ -27,6 +27,31 @@ struct LoginResponse: Codable {
     var refreshTokenExpires: Int64
 }
 
+/// 销售车型返回
+struct SaleModelResponse: Codable {
+    var saleModels: [SaleModel]
+}
+
+/// 销售车型
+struct SaleModel: Codable, Hashable {
+    /// 销售代码
+    var saleCode: String
+    /// 销售车型类型
+    var saleModelType: String
+    /// 销售车型类型代码
+    var saleModelTypeCode: String
+    /// 销售名称
+    var saleName: String
+    /// 销售价格
+    var salePrice: Decimal
+    /// 销售图片
+    var saleImage: String
+    /// 销售描述
+    var saleDesc: String
+    /// 销售参数
+    var saleParam: String
+}
+
 /// 订单响应
 struct OrderResponse: Codable {
     var orderNum: String

@@ -46,13 +46,19 @@ extension VehicleOrderPage {
                 Spacer().frame(height: 20)
                 TabView(selection: $selectedTab) {
                     VehicleOrderPage.Model(container: container)
+                        .padding(.leading, 20)
+                        .padding(.trailing, 20)
                         .tag(0)
-                    VehicleOrderPage.Exterior(container: container)
+                    VehicleOrderPage.SpareTire(container: container)
+                        .padding(.leading, 20)
+                        .padding(.trailing, 20)
                         .tag(1)
-                    VehicleOrderPage.Tire(container: container)
+                    VehicleOrderPage.Exterior(container: container)
                         .tag(2)
-                    VehicleOrderPage.Interior(container: container)
+                    VehicleOrderPage.Wheel(container: container)
                         .tag(3)
+                    VehicleOrderPage.Interior(container: container)
+                        .tag(4)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 HStack {
@@ -73,7 +79,7 @@ extension VehicleOrderPage {
                         }
                     }) {
                         VStack {
-                            Text("外观")
+                            Text("备胎")
                         }
                     }
                     .foregroundColor(selectedTab == 1 ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
@@ -84,7 +90,7 @@ extension VehicleOrderPage {
                         }
                     }) {
                         VStack {
-                            Text("车轮")
+                            Text("外观")
                         }
                     }
                     .foregroundColor(selectedTab == 2 ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
@@ -95,26 +101,41 @@ extension VehicleOrderPage {
                         }
                     }) {
                         VStack {
-                            Text("内饰")
+                            Text("车轮")
                         }
                     }
                     .foregroundColor(selectedTab == 3 ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
+                    .frame(maxWidth: .infinity)
+                    Button(action: {
+                        withAnimation {
+                            selectedTab = 4
+                        }
+                    }) {
+                        VStack {
+                            Text("内饰")
+                        }
+                    }
+                    .foregroundColor(selectedTab == 4 ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
                     .frame(maxWidth: .infinity)
                 }
                 .padding()
                 .background(Color(UIColor.systemBackground))
                 Spacer().frame(height: 40)
-                RoundedCornerButton(
-                    nameLocal: LocalizedStringKey("order_now"),
-                    color: Color.white,
-                    bgColor: Color.black
-                ) {
-                    intent.onTapOrder()
+                HStack {
+                    Text("￥\(String(describing: state.totalPrice))")
+                    Spacer().frame(width: 20)
+                    RoundedCornerButton(
+                        nameLocal: LocalizedStringKey("order_now"),
+                        color: Color.white,
+                        bgColor: Color.black
+                    ) {
+                        intent.onTapOrder()
+                    }
                 }
+                .padding(.leading, 20)
+                .padding(.trailing, 20)
                 Spacer()
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
         }
     }
 }

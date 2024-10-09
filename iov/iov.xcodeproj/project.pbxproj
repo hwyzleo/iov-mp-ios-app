@@ -10,6 +10,7 @@
 		755FC02ABF529F44CB803BE3 /* Pods_iov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */; };
 		BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */; };
 		BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB712C9FC40C007519B4 /* AppDelegate.swift */; };
+		BF3CA30A2CB6AC6A006CD801 /* VehicleOrderPage_SpareTire.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3092CB6AC6A006CD801 /* VehicleOrderPage_SpareTire.swift */; };
 		BF4908E32C9325430071C527 /* InfoTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4908E22C9325430071C527 /* InfoTip.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
@@ -335,7 +336,7 @@
 		BFADC2FA2CB3952800834608 /* VehicleOrderPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2F92CB3952800834608 /* VehicleOrderPage+Build.swift */; };
 		BFADC2FC2CB4074200834608 /* VehicleOrderPage_Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2FB2CB4074100834608 /* VehicleOrderPage_Model.swift */; };
 		BFADC2FE2CB4096C00834608 /* VehicleOrderPage_Exterior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2FD2CB4096C00834608 /* VehicleOrderPage_Exterior.swift */; };
-		BFADC3022CB41C1600834608 /* VehicleOrderPage_Tire.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3012CB41C1600834608 /* VehicleOrderPage_Tire.swift */; };
+		BFADC3022CB41C1600834608 /* VehicleOrderPage_Wheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3012CB41C1600834608 /* VehicleOrderPage_Wheel.swift */; };
 		BFADC3042CB4208400834608 /* VehicleOrderPage_Interior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3032CB4208400834608 /* VehicleOrderPage_Interior.swift */; };
 /* End PBXBuildFile section */
 
@@ -344,6 +345,7 @@
 		BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageButton.swift; sourceTree = "<group>"; };
 		BF24BB702C9FC1EE007519B4 /* Iov-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Iov-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF24BB712C9FC40C007519B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BF3CA3092CB6AC6A006CD801 /* VehicleOrderPage_SpareTire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage_SpareTire.swift; sourceTree = "<group>"; };
 		BF4908E22C9325430071C527 /* InfoTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTip.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
@@ -670,7 +672,7 @@
 		BFADC2F92CB3952800834608 /* VehicleOrderPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VehicleOrderPage+Build.swift"; sourceTree = "<group>"; };
 		BFADC2FB2CB4074100834608 /* VehicleOrderPage_Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage_Model.swift; sourceTree = "<group>"; };
 		BFADC2FD2CB4096C00834608 /* VehicleOrderPage_Exterior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage_Exterior.swift; sourceTree = "<group>"; };
-		BFADC3012CB41C1600834608 /* VehicleOrderPage_Tire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage_Tire.swift; sourceTree = "<group>"; };
+		BFADC3012CB41C1600834608 /* VehicleOrderPage_Wheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage_Wheel.swift; sourceTree = "<group>"; };
 		BFADC3032CB4208400834608 /* VehicleOrderPage_Interior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderPage_Interior.swift; sourceTree = "<group>"; };
 		BFD177B82CABBA2A0028941E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BFD177B92CABBBDB0028941E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
@@ -2324,8 +2326,9 @@
 				BFADC2E72CB3869000834608 /* MarketingIndexPage+Build.swift */,
 				BFADC2C12CB28A2E00834608 /* VehicleOrderPage.swift */,
 				BFADC2FB2CB4074100834608 /* VehicleOrderPage_Model.swift */,
+				BF3CA3092CB6AC6A006CD801 /* VehicleOrderPage_SpareTire.swift */,
 				BFADC2FD2CB4096C00834608 /* VehicleOrderPage_Exterior.swift */,
-				BFADC3012CB41C1600834608 /* VehicleOrderPage_Tire.swift */,
+				BFADC3012CB41C1600834608 /* VehicleOrderPage_Wheel.swift */,
 				BFADC3032CB4208400834608 /* VehicleOrderPage_Interior.swift */,
 				BFADC2F92CB3952800834608 /* VehicleOrderPage+Build.swift */,
 			);
@@ -2534,6 +2537,7 @@
 				BF4908E32C9325430071C527 /* InfoTip.swift in Sources */,
 				BFA189EA2C84332E004D625D /* TestDriveReportModelProtocol.swift in Sources */,
 				BFA1886E2C841CEC004D625D /* TopCloseTitleBar.swift in Sources */,
+				BF3CA30A2CB6AC6A006CD801 /* VehicleOrderPage_SpareTire.swift in Sources */,
 				BFA18A4F2C843900004D625D /* MallPage.swift in Sources */,
 				BFA187C32C840E7E004D625D /* ProductIntentProtocol.swift in Sources */,
 				BFADC2EA2CB3873700834608 /* MarketingIndexIntent.swift in Sources */,
@@ -2602,7 +2606,7 @@
 				BFA187F62C84120D004D625D /* MyIntentProtocol.swift in Sources */,
 				BFA187E22C841102004D625D /* LoginPage.swift in Sources */,
 				BFA188342C8416C7004D625D /* AddressView.swift in Sources */,
-				BFADC3022CB41C1600834608 /* VehicleOrderPage_Tire.swift in Sources */,
+				BFADC3022CB41C1600834608 /* VehicleOrderPage_Wheel.swift in Sources */,
 				BFA187DE2C84109E004D625D /* OrderRouter.swift in Sources */,
 				BFA188842C841F2F004D625D /* CommunityArticleView_Share.swift in Sources */,
 				BFA188EB2C842598004D625D /* MySettingProfileModel.swift in Sources */,

@@ -20,6 +20,29 @@ func mockLoginResponse() -> LoginResponse {
     )
 }
 
+/// 销售车型
+func mockSaleModelResponse() -> SaleModelResponse {
+    return SaleModelResponse.init(saleModels: [
+        SaleModel.init(saleCode: "H01", saleModelType: "OPTIONAL", saleModelTypeCode: "X02", saleName: "高阶智驾", salePrice: 3000, saleImage: "", saleDesc: "", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "OPTIONAL", saleModelTypeCode: "X00", saleName: "标准智驾", salePrice: 0, saleImage: "", saleDesc: "", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS03", saleName: "霜雪白内饰", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png", saleDesc: "", saleParam: "#dcdcd6"),
+        SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS02", saleName: "珊瑚橙内饰", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png", saleDesc: "", saleParam: "#a35d31"),
+        SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS01", saleName: "乌木黑内饰", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png", saleDesc: "", saleParam: "#424141"),
+        SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL04", saleName: "21寸轮毂(四季胎)枪灰色", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png", saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL03", saleName: "21寸轮毂(四季胎)高亮黑", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png", saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS06", saleName: "冰川白车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png", saleDesc: "", saleParam: "#e8e8e7"),
+        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS05", saleName: "银河灰车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png", saleDesc: "", saleParam: "#868888"),
+        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS04", saleName: "星尘银车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png", saleDesc: "", saleParam: "#cbcbce"),
+        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS03", saleName: "天际蓝车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png", saleDesc: "", saleParam: "#4681ad"),
+        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS02", saleName: "翡翠绿车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png", saleDesc: "", saleParam: "#3a5337"),
+        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS01", saleName: "墨玉黑车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "", saleParam: "#0f0e11"),
+        SaleModel.init(saleCode: "H01", saleModelType: "SPARE_TIRE", saleModelTypeCode: "X05", saleName: "外挂式全尺寸备胎", salePrice: 6000, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "含备胎车长5295毫米", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "SPARE_TIRE", saleModelTypeCode: "X00", saleName: "无备胎", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png", saleDesc: "车长5050毫米", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0106", saleName: "寒01六座版", salePrice: 88888, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", saleParam: ""),
+        SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0107", saleName: "寒01七座版", salePrice: 88888, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "2-2-3七座，二排超宽通道，二三排可放平", saleParam: "")
+    ])
+}
+
 /// 订单响应
 func mockOrderResponse() -> OrderResponse {
     return OrderResponse.init(
