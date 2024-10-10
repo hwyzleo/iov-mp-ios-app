@@ -45,7 +45,7 @@ struct SaleModel: Codable, Hashable {
     /// 销售价格
     var salePrice: Decimal
     /// 销售图片
-    var saleImage: String
+    var saleImage: [String]
     /// 销售描述
     var saleDesc: String
     /// 销售参数

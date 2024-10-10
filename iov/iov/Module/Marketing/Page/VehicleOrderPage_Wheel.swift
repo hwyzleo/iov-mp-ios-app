@@ -21,7 +21,7 @@ extension VehicleOrderPage {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     ForEach(Array(wheels.enumerated()), id:\.offset) { index, wheel in
-                        KFImage(URL(string: wheel.saleImage)!)
+                        KFImage(URL(string: wheel.saleImage[0])!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -67,8 +67,8 @@ extension VehicleOrderPage {
 struct VehicleOrderPage_Wheel_Previews: PreviewProvider {
     static var previews: some View {
         VehicleOrderPage.Wheel(container: VehicleOrderPage.buildContainer(), wheels: [
-            SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL04", saleName: "21寸轮毂(四季胎)枪灰色", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png", saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
-            SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL03", saleName: "21寸轮毂(四季胎)高亮黑", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png", saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
+            SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL04", saleName: "21寸轮毂(四季胎)枪灰色", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
+            SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL03", saleName: "21寸轮毂(四季胎)高亮黑", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

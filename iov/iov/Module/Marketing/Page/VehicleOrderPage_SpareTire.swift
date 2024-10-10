@@ -44,7 +44,7 @@ extension VehicleOrderPage {
                                             Spacer()
                                         }
                                         Spacer()
-                                        KFImage(URL(string: spareTire.saleImage)!)
+                                        KFImage(URL(string: spareTire.saleImage[0])!)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                     }
@@ -80,8 +80,8 @@ extension VehicleOrderPage {
 struct VehicleOrderPage_SpareTire_Previews: PreviewProvider {
     static var previews: some View {
         VehicleOrderPage.SpareTire(container: VehicleOrderPage.buildContainer(), spareTires: [
-            SaleModel.init(saleCode: "H01", saleModelType: "SPIRE_TIRE", saleModelTypeCode: "X05", saleName: "外挂式全尺寸备胎", salePrice: 6000, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "含备胎车长5295毫米", saleParam: ""),
-            SaleModel.init(saleCode: "H01", saleModelType: "SPIRE_TIRE", saleModelTypeCode: "X00", saleName: "无备胎", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png", saleDesc: "车长5050毫米", saleParam: "")
+            SaleModel.init(saleCode: "H01", saleModelType: "SPIRE_TIRE", saleModelTypeCode: "X05", saleName: "外挂式全尺寸备胎", salePrice: 6000, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "含备胎车长5295毫米", saleParam: ""),
+            SaleModel.init(saleCode: "H01", saleModelType: "SPIRE_TIRE", saleModelTypeCode: "X00", saleName: "无备胎", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], saleDesc: "车长5050毫米", saleParam: "")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

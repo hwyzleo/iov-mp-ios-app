@@ -21,7 +21,7 @@ extension VehicleOrderPage {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     ForEach(Array(interiors.enumerated()), id:\.offset) { index, interior in
-                        KFImage(URL(string: interior.saleImage)!)
+                        KFImage(URL(string: interior.saleImage[0])!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -85,9 +85,9 @@ extension VehicleOrderPage {
 struct VehicleOrderPage_Interior_Previews: PreviewProvider {
     static var previews: some View {
         VehicleOrderPage.Interior(container: VehicleOrderPage.buildContainer(), interiors: [
-            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS03", saleName: "霜雪白内饰", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png", saleDesc: "", saleParam: "#dcdcd6"),
-            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS02", saleName: "珊瑚橙内饰", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png", saleDesc: "", saleParam: "#a35d31"),
-            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS01", saleName: "乌木黑内饰", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png", saleDesc: "", saleParam: "#424141")
+            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS03", saleName: "霜雪白内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], saleDesc: "", saleParam: "#dcdcd6"),
+            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS02", saleName: "珊瑚橙内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], saleDesc: "", saleParam: "#a35d31"),
+            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS01", saleName: "乌木黑内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], saleDesc: "", saleParam: "#424141")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

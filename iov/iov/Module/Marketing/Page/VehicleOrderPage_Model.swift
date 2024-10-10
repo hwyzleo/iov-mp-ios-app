@@ -40,7 +40,7 @@ extension VehicleOrderPage {
                                             Spacer()
                                         }
                                         Spacer()
-                                        KFImage(URL(string: model.saleImage)!)
+                                        KFImage(URL(string: model.saleImage[0])!)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                     }
@@ -76,8 +76,8 @@ extension VehicleOrderPage {
 struct VehicleOrderPage_Model_Previews: PreviewProvider {
     static var previews: some View {
         VehicleOrderPage.Model(container: VehicleOrderPage.buildContainer(), models: [
-            SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0106", saleName: "寒01 6座版", salePrice: 88888, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", saleParam: ""),
-            SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0107", saleName: "寒01 7座版", salePrice: 88888, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "2-2-3七座，二排超宽通道，二三排可放平", saleParam: "")
+            SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0106", saleName: "寒01 6座版", salePrice: 88888, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", saleParam: ""),
+            SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0107", saleName: "寒01 7座版", salePrice: 88888, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "2-2-3七座，二排超宽通道，二三排可放平", saleParam: "")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

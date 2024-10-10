@@ -21,7 +21,7 @@ extension VehicleOrderPage {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
-                        KFImage(URL(string: exterior.saleImage)!)
+                        KFImage(URL(string: exterior.saleImage[0])!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -91,12 +91,12 @@ extension VehicleOrderPage {
 struct VehicleOrderPage_Exterior_Previews: PreviewProvider {
     static var previews: some View {
         VehicleOrderPage.Exterior(container: VehicleOrderPage.buildContainer(), exteriors: [
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS06", saleName: "冰川白车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png", saleDesc: "", saleParam: "#e8e8e7"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS05", saleName: "银河灰车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png", saleDesc: "", saleParam: "#868888"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS04", saleName: "星尘银车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png", saleDesc: "", saleParam: "#cbcbce"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS03", saleName: "天际蓝车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png", saleDesc: "", saleParam: "#4681ad"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS02", saleName: "翡翠绿车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png", saleDesc: "", saleParam: "#3a5337"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS01", saleName: "墨玉黑车漆", salePrice: 0, saleImage: "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png", saleDesc: "", saleParam: "#0f0e11")
+            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS06", saleName: "冰川白车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], saleDesc: "", saleParam: "#e8e8e7"),
+            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS05", saleName: "银河灰车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], saleDesc: "", saleParam: "#868888"),
+            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS04", saleName: "星尘银车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], saleDesc: "", saleParam: "#cbcbce"),
+            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS03", saleName: "天际蓝车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], saleDesc: "", saleParam: "#4681ad"),
+            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS02", saleName: "翡翠绿车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], saleDesc: "", saleParam: "#3a5337"),
+            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS01", saleName: "墨玉黑车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "", saleParam: "#0f0e11")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }
