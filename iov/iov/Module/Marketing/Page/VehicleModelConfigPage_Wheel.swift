@@ -8,20 +8,20 @@
 import SwiftUI
 import Kingfisher
 
-/// 车辆订购页 - 轮胎
-extension VehicleOrderPage {
+/// 车辆车型配置页 - 轮胎
+extension VehicleModelConfigPage {
     struct Wheel: View {
-        @StateObject var container: MviContainer<VehicleOrderIntentProtocol, VehicleOrderModelStateProtocol>
-        private var intent: VehicleOrderIntentProtocol { container.intent }
-        private var state: VehicleOrderModelStateProtocol { container.model }
-        @State var wheels: [SaleModel] = []
+        @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
+        private var intent: VehicleModelConfigIntentProtocol { container.intent }
+        private var state: VehicleModelConfigModelStateProtocol { container.model }
+        @State var wheels: [SaleModelConfig] = []
         @State private var selectedTab = 0
         
         var body: some View {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     ForEach(Array(wheels.enumerated()), id:\.offset) { index, wheel in
-                        KFImage(URL(string: wheel.saleImage[0])!)
+                        KFImage(URL(string: wheel.typeImage[0])!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -34,10 +34,10 @@ extension VehicleOrderPage {
                     ForEach(Array(wheels.enumerated()), id:\.offset) { index, wheel in
                         Button(action: {
                             selectedTab = index
-                            intent.onTapWheel(code: wheel.saleCode, price: wheel.salePrice)
+                            intent.onTapWheel(code: wheel.saleCode, price: wheel.typePrice)
                         }) {
                             VStack {
-                                Text(wheel.saleName)
+                                Text(wheel.typeName)
                             }
                         }
                         .foregroundColor(selectedTab == index ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
@@ -55,7 +55,7 @@ extension VehicleOrderPage {
                 if !wheels.isEmpty {
                     if state.selectWheel == "" {
                         if let firstWheel = wheels.first {
-                            intent.onTapWheel(code: firstWheel.saleCode, price: firstWheel.salePrice)
+                            intent.onTapWheel(code: firstWheel.saleCode, price: firstWheel.typePrice)
                         }
                     }
                 }
@@ -64,11 +64,11 @@ extension VehicleOrderPage {
     }
 }
 
-struct VehicleOrderPage_Wheel_Previews: PreviewProvider {
+struct VehicleModelConfigPage_Wheel_Previews: PreviewProvider {
     static var previews: some View {
-        VehicleOrderPage.Wheel(container: VehicleOrderPage.buildContainer(), wheels: [
-            SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL04", saleName: "21寸轮毂(四季胎)枪灰色", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
-            SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL03", saleName: "21寸轮毂(四季胎)高亮黑", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
+        VehicleModelConfigPage.Wheel(container: VehicleModelConfigPage.buildContainer(), wheels: [
+            SaleModelConfig.init(saleCode: "H01", type: "WHEEL", typeCode: "CL04", typeName: "21寸轮毂(四季胎)枪灰色", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], typeDesc: "标配倍耐力Scorpion轮胎", typeParam: ""),
+            SaleModelConfig.init(saleCode: "H01", type: "WHEEL", typeCode: "CL03", typeName: "21寸轮毂(四季胎)高亮黑", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], typeDesc: "标配倍耐力Scorpion轮胎", typeParam: ""),
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

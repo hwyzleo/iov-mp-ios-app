@@ -9,31 +9,33 @@ import SwiftUI
 
 // MARK: - View State
 
-protocol VehicleOrderModelStateProtocol {
-    var contentState: MarketingTypes.Model.VehicleOrderContentState { get }
+protocol VehicleModelConfigModelStateProtocol {
+    var contentState: MarketingTypes.Model.VehicleModelConfigContentState { get }
     var routerSubject: MarketingRouter.Subjects { get }
-    var models: [SaleModel] { get }
+    var saleCode: String { get }
+    var models: [SaleModelConfig] { get }
     var selectModel: String { get }
-    var spareTires: [SaleModel] { get }
+    var selectModelName: String { get }
+    var spareTires: [SaleModelConfig] { get }
     var selectSpareTire: String { get }
-    var exteriors: [SaleModel] { get }
+    var exteriors: [SaleModelConfig] { get }
     var selectExterior: String { get }
-    var wheels: [SaleModel] { get }
+    var wheels: [SaleModelConfig] { get }
     var selectWheel: String { get }
-    var interiors: [SaleModel] { get }
+    var interiors: [SaleModelConfig] { get }
     var selectInterior: String { get }
-    var optionals: [SaleModel] { get }
-    var selectOptional: String { get }
+    var adases: [SaleModelConfig] { get }
+    var selectAdas: String { get }
     var totalPrice: Decimal { get }
 }
 
 // MARK: - Intent Action
 
-protocol VehicleOrderModelActionProtocol: MviModelActionProtocol {
+protocol VehicleModelConfigModelActionProtocol: MviModelActionProtocol {
     /// 更新销售车型
-    func updateSaleModel(saleModels: [SaleModel])
+    func updateSaleModel(saleCode: String, saleModels: [SaleModelConfig])
     /// 选择车型
-    func selectModel(code: String, price: Decimal)
+    func selectModel(code: String, name: String, price: Decimal)
     /// 选择备胎
     func selectSpareTire(code: String, price: Decimal)
     /// 选择外观
@@ -48,6 +50,7 @@ protocol VehicleOrderModelActionProtocol: MviModelActionProtocol {
 
 // MARK: - Route
 
-protocol VehicleOrderModelRouterProtocol: MviModelRouterProtocol {
-
+protocol VehicleModelConfigModelRouterProtocol: MviModelRouterProtocol {
+    /// 跳转至订单详情页
+    func routeToOrderDetail()
 }

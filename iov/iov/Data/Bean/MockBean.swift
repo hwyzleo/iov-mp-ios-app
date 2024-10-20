@@ -20,33 +20,159 @@ func mockLoginResponse() -> LoginResponse {
     )
 }
 
-/// 销售车型
-func mockSaleModelResponse() -> SaleModelResponse {
-    return SaleModelResponse.init(saleModels: [
-        SaleModel.init(saleCode: "H01", saleModelType: "OPTIONAL", saleModelTypeCode: "X02", saleName: "高阶智驾", salePrice: 3000, saleImage: [], saleDesc: "", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "OPTIONAL", saleModelTypeCode: "X00", saleName: "标准智驾", salePrice: 0, saleImage: [], saleDesc: "", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS03", saleName: "霜雪白内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], saleDesc: "", saleParam: "#dcdcd6"),
-        SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS02", saleName: "珊瑚橙内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], saleDesc: "", saleParam: "#a35d31"),
-        SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS01", saleName: "乌木黑内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], saleDesc: "", saleParam: "#424141"),
-        SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL04", saleName: "21寸轮毂(四季胎)枪灰色", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "WHEEL", saleModelTypeCode: "CL03", saleName: "21寸轮毂(四季胎)高亮黑", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], saleDesc: "标配倍耐力Scorpion轮胎", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS06", saleName: "冰川白车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], saleDesc: "", saleParam: "#e8e8e7"),
-        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS05", saleName: "银河灰车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], saleDesc: "", saleParam: "#868888"),
-        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS04", saleName: "星尘银车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], saleDesc: "", saleParam: "#cbcbce"),
-        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS03", saleName: "天际蓝车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], saleDesc: "", saleParam: "#4681ad"),
-        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS02", saleName: "翡翠绿车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], saleDesc: "", saleParam: "#3a5337"),
-        SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS01", saleName: "墨玉黑车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "", saleParam: "#0f0e11"),
-        SaleModel.init(saleCode: "H01", saleModelType: "SPARE_TIRE", saleModelTypeCode: "X05", saleName: "外挂式全尺寸备胎", salePrice: 6000, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "含备胎车长5295毫米", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "SPARE_TIRE", saleModelTypeCode: "X00", saleName: "无备胎", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], saleDesc: "车长5050毫米", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0106", saleName: "寒01六座版", salePrice: 88888, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", saleParam: ""),
-        SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0107", saleName: "寒01七座版", salePrice: 88888, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "2-2-3七座，二排超宽通道，二三排可放平", saleParam: "")
-    ])
+/// 车辆销售订单列表
+func mockVehicleSaleOrderList() -> [VehicleSaleOrder] {
+    return [
+        VehicleSaleOrder.init(orderNum: "ORDERNUM001", orderState: AppGlobalState.shared.mockOrderState.rawValue, displayName: "寒01七座版")
+    ]
 }
 
-/// 订单响应
-func mockOrderResponse() -> OrderResponse {
+/// 销售车型
+func mockSaleModelList() -> [SaleModelConfig] {
+    return [
+        SaleModelConfig.init(saleCode: "H01", type: "OPTIONAL", typeCode: "X02", typeName: "高阶智驾", typePrice: 3000, typeImage: [], typeDesc: "", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "OPTIONAL", typeCode: "X00", typeName: "标准智驾", typePrice: 0, typeImage: [], typeDesc: "", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS03", typeName: "霜雪白内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], typeDesc: "", typeParam: "#dcdcd6"),
+        SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS02", typeName: "珊瑚橙内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], typeDesc: "", typeParam: "#a35d31"),
+        SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS01", typeName: "乌木黑内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], typeDesc: "", typeParam: "#424141"),
+        SaleModelConfig.init(saleCode: "H01", type: "WHEEL", typeCode: "CL04", typeName: "21寸轮毂(四季胎)枪灰色", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], typeDesc: "标配倍耐力Scorpion轮胎", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "WHEEL", typeCode: "CL03", typeName: "21寸轮毂(四季胎)高亮黑", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], typeDesc: "标配倍耐力Scorpion轮胎", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS06", typeName: "冰川白车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], typeDesc: "", typeParam: "#e8e8e7"),
+        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS05", typeName: "银河灰车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], typeDesc: "", typeParam: "#868888"),
+        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS04", typeName: "星尘银车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], typeDesc: "", typeParam: "#cbcbce"),
+        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS03", typeName: "天际蓝车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], typeDesc: "", typeParam: "#4681ad"),
+        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS02", typeName: "翡翠绿车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], typeDesc: "", typeParam: "#3a5337"),
+        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS01", typeName: "墨玉黑车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: "#0f0e11"),
+        SaleModelConfig.init(saleCode: "H01", type: "SPARE_TIRE", typeCode: "X05", typeName: "外挂式全尺寸备胎", typePrice: 6000, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "含备胎车长5295毫米", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "SPARE_TIRE", typeCode: "X00", typeName: "无备胎", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], typeDesc: "车长5050毫米", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "MODEL", typeCode: "H0106", typeName: "寒01六座版", typePrice: 88888, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "MODEL", typeCode: "H0107", typeName: "寒01七座版", typePrice: 88888, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "2-2-3七座，二排超宽通道，二三排可放平", typeParam: "")
+    ]
+}
+
+/// 心愿单
+func mockWishlist() -> Wishlist {
+    return Wishlist.init(
+        saleCode: "H01",
+        orderNum: "ORDERNUM001",
+        saleModelConfigType: [
+            "ADAS": "X02",
+            "WHEEL": "CL03",
+            "EXTERIOR": "WS02",
+            "INTERIOR": "NS01",
+            "MODEL": "H0107",
+            "SPARE_TIRE": "X00"
+        ],
+        saleModelConfigName: [
+            "ADAS": "高阶智驾",
+            "WHEEL": "21寸轮毂(四季胎)高亮黑",
+            "EXTERIOR": "翡翠绿车漆",
+            "INTERIOR": "乌木黑内饰",
+            "MODEL": "寒01七座版",
+            "SPARE_TIRE": "无备胎"
+        ],
+        saleModelConfigPrice: [
+            "ADAS": 10000.00,
+            "WHEEL": 0.00,
+            "EXTERIOR": 0.00,
+            "INTERIOR": 0.00,
+            "MODEL": 188888.00,
+            "SPARE_TIRE": 0.00
+        ],
+        saleModelImages: [
+            "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png",
+            "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+        ],
+        saleModelDesc: "七座 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
+        totalPrice: 198888.00,
+        isValid: true
+    )
+}
+
+/// 订单
+func mockOrder() -> OrderResponse {
     return OrderResponse.init(
-        orderNum: "000000000001"
+        orderNum: "ORDERNUM001",
+        orderState: 200,
+        saleModelConfigType: [
+            "OPTIONAL": "X02",
+            "WHEEL": "CL03",
+            "EXTERIOR": "WS02",
+            "INTERIOR": "NS01",
+            "MODEL": "H0107",
+            "SPARE_TIRE": "X00"
+        ],
+        saleModelConfigName: [
+            "OPTIONAL": "高阶智驾",
+            "WHEEL": "21寸轮毂(四季胎)高亮黑",
+            "EXTERIOR": "翡翠绿车漆",
+            "INTERIOR": "乌木黑内饰",
+            "MODEL": "寒01七座版",
+            "SPARE_TIRE": "无备胎"
+        ],
+        saleModelConfigPrice: [
+            "OPTIONAL": 3000.00,
+            "WHEEL": 0.00,
+            "EXTERIOR": 0.00,
+            "INTERIOR": 0.00,
+            "MODEL": 8888.00,
+            "SPARE_TIRE": 0.00
+        ],
+        saleModelImages: [
+            "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png",
+            "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+        ],
+        saleModelDesc: "七座 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
+        totalPrice: 11888.00,
+        orderTime: 1729405288
+    )
+}
+
+/// 订单支付响应
+func mockOrderPaymentResponse() -> OrderPaymentResponse {
+    return OrderPaymentResponse.init(
+        orderNum: "",
+        paymentMerchant: "",
+        paymentReference: "",
+        paymentAmount: 5000,
+        paymentDateType: 1,
+        paymentData: ""
+    )
+}
+
+/// 已选择的销售车型
+func mockSelectedSaleModel() -> SelectedSaleModel {
+    return SelectedSaleModel.init(
+        saleCode: "H01",
+        modelName: "寒01六座版",
+        earnestMoney: true,
+        earnestMoneyPrice: 5000,
+        downPayment: true,
+        downPaymentPrice: 5000,
+        modelConfigCode: "H01060103030102",
+        saleModelImages: [
+            "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png",
+            "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+        ],
+        saleModelDesc: "外挂式全尺寸备胎 | 墨玉黑车漆 | 21寸轮毂(四季胎)高亮黑 | 霜雪白内饰",
+        saleModelConfigName: [
+            "MODEL": "寒01六座版",
+            "SPARE_TIRE": "外挂式全尺寸备胎",
+            "EXTERIOR": "墨玉黑车漆",
+            "WHEEL": "21寸轮毂(四季胎)高亮黑",
+            "INTERIOR": "霜雪白内饰",
+            "ADAS": "高价智驾"
+        ],
+        saleModelConfigPrice: [
+            "MODEL": 188888.00,
+            "SPARE_TIRE": 6000.00,
+            "EXTERIOR": 0.00,
+            "WHEEL": 0.00,
+            "INTERIOR": 0.00,
+            "ADAS": 10000.00
+        ],
+        totalPrice: 204888.00,
+        purchaseBenefitsIntro: "创始权益（价值6000元）\n首年用车服务包（价值999元）\n5000元选配基金（价值5000元）"
     )
 }
 

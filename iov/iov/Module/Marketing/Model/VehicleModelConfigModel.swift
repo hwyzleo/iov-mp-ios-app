@@ -7,36 +7,45 @@
 
 import SwiftUI
 
-final class VehicleOrderModel: ObservableObject, VehicleOrderModelStateProtocol {
-    @Published var contentState: MarketingTypes.Model.VehicleOrderContentState = .loading
+final class VehicleModelConfigModel: ObservableObject, VehicleModelConfigModelStateProtocol {
+    @Published var contentState: MarketingTypes.Model.VehicleModelConfigContentState = .loading
     let routerSubject = MarketingRouter.Subjects()
-    var models: [SaleModel] = []
+    var saleCode: String = ""
+    var models: [SaleModelConfig] = []
     @Published var selectModel: String = ""
+    var selectModelName: String = ""
     @Published var selectModelPrice: Decimal = 0
-    var spareTires: [SaleModel] = []
+    var spareTires: [SaleModelConfig] = []
     @Published var selectSpareTire: String = ""
     @Published var selectSpareTirePrice: Decimal = 0
-    var exteriors: [SaleModel] = []
+    var exteriors: [SaleModelConfig] = []
     @Published var selectExterior: String = ""
     @Published var selectExteriorPrice: Decimal = 0
-    var wheels: [SaleModel] = []
+    var wheels: [SaleModelConfig] = []
     @Published var selectWheel: String = ""
     @Published var selectWheelPrice: Decimal = 0
-    var interiors: [SaleModel] = []
+    var interiors: [SaleModelConfig] = []
     @Published var selectInterior: String = ""
     @Published var selectInteriorPrice: Decimal = 0
-    var optionals: [SaleModel] = []
-    @Published var selectOptional: String = ""
-    @Published var selectOptionalPrice: Decimal = 0
+    var adases: [SaleModelConfig] = []
+    @Published var selectAdas: String = ""
+    @Published var selectAdasPrice: Decimal = 0
     @Published var totalPrice: Decimal = 0
 }
 
 // MARK: - Action Protocol
 
-extension VehicleOrderModel: VehicleOrderModelActionProtocol {
-    func updateSaleModel(saleModels: [SaleModel]) {
+extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
+    func updateSaleModel(saleCode: String, saleModels: [SaleModelConfig]) {
+        self.saleCode = saleCode
+        models.removeAll()
+        spareTires.removeAll()
+        exteriors.removeAll()
+        wheels.removeAll()
+        interiors.removeAll()
+        adases.removeAll()
         for saleModel in saleModels {
-            switch saleModel.saleModelType {
+            switch saleModel.type {
             case "MODEL":
                 models.append(saleModel)
             case "SPARE_TIRE":
@@ -47,16 +56,17 @@ extension VehicleOrderModel: VehicleOrderModelActionProtocol {
                 wheels.append(saleModel)
             case "INTERIOR":
                 interiors.append(saleModel)
-            case "OPTIONAL":
-                optionals.append(saleModel)
+            case "ADAS":
+                adases.append(saleModel)
             default:
                 break
             }
         }
         contentState = .content
     }
-    func selectModel(code: String, price: Decimal) {
+    func selectModel(code: String, name: String, price: Decimal) {
         selectModel = code
+        selectModelName = name
         selectModelPrice = price
         totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice
     }
@@ -89,24 +99,23 @@ extension VehicleOrderModel: VehicleOrderModelActionProtocol {
         
     }
     func displayLoading() {
-        
+        self.contentState = .loading
     }
-}
-
-func safeIntFromString(_ string: String) -> Int {
-    return Int(string) ?? 0
 }
 
 // MARK: - Route
 
-extension VehicleOrderModel: VehicleOrderModelRouterProtocol {
+extension VehicleModelConfigModel: VehicleModelConfigModelRouterProtocol {
     func closeScreen() {
-        
+        routerSubject.close.send()
+    }
+    func routeToOrderDetail() {
+        routerSubject.screen.send(.orderDetail)
     }
 }
 
 extension MarketingTypes.Model {
-    enum VehicleOrderContentState {
+    enum VehicleModelConfigContentState {
         case loading
         case content
         case error(text: String)

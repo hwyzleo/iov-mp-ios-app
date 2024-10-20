@@ -8,43 +8,43 @@
 import SwiftUI
 import Kingfisher
 
-/// 车辆订购页 - 车型
-extension VehicleOrderPage {
+/// 车辆车型配置页 - 车型
+extension VehicleModelConfigPage {
     struct Model: View {
-        @StateObject var container: MviContainer<VehicleOrderIntentProtocol, VehicleOrderModelStateProtocol>
-        private var intent: VehicleOrderIntentProtocol { container.intent }
-        private var state: VehicleOrderModelStateProtocol { container.model }
-        @State var models: [SaleModel] = []
+        @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
+        private var intent: VehicleModelConfigIntentProtocol { container.intent }
+        private var state: VehicleModelConfigModelStateProtocol { container.model }
+        @State var models: [SaleModelConfig] = []
         
         var body: some View {
             VStack {
                 ForEach(Array(models.enumerated()), id:\.offset) { index, model in
                     Button(action: {
-                        intent.onTapModel(code: model.saleModelTypeCode, price: model.salePrice)
+                        intent.onTapModel(code: model.typeCode, name: model.typeName, price: model.typePrice)
                     }) {
                         RoundedRectangle(cornerRadius: 5)
-                            .stroke(state.selectModel == model.saleModelTypeCode ? Color.orange : Color.gray, lineWidth: 1)
+                            .stroke(state.selectModel == model.typeCode ? Color.orange : Color.gray, lineWidth: 1)
                             .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                             .frame(height: 220)
                             .background(Color(hex: 0xfbfbfb))
                             .overlay(
                                 VStack(alignment: .leading) {
                                     HStack {
-                                        Text(model.saleName)
+                                        Text(model.typeName)
                                             .bold()
                                         Spacer()
                                     }
                                     HStack {
                                         VStack {
-                                            Text("￥\(String(describing: model.salePrice))")
+                                            Text("￥\(model.typePrice.formatted())")
                                             Spacer()
                                         }
                                         Spacer()
-                                        KFImage(URL(string: model.saleImage[0])!)
+                                        KFImage(URL(string: model.typeImage[0])!)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                     }
-                                    Text(model.saleDesc)
+                                    Text(model.typeDesc)
                                         .foregroundStyle(AppTheme.colors.fontSecondary)
                                         .font(.system(size: 12))
                                     Spacer()
@@ -64,7 +64,7 @@ extension VehicleOrderPage {
                 if !models.isEmpty {
                     if state.selectModel == "" {
                         if let firstModel = models.first {
-                            intent.onTapModel(code: firstModel.saleModelTypeCode, price: firstModel.salePrice)
+                            intent.onTapModel(code: firstModel.typeCode, name: firstModel.typeName, price: firstModel.typePrice)
                         }
                     }
                 }
@@ -73,11 +73,11 @@ extension VehicleOrderPage {
     }
 }
 
-struct VehicleOrderPage_Model_Previews: PreviewProvider {
+struct VehicleModelConfigPage_Model_Previews: PreviewProvider {
     static var previews: some View {
-        VehicleOrderPage.Model(container: VehicleOrderPage.buildContainer(), models: [
-            SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0106", saleName: "寒01 6座版", salePrice: 88888, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", saleParam: ""),
-            SaleModel.init(saleCode: "H01", saleModelType: "MODEL", saleModelTypeCode: "H0107", saleName: "寒01 7座版", salePrice: 88888, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "2-2-3七座，二排超宽通道，二三排可放平", saleParam: "")
+        VehicleModelConfigPage.Model(container: VehicleModelConfigPage.buildContainer(), models: [
+            SaleModelConfig.init(saleCode: "H01", type: "MODEL", typeCode: "H0106", typeName: "寒01 6座版", typePrice: 88888, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", typeParam: ""),
+            SaleModelConfig.init(saleCode: "H01", type: "MODEL", typeCode: "H0107", typeName: "寒01 7座版", typePrice: 88888, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "2-2-3七座，二排超宽通道，二三排可放平", typeParam: "")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

@@ -5,6 +5,8 @@
 //  Created by 叶荣杰 on 2024/9/1.
 //
 
+import Foundation
+
 /// TSP平台通用响应实体
 struct TspResponse<Model: Codable>: Codable {
     var code: Int
@@ -27,34 +29,124 @@ struct LoginResponse: Codable {
     var refreshTokenExpires: Int64
 }
 
-/// 销售车型返回
-struct SaleModelResponse: Codable {
-    var saleModels: [SaleModel]
+/// 车辆销售订单
+struct VehicleSaleOrder: Codable {
+    /// 订单号
+    var orderNum: String
+    /// 订单状态
+    var orderState: Int
+    /// 显示名称
+    var displayName: String
 }
 
-/// 销售车型
-struct SaleModel: Codable, Hashable {
+/// 销售车型配置
+struct SaleModelConfig: Codable, Hashable {
     /// 销售代码
     var saleCode: String
-    /// 销售车型类型
-    var saleModelType: String
-    /// 销售车型类型代码
-    var saleModelTypeCode: String
-    /// 销售名称
-    var saleName: String
-    /// 销售价格
-    var salePrice: Decimal
-    /// 销售图片
-    var saleImage: [String]
-    /// 销售描述
-    var saleDesc: String
-    /// 销售参数
-    var saleParam: String
+    /// 销售车型配置类型
+    var type: String
+    /// 销售车型配置类型代码
+    var typeCode: String
+    /// 销售车型配置类型名称
+    var typeName: String
+    /// 销售车型配置类型价格
+    var typePrice: Decimal
+    /// 销售车型配置类型图片
+    var typeImage: [String]
+    /// 销售车型配置类型描述
+    var typeDesc: String
+    /// 销售车型配置类型参数
+    var typeParam: String
+}
+
+/// 已选择的销售车型
+struct SelectedSaleModel: Codable {
+    /// 销售代码
+    var saleCode: String
+    /// 销售车型名称
+    var modelName: String
+    /// 是否允许意向金
+    var earnestMoney: Bool
+    /// 意向金价格
+    var earnestMoneyPrice: Decimal
+    /// 是否允许定金
+    var downPayment: Bool
+    /// 定金价格
+    var downPaymentPrice: Decimal
+    /// 车型配置代码
+    var modelConfigCode: String
+    /// 销售车型图片集
+    var saleModelImages: [String]
+    /// 销售车型描述
+    var saleModelDesc: String
+    /// 销售车型配置名称
+    var saleModelConfigName: [String:String]
+    /// 销售车型配置价格
+    var saleModelConfigPrice: [String:Decimal]
+    /// 车型总价格
+    var totalPrice: Decimal
+    /// 购车权益简介
+    var purchaseBenefitsIntro: String
+}
+
+/// 心愿单
+struct Wishlist: Codable {
+    /// 销售代码
+    var saleCode: String
+    /// 订单号
+    var orderNum: String
+    /// 销售车型配置类型
+    var saleModelConfigType: [String:String]
+    /// 销售车型配置名称
+    var saleModelConfigName: [String:String]
+    /// 销售车型配置价格
+    var saleModelConfigPrice: [String:Decimal]
+    /// 销售车型图片集
+    var saleModelImages: [String]
+    /// 销售车型描述
+    var saleModelDesc: String
+    /// 总价格
+    var totalPrice: Decimal
+    /// 是否有效
+    var isValid: Bool
 }
 
 /// 订单响应
 struct OrderResponse: Codable {
+    /// 订单号
     var orderNum: String
+    /// 订单状态
+    var orderState: Int
+    /// 销售车型配置类型
+    var saleModelConfigType: [String:String]
+    /// 销售车型配置名称
+    var saleModelConfigName: [String:String]
+    /// 销售车型配置价格
+    var saleModelConfigPrice: [String:Decimal]
+    /// 销售车型图片集
+    var saleModelImages: [String]
+    /// 销售车型描述
+    var saleModelDesc: String
+    /// 总价格
+    var totalPrice: Decimal
+    /// 下单时间
+    var orderTime: Int64
+}
+
+/// 订单支付响应
+struct OrderPaymentResponse: Codable {
+    /// 订单号
+    var orderNum: String
+    /// 支付商户
+    var paymentMerchant: String
+    /// 支付流水号
+    var paymentReference: String
+    /// 支付金额
+    var paymentAmount: Decimal
+    /// 支付数据类型
+    var paymentDateType: Int
+    /// 支付数据
+    var paymentData: String
 }
 
 /**

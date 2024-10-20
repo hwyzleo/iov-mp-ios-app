@@ -13,6 +13,9 @@ struct RoundedCornerButton: View {
     var nameLocal: LocalizedStringKey?
     var color: Color = AppTheme.colors.fontPrimary
     var bgColor: Color = Color.white
+    var borderColor: Color = Color.gray
+    var height: CGFloat = 40
+    var fontSize: CGFloat = 15
     var action: (() -> Void)?
     
     var body: some View {
@@ -21,20 +24,20 @@ struct RoundedCornerButton: View {
                 .fill(bgColor)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gray, lineWidth: 1)
+                        .stroke(borderColor, lineWidth: 1)
                 )
             if(name != nil) {
                 Text(name!)
-                    .font(.system(size: 15))
+                    .font(.system(size: fontSize))
                     .foregroundColor(color)
             } else if(nameLocal != nil) {
                 Text(nameLocal!)
-                    .font(.system(size: 15))
+                    .font(.system(size: fontSize))
                     .foregroundColor(color)
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 40)
+        .frame(height: height)
         .contentShape(Rectangle())
         .onTapGesture {
             action?()

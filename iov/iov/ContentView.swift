@@ -22,7 +22,7 @@ struct ContentView: View {
                             } else {
                                 Image("icon_explore")
                             }
-                            Text("探索")
+                            Text(LocalizedStringKey("explore"))
                         }
                         .tag(0)
                     ServicePage.build()
@@ -32,10 +32,10 @@ struct ContentView: View {
                             } else {
                                 Image("icon_service")
                             }
-                            Text("服务")
+                            Text(LocalizedStringKey("service"))
                         }
                         .tag(1)
-                    if VehicleManager.hasVehicle() {
+                    if VehicleManager.shared.hasVehicle() {
                         VehiclePage.build()
                             .tabItem {
                                 if globalState.selectedTab == 2 {
@@ -43,7 +43,7 @@ struct ContentView: View {
                                 } else {
                                     Image("icon_vehicle")
                                 }
-                                Text("爱车")
+                                Text(LocalizedStringKey("my_vehicle"))
                             }
                             .tag(2)
                     } else {
@@ -54,7 +54,7 @@ struct ContentView: View {
                                 } else {
                                     Image("icon_vehicle")
                                 }
-                                Text("购车")
+                                Text(LocalizedStringKey("buy_vehicle"))
                             }
                             .tag(2)
                     }
@@ -65,7 +65,7 @@ struct ContentView: View {
                             } else {
                                 Image("icon_mall")
                             }
-                            Text("商城")
+                            Text(LocalizedStringKey("mall"))
                         }
                         .tag(3)
                     MyPage.build()
@@ -75,7 +75,7 @@ struct ContentView: View {
                             } else {
                                 Image("icon_person")
                             }
-                            Text("我的")
+                            Text(LocalizedStringKey("my"))
                         }
                         .tag(4)
                 }

@@ -40,22 +40,18 @@ extension MarketingIndexPage {
         private var state: MarketingIndexModelStateProtocol { container.model }
         
         var body: some View {
-            ScrollView {
-                ZStack(alignment: .top) {
-                    Image("vehicle_banner")
-                        .resizable()
-                        .scaledToFill()
-                    VStack {
-                        Spacer().frame(height: 650)
-                        RoundedCornerButton(nameLocal: LocalizedStringKey("order_now")) {
-                            intent.onTapOrder()
-                        }
-                        .frame(width: 300)
-                    }
-                }
+            if(!state.hasOrder) {
+                MarketingIndexPage.NoOrder(container: container)
+            } else {
+                MarketingIndexPage.Order(
+                    container: container,
+                    currentVehicleType: state.currentVehicleType,
+                    orderState: state.orderState,
+                    saleModelImages: state.saleModelImages,
+                    totalPrice: state.totalPrice,
+                    saleModelDesc: state.saleModelDesc
+                )
             }
-            .scrollIndicators(.hidden)
-            .edgesIgnoringSafeArea(.top)
         }
     }
 }

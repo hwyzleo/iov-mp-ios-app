@@ -87,7 +87,7 @@ extension BluetoothManager: CBCentralManagerDelegate {
         // }
         // 获取设备信息
         guard let kCBAdvDataLocalNameDataStr = advertisementData["kCBAdvDataLocalName"] as? String else { return }
-        debugPrint("发现外设:\(kCBAdvDataLocalNameDataStr)")
+//        debugPrint("发现外设:\(kCBAdvDataLocalNameDataStr)")
         if kCBAdvDataLocalNameDataStr == "Vehicle" {
             self.peripheral = peripheral
             debugPrint("连接外设")

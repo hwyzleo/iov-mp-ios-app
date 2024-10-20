@@ -8,20 +8,20 @@
 import SwiftUI
 import Kingfisher
 
-/// 车辆订购页 - 内饰
-extension VehicleOrderPage {
+/// 车辆车型配置页 - 内饰
+extension VehicleModelConfigPage {
     struct Interior: View {
-        @StateObject var container: MviContainer<VehicleOrderIntentProtocol, VehicleOrderModelStateProtocol>
-        private var intent: VehicleOrderIntentProtocol { container.intent }
-        private var state: VehicleOrderModelStateProtocol { container.model }
-        @State var interiors: [SaleModel] = []
+        @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
+        private var intent: VehicleModelConfigIntentProtocol { container.intent }
+        private var state: VehicleModelConfigModelStateProtocol { container.model }
+        @State var interiors: [SaleModelConfig] = []
         @State private var selectedTab = 0
         
         var body: some View {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     ForEach(Array(interiors.enumerated()), id:\.offset) { index, interior in
-                        KFImage(URL(string: interior.saleImage[0])!)
+                        KFImage(URL(string: interior.typeImage[0])!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -32,10 +32,10 @@ extension VehicleOrderPage {
                 ForEach(Array(interiors.enumerated()), id:\.offset) { index, interior in
                     if selectedTab == index {
                         VStack {
-                            Text(interior.saleName)
+                            Text(interior.typeName)
                                 .foregroundStyle(AppTheme.colors.fontPrimary)
                                 .font(.system(size: 22))
-                            Text("￥\(String(describing: interior.salePrice))")
+                            Text("￥\(interior.typePrice.formatted())")
                                 .foregroundStyle(AppTheme.colors.fontSecondary)
                                 .font(.system(size: 15))
                         }
@@ -45,7 +45,7 @@ extension VehicleOrderPage {
                     ForEach(Array(interiors.enumerated()), id:\.offset) { index, interior in
                         Button(action: {
                             selectedTab = index
-                            intent.onTapExterior(code: interior.saleCode, price: interior.salePrice)
+                            intent.onTapExterior(code: interior.saleCode, price: interior.typePrice)
                         }) {
                             ZStack {
                                 Image(systemName: "circle.fill")
@@ -58,7 +58,7 @@ extension VehicleOrderPage {
                                 }
                             }
                         }
-                        .foregroundColor(Color(hexStr: interior.saleParam))
+                        .foregroundColor(Color(hexStr: interior.typeParam))
                         .frame(maxWidth: .infinity)
                     }
                 }
@@ -73,7 +73,7 @@ extension VehicleOrderPage {
                 if !interiors.isEmpty {
                     if state.selectInterior == "" {
                         if let firstInterior = interiors.first {
-                            intent.onTapInterior(code: firstInterior.saleCode, price: firstInterior.salePrice)
+                            intent.onTapInterior(code: firstInterior.saleCode, price: firstInterior.typePrice)
                         }
                     }
                 }
@@ -82,12 +82,12 @@ extension VehicleOrderPage {
     }
 }
 
-struct VehicleOrderPage_Interior_Previews: PreviewProvider {
+struct VehicleModelConfigPage_Interior_Previews: PreviewProvider {
     static var previews: some View {
-        VehicleOrderPage.Interior(container: VehicleOrderPage.buildContainer(), interiors: [
-            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS03", saleName: "霜雪白内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], saleDesc: "", saleParam: "#dcdcd6"),
-            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS02", saleName: "珊瑚橙内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], saleDesc: "", saleParam: "#a35d31"),
-            SaleModel.init(saleCode: "H01", saleModelType: "INTERIOR", saleModelTypeCode: "NS01", saleName: "乌木黑内饰", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], saleDesc: "", saleParam: "#424141")
+        VehicleModelConfigPage.Interior(container: VehicleModelConfigPage.buildContainer(), interiors: [
+            SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS03", typeName: "霜雪白内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], typeDesc: "", typeParam: "#dcdcd6"),
+            SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS02", typeName: "珊瑚橙内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], typeDesc: "", typeParam: "#a35d31"),
+            SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS01", typeName: "乌木黑内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], typeDesc: "", typeParam: "#424141")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

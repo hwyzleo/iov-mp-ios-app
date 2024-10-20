@@ -20,7 +20,8 @@ struct MarketingRouter: RouterProtocol {
 extension MarketingRouter {
     enum ScreenType: RouterScreenProtocol {
         case index
-        case order
+        case modelConfig
+        case orderDetail
         case vehicle
         case login
 
@@ -28,7 +29,9 @@ extension MarketingRouter {
             switch self {
             case .index:
                 return .navigationLink
-            case .order:
+            case .orderDetail:
+                return .navigationLink
+            case .modelConfig:
                 return .navigationLink
             case .vehicle:
                 return .navigationLink
@@ -45,8 +48,11 @@ extension MarketingRouter {
             MarketingIndexPage.build()
                 .ignoresSafeArea()
                 .navigationBarHidden(true)
-        case .order:
-            VehicleOrderPage.build()
+        case .orderDetail:
+            VehicleOrderDetailPage.build()
+                .navigationBarHidden(true)
+        case .modelConfig:
+            VehicleModelConfigPage.build()
                 .navigationBarHidden(true)
         case .vehicle:
             VehiclePage.build()

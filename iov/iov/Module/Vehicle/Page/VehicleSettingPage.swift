@@ -16,15 +16,14 @@ struct VehicleSettingPage: View {
             Button(action: {
                 clearCount = clearCount + 1
                 if(clearCount > 5) {
-                    VehicleManager.clear()
-                    print("============")
+                    VehicleManager.shared.clear()
                 }
             }) {
                 HStack {
                     Text("车辆信息")
                         .font(.system(size: 18))
                         .bold()
-                    if(VehicleManager.hasVehicle()) {
+                    if(VehicleManager.shared.hasVehicle()) {
                         Text("(1)")
                             .font(.system(size: 18))
                             .bold()

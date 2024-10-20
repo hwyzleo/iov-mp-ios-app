@@ -8,47 +8,47 @@
 import SwiftUI
 import Kingfisher
 
-/// 车辆订购页 - 备胎
-extension VehicleOrderPage {
+/// 车辆车型配置页 - 备胎
+extension VehicleModelConfigPage {
     struct SpareTire: View {
-        @StateObject var container: MviContainer<VehicleOrderIntentProtocol, VehicleOrderModelStateProtocol>
-        private var intent: VehicleOrderIntentProtocol { container.intent }
-        private var state: VehicleOrderModelStateProtocol { container.model }
-        @State var spareTires: [SaleModel] = []
+        @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
+        private var intent: VehicleModelConfigIntentProtocol { container.intent }
+        private var state: VehicleModelConfigModelStateProtocol { container.model }
+        @State var spareTires: [SaleModelConfig] = []
         
         var body: some View {
             VStack {
                 ForEach(Array(spareTires.enumerated()), id:\.offset) { index, spareTire in
                     Button(action: {
-                        intent.onTapSpareTire(code: spareTire.saleModelTypeCode, price: spareTire.salePrice)
+                        intent.onTapSpareTire(code: spareTire.typeCode, price: spareTire.typePrice)
                     }) {
                         RoundedRectangle(cornerRadius: 5)
-                            .stroke(state.selectSpareTire == spareTire.saleModelTypeCode ? Color.orange : Color.gray, lineWidth: 1)
+                            .stroke(state.selectSpareTire == spareTire.typeCode ? Color.orange : Color.gray, lineWidth: 1)
                             .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/)
                             .frame(height: 220)
                             .background(Color(hex: 0xfbfbfb))
                             .overlay(
                                 VStack(alignment: .leading) {
                                     HStack {
-                                        Text(spareTire.saleName)
+                                        Text(spareTire.typeName)
                                             .bold()
                                         Spacer()
                                     }
                                     HStack {
                                         VStack {
-                                            if spareTire.salePrice == 0 {
-                                                Text("价格已包含")
+                                            if spareTire.typePrice == 0 {
+                                                Text(LocalizedStringKey("price_included"))
                                             } else {
-                                                Text("￥\(String(describing: spareTire.salePrice))")
+                                                Text("￥\(spareTire.typePrice.formatted())")
                                             }
                                             Spacer()
                                         }
                                         Spacer()
-                                        KFImage(URL(string: spareTire.saleImage[0])!)
+                                        KFImage(URL(string: spareTire.typeImage[0])!)
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                     }
-                                    Text(spareTire.saleDesc)
+                                    Text(spareTire.typeDesc)
                                         .foregroundStyle(AppTheme.colors.fontSecondary)
                                         .font(.system(size: 12))
                                     Spacer()
@@ -68,7 +68,7 @@ extension VehicleOrderPage {
                 if !spareTires.isEmpty {
                     if state.selectSpareTire == "" {
                         if let firstSpareTire = spareTires.first {
-                            intent.onTapSpareTire(code: firstSpareTire.saleModelTypeCode, price: firstSpareTire.salePrice)
+                            intent.onTapSpareTire(code: firstSpareTire.typeCode, price: firstSpareTire.typePrice)
                         }
                     }
                 }
@@ -77,11 +77,11 @@ extension VehicleOrderPage {
     }
 }
 
-struct VehicleOrderPage_SpareTire_Previews: PreviewProvider {
+struct VehicleModelConfigPage_SpareTire_Previews: PreviewProvider {
     static var previews: some View {
-        VehicleOrderPage.SpareTire(container: VehicleOrderPage.buildContainer(), spareTires: [
-            SaleModel.init(saleCode: "H01", saleModelType: "SPIRE_TIRE", saleModelTypeCode: "X05", saleName: "外挂式全尺寸备胎", salePrice: 6000, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "含备胎车长5295毫米", saleParam: ""),
-            SaleModel.init(saleCode: "H01", saleModelType: "SPIRE_TIRE", saleModelTypeCode: "X00", saleName: "无备胎", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], saleDesc: "车长5050毫米", saleParam: "")
+        VehicleModelConfigPage.SpareTire(container: VehicleModelConfigPage.buildContainer(), spareTires: [
+            SaleModelConfig.init(saleCode: "H01", type: "SPIRE_TIRE", typeCode: "X05", typeName: "外挂式全尺寸备胎", typePrice: 6000, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "含备胎车长5295毫米", typeParam: ""),
+            SaleModelConfig.init(saleCode: "H01", type: "SPIRE_TIRE", typeCode: "X00", typeName: "无备胎", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], typeDesc: "车长5050毫米", typeParam: "")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }

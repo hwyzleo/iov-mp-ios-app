@@ -8,20 +8,20 @@
 import SwiftUI
 import Kingfisher
 
-/// 车辆订购页 - 外饰
-extension VehicleOrderPage {
+/// 车辆车型配置页 - 外饰
+extension VehicleModelConfigPage {
     struct Exterior: View {
-        @StateObject var container: MviContainer<VehicleOrderIntentProtocol, VehicleOrderModelStateProtocol>
-        private var intent: VehicleOrderIntentProtocol { container.intent }
-        private var state: VehicleOrderModelStateProtocol { container.model }
-        @State var exteriors: [SaleModel] = []
+        @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
+        private var intent: VehicleModelConfigIntentProtocol { container.intent }
+        private var state: VehicleModelConfigModelStateProtocol { container.model }
+        @State var exteriors: [SaleModelConfig] = []
         @State private var selectedTab = 0
         
         var body: some View {
             VStack(spacing: 0) {
                 TabView(selection: $selectedTab) {
                     ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
-                        KFImage(URL(string: exterior.saleImage[0])!)
+                        KFImage(URL(string: exterior.typeImage[0])!)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
@@ -30,17 +30,17 @@ extension VehicleOrderPage {
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
-                    if selectedTab == index {
-                        VStack {
-                            Text(exterior.saleName)
+                    VStack {
+                        if selectedTab == index {
+                            Text(exterior.typeName)
                                 .foregroundStyle(AppTheme.colors.fontPrimary)
                                 .font(.system(size: 22))
-                            if exterior.salePrice == 0 {
-                                Text("价格已包含")
+                            if exterior.typePrice == 0 {
+                                Text(LocalizedStringKey("included"))
                                     .foregroundStyle(AppTheme.colors.fontSecondary)
                                     .font(.system(size: 15))
                             } else {
-                                Text("￥\(String(describing: exterior.salePrice))")
+                                Text("￥\(exterior.typePrice.formatted())")
                                     .foregroundStyle(AppTheme.colors.fontSecondary)
                                     .font(.system(size: 15))
                             }
@@ -50,7 +50,7 @@ extension VehicleOrderPage {
                 HStack {
                     ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
                         Button(action: {
-                            intent.onTapExterior(code: exterior.saleCode, price: exterior.salePrice)
+                            intent.onTapExterior(code: exterior.saleCode, price: exterior.typePrice)
                             selectedTab = index
                         }) {
                             ZStack {
@@ -64,7 +64,7 @@ extension VehicleOrderPage {
                                 }
                             }
                         }
-                        .foregroundColor(Color(hexStr: exterior.saleParam))
+                        .foregroundColor(Color(hexStr: exterior.typeParam))
                         .frame(maxWidth: .infinity)
                     }
                 }
@@ -79,7 +79,7 @@ extension VehicleOrderPage {
                 if !exteriors.isEmpty {
                     if state.selectExterior == "" {
                         if let firstExterior = exteriors.first {
-                            intent.onTapExterior(code: firstExterior.saleCode, price: firstExterior.salePrice)
+                            intent.onTapExterior(code: firstExterior.saleCode, price: firstExterior.typePrice)
                         }
                     }
                 }
@@ -88,15 +88,15 @@ extension VehicleOrderPage {
     }
 }
 
-struct VehicleOrderPage_Exterior_Previews: PreviewProvider {
+struct VehicleModelConfigPage_Exterior_Previews: PreviewProvider {
     static var previews: some View {
-        VehicleOrderPage.Exterior(container: VehicleOrderPage.buildContainer(), exteriors: [
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS06", saleName: "冰川白车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], saleDesc: "", saleParam: "#e8e8e7"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS05", saleName: "银河灰车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], saleDesc: "", saleParam: "#868888"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS04", saleName: "星尘银车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], saleDesc: "", saleParam: "#cbcbce"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS03", saleName: "天际蓝车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], saleDesc: "", saleParam: "#4681ad"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS02", saleName: "翡翠绿车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], saleDesc: "", saleParam: "#3a5337"),
-            SaleModel.init(saleCode: "H01", saleModelType: "EXTERIOR", saleModelTypeCode: "WS01", saleName: "墨玉黑车漆", salePrice: 0, saleImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], saleDesc: "", saleParam: "#0f0e11")
+        VehicleModelConfigPage.Exterior(container: VehicleModelConfigPage.buildContainer(), exteriors: [
+            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS06", typeName: "冰川白车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], typeDesc: "", typeParam: "#e8e8e7"),
+            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS05", typeName: "银河灰车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], typeDesc: "", typeParam: "#868888"),
+            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS04", typeName: "星尘银车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], typeDesc: "", typeParam: "#cbcbce"),
+            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS03", typeName: "天际蓝车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], typeDesc: "", typeParam: "#4681ad"),
+            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS02", typeName: "翡翠绿车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], typeDesc: "", typeParam: "#3a5337"),
+            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS01", typeName: "墨玉黑车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: "#0f0e11")
         ])
             .environment(\.locale, .init(identifier: "zh-Hans"))
     }
