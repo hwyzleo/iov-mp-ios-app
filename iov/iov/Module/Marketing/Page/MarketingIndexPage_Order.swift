@@ -52,6 +52,10 @@ extension MarketingIndexPage {
                                             Text(LocalizedStringKey("earnest_money_paid"))
                                                 .bold()
                                                 .font(.system(size: 20))
+                                        case .DOWN_PAYMENT_UNPAID:
+                                            Text(LocalizedStringKey("down_payment_to_be_paid"))
+                                                .bold()
+                                                .font(.system(size: 20))
                                         case .DOWN_PAYMENT_PAID:
                                             Text(LocalizedStringKey("down_payment_paid"))
                                                 .bold()
@@ -137,6 +141,23 @@ extension MarketingIndexPage {
                                         bgColor: Color.black
                                     ) {
                                         intent.onTapEarnestMoneyToDownPayment()
+                                    }
+                                }
+                            case .DOWN_PAYMENT_UNPAID:
+                                HStack {
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("cancel_order")
+                                    ) {
+                                        intent.onTapCancelOrder()
+                                    }
+                                    .frame(width: 100)
+                                    Spacer().frame(width: 20)
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("pay_down_payment"),
+                                        color: Color.white,
+                                        bgColor: Color.black
+                                    ) {
+                                        intent.onTapPayOrder(orderPaymentPhase: 2, paymentAmount: 5000, paymentChannel: "ALIPAY")
                                     }
                                 }
                             case .DOWN_PAYMENT_PAID:

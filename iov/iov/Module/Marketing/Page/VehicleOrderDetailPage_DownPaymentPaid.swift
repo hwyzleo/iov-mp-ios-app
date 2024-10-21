@@ -187,7 +187,7 @@ extension VehicleOrderDetailPage {
                         color: Color.white,
                         bgColor: Color.black
                     ) {
-                        
+                        intent.onTapLockOrder()
                     }
                 }
             }

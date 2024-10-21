@@ -169,6 +169,41 @@ class TspApi {
         }
     }
     
+    /// 定金下订单
+    static func downPaymentOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, orderType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCity: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+            let saleModelConfigType: [String:String] = [
+                "MODEL": modelCode,
+                "SPARE_TIRE": spareTireCode,
+                "EXTERIOR": exteriorCode,
+                "WHEEL": wheelCode,
+                "INTERIOR": interiorCode,
+                "ADAS": adasCode
+            ]
+            TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/downPaymentOrder", parameters: [
+                "saleCode": saleCode,
+                "orderNum": orderNum,
+                "saleModelConfigType": saleModelConfigType,
+                "orderType": orderType,
+                "purchasePlan": purchasePlan,
+                "orderPersonName": orderPersonName,
+                "orderPersonIdType": orderPersonIdType,
+                "orderPersonIdNum": orderPersonIdNum,
+                "licenseCity": licenseCity,
+                "dealership": dealership,
+                "deliveryCenter": deliveryCenter
+            ]) { (result: Result<TspResponse<String>, Error>) in
+                completion(result)
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                AppGlobalState.shared.mockOrderState = .DOWN_PAYMENT_UNPAID
+                let res = "ORDERNUM001"
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
     /// 获取订单详情
     static func getOrder(orderNum: String, completion: @escaping (Result<TspResponse<OrderResponse>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {

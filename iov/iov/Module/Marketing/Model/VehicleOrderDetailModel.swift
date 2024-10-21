@@ -90,8 +90,14 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     func displayEarnestMoneyPaid() {
         contentState = .earnestMoneyPaid
     }
+    func displayDownPaymentUnpaid() {
+        contentState = .downPaymentUnpaid
+    }
     func displayDownPaymentPaid() {
         contentState = .downPaymentPaid
+    }
+    func displayArrangeProduction() {
+        contentState = .arrangeProduction
     }
     func displayLoading() {
         contentState = .loading
@@ -122,7 +128,9 @@ extension MarketingTypes.Model {
         case order
         case earnestMoneyUnpaid
         case earnestMoneyPaid
+        case downPaymentUnpaid
         case downPaymentPaid
+        case arrangeProduction
         case error(text: String)
     }
 }

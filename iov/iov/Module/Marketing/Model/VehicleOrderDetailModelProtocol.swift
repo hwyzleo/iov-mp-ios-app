@@ -63,8 +63,12 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func displayEarnestMoneyUnpaid()
     /// 显示意向金已支付页
     func displayEarnestMoneyPaid()
+    /// 显示定金未支付页
+    func displayDownPaymentUnpaid()
     /// 显示定金已支付页
     func displayDownPaymentPaid()
+    /// 显示安排生产页
+    func displayArrangeProduction()
 }
 
 // MARK: - Route

@@ -36,7 +36,7 @@ extension VehicleOrderDetailPage {
         var totalPrice: Decimal
         @State private var orderPersonName = ""
         @State private var orderPersonIdType = ""
-        @State private var orderPersonIdCard = ""
+        @State private var orderPersonIdNum = ""
         @State private var licenseCity = ""
         
         var body: some View {
@@ -210,7 +210,7 @@ extension VehicleOrderDetailPage {
                             Divider()
                             HStack {
                                 Text("证件号码")
-                                TextField("请输入证件号码", text: $orderPersonIdCard)
+                                TextField("请输入证件号码", text: $orderPersonIdNum)
                             }
                         }
                         Spacer().frame(height: 20)
@@ -335,7 +335,17 @@ extension VehicleOrderDetailPage {
                         color: Color.white,
                         bgColor: state.agreementIsChecked == true ? Color.black : Color.gray
                     ) {
-                        
+                        intent.onTapDownPaymentOrder(
+                            orderType: 1,
+                            purchasePlan: 1,
+                            orderPersonName: orderPersonName,
+                            orderPersonIdType: 1,
+                            orderPersonIdNum: orderPersonIdNum,
+                            saleModelName: saleModelName,
+                            licenseCity: licenseCity,
+                            dealership: "",
+                            deliveryCenter: ""
+                        )
                     }
                 }
                 if state.selectBookMethod == "earnestMoney" {

@@ -100,11 +100,11 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         case .EARNEST_MONEY_PAID:
             AppGlobalState.shared.parameters["orderDetailView"] = "EARNEST_MONEY_PAID"
         case .DOWN_PAYMENT_UNPAID:
-            break
+            AppGlobalState.shared.parameters["orderDetailView"] = "DOWN_PAYMENT_UNPAID"
         case .DOWN_PAYMENT_PAID:
             AppGlobalState.shared.parameters["orderDetailView"] = "DOWN_PAYMENT_PAID"
         case .ARRANGE_PRODUCTION:
-            break
+            AppGlobalState.shared.parameters["orderDetailView"] = "ARRANGE_PRODUCTION"
         case .ACTIVATED:
             break
         }

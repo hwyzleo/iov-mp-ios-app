@@ -16,6 +16,7 @@
 "confirm" = "confirm";
 "down_payment" = "down payment";
 "down_payment_paid" = "down payment paid";
+"down_payment_to_be_paid" = "down payment to be paid";
 "earnest_money" = "earnest money";
 "earnest_money_paid" = "earnest money paid";
 "earnest_money_to_be_paid" = "earnest money to be paid";

@@ -8,9 +8,9 @@
 import SwiftUI
 import Kingfisher
 
-/// 车辆订单详情 - 意向金已支付页
+/// 车辆订单详情 - 定金待支付页
 extension VehicleOrderDetailPage {
-    struct EarnestMoneyPaid: View {
+    struct DownPaymentUnpaid: View {
         @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
         private var intent: VehicleOrderDetailIntentProtocol { container.intent }
         private var state: VehicleOrderDetailModelStateProtocol { container.model }
@@ -52,7 +52,7 @@ extension VehicleOrderDetailPage {
                 ScrollView {
                     VStack {
                         HStack {
-                            Text(LocalizedStringKey("earnest_money_paid"))
+                            Text(LocalizedStringKey("down_payment_to_be_paid"))
                                 .bold()
                                 .font(.system(size: 20))
                             Spacer()
@@ -183,18 +183,18 @@ extension VehicleOrderDetailPage {
                 .scrollIndicators(.hidden)
                 HStack {
                     RoundedCornerButton(
-                        nameLocal: LocalizedStringKey("request_refund")
+                        nameLocal: LocalizedStringKey("cancel_order")
                     ) {
-                        
+                        intent.onTapCancelOrder()
                     }
                     .frame(width: 100)
                     Spacer().frame(width: 20)
                     RoundedCornerButton(
-                        nameLocal: LocalizedStringKey("earnest_money_to_down_payment"),
+                        nameLocal: LocalizedStringKey("pay_down_payment"),
                         color: Color.white,
                         bgColor: Color.black
                     ) {
-                        intent.onTapEarnestMoneyToDownPayment()
+                        intent.onTapPayOrder(orderPaymentPhase: 2, paymentAmount: 5000, paymentChannel: "ALIPAY")
                     }
                 }
             }
@@ -210,9 +210,9 @@ extension VehicleOrderDetailPage {
     }
 }
 
-struct VehicleOrderDetailPage_EarnestMoneyPaid_Previews: PreviewProvider {
+struct VehicleOrderDetailPage_DownPaymentUnpaid_Previews: PreviewProvider {
     static var previews: some View {
-        VehicleOrderDetailPage.EarnestMoneyPaid(
+        VehicleOrderDetailPage.DownPaymentUnpaid(
             container: VehicleOrderDetailPage.buildContainer(),
             saleModelImages: [
                 "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png",
