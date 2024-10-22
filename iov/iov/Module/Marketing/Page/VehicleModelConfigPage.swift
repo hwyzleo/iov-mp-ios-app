@@ -23,6 +23,7 @@ struct VehicleModelConfigPage: View {
             case .content:
                 Content(container: container)
             case let .error(text):
+                Content(container: container)
                 ErrorTip(text: text)
             }
         }
@@ -38,7 +39,7 @@ extension VehicleModelConfigPage {
         @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
         private var intent: VehicleModelConfigIntentProtocol { container.intent }
         private var state: VehicleModelConfigModelStateProtocol { container.model }
-        private let tabNames: [String] = ["vehicle_model", "spare_tire", "exterior", "wheel", "interior"]
+        private let tabNames: [String] = ["vehicle_model", "spare_tire", "exterior", "wheel", "interior", "adas"]
         @State private var selectedTab = 0
         
         var body: some View {
@@ -60,6 +61,10 @@ extension VehicleModelConfigPage {
                         .tag(3)
                     VehicleModelConfigPage.Interior(container: container)
                         .tag(4)
+                    VehicleModelConfigPage.Adas(container: container)
+                        .padding(.leading, 20)
+                        .padding(.trailing, 20)
+                        .tag(5)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 HStack {

@@ -45,7 +45,7 @@ extension VehicleModelConfigPage {
                     ForEach(Array(interiors.enumerated()), id:\.offset) { index, interior in
                         Button(action: {
                             selectedTab = index
-                            intent.onTapExterior(code: interior.saleCode, price: interior.typePrice)
+                            intent.onTapExterior(code: interior.typeCode, price: interior.typePrice)
                         }) {
                             ZStack {
                                 Image(systemName: "circle.fill")
@@ -73,7 +73,7 @@ extension VehicleModelConfigPage {
                 if !interiors.isEmpty {
                     if state.selectInterior == "" {
                         if let firstInterior = interiors.first {
-                            intent.onTapInterior(code: firstInterior.saleCode, price: firstInterior.typePrice)
+                            intent.onTapInterior(code: firstInterior.typeCode, price: firstInterior.typePrice)
                         }
                     }
                 }

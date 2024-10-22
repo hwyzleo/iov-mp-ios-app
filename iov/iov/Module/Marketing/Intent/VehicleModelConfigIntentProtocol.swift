@@ -18,6 +18,8 @@ protocol VehicleModelConfigIntentProtocol : MviIntentProtocol {
     func onTapWheel(code: String, price: Decimal)
     /// 点击内饰
     func onTapInterior(code: String, price: Decimal)
+    /// 点击智驾
+    func onTapAdas(code: String, price: Decimal)
     /// 点击保存心愿单
     func onTapSaveWishlist(saleCode: String, modelCode: String, modelName: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String)
     /// 点击订购

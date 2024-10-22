@@ -50,7 +50,7 @@ extension VehicleModelConfigPage {
                 HStack {
                     ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
                         Button(action: {
-                            intent.onTapExterior(code: exterior.saleCode, price: exterior.typePrice)
+                            intent.onTapExterior(code: exterior.typeCode, price: exterior.typePrice)
                             selectedTab = index
                         }) {
                             ZStack {
@@ -79,7 +79,7 @@ extension VehicleModelConfigPage {
                 if !exteriors.isEmpty {
                     if state.selectExterior == "" {
                         if let firstExterior = exteriors.first {
-                            intent.onTapExterior(code: firstExterior.saleCode, price: firstExterior.typePrice)
+                            intent.onTapExterior(code: firstExterior.typeCode, price: firstExterior.typePrice)
                         }
                     }
                 }

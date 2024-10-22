@@ -58,7 +58,7 @@ class TspApi {
     /// 获取销售车型列表
     static func getSaleModelList(saleCode: String, completion: @escaping (Result<TspResponse<[SaleModelConfig]>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/saleModel/" + saleCode, parameters: [:]) { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
+            TspManager.requestGet(path: "/mp/saleModel/" + saleCode + "/config", parameters: [:]) { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
                 completion(result)
             }
         } else {

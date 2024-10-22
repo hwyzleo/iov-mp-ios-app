@@ -44,6 +44,8 @@ protocol VehicleModelConfigModelActionProtocol: MviModelActionProtocol {
     func selectWheel(code: String, price: Decimal)
     /// 选择内饰
     func selectInterior(code: String, price: Decimal)
+    /// 选择智驾
+    func selectAdas(code: String, price: Decimal)
     /// 保存订单信息
     func saveOrder(orderNum: String)
 }

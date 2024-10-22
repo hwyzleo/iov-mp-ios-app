@@ -34,7 +34,7 @@ extension VehicleModelConfigPage {
                     ForEach(Array(wheels.enumerated()), id:\.offset) { index, wheel in
                         Button(action: {
                             selectedTab = index
-                            intent.onTapWheel(code: wheel.saleCode, price: wheel.typePrice)
+                            intent.onTapWheel(code: wheel.typeCode, price: wheel.typePrice)
                         }) {
                             VStack {
                                 Text(wheel.typeName)
@@ -55,7 +55,7 @@ extension VehicleModelConfigPage {
                 if !wheels.isEmpty {
                     if state.selectWheel == "" {
                         if let firstWheel = wheels.first {
-                            intent.onTapWheel(code: firstWheel.saleCode, price: firstWheel.typePrice)
+                            intent.onTapWheel(code: firstWheel.typeCode, price: firstWheel.typePrice)
                         }
                     }
                 }

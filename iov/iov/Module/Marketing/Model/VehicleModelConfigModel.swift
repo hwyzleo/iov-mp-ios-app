@@ -68,27 +68,32 @@ extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
         selectModel = code
         selectModelName = name
         selectModelPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice
+        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
     }
     func selectSpareTire(code: String, price: Decimal) {
         selectSpareTire = code
         selectSpareTirePrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice
+        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
     }
     func selectExterior(code: String, price: Decimal) {
         selectExterior = code
         selectExteriorPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice
+        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
     }
     func selectWheel(code: String, price: Decimal) {
         selectWheel = code
         selectWheelPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice
+        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
     }
     func selectInterior(code: String, price: Decimal) {
         selectInterior = code
         selectInteriorPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice
+        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
+    }
+    func selectAdas(code: String, price: Decimal) {
+        selectAdas = code
+        selectAdasPrice = price
+        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
     }
     func saveOrder(orderNum: String) {
         VehicleManager.order(orderNum: orderNum)
@@ -96,10 +101,10 @@ extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
         routerSubject.close.send()
     }
     func displayError(text: String) {
-        
+        contentState = .error(text: text)
     }
     func displayLoading() {
-        self.contentState = .loading
+        contentState = .loading
     }
 }
 

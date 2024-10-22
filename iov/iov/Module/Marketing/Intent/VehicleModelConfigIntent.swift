@@ -26,7 +26,6 @@ class VehicleModelConfigIntent: MviIntentProtocol {
             AppGlobalState.shared.parameters["backCount"] = backCount-1
             self.modelRouter?.closeScreen()
         } else {
-            debugPrint("333")
             TspApi.getSaleModelList(saleCode: "H01") { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
                 switch result {
                 case .success(let res):
@@ -55,14 +54,20 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
     func onTapInterior(code: String, price: Decimal) {
         modelAction?.selectInterior(code: code, price: price)
     }
+    func onTapAdas(code: String, price: Decimal) {
+        modelAction?.selectAdas(code: code, price: price)
+    }
     func onTapSaveWishlist(saleCode: String, modelCode: String, modelName: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String) {
-        modelAction?.displayLoading()
         TspApi.createWishlist(saleCode: saleCode, modelCode: modelCode, spareTireCode: spareTireCode, exteriorCode: exteriorCode, wheelCode: wheelCode, interiorCode: interiorCode, adasCode: adasCode) { (result: Result<TspResponse<String>, Error>) in
             switch result {
             case .success(let res):
-                VehicleManager.shared.add(orderNum: res.data!, type: .WISHLIST, displayName: modelName)
-                VehicleManager.shared.setCurrentVehicleId(id: res.data!)
-                self.modelRouter?.closeScreen()
+                if res.code == 0 {
+                    VehicleManager.shared.add(orderNum: res.data!, type: .WISHLIST, displayName: modelName)
+                    VehicleManager.shared.setCurrentVehicleId(id: res.data!)
+                    self.modelRouter?.closeScreen()
+                } else {
+                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                }
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")
             }
