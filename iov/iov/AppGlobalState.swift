@@ -20,6 +20,7 @@ class AppGlobalState: ObservableObject {
     @Published var productId: String = ""
     @Published var parameters: [String: Any] = [:]
     @Published var needRefresh: Bool = false
+    @Published var backRefresh: Bool = false
     
     private init() {}
 }

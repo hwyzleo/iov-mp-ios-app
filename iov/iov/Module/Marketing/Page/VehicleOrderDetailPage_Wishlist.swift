@@ -11,6 +11,7 @@ import Kingfisher
 /// 车辆订单详情 - 心愿单
 extension VehicleOrderDetailPage {
     struct Wishlist: View {
+        @EnvironmentObject var globalState: AppGlobalState
         @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
         private var intent: VehicleOrderDetailIntentProtocol { container.intent }
         var saleModelImages: [String]
@@ -154,6 +155,12 @@ extension VehicleOrderDetailPage {
             }
             .padding(.leading, 20)
             .padding(.trailing, 20)
+            .onChange(of: globalState.backRefresh) { _ in
+                if globalState.backRefresh {
+                    globalState.backRefresh = false
+                    intent.viewOnAppear()
+                }
+            }
         }
     }
 }
@@ -180,6 +187,6 @@ struct VehicleOrderDetailPage_Wishlist_Previews: PreviewProvider {
             saleAdasPrice: 10000,
             totalPrice: 205888
         )
-            .environment(\.locale, .init(identifier: "zh-Hans"))
+        .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

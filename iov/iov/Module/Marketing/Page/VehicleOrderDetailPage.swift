@@ -10,6 +10,7 @@ import Kingfisher
 
 /// 车辆订单详情页
 struct VehicleOrderDetailPage: View {
+    @EnvironmentObject var globalState: AppGlobalState
     @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
     private var intent: VehicleOrderDetailIntentProtocol { container.intent }
     private var state: VehicleOrderDetailModelStateProtocol { container.model }

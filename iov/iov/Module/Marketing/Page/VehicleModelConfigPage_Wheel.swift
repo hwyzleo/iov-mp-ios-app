@@ -57,6 +57,14 @@ extension VehicleModelConfigPage {
                         if let firstWheel = wheels.first {
                             intent.onTapWheel(code: firstWheel.typeCode, price: firstWheel.typePrice)
                         }
+                    } else {
+                        var i = 0
+                        for wheel in wheels {
+                            if wheel.typeCode == state.selectWheel {
+                                selectedTab = i
+                            }
+                            i = i + 1
+                        }
                     }
                 }
             }

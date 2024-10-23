@@ -92,6 +92,29 @@ class TspApi {
         }
     }
     
+    /// 修改心愿单
+    static func modifyWishlist(orderNum: String, saleCode: String, modelCode: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+            let saleModelConfigType: [String:String] = [
+                "MODEL": modelCode,
+                "SPARE_TIRE": spareTireCode,
+                "EXTERIOR": exteriorCode,
+                "WHEEL": wheelCode,
+                "INTERIOR": interiorCode,
+                "ADAS": adasCode
+            ]
+            TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/modify", parameters: ["orderNum": orderNum,"saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
+                completion(result)
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                AppGlobalState.shared.mockOrderState = .WISHLIST
+                let res = "ORDERNUM001"
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
     /// 获取心愿单详情
     static func getWishlist(orderNum: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {

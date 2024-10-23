@@ -30,8 +30,8 @@ func mockVehicleSaleOrderList() -> [VehicleSaleOrder] {
 /// 销售车型
 func mockSaleModelList() -> [SaleModelConfig] {
     return [
-        SaleModelConfig.init(saleCode: "H01", type: "OPTIONAL", typeCode: "X02", typeName: "高阶智驾", typePrice: 3000, typeImage: [], typeDesc: "", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "OPTIONAL", typeCode: "X00", typeName: "标准智驾", typePrice: 0, typeImage: [], typeDesc: "", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "ADAS", typeCode: "X02", typeName: "高阶智驾", typePrice: 3000, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: ""),
+        SaleModelConfig.init(saleCode: "H01", type: "ADAS", typeCode: "X00", typeName: "标准智驾", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: ""),
         SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS03", typeName: "霜雪白内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], typeDesc: "", typeParam: "#dcdcd6"),
         SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS02", typeName: "珊瑚橙内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], typeDesc: "", typeParam: "#a35d31"),
         SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS01", typeName: "乌木黑内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], typeDesc: "", typeParam: "#424141"),

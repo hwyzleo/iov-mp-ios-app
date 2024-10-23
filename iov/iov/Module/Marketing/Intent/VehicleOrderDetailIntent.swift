@@ -42,8 +42,8 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     
     private func handleWishlist() {
-        if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
-            TspApi.getWishlist(orderNum: vehiclePo.id) { (result: Result<TspResponse<Wishlist>, Error>) in
+        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+            TspApi.getWishlist(orderNum: orderNum) { (result: Result<TspResponse<Wishlist>, Error>) in
                 switch result {
                 case .success(let res):
                     let wishlist = res.data!
@@ -310,9 +310,13 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             if vehiclePo.type == .WISHLIST {
                 TspApi.deleteWishlist(orderNum: vehiclePo.id) { (result: Result<TspResponse<NoReply>, Error>) in
                     switch result {
-                    case .success(_):
-                        VehicleManager.shared.delete(orderNum: vehiclePo.id)
-                        self.modelRouter?.closeScreen()
+                    case .success(let res):
+                        if res.code == 0 {
+                            VehicleManager.shared.delete(orderNum: vehiclePo.id)
+                            self.modelRouter?.closeScreen()
+                        } else {
+                            self.modelAction?.displayError(text: res.message ?? "请求异常")
+                        }
                     case .failure(_):
                         self.modelAction?.displayError(text: "请求异常")
                     }

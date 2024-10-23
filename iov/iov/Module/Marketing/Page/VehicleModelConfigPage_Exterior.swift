@@ -81,6 +81,14 @@ extension VehicleModelConfigPage {
                         if let firstExterior = exteriors.first {
                             intent.onTapExterior(code: firstExterior.typeCode, price: firstExterior.typePrice)
                         }
+                    } else {
+                        var i = 0
+                        for exterior in exteriors {
+                            if exterior.typeCode == state.selectExterior {
+                                selectedTab = i
+                            }
+                            i = i + 1
+                        }
                     }
                 }
             }
