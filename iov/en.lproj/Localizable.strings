@@ -29,6 +29,7 @@
 "input_mobile" = "Please enter your phone number";
 "input_verify_code" = "Please enter the verification code";
 "interior" = "interior";
+"license_area" = "license area";
 "lock_order" = "lock order";
 "login_confirm_tip" = "I have read and agreed to the <User Agreement> and <Privacy Policy>. When logging in for the first time, an APP account will be registered simultaneously.";
 "login_register" = "login / register";

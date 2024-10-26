@@ -29,6 +29,7 @@
 "input_mobile" = "请输入手机号";
 "input_verify_code" = "请输入验证码";
 "interior" = "内饰";
+"license_area" = "上牌区域";
 "lock_order" = "提前锁定订单";
 "login_confirm_tip" = "我已阅读并同意《用户协议》《隐私政策》，用户首次登录将会同步注册APP账号";
 "login_register" = "登录 / 注册";

@@ -24,10 +24,9 @@ class NetworkManager {
         "clientId": UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
     ] }
     
-    private init() {} // 外部无法使用该类创建该对象
+    private init() {}
     
-    // 封装http-get请求
-    @discardableResult // 外部调用该函数可以没有返回值
+    @discardableResult
     func requestGet(path: String,
                     parameters: Parameters?,
                     // @escaping,逃逸闭包: 一个闭包被作为一个参数传递给一个函数，并且在函数return之后才被唤起执行
@@ -44,7 +43,6 @@ class NetworkManager {
             }
     }
     
-    // 封装http-post请求
     @discardableResult
     func requestPost(path: String,
                      parameters: Parameters?,

@@ -22,6 +22,7 @@ extension MarketingRouter {
         case index
         case modelConfig
         case orderDetail
+        case licenseArea
         case vehicle
         case login
 
@@ -29,9 +30,11 @@ extension MarketingRouter {
             switch self {
             case .index:
                 return .navigationLink
+            case .modelConfig:
+                return .navigationLink
             case .orderDetail:
                 return .navigationLink
-            case .modelConfig:
+            case .licenseArea:
                 return .navigationLink
             case .vehicle:
                 return .navigationLink
@@ -48,11 +51,14 @@ extension MarketingRouter {
             MarketingIndexPage.build()
                 .ignoresSafeArea()
                 .navigationBarHidden(true)
+        case .modelConfig:
+            VehicleModelConfigPage.build()
+                .navigationBarHidden(true)
         case .orderDetail:
             VehicleOrderDetailPage.build()
                 .navigationBarHidden(true)
-        case .modelConfig:
-            VehicleModelConfigPage.build()
+        case .licenseArea:
+            LicenseAreaPage.build()
                 .navigationBarHidden(true)
         case .vehicle:
             VehiclePage.build()

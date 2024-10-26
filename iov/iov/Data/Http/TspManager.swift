@@ -25,8 +25,8 @@ class TspManager {
         }
     }
     
-    // GET请求
     static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
+        print("request tsp:", path, parameters)
         NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters) { result in
             switch result {
             case let .success(data):

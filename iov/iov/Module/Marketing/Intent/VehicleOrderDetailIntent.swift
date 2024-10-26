@@ -83,35 +83,39 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
         ) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
             switch result {
             case .success(let res):
-                let selectedSaleModel = res.data!
-                self.modelAction?.updateSaleModelImages(saleModelImages: selectedSaleModel.saleModelImages)
-                self.modelAction?.updateSaleModelIntro(
-                    saleModelName: selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
-                    saleModelDesc: selectedSaleModel.saleModelDesc
-                )
-                self.modelAction?.updateBookMethod(
-                    downPayment: selectedSaleModel.downPayment,
-                    downPaymentPrice: selectedSaleModel.downPaymentPrice,
-                    earnestMoney: selectedSaleModel.earnestMoney,
-                    earnestMoneyPrice: selectedSaleModel.earnestMoneyPrice,
-                    purchaseDenefitsIntro: selectedSaleModel.purchaseBenefitsIntro
-                )
-                self.modelAction?.updateSaleModelPrice(
-                    saleModelName: selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
-                    saleModelPrice: selectedSaleModel.saleModelConfigPrice["MODEL"] ?? 0,
-                    saleSpareTireName: selectedSaleModel.saleModelConfigName["SPARE_TIRE"] ?? "",
-                    saleSpareTirePrice: selectedSaleModel.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                    saleExteriorName: selectedSaleModel.saleModelConfigName["EXTERIOR"] ?? "",
-                    saleExteriorPrice: selectedSaleModel.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                    saleWheelName: selectedSaleModel.saleModelConfigName["WHEEL"] ?? "",
-                    saleWheelPrice: selectedSaleModel.saleModelConfigPrice["WHEEL"] ?? 0,
-                    saleInteriorName: selectedSaleModel.saleModelConfigName["INTERIOR"] ?? "",
-                    saleInteriorPrice: selectedSaleModel.saleModelConfigPrice["INTERIOR"] ?? 0,
-                    saleAdasName: selectedSaleModel.saleModelConfigName["ADAS"] ?? "",
-                    saleAdasPrice: selectedSaleModel.saleModelConfigPrice["ADAS"] ?? 0,
-                    totalPrice: selectedSaleModel.totalPrice
-                )
-                self.modelAction?.displayOrder()
+                if res.code == 0 {
+                    let selectedSaleModel = res.data!
+                    self.modelAction?.updateSaleModelImages(saleModelImages: selectedSaleModel.saleModelImages)
+                    self.modelAction?.updateSaleModelIntro(
+                        saleModelName: selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
+                        saleModelDesc: selectedSaleModel.saleModelDesc
+                    )
+                    self.modelAction?.updateBookMethod(
+                        downPayment: selectedSaleModel.downPayment,
+                        downPaymentPrice: selectedSaleModel.downPaymentPrice,
+                        earnestMoney: selectedSaleModel.earnestMoney,
+                        earnestMoneyPrice: selectedSaleModel.earnestMoneyPrice,
+                        purchaseDenefitsIntro: selectedSaleModel.purchaseBenefitsIntro
+                    )
+                    self.modelAction?.updateSaleModelPrice(
+                        saleModelName: selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
+                        saleModelPrice: selectedSaleModel.saleModelConfigPrice["MODEL"] ?? 0,
+                        saleSpareTireName: selectedSaleModel.saleModelConfigName["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: selectedSaleModel.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: selectedSaleModel.saleModelConfigName["EXTERIOR"] ?? "",
+                        saleExteriorPrice: selectedSaleModel.saleModelConfigPrice["EXTERIOR"] ?? 0,
+                        saleWheelName: selectedSaleModel.saleModelConfigName["WHEEL"] ?? "",
+                        saleWheelPrice: selectedSaleModel.saleModelConfigPrice["WHEEL"] ?? 0,
+                        saleInteriorName: selectedSaleModel.saleModelConfigName["INTERIOR"] ?? "",
+                        saleInteriorPrice: selectedSaleModel.saleModelConfigPrice["INTERIOR"] ?? 0,
+                        saleAdasName: selectedSaleModel.saleModelConfigName["ADAS"] ?? "",
+                        saleAdasPrice: selectedSaleModel.saleModelConfigPrice["ADAS"] ?? 0,
+                        totalPrice: selectedSaleModel.totalPrice
+                    )
+                    self.modelAction?.displayOrder()
+                } else {
+                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                }
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")
             }
@@ -441,6 +445,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             }
         }
     }
+    func onTapLicenseCity() {
+        modelRouter?.routeToLicenseArea()
+    }
     func onTapCancelOrder() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
@@ -492,6 +499,26 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     self.modelAction?.displayError(text: "请求异常")
                 }
             }
+        }
+    }
+    func onLicenseAreaAppear() {
+        TspApi.getLicenseArea() { (result: Result<TspResponse<[LicenseArea]>, Error>) in
+            switch result {
+            case .success(let res):
+                self.modelAction?.displayProvince(licenseAreaList: res.data!)
+            case .failure(_):
+                self.modelAction?.displayError(text: "请求异常")
+            }
+        }
+    }
+    func onTapLicenseArea(provinceCode: String, cityCode: String, displayName: String) {
+        if cityCode.isEmpty {
+            self.modelAction?.displayCity(provinceCode: provinceCode)
+        } else {
+            AppGlobalState.shared.parameters["licenseCityCode"] = cityCode
+            AppGlobalState.shared.parameters["licenseCityName"] = displayName
+            AppGlobalState.shared.backRefresh = true
+            self.modelRouter?.closeScreen()
         }
     }
 }

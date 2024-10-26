@@ -111,6 +111,16 @@ struct Wishlist: Codable {
     var isValid: Bool
 }
 
+/// 上牌区域
+struct LicenseArea: Codable {
+    /// 省级行政区代码
+    var provinceCode: String
+    /// 地区级行政区代码
+    var cityCode: String?
+    /// 显示名称
+    var displayName: String
+}
+
 /// 订单响应
 struct OrderResponse: Codable {
     /// 订单号

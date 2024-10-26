@@ -166,6 +166,7 @@ extension VehicleOrderDetailPage {
 }
 
 struct VehicleOrderDetailPage_Wishlist_Previews: PreviewProvider {
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         VehicleOrderDetailPage.Wishlist(
             container: VehicleOrderDetailPage.buildContainer(),
@@ -187,6 +188,7 @@ struct VehicleOrderDetailPage_Wishlist_Previews: PreviewProvider {
             saleAdasPrice: 10000,
             totalPrice: 205888
         )
+        .environmentObject(appGlobalState)
         .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

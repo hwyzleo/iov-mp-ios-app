@@ -62,7 +62,9 @@ struct VehicleOrderDetailPage: View {
                     saleInteriorPrice: state.saleInteriorPrice,
                     saleAdasName: state.saleAdasName,
                     saleAdasPrice: state.saleAdasPrice,
-                    totalPrice: state.totalPrice
+                    totalPrice: state.totalPrice,
+                    selectLicenseCityName: state.selectLicenseCityName,
+                    selectLicenseCityCode: state.selectLicenseCityCode
                 )
             case .earnestMoneyUnpaid:
                 EarnestMoneyUnpaid(

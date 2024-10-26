@@ -11,6 +11,7 @@ import Kingfisher
 /// 车辆订单详情 - 预定页
 extension VehicleOrderDetailPage {
     struct Order: View {
+        @EnvironmentObject var globalState: AppGlobalState
         @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
         private var intent: VehicleOrderDetailIntentProtocol { container.intent }
         private var state: VehicleOrderDetailModelStateProtocol { container.model }
@@ -37,7 +38,8 @@ extension VehicleOrderDetailPage {
         @State private var orderPersonName = ""
         @State private var orderPersonIdType = ""
         @State private var orderPersonIdNum = ""
-        @State private var licenseCity = ""
+        @State var selectLicenseCityName: String
+        @State var selectLicenseCityCode: String
         
         var body: some View {
             VStack {
@@ -220,18 +222,21 @@ extension VehicleOrderDetailPage {
                             Spacer()
                         }
                         Spacer().frame(height: 10)
-                        HStack {
-                            Text("上牌城市")
-                            TextField("请选择上牌城市", text: $licenseCity)
-                            Image("icon_arrow_right")
-                                .resizable()
-                                .frame(width: 20, height: 20)
+                        Button(action: { intent.onTapLicenseCity() }) {
+                            HStack {
+                                Text("上牌城市")
+                                TextField("请选择上牌城市", text: $selectLicenseCityName)
+                                Image("icon_arrow_right")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                            }
                         }
+                        .buttonStyle(.plain)
                         if state.selectBookMethod == "downPayment" {
                             Divider()
                             HStack {
                                 Text("销售门店")
-                                TextField("请选择销售门店", text: $licenseCity)
+                                TextField("请选择销售门店", text: $selectLicenseCityName)
                                 Image("icon_arrow_right")
                                     .resizable()
                                     .frame(width: 20, height: 20)
@@ -239,7 +244,7 @@ extension VehicleOrderDetailPage {
                             Divider()
                             HStack {
                                 Text("交付中心")
-                                TextField("请选择交付中心", text: $licenseCity)
+                                TextField("请选择交付中心", text: $selectLicenseCityName)
                                 Image("icon_arrow_right")
                                     .resizable()
                                     .frame(width: 20, height: 20)
@@ -342,7 +347,7 @@ extension VehicleOrderDetailPage {
                             orderPersonIdType: 1,
                             orderPersonIdNum: orderPersonIdNum,
                             saleModelName: saleModelName,
-                            licenseCity: licenseCity,
+                            licenseCity: selectLicenseCityCode,
                             dealership: "",
                             deliveryCenter: ""
                         )
@@ -352,11 +357,11 @@ extension VehicleOrderDetailPage {
                     RoundedCornerButton(
                         nameLocal: LocalizedStringKey("pay_earnest_money"),
                         color: Color.white,
-                        bgColor: state.agreementIsChecked && licenseCity != "" ? Color.black : Color.gray
+                        bgColor: state.agreementIsChecked && selectLicenseCityName != "" ? Color.black : Color.gray
                     ) {
                         intent.onTapEarnestMoneyOrder(
                             saleModelName: saleModelName,
-                            licenseCity: licenseCity
+                            licenseCity: selectLicenseCityCode
                         )
                     }
                 }
@@ -367,13 +372,22 @@ extension VehicleOrderDetailPage {
                 if state.selectBookMethod == "" {
                     intent.onTapDownPaymentBookMethod()
                 }
-                licenseCity = "上海"
+            }
+            .onChange(of: globalState.backRefresh) { _ in
+                if globalState.backRefresh {
+                    globalState.backRefresh = false
+                    if let cityName = AppGlobalState.shared.parameters["licenseCityName"] {
+                        selectLicenseCityName = cityName as! String
+                    }
+                    
+                }
             }
         }
     }
 }
 
 struct VehicleOrderDetailPage_Order_Previews: PreviewProvider {
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         VehicleOrderDetailPage.Order(
             container: VehicleOrderDetailPage.buildContainer(),
@@ -399,8 +413,11 @@ struct VehicleOrderDetailPage_Order_Previews: PreviewProvider {
             saleInteriorPrice: 0,
             saleAdasName: "高价智驾",
             saleAdasPrice: 10000,
-            totalPrice: 205888
+            totalPrice: 205888,
+            selectLicenseCityName: "上海",
+            selectLicenseCityCode: "3101"
         )
+        .environmentObject(appGlobalState)
         .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }

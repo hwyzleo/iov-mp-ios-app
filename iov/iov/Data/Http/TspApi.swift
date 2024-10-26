@@ -145,7 +145,7 @@ class TspApi {
     /// 获取已选择的销售车型及配置
     static func getSelectedSaleModel(saleCode: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/saleModel/selectedSaleModel", parameters: [
+            TspManager.requestGet(path: "/mp/saleModel/selectedSaleModel", parameters: [
                 "saleCode":saleCode,
                 "modelCode":modelCode,
                 "exteriorCode":exteriorCode,
@@ -159,6 +159,20 @@ class TspApi {
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 let res = mockSelectedSaleModel()
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
+    /// 获取上牌区域
+    static func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+            TspManager.requestGet(path: "/mp/saleModel/licenseArea", parameters: [:]) { (result: Result<TspResponse<[LicenseArea]>, Error>) in
+                completion(result)
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let res = mockLicenseArea()
                 completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
             }
         }

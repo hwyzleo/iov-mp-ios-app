@@ -16,6 +16,8 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapDownPaymentBookMethod()
     /// 点击意向金预定方式
     func onTapEarnestMoneyBookMethod()
+    /// 点击上牌城市
+    func onTapLicenseCity()
     /// 点击订购协议
     func onTapAgreement()
     /// 点击意向金预定
@@ -30,4 +32,8 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapEarnestMoneyToDownPayment()
     /// 点击锁定订单
     func onTapLockOrder()
+    /// 显示上牌区域页
+    func onLicenseAreaAppear()
+    /// 点击上牌区域
+    func onTapLicenseArea(provinceCode: String, cityCode: String, displayName: String)
 }
