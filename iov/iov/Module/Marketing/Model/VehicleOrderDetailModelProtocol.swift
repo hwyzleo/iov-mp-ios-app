@@ -36,7 +36,6 @@ protocol VehicleOrderDetailModelStateProtocol {
     var agreementIsChecked: Bool { get }
     var orderNum: String { get }
     var orderTime: Int64 { get }
-    var displayLicenseAreaList: [LicenseArea] { get }
     var selectLicenseCityName: String { get }
     var selectLicenseCityCode: String { get }
 }
@@ -72,10 +71,6 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func displayDownPaymentPaid()
     /// 显示安排生产页
     func displayArrangeProduction()
-    /// 显示省市列表
-    func displayProvince(licenseAreaList: [LicenseArea])
-    /// 显示省市下级列表
-    func displayCity(provinceCode: String)
 }
 
 // MARK: - Route

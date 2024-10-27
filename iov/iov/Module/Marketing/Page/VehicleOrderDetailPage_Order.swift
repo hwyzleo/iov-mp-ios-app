@@ -94,65 +94,67 @@ extension VehicleOrderDetailPage {
                         }
                         if downPayment {
                             Spacer().frame(height: 10)
-                            Button(action: { intent.onTapDownPaymentBookMethod() }) {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(state.selectBookMethod == "downPayment" ? Color.orange : Color.gray, lineWidth: 1)
-                                    .frame(height: 130)
-                                    .overlay(
-                                        VStack {
-                                            HStack {
-                                                RoundedCornerButton(name: "锁定限时权益", color: .white, bgColor: .orange, borderColor: .orange, height: 20, fontSize: 10) {}
-                                                    .frame(width: 80)
-                                                Text(LocalizedStringKey("down_payment"))
-                                                Text("￥\(downPaymentPrice.formatted())")
-                                                Spacer()
-                                                Text(LocalizedStringKey("view_benefits_detail"))
-                                            }
-                                            Spacer().frame(height: 10)
-                                            HStack {
-                                                Text(purchaseBenefitsIntro)
-                                                    .lineSpacing(10.0)
-                                                    .fixedSize(horizontal: false, vertical: true)
-                                                Spacer()
-                                            }
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(state.selectBookMethod == "downPayment" ? Color.orange : Color.gray, lineWidth: 1)
+                                .frame(height: 130)
+                                .overlay(
+                                    VStack {
+                                        HStack {
+                                            RoundedCornerButton(name: "锁定限时权益", color: .white, bgColor: .orange, borderColor: .orange, height: 20, fontSize: 10) {}
+                                                .frame(width: 80)
+                                            Text(LocalizedStringKey("down_payment"))
+                                            Text("￥\(downPaymentPrice.formatted())")
+                                            Spacer()
+                                            Text(LocalizedStringKey("view_benefits_detail"))
+                                        }
+                                        Spacer().frame(height: 10)
+                                        HStack {
+                                            Text(purchaseBenefitsIntro)
+                                                .lineSpacing(10.0)
+                                                .fixedSize(horizontal: false, vertical: true)
                                             Spacer()
                                         }
-                                        .font(.system(size: 14))
-                                        .padding()
-                                    )
-                            }
-                            .buttonStyle(.plain)
+                                        Spacer()
+                                    }
+                                    .font(.system(size: 14))
+                                    .padding()
+                                )
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    intent.onTapDownPaymentBookMethod()
+                                }
                         }
                         if earnestMoney {
                             Spacer().frame(height: 10)
-                            Button(action: { intent.onTapEarnestMoneyBookMethod() }) {
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(state.selectBookMethod == "earnestMoney" ? Color.orange : Color.gray, lineWidth: 1)
-                                    .frame(height: 130)
-                                    .overlay(
-                                        VStack {
-                                            HStack {
-                                                RoundedCornerButton(name: "意向金随时可退", color: .white, bgColor: .gray, height: 20, fontSize: 10) {}
-                                                    .frame(width: 80)
-                                                Text(LocalizedStringKey("earnest_money"))
-                                                Text("￥\(earnestMoneyPrice.formatted())")
-                                                Spacer()
-                                                Text(LocalizedStringKey("view_benefits_detail"))
-                                            }
-                                            Spacer().frame(height: 10)
-                                            HStack {
-                                                Text(purchaseBenefitsIntro)
-                                                    .lineSpacing(10.0)
-                                                    .fixedSize(horizontal: false, vertical: true)
-                                                Spacer()
-                                            }
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(state.selectBookMethod == "earnestMoney" ? Color.orange : Color.gray, lineWidth: 1)
+                                .frame(height: 130)
+                                .overlay(
+                                    VStack {
+                                        HStack {
+                                            RoundedCornerButton(name: "意向金随时可退", color: .white, bgColor: .gray, height: 20, fontSize: 10) {}
+                                                .frame(width: 80)
+                                            Text(LocalizedStringKey("earnest_money"))
+                                            Text("￥\(earnestMoneyPrice.formatted())")
+                                            Spacer()
+                                            Text(LocalizedStringKey("view_benefits_detail"))
+                                        }
+                                        Spacer().frame(height: 10)
+                                        HStack {
+                                            Text(purchaseBenefitsIntro)
+                                                .lineSpacing(10.0)
+                                                .fixedSize(horizontal: false, vertical: true)
                                             Spacer()
                                         }
-                                        .font(.system(size: 14))
-                                        .padding()
-                                    )
-                            }
-                            .buttonStyle(.plain)
+                                        Spacer()
+                                    }
+                                    .font(.system(size: 14))
+                                    .padding()
+                                )
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    intent.onTapEarnestMoneyBookMethod()
+                                }
                         }
                         if state.selectBookMethod == "downPayment" {
                             Spacer().frame(height: 20)
@@ -222,16 +224,16 @@ extension VehicleOrderDetailPage {
                             Spacer()
                         }
                         Spacer().frame(height: 10)
-                        Button(action: { intent.onTapLicenseCity() }) {
-                            HStack {
-                                Text("上牌城市")
-                                TextField("请选择上牌城市", text: $selectLicenseCityName)
-                                Image("icon_arrow_right")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                            }
+                        HStack {
+                            Text("上牌城市")
+                            TextField("请选择上牌城市", text: $selectLicenseCityName)
+                            Image("icon_arrow_right")
+                                .resizable()
+                                .frame(width: 20, height: 20)
                         }
-                        .buttonStyle(.plain)
+                        .onTapGesture {
+                            intent.onTapLicenseCity()
+                        }
                         if state.selectBookMethod == "downPayment" {
                             Divider()
                             HStack {
@@ -262,54 +264,61 @@ extension VehicleOrderDetailPage {
                             Spacer()
                             Text("￥\(saleModelPrice.formatted())")
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleSpareTireName)
                             Spacer()
                             if saleSpareTirePrice > 0 {
                                 Text("￥\(saleSpareTirePrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleExteriorName)
                             Spacer()
                             if saleExteriorPrice > 0 {
                                 Text("￥\(saleExteriorPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleWheelName)
                             Spacer()
                             if saleWheelPrice > 0 {
                                 Text("￥\(saleWheelPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleInteriorName)
                             Spacer()
                             if saleInteriorPrice > 0 {
                                 Text("￥\(saleInteriorPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleAdasName)
                             Spacer()
                             if saleAdasPrice > 0 {
                                 Text("￥\(saleAdasPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         Divider()
+                        Spacer().frame(height: 5)
                         HStack {
-                            Text("总价")
+                            Text(LocalizedStringKey("total_price"))
                             Spacer()
                             Text("￥\(totalPrice.formatted())")
                         }
@@ -378,6 +387,7 @@ extension VehicleOrderDetailPage {
                     globalState.backRefresh = false
                     if let cityName = AppGlobalState.shared.parameters["licenseCityName"] {
                         selectLicenseCityName = cityName as! String
+                        selectLicenseCityCode = AppGlobalState.shared.parameters["licenseCityCode"] as! String
                     }
                     
                 }

@@ -116,11 +116,10 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             TspApi.payOrder(orderNum: orderNum, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
                 switch result {
                 case .success(_):
-                    if orderPaymentPhase != 3 {
-                        self.viewOnAppear()
-                    } else {
-                        self.modelAction?.displayVehicle()
+                    if orderPaymentPhase == 3 {
+                        AppGlobalState.shared.needRefresh = true
                     }
+                    self.viewOnAppear()
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -132,9 +131,13 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             modelAction?.displayLoading()
             TspApi.cancelOrder(orderNum: orderNum) { (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
-                case .success(_):
-                    VehicleManager.shared.delete(orderNum: orderNum)
-                    self.viewOnAppear()
+                case .success(let res):
+                    if res.code == 0 {
+                        VehicleManager.shared.delete(orderNum: orderNum)
+                        self.viewOnAppear()
+                    } else {
+                        self.modelAction?.displayError(text: res.message ?? "请求异常")
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }

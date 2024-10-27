@@ -55,7 +55,11 @@ func tsDisplay(ts: Int64) -> String {
 
 /// 格式化时间戳
 func tsFormat(ts: Int64, format: String = "yyyy-MM-dd HH:mm:ss") -> String {
-    return dateToStr(date: Date(timeIntervalSince1970: TimeInterval(ts)), format: format)
+    var time = ts
+    if time > 1000000000000 {
+        time = time / 1000
+    }
+    return dateToStr(date: Date(timeIntervalSince1970: TimeInterval(time)), format: format)
 }
 
 /// 计算倒计时

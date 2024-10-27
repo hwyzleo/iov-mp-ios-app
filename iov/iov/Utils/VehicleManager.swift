@@ -68,6 +68,9 @@ class VehicleManager {
                 setCurrentVehicleId(id: vehicleSaleOrder.orderNum)
             }
         }
+        if !vehicles.isEmpty && (currentVehicleId == nil || !vehicles.keys.contains(currentVehicleId!)) {
+            setCurrentVehicleId(id: vehicles.first!.key)
+        }
     }
     
     /// 添加车辆信息
@@ -116,10 +119,10 @@ class VehicleManager {
     
     /// 获取当前选择的车辆ID
     func getCurrentVehicleId() -> String? {
-        if currentVehicleId != nil {
+        if currentVehicleId != nil && vehicles.keys.contains(currentVehicleId!) {
             return currentVehicleId
         }
-        if hasVehicle() {
+        if hasOrder() {
             setCurrentVehicleId(id: vehicles.keys.first!)
             return vehicles.keys.first!
         }

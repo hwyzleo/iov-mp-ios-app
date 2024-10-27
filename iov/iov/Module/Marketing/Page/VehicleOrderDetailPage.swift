@@ -106,7 +106,9 @@ struct VehicleOrderDetailPage: View {
                     saleAdasPrice: state.saleAdasPrice,
                     totalPrice: state.totalPrice,
                     orderNum: state.orderNum,
-                    orderTime: state.orderTime
+                    orderTime: state.orderTime,
+                    selectLicenseCityName: state.selectLicenseCityName,
+                    selectLicenseCityCode: state.selectLicenseCityCode
                 )
             case .downPaymentUnpaid:
                 DownPaymentUnpaid(

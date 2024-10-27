@@ -10,9 +10,9 @@ import Kingfisher
 
 /// 上牌区域页
 struct LicenseAreaPage: View {
-    @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
-    private var intent: VehicleOrderDetailIntentProtocol { container.intent }
-    private var state: VehicleOrderDetailModelStateProtocol { container.model }
+    @StateObject var container: MviContainer<LicenseAreaIntentProtocol, LicenseAreaModelStateProtocol>
+    private var intent: LicenseAreaIntentProtocol { container.intent }
+    private var state: LicenseAreaModelStateProtocol { container.model }
 
     var body: some View {
         ZStack {
@@ -23,7 +23,7 @@ struct LicenseAreaPage: View {
                     .scaleEffect(2)
             case let .error(text):
                 ErrorTip(text: text)
-            default:
+            case .content:
                 VStack {
                     TopBackTitleBar(titleLocal: LocalizedStringKey("license_area"))
                     ScrollView {
@@ -54,7 +54,7 @@ struct LicenseAreaPage: View {
             }
         }
         .onAppear {
-            intent.onLicenseAreaAppear()
+            intent.viewOnAppear()
         }
         .modifier(MarketingRouter(subjects: state.routerSubject))
     }
@@ -63,7 +63,7 @@ struct LicenseAreaPage: View {
 struct LicenseAreaPage_Previews: PreviewProvider {
     static var previews: some View {
         LicenseAreaPage(
-            container: VehicleOrderDetailPage.buildContainer()
+            container: LicenseAreaPage.buildContainer()
         )
         .environment(\.locale, .init(identifier: "zh-Hans"))
     }

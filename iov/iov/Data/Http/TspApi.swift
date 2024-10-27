@@ -179,7 +179,7 @@ class TspApi {
     }
     
     /// 意向金下订单
-    static func earnestMoneyOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCity: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    static func earnestMoneyOrder(saleCode: String, orderNum: String?, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCity: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
             let saleModelConfigType: [String:String] = [
                 "MODEL": modelCode,
@@ -191,7 +191,7 @@ class TspApi {
             ]
             TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/earnestMoneyOrder", parameters: [
                 "saleCode": saleCode,
-                "orderNum": orderNum,
+                "orderNum": orderNum as Any,
                 "saleModelConfigType": saleModelConfigType,
                 "licenseCity": licenseCity
             ]) { (result: Result<TspResponse<String>, Error>) in

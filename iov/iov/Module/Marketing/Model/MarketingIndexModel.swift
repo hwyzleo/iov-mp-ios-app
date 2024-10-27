@@ -23,7 +23,7 @@ final class MarketingIndexModel: ObservableObject, MarketingIndexModelStateProto
 
 extension MarketingIndexModel: MarketingIndexModelActionProtocol {
     func displayError(text: String) {
-        
+        contentState = .error(text: text)
     }
     func displayLoading() {
         contentState = .loading
@@ -50,6 +50,7 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
         }
         self.saleModelImages = order.saleModelImages
         self.totalPrice = order.totalPrice
+        self.saleModelDesc = order.saleModelDesc
         contentState = .content
     }
     func displayVehicle() {

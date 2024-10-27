@@ -370,7 +370,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     }
     func onTapEarnestMoneyOrder(saleModelName: String, licenseCity: String) {
         modelAction?.displayLoading()
-        var orderNum: String = ""
+        var orderNum: String? = nil
         if let id = VehicleManager.shared.getCurrentVehicleId() {
             orderNum = id
         }
@@ -387,9 +387,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         ) { (result: Result<TspResponse<String>, Error>) in
             switch result {
             case .success(let res):
-                if !orderNum.isEmpty {
+                if orderNum != nil {
                     // 心愿单转换的意向金订单
-                    VehicleManager.shared.delete(orderNum: orderNum)
+                    VehicleManager.shared.delete(orderNum: orderNum!)
                 }
                 VehicleManager.shared.add(orderNum: res.data!, type: .ORDER, displayName: saleModelName)
                 VehicleManager.shared.setCurrentVehicleId(id: res.data!)
@@ -499,26 +499,6 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     self.modelAction?.displayError(text: "请求异常")
                 }
             }
-        }
-    }
-    func onLicenseAreaAppear() {
-        TspApi.getLicenseArea() { (result: Result<TspResponse<[LicenseArea]>, Error>) in
-            switch result {
-            case .success(let res):
-                self.modelAction?.displayProvince(licenseAreaList: res.data!)
-            case .failure(_):
-                self.modelAction?.displayError(text: "请求异常")
-            }
-        }
-    }
-    func onTapLicenseArea(provinceCode: String, cityCode: String, displayName: String) {
-        if cityCode.isEmpty {
-            self.modelAction?.displayCity(provinceCode: provinceCode)
-        } else {
-            AppGlobalState.shared.parameters["licenseCityCode"] = cityCode
-            AppGlobalState.shared.parameters["licenseCityName"] = displayName
-            AppGlobalState.shared.backRefresh = true
-            self.modelRouter?.closeScreen()
         }
     }
 }

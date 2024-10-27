@@ -34,8 +34,6 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     var orderTime: Int64 = 0
     @Published var selectBookMethod: String = ""
     @Published var agreementIsChecked: Bool = false
-    var licenseAreaList: [LicenseArea] = []
-    @Published var displayLicenseAreaList: [LicenseArea] = []
     @Published var selectLicenseCityName: String = ""
     @Published var selectLicenseCityCode: String = ""
 }
@@ -102,24 +100,6 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     }
     func displayArrangeProduction() {
         contentState = .arrangeProduction
-    }
-    func displayProvince(licenseAreaList: [LicenseArea]) {
-        self.licenseAreaList = licenseAreaList
-        self.displayLicenseAreaList = []
-        for area in licenseAreaList {
-            if area.cityCode == nil {
-                self.displayLicenseAreaList.append(area)
-            }
-        }
-        contentState = .wishlist
-    }
-    func displayCity(provinceCode: String) {
-        self.displayLicenseAreaList = []
-        for area in licenseAreaList {
-            if area.cityCode != nil && area.provinceCode == provinceCode {
-                self.displayLicenseAreaList.append(area)
-            }
-        }
     }
     func displayLoading() {
         contentState = .loading

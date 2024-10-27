@@ -9,12 +9,12 @@ import SwiftUI
 
 extension LicenseAreaPage {
     
-    static func buildContainer() -> some MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol> {
-        let model = VehicleOrderDetailModel()
-        let intent = VehicleOrderDetailIntent(model: model)
+    static func buildContainer() -> some MviContainer<LicenseAreaIntentProtocol, LicenseAreaModelStateProtocol> {
+        let model = LicenseAreaModel()
+        let intent = LicenseAreaIntent(model: model)
         let container = MviContainer(
-            intent: intent as VehicleOrderDetailIntentProtocol,
-            model: model as VehicleOrderDetailModelStateProtocol,
+            intent: intent as LicenseAreaIntentProtocol,
+            model: model as LicenseAreaModelStateProtocol,
             modelChangePublisher: model.objectWillChange
         )
         return container

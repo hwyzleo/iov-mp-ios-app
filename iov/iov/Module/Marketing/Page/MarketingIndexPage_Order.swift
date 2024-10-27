@@ -140,7 +140,7 @@ extension MarketingIndexPage {
                                         color: Color.white,
                                         bgColor: Color.black
                                     ) {
-                                        intent.onTapEarnestMoneyToDownPayment()
+                                        intent.onTapOrderDetail(orderState: orderState)
                                     }
                                 }
                             case .DOWN_PAYMENT_UNPAID:

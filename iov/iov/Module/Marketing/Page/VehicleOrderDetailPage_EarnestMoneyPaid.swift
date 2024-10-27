@@ -31,7 +31,8 @@ extension VehicleOrderDetailPage {
         var totalPrice: Decimal
         var orderNum: String
         var orderTime: Int64
-        @State private var licenseCity = ""
+        @State var selectLicenseCityName: String
+        @State var selectLicenseCityCode: String
         
         var body: some View {
             VStack {
@@ -93,10 +94,13 @@ extension VehicleOrderDetailPage {
                         Spacer().frame(height: 10)
                         HStack {
                             Text("上牌城市")
-                            TextField("请选择上牌城市", text: $licenseCity)
+                            TextField("请选择上牌城市", text: $selectLicenseCityName)
                             Image("icon_arrow_right")
                                 .resizable()
                                 .frame(width: 20, height: 20)
+                        }
+                        .onTapGesture {
+                            intent.onTapLicenseCity()
                         }
                         Spacer().frame(height: 20)
                         HStack {
@@ -110,54 +114,61 @@ extension VehicleOrderDetailPage {
                             Spacer()
                             Text("￥\(saleModelPrice.formatted())")
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleSpareTireName)
                             Spacer()
                             if saleSpareTirePrice > 0 {
                                 Text("￥\(saleSpareTirePrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleExteriorName)
                             Spacer()
                             if saleExteriorPrice > 0 {
                                 Text("￥\(saleExteriorPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleWheelName)
                             Spacer()
                             if saleWheelPrice > 0 {
                                 Text("￥\(saleWheelPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleInteriorName)
                             Spacer()
                             if saleInteriorPrice > 0 {
                                 Text("￥\(saleInteriorPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         HStack {
                             Text(saleAdasName)
                             Spacer()
                             if saleAdasPrice > 0 {
                                 Text("￥\(saleAdasPrice.formatted())")
                             } else {
-                                Text("已包含")
+                                Text(LocalizedStringKey("price_included"))
                             }
                         }
+                        Spacer().frame(height: 5)
                         Divider()
+                        Spacer().frame(height: 5)
                         HStack {
-                            Text("总价")
+                            Text(LocalizedStringKey("total_price"))
                             Spacer()
                             Text("￥\(totalPrice.formatted())")
                         }
@@ -204,7 +215,6 @@ extension VehicleOrderDetailPage {
                 if state.selectBookMethod == "" {
                     intent.onTapDownPaymentBookMethod()
                 }
-                licenseCity = "上海"
             }
         }
     }
@@ -233,7 +243,9 @@ struct VehicleOrderDetailPage_EarnestMoneyPaid_Previews: PreviewProvider {
             saleAdasPrice: 10000,
             totalPrice: 205888,
             orderNum: "ORDERNUM001",
-            orderTime: 1729403155
+            orderTime: 1729403155,
+            selectLicenseCityName: "上海",
+            selectLicenseCityCode: "3101"
         )
         .environment(\.locale, .init(identifier: "zh-Hans"))
     }

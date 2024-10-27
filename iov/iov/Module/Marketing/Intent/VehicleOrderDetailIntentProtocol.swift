@@ -32,8 +32,4 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapEarnestMoneyToDownPayment()
     /// 点击锁定订单
     func onTapLockOrder()
-    /// 显示上牌区域页
-    func onLicenseAreaAppear()
-    /// 点击上牌区域
-    func onTapLicenseArea(provinceCode: String, cityCode: String, displayName: String)
 }

@@ -33,32 +33,33 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                         TspApi.getWishlist(orderNum: orderNum) { (result: Result<TspResponse<Wishlist>, Error>) in
                             switch result {
                             case .success(let res):
-                                let wishlist = res.data!
-                                self.modelAction?.selectModel(
-                                    code: wishlist.saleModelConfigType["MODEL"] ?? "",
-                                    name: wishlist.saleModelConfigName["MODEL"] ?? "",
-                                    price: wishlist.saleModelConfigPrice["MODEL"] ?? 0
-                                )
-                                self.modelAction?.selectSpareTire(
-                                    code: wishlist.saleModelConfigType["SPARE_TIRE"] ?? "",
-                                    price: wishlist.saleModelConfigPrice["SPARE_TIRE"] ?? 0
-                                )
-                                self.modelAction?.selectExterior(
-                                    code: wishlist.saleModelConfigType["EXTERIOR"] ?? "",
-                                    price: wishlist.saleModelConfigPrice["EXTERIOR"] ?? 0
-                                )
-                                self.modelAction?.selectWheel(
-                                    code: wishlist.saleModelConfigType["WHEEL"] ?? "",
-                                    price: wishlist.saleModelConfigPrice["WHEEL"] ?? 0
-                                )
-                                self.modelAction?.selectInterior(
-                                    code: wishlist.saleModelConfigType["INTERIOR"] ?? "",
-                                    price: wishlist.saleModelConfigPrice["INTERIOR"] ?? 0
-                                )
-                                self.modelAction?.selectAdas(
-                                    code: wishlist.saleModelConfigType["ADAS"] ?? "",
-                                    price: wishlist.saleModelConfigPrice["ADAS"] ?? 0
-                                )
+                                if let wishlist = res.data {
+                                    self.modelAction?.selectModel(
+                                        code: wishlist.saleModelConfigType["MODEL"] ?? "",
+                                        name: wishlist.saleModelConfigName["MODEL"] ?? "",
+                                        price: wishlist.saleModelConfigPrice["MODEL"] ?? 0
+                                    )
+                                    self.modelAction?.selectSpareTire(
+                                        code: wishlist.saleModelConfigType["SPARE_TIRE"] ?? "",
+                                        price: wishlist.saleModelConfigPrice["SPARE_TIRE"] ?? 0
+                                    )
+                                    self.modelAction?.selectExterior(
+                                        code: wishlist.saleModelConfigType["EXTERIOR"] ?? "",
+                                        price: wishlist.saleModelConfigPrice["EXTERIOR"] ?? 0
+                                    )
+                                    self.modelAction?.selectWheel(
+                                        code: wishlist.saleModelConfigType["WHEEL"] ?? "",
+                                        price: wishlist.saleModelConfigPrice["WHEEL"] ?? 0
+                                    )
+                                    self.modelAction?.selectInterior(
+                                        code: wishlist.saleModelConfigType["INTERIOR"] ?? "",
+                                        price: wishlist.saleModelConfigPrice["INTERIOR"] ?? 0
+                                    )
+                                    self.modelAction?.selectAdas(
+                                        code: wishlist.saleModelConfigType["ADAS"] ?? "",
+                                        price: wishlist.saleModelConfigPrice["ADAS"] ?? 0
+                                    )
+                                }
                             case .failure(_):
                                 self.modelAction?.displayError(text: "请求异常")
                             }

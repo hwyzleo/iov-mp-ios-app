@@ -54,7 +54,7 @@ class TspManager {
         let decoder = JSONDecoder()
         
         let dataStr = String(data: data, encoding: .utf8)!
-        print(dataStr)
+        print("response tsp:", dataStr)
         
         guard let decodedData = try? decoder.decode(T.self, from: data) else {
             let error = NSError(domain: "NetworkAPIError", code: 0,
