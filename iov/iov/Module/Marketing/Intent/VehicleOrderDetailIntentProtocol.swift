@@ -16,6 +16,14 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapDownPaymentBookMethod()
     /// 点击意向金预定方式
     func onTapEarnestMoneyBookMethod()
+    /// 点击购车类型个人
+    func onTapOrderTypePerson()
+    /// 点击购车类型企业
+    func onTapOrderTypeOrg()
+    /// 点击购车方案全款
+    func onTapPurchasePlanFullPayment()
+    /// 点击否车方案分期
+    func onTapPurchasePlanStaging()
     /// 点击上牌城市
     func onTapLicenseCity()
     /// 点击订购协议

@@ -38,6 +38,8 @@ protocol VehicleOrderDetailModelStateProtocol {
     var orderTime: Int64 { get }
     var selectLicenseCityName: String { get }
     var selectLicenseCityCode: String { get }
+    var orderType: Int { get }
+    var purchasePlan: Int { get }
 }
 
 // MARK: - Intent Action
@@ -53,6 +55,10 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, saleSpareTireName: String, saleSpareTirePrice: Decimal, saleExteriorName: String, saleExteriorPrice: Decimal, saleWheelName: String, saleWheelPrice: Decimal, saleInteriorName: String, saleInteriorPrice: Decimal, saleAdasName: String, saleAdasPrice: Decimal, totalPrice: Decimal)
     /// 更新选择预定方式
     func updateSelectBookMethod(bookMethod: String)
+    /// 更新选择订购类型
+    func updateSelectOrderType(orderType: Int)
+    /// 更新选择购车方案
+    func updateSelectPurchasePlan(purchasePlan: Int)
     /// 更新订单
     func updateOrder(orderNum: String, orderTime: Int64)
     /// 切换订购协议

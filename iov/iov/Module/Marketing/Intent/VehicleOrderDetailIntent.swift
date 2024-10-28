@@ -365,6 +365,18 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onTapEarnestMoneyBookMethod() {
         self.modelAction?.updateSelectBookMethod(bookMethod: "earnestMoney")
     }
+    func onTapOrderTypePerson() {
+        self.modelAction?.updateSelectOrderType(orderType: 1)
+    }
+    func onTapOrderTypeOrg() {
+        self.modelAction?.updateSelectOrderType(orderType: 2)
+    }
+    func onTapPurchasePlanFullPayment() {
+        self.modelAction?.updateSelectPurchasePlan(purchasePlan: 1)
+    }
+    func onTapPurchasePlanStaging() {
+        self.modelAction?.updateSelectPurchasePlan(purchasePlan: 2)
+    }
     func onTapAgreement() {
         self.modelAction?.toggleAgreement()
     }

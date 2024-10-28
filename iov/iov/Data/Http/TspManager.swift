@@ -9,12 +9,18 @@ import Foundation
 import Alamofire
 import UIKit
 
+// TSP请求头
+var tspHeaders: HTTPHeaders { [
+    "token": UserManager.getToken(),
+    "clientId": getDeviceId()
+] }
+
 /// TSP管理
 class TspManager {
     
     // POST请求
     static func requestPost<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters) { result in
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let.success(data):
                 let parseResult: Result<T, Error> = parseData(data)
@@ -27,7 +33,7 @@ class TspManager {
     
     static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
         print("request tsp:", path, parameters)
-        NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters) { result in
+        NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)

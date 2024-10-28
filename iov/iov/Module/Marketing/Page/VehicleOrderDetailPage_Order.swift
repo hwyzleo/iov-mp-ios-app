@@ -23,6 +23,8 @@ extension VehicleOrderDetailPage {
         var earnestMoney: Bool
         var earnestMoneyPrice: Decimal
         var purchaseBenefitsIntro: String
+        var orderType: Int
+        var purchasePlan: Int
         var saleModelPrice: Decimal
         var saleSpareTireName: String
         var saleSpareTirePrice: Decimal
@@ -59,33 +61,11 @@ extension VehicleOrderDetailPage {
                 .frame(height: 50)
                 ScrollView {
                     VStack {
-                        TabView {
-                            ForEach(saleModelImages, id: \.self) { image in
-                                ZStack {
-                                    if !image.isEmpty {
-                                        KFImage(URL(string: image)!)
-                                            .resizable()
-                                            .scaledToFit()
-                                    }
-                                }
-                            }
-                        }
-                        .tabViewStyle(.page)
-                        .frame(height: 200)
-                        .clipped()
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text(saleModelName)
-                                .bold()
-                            Spacer()
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleModelDesc)
-                                .foregroundStyle(AppTheme.colors.fontSecondary)
-                                .font(.system(size: 13))
-                            Spacer()
-                        }
+                        VehicleOrderDetailPage.Intro(
+                            saleModelImages: saleModelImages,
+                            saleModelName: saleModelName,
+                            saleModelDesc: saleModelDesc
+                        )
                         Spacer().frame(height: 20)
                         HStack {
                             Text(LocalizedStringKey("book_method"))
@@ -165,15 +145,37 @@ extension VehicleOrderDetailPage {
                             }
                             Spacer().frame(height: 10)
                             HStack {
-                                Image("icon_circle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("个人")
-                                Spacer().frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-                                Image("icon_circle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("企业")
+                                HStack {
+                                    if orderType == 1 {
+                                        Image("icon_circle_check")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    } else {
+                                        Image("icon_circle")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    }
+                                    Text("个人")
+                                }
+                                .onTapGesture {
+                                    intent.onTapOrderTypePerson()
+                                }
+                                Spacer().frame(width: 100)
+                                HStack {
+                                    if orderType == 2 {
+                                        Image("icon_circle_check")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    } else {
+                                        Image("icon_circle")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    }
+                                    Text("企业")
+                                }
+                                .onTapGesture {
+                                    intent.onTapOrderTypeOrg()
+                                }
                                 Spacer()
                             }
                             Spacer().frame(height: 20)
@@ -184,15 +186,37 @@ extension VehicleOrderDetailPage {
                             }
                             Spacer().frame(height: 10)
                             HStack {
-                                Image("icon_circle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("全款")
+                                HStack {
+                                    if purchasePlan == 1 {
+                                        Image("icon_circle_check")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    } else {
+                                        Image("icon_circle")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    }
+                                    Text("全款")
+                                }
+                                .onTapGesture {
+                                    intent.onTapPurchasePlanFullPayment()
+                                }
                                 Spacer().frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-                                Image("icon_circle")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                                Text("分期")
+                                HStack {
+                                    if purchasePlan == 2 {
+                                        Image("icon_circle_check")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    } else {
+                                        Image("icon_circle")
+                                            .resizable()
+                                            .frame(width: 20, height: 20)
+                                    }
+                                    Text("分期")
+                                }
+                                .onTapGesture {
+                                    intent.onTapPurchasePlanStaging()
+                                }
                                 Spacer()
                             }
                             Spacer().frame(height: 20)
@@ -253,75 +277,20 @@ extension VehicleOrderDetailPage {
                             }
                         }
                         Spacer().frame(height: 20)
-                        HStack {
-                            Text("价格明细")
-                                .bold()
-                            Spacer()
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text("全国统一零售价")
-                            Spacer()
-                            Text("￥\(saleModelPrice.formatted())")
-                        }
-                        Spacer().frame(height: 5)
-                        HStack {
-                            Text(saleSpareTireName)
-                            Spacer()
-                            if saleSpareTirePrice > 0 {
-                                Text("￥\(saleSpareTirePrice.formatted())")
-                            } else {
-                                Text(LocalizedStringKey("price_included"))
-                            }
-                        }
-                        Spacer().frame(height: 5)
-                        HStack {
-                            Text(saleExteriorName)
-                            Spacer()
-                            if saleExteriorPrice > 0 {
-                                Text("￥\(saleExteriorPrice.formatted())")
-                            } else {
-                                Text(LocalizedStringKey("price_included"))
-                            }
-                        }
-                        Spacer().frame(height: 5)
-                        HStack {
-                            Text(saleWheelName)
-                            Spacer()
-                            if saleWheelPrice > 0 {
-                                Text("￥\(saleWheelPrice.formatted())")
-                            } else {
-                                Text(LocalizedStringKey("price_included"))
-                            }
-                        }
-                        Spacer().frame(height: 5)
-                        HStack {
-                            Text(saleInteriorName)
-                            Spacer()
-                            if saleInteriorPrice > 0 {
-                                Text("￥\(saleInteriorPrice.formatted())")
-                            } else {
-                                Text(LocalizedStringKey("price_included"))
-                            }
-                        }
-                        Spacer().frame(height: 5)
-                        HStack {
-                            Text(saleAdasName)
-                            Spacer()
-                            if saleAdasPrice > 0 {
-                                Text("￥\(saleAdasPrice.formatted())")
-                            } else {
-                                Text(LocalizedStringKey("price_included"))
-                            }
-                        }
-                        Spacer().frame(height: 5)
-                        Divider()
-                        Spacer().frame(height: 5)
-                        HStack {
-                            Text(LocalizedStringKey("total_price"))
-                            Spacer()
-                            Text("￥\(totalPrice.formatted())")
-                        }
+                        VehicleOrderDetailPage.Price(
+                            saleModelPrice: saleModelPrice,
+                            saleSpareTireName: saleSpareTireName,
+                            saleSpareTirePrice: saleSpareTirePrice,
+                            saleExteriorName: saleExteriorName,
+                            saleExteriorPrice: saleExteriorPrice,
+                            saleWheelName: saleWheelName,
+                            saleWheelPrice: saleWheelPrice,
+                            saleInteriorName: saleInteriorName,
+                            saleInteriorPrice: saleInteriorPrice,
+                            saleAdasName: saleAdasName,
+                            saleAdasPrice: saleAdasPrice,
+                            totalPrice: totalPrice
+                        )
                         Spacer().frame(height: 20)
                         HStack {
                             Text("订购须知")
@@ -412,6 +381,8 @@ struct VehicleOrderDetailPage_Order_Previews: PreviewProvider {
             earnestMoney: true,
             earnestMoneyPrice: 5000,
             purchaseBenefitsIntro: "创始权益（价值6000元）\n首年用车服务包（价值999元）\n5000元选配基金（价值5000元）",
+            orderType: 1,
+            purchasePlan: 1,
             saleModelPrice: 188888,
             saleSpareTireName: "有备胎",
             saleSpareTirePrice: 6000,

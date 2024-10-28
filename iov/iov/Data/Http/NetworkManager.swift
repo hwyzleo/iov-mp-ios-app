@@ -17,23 +17,17 @@ class NetworkManager {
     // 共享对象
     static let shared = NetworkManager()
     
-    // 获取有token的请求头
-    // 你应当在合适的时机, 将 token 存入 UserDefaults 中
-    var commonHeaders: HTTPHeaders { [
-        "token": UserDefaults.standard.string(forKey: "token") ?? "accessToken",
-        "clientId": UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
-    ] }
-    
     private init() {}
     
     @discardableResult
     func requestGet(path: String,
                     parameters: Parameters?,
+                    headers: HTTPHeaders?,
                     // @escaping,逃逸闭包: 一个闭包被作为一个参数传递给一个函数，并且在函数return之后才被唤起执行
                     completion: @escaping NetworkRequestCompletion) -> DataRequest {
         AF.request(path,
                    parameters: parameters,
-                   headers: commonHeaders,
+                   headers: headers,
                    requestModifier: { $0.timeoutInterval = 30 })
             .responseData { response in
                 switch response.result {
@@ -46,13 +40,14 @@ class NetworkManager {
     @discardableResult
     func requestPost(path: String,
                      parameters: Parameters?,
+                     headers: HTTPHeaders?,
                      completion: @escaping NetworkRequestCompletion) -> DataRequest {
         AF.request(path,
                    method: .post,
                    parameters: parameters,
                    encoding: JSONEncoding.prettyPrinted, // parameters的编码方式,默认为JSON
 //                   encoding: URLEncoding.default, // parameters的编码方式,默认为JSON
-                   headers: commonHeaders,
+                   headers: headers,
                    requestModifier: { $0.timeoutInterval = 30 })
             .responseData { response in
                 // 请求发送成功与失败

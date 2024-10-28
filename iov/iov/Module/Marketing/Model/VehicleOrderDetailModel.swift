@@ -36,6 +36,8 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     @Published var agreementIsChecked: Bool = false
     @Published var selectLicenseCityName: String = ""
     @Published var selectLicenseCityCode: String = ""
+    @Published var orderType: Int = 0
+    @Published var purchasePlan: Int = 0
 }
 
 // MARK: - Action Protocol
@@ -76,6 +78,12 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     }
     func updateSelectBookMethod(bookMethod: String) {
         self.selectBookMethod = bookMethod
+    }
+    func updateSelectOrderType(orderType: Int) {
+        self.orderType = orderType
+    }
+    func updateSelectPurchasePlan(purchasePlan: Int) {
+        self.purchasePlan = purchasePlan
     }
     func toggleAgreement() {
         self.agreementIsChecked.toggle()

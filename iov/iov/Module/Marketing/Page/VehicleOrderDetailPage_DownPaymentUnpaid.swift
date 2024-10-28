@@ -57,33 +57,11 @@ extension VehicleOrderDetailPage {
                                 .font(.system(size: 20))
                             Spacer()
                         }
-                        TabView {
-                            ForEach(saleModelImages, id: \.self) { image in
-                                ZStack {
-                                    if !image.isEmpty {
-                                        KFImage(URL(string: image)!)
-                                            .resizable()
-                                            .scaledToFit()
-                                    }
-                                }
-                            }
-                        }
-                        .tabViewStyle(.page)
-                        .frame(height: 200)
-                        .clipped()
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text(saleModelName)
-                                .bold()
-                            Spacer()
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleModelDesc)
-                                .foregroundStyle(AppTheme.colors.fontSecondary)
-                                .font(.system(size: 13))
-                            Spacer()
-                        }
+                        VehicleOrderDetailPage.Intro(
+                            saleModelImages: saleModelImages,
+                            saleModelName: saleModelName,
+                            saleModelDesc: saleModelDesc
+                        )
                         Spacer().frame(height: 20)
                         HStack {
                             Text("上牌及门店信息")
@@ -99,85 +77,25 @@ extension VehicleOrderDetailPage {
                                 .frame(width: 20, height: 20)
                         }
                         Spacer().frame(height: 20)
-                        HStack {
-                            Text("价格明细")
-                                .bold()
-                            Spacer()
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text("全国统一零售价")
-                            Spacer()
-                            Text("￥\(saleModelPrice.formatted())")
-                        }
-                        HStack {
-                            Text(saleSpareTireName)
-                            Spacer()
-                            if saleSpareTirePrice > 0 {
-                                Text("￥\(saleSpareTirePrice.formatted())")
-                            } else {
-                                Text("已包含")
-                            }
-                        }
-                        HStack {
-                            Text(saleExteriorName)
-                            Spacer()
-                            if saleExteriorPrice > 0 {
-                                Text("￥\(saleExteriorPrice.formatted())")
-                            } else {
-                                Text("已包含")
-                            }
-                        }
-                        HStack {
-                            Text(saleWheelName)
-                            Spacer()
-                            if saleWheelPrice > 0 {
-                                Text("￥\(saleWheelPrice.formatted())")
-                            } else {
-                                Text("已包含")
-                            }
-                        }
-                        HStack {
-                            Text(saleInteriorName)
-                            Spacer()
-                            if saleInteriorPrice > 0 {
-                                Text("￥\(saleInteriorPrice.formatted())")
-                            } else {
-                                Text("已包含")
-                            }
-                        }
-                        HStack {
-                            Text(saleAdasName)
-                            Spacer()
-                            if saleAdasPrice > 0 {
-                                Text("￥\(saleAdasPrice.formatted())")
-                            } else {
-                                Text("已包含")
-                            }
-                        }
-                        Divider()
-                        HStack {
-                            Text("总价")
-                            Spacer()
-                            Text("￥\(totalPrice.formatted())")
-                        }
+                        VehicleOrderDetailPage.Price(
+                            saleModelPrice: saleModelPrice,
+                            saleSpareTireName: saleSpareTireName,
+                            saleSpareTirePrice: saleSpareTirePrice,
+                            saleExteriorName: saleExteriorName,
+                            saleExteriorPrice: saleExteriorPrice,
+                            saleWheelName: saleWheelName,
+                            saleWheelPrice: saleWheelPrice,
+                            saleInteriorName: saleInteriorName,
+                            saleInteriorPrice: saleInteriorPrice,
+                            saleAdasName: saleAdasName,
+                            saleAdasPrice: saleAdasPrice,
+                            totalPrice: totalPrice
+                        )
                         Spacer().frame(height: 20)
-                        HStack {
-                            Text("订单信息")
-                                .bold()
-                            Spacer()
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text("订单编号")
-                            Spacer()
-                            Text(orderNum)
-                        }
-                        HStack {
-                            Text("下单时间")
-                            Spacer()
-                            Text(tsFormat(ts: orderTime))
-                        }
+                        VehicleOrderDetailPage.OrderInfo(
+                            orderNum: orderNum,
+                            orderTime: orderTime
+                        )
                     }
                 }
                 .scrollIndicators(.hidden)

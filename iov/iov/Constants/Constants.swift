@@ -446,3 +446,5 @@ let Cities = [
     "8100": "香港",
     "8200": "澳门"
 ]
+
+let DEVICE_ID = "hwyz_device_id"

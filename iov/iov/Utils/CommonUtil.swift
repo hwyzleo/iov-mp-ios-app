@@ -92,12 +92,25 @@ func calCountDown(endTs: Int64) -> String {
 }
 
 /// 写信息入本地
-func setInfo(_ key: String, value: String) {
+func setLocal(_ key: String, value: String) {
     UserDefaults.standard.set(value, forKey: key)
     UserDefaults.standard.synchronize()
 }
 /// 信息从本地读取
-func getInfo(_ key: String) -> String {
+func getLocal(_ key: String) -> String {
     let str = (UserDefaults.standard.object(forKey: key) as? String)
     return str ?? ""
+}
+
+/// 获取设备ID
+func getDeviceId() -> String {
+    var deviceId = getLocal(DEVICE_ID)
+    if deviceId.isEmpty {
+        deviceId = UUID().uuidString
+        if deviceId.contains("-") {
+            deviceId = deviceId.replacingOccurrences(of: "-", with: "")
+        }
+        setLocal(DEVICE_ID, value: deviceId)
+    }
+    return deviceId
 }

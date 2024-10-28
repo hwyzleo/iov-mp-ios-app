@@ -34,7 +34,10 @@
 		BF3CA3402CCE2BA0006CD801 /* LicenseAreaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA33F2CCE2BA0006CD801 /* LicenseAreaModel.swift */; };
 		BF3CA3422CCE2C33006CD801 /* LicenseAreaIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3412CCE2C33006CD801 /* LicenseAreaIntentProtocol.swift */; };
 		BF3CA3442CCE2C51006CD801 /* LicenseAreaIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3432CCE2C51006CD801 /* LicenseAreaIntent.swift */; };
+		BF3CA3462CCF5B70006CD801 /* VehicleOrderDetailPage_Price.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3452CCF5B70006CD801 /* VehicleOrderDetailPage_Price.swift */; };
 		BF4908E32C9325430071C527 /* InfoTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4908E22C9325430071C527 /* InfoTip.swift */; };
+		BF554AFF2CCF65030025E7D4 /* VehicleOrderDetailPage_Intro.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554AFE2CCF65030025E7D4 /* VehicleOrderDetailPage_Intro.swift */; };
+		BF554B012CCF665F0025E7D4 /* VehicleOrderDetailPage_OrderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B002CCF665F0025E7D4 /* VehicleOrderDetailPage_OrderInfo.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
 		BFA187742C83111F004D625D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFA187732C83111F004D625D /* Assets.xcassets */; };
@@ -334,7 +337,6 @@
 		BFA18A752C843DC3004D625D /* TextIFieldtem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A742C843DC3004D625D /* TextIFieldtem.swift */; };
 		BFA18A772C843DEF004D625D /* GenderPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A762C843DEF004D625D /* GenderPicker.swift */; };
 		BFA18A792C843E27004D625D /* CodableDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A782C843E27004D625D /* CodableDefault.swift */; };
-		BFA18A7B2C843E42004D625D /* AppUserUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A7A2C843E42004D625D /* AppUserUtil.swift */; };
 		BFA18A7D2C843EE0004D625D /* MyMessageView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A7C2C843EE0004D625D /* MyMessageView+Build.swift */; };
 		BFA18A7F2C843EF3004D625D /* MyMessageIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A7E2C843EF3004D625D /* MyMessageIntent.swift */; };
 		BFA18A822C8446A2004D625D /* CommunityPage_Carousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A812C8446A2004D625D /* CommunityPage_Carousel.swift */; };
@@ -392,7 +394,10 @@
 		BF3CA33F2CCE2BA0006CD801 /* LicenseAreaModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicenseAreaModel.swift; sourceTree = "<group>"; };
 		BF3CA3412CCE2C33006CD801 /* LicenseAreaIntentProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicenseAreaIntentProtocol.swift; sourceTree = "<group>"; };
 		BF3CA3432CCE2C51006CD801 /* LicenseAreaIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicenseAreaIntent.swift; sourceTree = "<group>"; };
+		BF3CA3452CCF5B70006CD801 /* VehicleOrderDetailPage_Price.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Price.swift; sourceTree = "<group>"; };
 		BF4908E22C9325430071C527 /* InfoTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoTip.swift; sourceTree = "<group>"; };
+		BF554AFE2CCF65030025E7D4 /* VehicleOrderDetailPage_Intro.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Intro.swift; sourceTree = "<group>"; };
+		BF554B002CCF665F0025E7D4 /* VehicleOrderDetailPage_OrderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_OrderInfo.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
 		BFA1876F2C83111E004D625D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -693,7 +698,6 @@
 		BFA18A742C843DC3004D625D /* TextIFieldtem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextIFieldtem.swift; sourceTree = "<group>"; };
 		BFA18A762C843DEF004D625D /* GenderPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenderPicker.swift; sourceTree = "<group>"; };
 		BFA18A782C843E27004D625D /* CodableDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodableDefault.swift; sourceTree = "<group>"; };
-		BFA18A7A2C843E42004D625D /* AppUserUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUserUtil.swift; sourceTree = "<group>"; };
 		BFA18A7C2C843EE0004D625D /* MyMessageView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyMessageView+Build.swift"; sourceTree = "<group>"; };
 		BFA18A7E2C843EF3004D625D /* MyMessageIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyMessageIntent.swift; sourceTree = "<group>"; };
 		BFA18A802C844274004D625D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -1365,7 +1369,6 @@
 		BFA1884E2C84188E004D625D /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				BFA18A7A2C843E42004D625D /* AppUserUtil.swift */,
 				BFA18A782C843E27004D625D /* CodableDefault.swift */,
 				BFA1887D2C841E94004D625D /* CommonUtil.swift */,
 				BFA188552C841A1B004D625D /* RealmManager.swift */,
@@ -2395,6 +2398,9 @@
 				BF3CA3352CC69417006CD801 /* VehicleOrderDetailPage_DownPaymentUnpaid.swift */,
 				BF3CA3312CC4E0B1006CD801 /* VehicleOrderDetailPage_DownPaymentPaid.swift */,
 				BF3CA3332CC68481006CD801 /* VehicleOrderDetailPage_ArrangeProduction.swift */,
+				BF554AFE2CCF65030025E7D4 /* VehicleOrderDetailPage_Intro.swift */,
+				BF3CA3452CCF5B70006CD801 /* VehicleOrderDetailPage_Price.swift */,
+				BF554B002CCF665F0025E7D4 /* VehicleOrderDetailPage_OrderInfo.swift */,
 				BF3CA31F2CBFE35C006CD801 /* VehicleOrderDetailPage+Build.swift */,
 			);
 			path = Page;
@@ -2548,7 +2554,6 @@
 				BFA18A842C8446D3004D625D /* CommunityPage_Navi.swift in Sources */,
 				BFA188922C841FEA004D625D /* CommunitySubjectModel.swift in Sources */,
 				BFA187B72C840DB7004D625D /* CommunityArticleModel.swift in Sources */,
-				BFA18A7B2C843E42004D625D /* AppUserUtil.swift in Sources */,
 				BFA18A622C8439FF004D625D /* MallPage+Build.swift in Sources */,
 				BFA1892C2C84299F004D625D /* MySettingAccountSecurityView+Build.swift in Sources */,
 				BFA187EC2C841176004D625D /* LoginModel.swift in Sources */,
@@ -2644,6 +2649,7 @@
 				BFA1885F2C841B23004D625D /* OrderView+Build.swift in Sources */,
 				BFA189CF2C843202004D625D /* MyInviteView.swift in Sources */,
 				BFA188902C841FCF004D625D /* CommunitySubjectTypes.swift in Sources */,
+				BF554B012CCF665F0025E7D4 /* VehicleOrderDetailPage_OrderInfo.swift in Sources */,
 				BFA187A62C840993004D625D /* RouterAlertModifier.swift in Sources */,
 				BFA1897B2C842E2F004D625D /* MyArticleIntentProtocol.swift in Sources */,
 				BFA187AD2C840B15004D625D /* CommunityArticleView.swift in Sources */,
@@ -2700,6 +2706,7 @@
 				BF3CA33C2CCD132A006CD801 /* LicenseAreaPage+Build.swift in Sources */,
 				BFA1894D2C842B5E004D625D /* MySettingPrivillegeModelProtocol.swift in Sources */,
 				BFA188242C84153B004D625D /* ColorExtenstion.swift in Sources */,
+				BF3CA3462CCF5B70006CD801 /* VehicleOrderDetailPage_Price.swift in Sources */,
 				BFA188AC2C84214A004D625D /* CommunitySubjectView+Build.swift in Sources */,
 				BFA187FB2C841242004D625D /* MyTypes.swift in Sources */,
 				BFA189DC2C843282004D625D /* MyInviteRouter.swift in Sources */,
@@ -2734,6 +2741,7 @@
 				BFA18A4A2C843891004D625D /* VehicleIntent.swift in Sources */,
 				BFA1884D2C841845004D625D /* BottomLineModifier.swift in Sources */,
 				BFA18A592C843983004D625D /* MallModel.swift in Sources */,
+				BF554AFF2CCF65030025E7D4 /* VehicleOrderDetailPage_Intro.swift in Sources */,
 				BFA187F32C8411EA004D625D /* MyPage.swift in Sources */,
 				BFA1898D2C842F0B004D625D /* MyPointsView.swift in Sources */,
 				BFA18A0C2C8434DC004D625D /* MyMessageView_List.swift in Sources */,

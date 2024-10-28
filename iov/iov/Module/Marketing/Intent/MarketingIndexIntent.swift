@@ -21,34 +21,38 @@ class MarketingIndexIntent: MviIntentProtocol {
         TspApi.getValidVehicleSaleOrderList() { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
             switch result {
             case .success(let res):
-                VehicleManager.shared.update(vehicleSaleOrderList: res.data!)
-                if VehicleManager.shared.hasOrder() {
-                    if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
-                        switch vehiclePo.type {
-                        case .WISHLIST:
-                            TspApi.getWishlist(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<Wishlist>, Error>) in
-                                switch result {
-                                case .success(let res):
-                                    self.modelAction?.displayWishlist(wishlist: res.data!)
-                                case .failure(_):
-                                    self.modelAction?.displayError(text: "请求异常")
+                if res.code == 0 {
+                    VehicleManager.shared.update(vehicleSaleOrderList: res.data!)
+                    if VehicleManager.shared.hasOrder() {
+                        if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
+                            switch vehiclePo.type {
+                            case .WISHLIST:
+                                TspApi.getWishlist(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<Wishlist>, Error>) in
+                                    switch result {
+                                    case .success(let res):
+                                        self.modelAction?.displayWishlist(wishlist: res.data!)
+                                    case .failure(_):
+                                        self.modelAction?.displayError(text: "请求异常")
+                                    }
                                 }
-                            }
-                        case .ORDER:
-                            TspApi.getOrder(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<OrderResponse>, Error>) in
-                                switch result {
-                                case .success(let res):
-                                    self.modelAction?.displayOrder(order: res.data!)
-                                case .failure(_):
-                                    self.modelAction?.displayError(text: "请求异常")
+                            case .ORDER:
+                                TspApi.getOrder(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<OrderResponse>, Error>) in
+                                    switch result {
+                                    case .success(let res):
+                                        self.modelAction?.displayOrder(order: res.data!)
+                                    case .failure(_):
+                                        self.modelAction?.displayError(text: "请求异常")
+                                    }
                                 }
+                            case .ACTIVATED:
+                                self.modelAction?.displayVehicle()
                             }
-                        case .ACTIVATED:
-                            self.modelAction?.displayVehicle()
                         }
+                    } else {
+                        self.modelAction?.displayNoOrder()
                     }
                 } else {
-                    self.modelAction?.displayNoOrder()
+                    self.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")

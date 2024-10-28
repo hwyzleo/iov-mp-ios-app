@@ -51,6 +51,8 @@ struct VehicleOrderDetailPage: View {
                     earnestMoney: state.earnestMoney,
                     earnestMoneyPrice: state.earnestMoneyPrice,
                     purchaseBenefitsIntro: state.purchaseBenefitsIntro,
+                    orderType: state.orderType,
+                    purchasePlan: state.purchasePlan,
                     saleModelPrice: state.saleModelPrice,
                     saleSpareTireName: state.saleSpareTireName,
                     saleSpareTirePrice: state.saleSpareTirePrice,
