@@ -15,6 +15,8 @@
 "cancel_order" = "cancel order";
 "choose_vehicle" = "choose vehicle";
 "confirm" = "confirm";
+"dealership" = "dealership";
+"delivered" = "delivered";
 "down_payment" = "down payment";
 "down_payment_paid" = "down payment paid";
 "down_payment_to_be_paid" = "down payment to be paid";
@@ -53,6 +55,8 @@
 "pay_earnest_money" = "pay earnest money";
 "pay_final_payment" = "pay final payment";
 "pay_now" = "pay now";
+"prepare_deliver" = "prepare deliver";
+"prepare_transport" = "prepare transport";
 "price_detail" = "price detail";
 "price_included" = "price included";
 "reget_verigy_code" = "Get verification code again";

@@ -51,7 +51,7 @@ struct VehicleOrderDetailPage: View {
                     earnestMoney: state.earnestMoney,
                     earnestMoneyPrice: state.earnestMoneyPrice,
                     purchaseBenefitsIntro: state.purchaseBenefitsIntro,
-                    orderType: state.orderType,
+                    orderPersonType: state.orderPersonType,
                     purchasePlan: state.purchasePlan,
                     saleModelPrice: state.saleModelPrice,
                     saleSpareTireName: state.saleSpareTireName,
@@ -66,7 +66,11 @@ struct VehicleOrderDetailPage: View {
                     saleAdasPrice: state.saleAdasPrice,
                     totalPrice: state.totalPrice,
                     selectLicenseCityName: state.selectLicenseCityName,
-                    selectLicenseCityCode: state.selectLicenseCityCode
+                    selectLicenseCityCode: state.selectLicenseCityCode,
+                    selectDealershipName: state.selectDealershipName,
+                    selectDealershipCode: state.selectDealershipCode,
+                    selectDeliveryCenterName: state.selectDeliveryCenterName,
+                    selectDeliveryCenterCode: state.selectDeliveryCenterCode
                 )
             case .earnestMoneyUnpaid:
                 EarnestMoneyUnpaid(
@@ -131,7 +135,15 @@ struct VehicleOrderDetailPage: View {
                     saleAdasPrice: state.saleAdasPrice,
                     totalPrice: state.totalPrice,
                     orderNum: state.orderNum,
-                    orderTime: state.orderTime
+                    orderTime: state.orderTime,
+                    orderPersonType: state.orderPersonType,
+                    purchasePlan: state.purchasePlan,
+                    orderPersonName: state.orderPersonName,
+                    orderPersonIdType: state.orderPersonIdType,
+                    orderPersonIdNum: state.orderPersonIdNum,
+                    licenseCity: state.selectLicenseCityName,
+                    dealershipName: state.selectDealershipName,
+                    deliveryCenterName: state.selectDeliveryCenterName
                 )
             case .downPaymentPaid:
                 DownPaymentPaid(
@@ -156,6 +168,69 @@ struct VehicleOrderDetailPage: View {
                 )
             case .arrangeProduction:
                 ArrangeProduction(
+                    container: container,
+                    saleModelImages: state.saleModelImages,
+                    saleModelName: state.saleModelName,
+                    saleModelDesc: state.saleModelDesc,
+                    saleModelPrice: state.saleModelPrice,
+                    saleSpareTireName: state.saleSpareTireName,
+                    saleSpareTirePrice: state.saleSpareTirePrice,
+                    saleExteriorName: state.saleExteriorName,
+                    saleExteriorPrice: state.saleExteriorPrice,
+                    saleWheelName: state.saleWheelName,
+                    saleWheelPrice: state.saleWheelPrice,
+                    saleInteriorName: state.saleInteriorName,
+                    saleInteriorPrice: state.saleInteriorPrice,
+                    saleAdasName: state.saleAdasName,
+                    saleAdasPrice: state.saleAdasPrice,
+                    totalPrice: state.totalPrice,
+                    orderNum: state.orderNum,
+                    orderTime: state.orderTime
+                )
+            case .prepareTransport:
+                PrepareTransport(
+                    container: container,
+                    saleModelImages: state.saleModelImages,
+                    saleModelName: state.saleModelName,
+                    saleModelDesc: state.saleModelDesc,
+                    saleModelPrice: state.saleModelPrice,
+                    saleSpareTireName: state.saleSpareTireName,
+                    saleSpareTirePrice: state.saleSpareTirePrice,
+                    saleExteriorName: state.saleExteriorName,
+                    saleExteriorPrice: state.saleExteriorPrice,
+                    saleWheelName: state.saleWheelName,
+                    saleWheelPrice: state.saleWheelPrice,
+                    saleInteriorName: state.saleInteriorName,
+                    saleInteriorPrice: state.saleInteriorPrice,
+                    saleAdasName: state.saleAdasName,
+                    saleAdasPrice: state.saleAdasPrice,
+                    totalPrice: state.totalPrice,
+                    orderNum: state.orderNum,
+                    orderTime: state.orderTime
+                )
+            case .prepareDeliver:
+                PrepareDeliver(
+                    container: container,
+                    saleModelImages: state.saleModelImages,
+                    saleModelName: state.saleModelName,
+                    saleModelDesc: state.saleModelDesc,
+                    saleModelPrice: state.saleModelPrice,
+                    saleSpareTireName: state.saleSpareTireName,
+                    saleSpareTirePrice: state.saleSpareTirePrice,
+                    saleExteriorName: state.saleExteriorName,
+                    saleExteriorPrice: state.saleExteriorPrice,
+                    saleWheelName: state.saleWheelName,
+                    saleWheelPrice: state.saleWheelPrice,
+                    saleInteriorName: state.saleInteriorName,
+                    saleInteriorPrice: state.saleInteriorPrice,
+                    saleAdasName: state.saleAdasName,
+                    saleAdasPrice: state.saleAdasPrice,
+                    totalPrice: state.totalPrice,
+                    orderNum: state.orderNum,
+                    orderTime: state.orderTime
+                )
+            case .delivered:
+                Delivered(
                     container: container,
                     saleModelImages: state.saleModelImages,
                     saleModelName: state.saleModelName,

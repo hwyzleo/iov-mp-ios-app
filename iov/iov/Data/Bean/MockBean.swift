@@ -160,6 +160,23 @@ func mockLicenseArea() -> [LicenseArea] {
     ]
 }
 
+/// 销售门店
+func mockDealership() -> [Dealership] {
+    return [
+        Dealership.init(code: "SHSA01", name: "上海中心店", address: "上海市浦东新区东方路1号", distance: 56.3),
+        Dealership.init(code: "SZSA01", name: "苏州服务中心", address: "江苏省苏州市吴中区金鸡湖大道1号", distance: 253.7),
+        Dealership.init(code: "NJSA01", name: "南京服务中心", address: "江苏省南京市江宁路1号")
+    ]
+}
+
+/// 交付中心
+func mockDeliveryCenter() -> [Dealership] {
+    return [
+        Dealership.init(code: "SHDE01", name: "上海交付中心", address: "上海市浦东新区浦东大道1000号", distance: 56.3),
+        Dealership.init(code: "WHDE01", name: "武汉交付中心", address: "湖北省武汉市洪山区珞瑜路1号", distance: 253.7)
+    ]
+}
+
 /// 订单
 func mockOrder() -> OrderResponse {
     return OrderResponse.init(

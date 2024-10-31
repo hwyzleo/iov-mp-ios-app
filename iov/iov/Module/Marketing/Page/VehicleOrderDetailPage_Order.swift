@@ -23,7 +23,7 @@ extension VehicleOrderDetailPage {
         var earnestMoney: Bool
         var earnestMoneyPrice: Decimal
         var purchaseBenefitsIntro: String
-        var orderType: Int
+        var orderPersonType: Int
         var purchasePlan: Int
         var saleModelPrice: Decimal
         var saleSpareTireName: String
@@ -42,23 +42,15 @@ extension VehicleOrderDetailPage {
         @State private var orderPersonIdNum = ""
         @State var selectLicenseCityName: String
         @State var selectLicenseCityCode: String
+        @State var selectDealershipName: String
+        @State var selectDealershipCode: String
+        @State var selectDeliveryCenterName: String
+        @State var selectDeliveryCenterCode: String
+
         
         var body: some View {
             VStack {
-                ZStack {
-                    TopBackTitleBar(titleLocal: LocalizedStringKey("book_vehicle"))
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            intent.onTapDelete()
-                        }) {
-                            Image("icon_setting")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                    }
-                }
-                .frame(height: 50)
+                TopBackTitleBar(titleLocal: LocalizedStringKey("book_vehicle"))
                 ScrollView {
                     VStack {
                         VehicleOrderDetailPage.Intro(
@@ -146,7 +138,7 @@ extension VehicleOrderDetailPage {
                             Spacer().frame(height: 10)
                             HStack {
                                 HStack {
-                                    if orderType == 1 {
+                                    if orderPersonType == 1 {
                                         Image("icon_circle_check")
                                             .resizable()
                                             .frame(width: 20, height: 20)
@@ -158,11 +150,11 @@ extension VehicleOrderDetailPage {
                                     Text("个人")
                                 }
                                 .onTapGesture {
-                                    intent.onTapOrderTypePerson()
+                                    intent.onTapOrderPersonTypePerson()
                                 }
                                 Spacer().frame(width: 100)
                                 HStack {
-                                    if orderType == 2 {
+                                    if orderPersonType == 2 {
                                         Image("icon_circle_check")
                                             .resizable()
                                             .frame(width: 20, height: 20)
@@ -174,7 +166,7 @@ extension VehicleOrderDetailPage {
                                     Text("企业")
                                 }
                                 .onTapGesture {
-                                    intent.onTapOrderTypeOrg()
+                                    intent.onTapOrderPersonTypeOrg()
                                 }
                                 Spacer()
                             }
@@ -219,6 +211,16 @@ extension VehicleOrderDetailPage {
                                 }
                                 Spacer()
                             }
+                            if purchasePlan == 2 {
+                                Spacer().frame(height: 20)
+                                HStack {
+                                    Text("金融方案")
+                                    Spacer()
+                                    Image("icon_arrow_right")
+                                        .resizable()
+                                        .frame(width: 20, height: 20)
+                                }
+                            }
                             Spacer().frame(height: 20)
                             HStack {
                                 Text("车主（车辆所有人）信息")
@@ -227,18 +229,30 @@ extension VehicleOrderDetailPage {
                             }
                             Spacer().frame(height: 10)
                             HStack {
-                                Text("车主姓名")
-                                TextField("请输入车主姓名", text: $orderPersonName)
+                                if orderPersonType == 2 {
+                                    Text("企业名称")
+                                    TextField("请输入企业名称", text: $orderPersonName)
+                                } else {
+                                    Text("车主姓名")
+                                    TextField("请输入车主姓名", text: $orderPersonName)
+                                }
+                            }
+                            if orderPersonType != 2 {
+                                Divider()
+                                HStack {
+                                    Text("证件类型")
+                                    TextField("请输入证件类型", text: $orderPersonIdType)
+                                }
                             }
                             Divider()
                             HStack {
-                                Text("证件类型")
-                                TextField("请输入证件类型", text: $orderPersonIdType)
-                            }
-                            Divider()
-                            HStack {
-                                Text("证件号码")
-                                TextField("请输入证件号码", text: $orderPersonIdNum)
+                                if orderPersonType == 2 {
+                                    Text("企业代码")
+                                    TextField("请输入企业代码", text: $orderPersonIdNum)
+                                } else {
+                                    Text("证件号码")
+                                    TextField("请输入证件号码", text: $orderPersonIdNum)
+                                }
                             }
                         }
                         Spacer().frame(height: 20)
@@ -262,18 +276,24 @@ extension VehicleOrderDetailPage {
                             Divider()
                             HStack {
                                 Text("销售门店")
-                                TextField("请选择销售门店", text: $selectLicenseCityName)
+                                TextField("请选择销售门店", text: $selectDealershipName)
                                 Image("icon_arrow_right")
                                     .resizable()
                                     .frame(width: 20, height: 20)
                             }
+                            .onTapGesture {
+                                intent.onTapDealership()
+                            }
                             Divider()
                             HStack {
                                 Text("交付中心")
-                                TextField("请选择交付中心", text: $selectLicenseCityName)
+                                TextField("请选择交付中心", text: $selectDeliveryCenterName)
                                 Image("icon_arrow_right")
                                     .resizable()
                                     .frame(width: 20, height: 20)
+                            }
+                            .onTapGesture {
+                                intent.onTapDeliveryCenter()
                             }
                         }
                         Spacer().frame(height: 20)
@@ -319,15 +339,15 @@ extension VehicleOrderDetailPage {
                         bgColor: state.agreementIsChecked == true ? Color.black : Color.gray
                     ) {
                         intent.onTapDownPaymentOrder(
-                            orderType: 1,
-                            purchasePlan: 1,
+                            orderPersonType: orderPersonType,
+                            purchasePlan: purchasePlan,
                             orderPersonName: orderPersonName,
                             orderPersonIdType: 1,
                             orderPersonIdNum: orderPersonIdNum,
                             saleModelName: saleModelName,
                             licenseCity: selectLicenseCityCode,
-                            dealership: "",
-                            deliveryCenter: ""
+                            dealership: selectDealershipCode,
+                            deliveryCenter: selectDeliveryCenterCode
                         )
                     }
                 }
@@ -358,7 +378,14 @@ extension VehicleOrderDetailPage {
                         selectLicenseCityName = cityName as! String
                         selectLicenseCityCode = AppGlobalState.shared.parameters["licenseCityCode"] as! String
                     }
-                    
+                    if let dealershipName = AppGlobalState.shared.parameters["dealershipName"] {
+                        selectDealershipName = dealershipName as! String
+                        selectDealershipCode = AppGlobalState.shared.parameters["dealershipCode"] as! String
+                    }
+                    if let deliveryCenterName = AppGlobalState.shared.parameters["deliveryCenterName"] {
+                        selectDeliveryCenterName = deliveryCenterName as! String
+                        selectDeliveryCenterCode = AppGlobalState.shared.parameters["deliveryCenterCode"] as! String
+                    }
                 }
             }
         }
@@ -381,7 +408,7 @@ struct VehicleOrderDetailPage_Order_Previews: PreviewProvider {
             earnestMoney: true,
             earnestMoneyPrice: 5000,
             purchaseBenefitsIntro: "创始权益（价值6000元）\n首年用车服务包（价值999元）\n5000元选配基金（价值5000元）",
-            orderType: 1,
+            orderPersonType: 1,
             purchasePlan: 1,
             saleModelPrice: 188888,
             saleSpareTireName: "有备胎",
@@ -396,7 +423,11 @@ struct VehicleOrderDetailPage_Order_Previews: PreviewProvider {
             saleAdasPrice: 10000,
             totalPrice: 205888,
             selectLicenseCityName: "上海",
-            selectLicenseCityCode: "3101"
+            selectLicenseCityCode: "3101",
+            selectDealershipName: "上海中心店",
+            selectDealershipCode: "SHSA01",
+            selectDeliveryCenterName: "上海交付中心",
+            selectDeliveryCenterCode: "SHDE01"
         )
         .environmentObject(appGlobalState)
         .environment(\.locale, .init(identifier: "zh-Hans"))

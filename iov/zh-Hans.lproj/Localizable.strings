@@ -15,6 +15,8 @@
 "cancel_order" = "取消订单";
 "choose_vehicle" = "配置爱车";
 "confirm" = "确认";
+"dealership" = "销售门店";
+"delivered" = "已提车";
 "down_payment" = "定金";
 "down_payment_paid" = "已支付定金";
 "down_payment_to_be_paid" = "待支付定金";
@@ -53,6 +55,8 @@
 "pay_earnest_money" = "支付意向金";
 "pay_final_payment" = "支付尾款";
 "pay_now" = "立即支付";
+"prepare_deliver" = "已达到交付中心，交付准备中";
+"prepare_transport" = "正在安排运输";
 "price_detail" = "价格明细";
 "price_included" = "价格已包含";
 "reget_verigy_code" = "重新获取验证码";

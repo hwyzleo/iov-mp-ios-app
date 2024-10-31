@@ -23,6 +23,8 @@ extension MarketingRouter {
         case modelConfig
         case orderDetail
         case licenseArea
+        case dealership
+        case deliveryCenter
         case vehicle
         case login
 
@@ -35,6 +37,10 @@ extension MarketingRouter {
             case .orderDetail:
                 return .navigationLink
             case .licenseArea:
+                return .navigationLink
+            case .dealership:
+                return .navigationLink
+            case .deliveryCenter:
                 return .navigationLink
             case .vehicle:
                 return .navigationLink
@@ -59,6 +65,12 @@ extension MarketingRouter {
                 .navigationBarHidden(true)
         case .licenseArea:
             LicenseAreaPage.build()
+                .navigationBarHidden(true)
+        case .dealership:
+            DealershipPage.build()
+                .navigationBarHidden(true)
+        case .deliveryCenter:
+            DeliveryCenterPage.build()
                 .navigationBarHidden(true)
         case .vehicle:
             VehiclePage.build()

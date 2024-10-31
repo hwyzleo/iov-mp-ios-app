@@ -38,8 +38,15 @@ protocol VehicleOrderDetailModelStateProtocol {
     var orderTime: Int64 { get }
     var selectLicenseCityName: String { get }
     var selectLicenseCityCode: String { get }
-    var orderType: Int { get }
+    var selectDealershipName: String { get }
+    var selectDealershipCode: String { get }
+    var selectDeliveryCenterName: String { get }
+    var selectDeliveryCenterCode: String { get }
+    var orderPersonType: Int { get }
     var purchasePlan: Int { get }
+    var orderPersonName: String { get }
+    var orderPersonIdType: Int { get }
+    var orderPersonIdNum: String { get }
 }
 
 // MARK: - Intent Action
@@ -55,10 +62,14 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, saleSpareTireName: String, saleSpareTirePrice: Decimal, saleExteriorName: String, saleExteriorPrice: Decimal, saleWheelName: String, saleWheelPrice: Decimal, saleInteriorName: String, saleInteriorPrice: Decimal, saleAdasName: String, saleAdasPrice: Decimal, totalPrice: Decimal)
     /// 更新选择预定方式
     func updateSelectBookMethod(bookMethod: String)
-    /// 更新选择订购类型
-    func updateSelectOrderType(orderType: Int)
+    /// 更新选择下单人员类型
+    func updateSelectOrderPersonType(orderPersonType: Int)
+    /// 更新下单人信息
+    func updateOrderPerson(orderPersonType: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String)
     /// 更新选择购车方案
     func updateSelectPurchasePlan(purchasePlan: Int)
+    /// 更新购车方案
+    func updatePurchasePlan(purchasePlan: Int)
     /// 更新订单
     func updateOrder(orderNum: String, orderTime: Int64)
     /// 切换订购协议
@@ -77,6 +88,12 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func displayDownPaymentPaid()
     /// 显示安排生产页
     func displayArrangeProduction()
+    /// 显示待运输页
+    func displayPrepareTransport()
+    /// 显示待交付页
+    func displayPrepareDeliver()
+    /// 显示已提车页
+    func displayDelivered()
 }
 
 // MARK: - Route
@@ -86,6 +103,10 @@ protocol VehicleOrderDetailModelRouterProtocol: MviModelRouterProtocol {
     func routeToMarketingIndex()
     /// 跳转至车型配置页
     func routeToModelConfig()
-    /// 跳转至销售区域页
+    /// 跳转至上牌区域页
     func routeToLicenseArea()
+    /// 跳转至销售门店页
+    func routeToDealership()
+    /// 跳转至交付中心页
+    func routeToDeliveryCenter()
 }

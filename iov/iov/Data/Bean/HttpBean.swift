@@ -121,6 +121,18 @@ struct LicenseArea: Codable {
     var displayName: String
 }
 
+/// 销售门店
+struct Dealership: Codable {
+    /// 门店代码
+    var code: String
+    /// 门店名称
+    var name: String
+    /// 门店地址
+    var address: String
+    /// 门店距离
+    var distance: Double?
+}
+
 /// 订单响应
 struct OrderResponse: Codable {
     /// 订单号
@@ -141,6 +153,22 @@ struct OrderResponse: Codable {
     var totalPrice: Decimal
     /// 下单时间
     var orderTime: Int64
+    /// 下单人类型
+    var orderPersonType: Int?
+    /// 购车方案
+    var purchasePlan: Int?
+    /// 下单人名称
+    var orderPersonName: String?
+    /// 下单人证件类型
+    var orderPersonIdType: Int?
+    /// 下单人证件号
+    var orderPersonIdNum: String?
+    /// 上牌城市代码
+    var licenseCityCode: String?
+    /// 销售门店代码
+    var dealershipCode: String?
+    /// 交付中心代码
+    var deliveryCenterCode: String?
 }
 
 /// 订单支付响应

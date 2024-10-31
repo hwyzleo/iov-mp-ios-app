@@ -127,6 +127,36 @@ extension VehicleModelConfigPage {
                         color: Color.white,
                         bgColor: Color.black
                     ) {
+                        if state.selectSpareTire == "" {
+                            withAnimation {
+                                selectedTab = 1
+                            }
+                            return
+                        }
+                        if state.selectExterior == "" {
+                            withAnimation {
+                                selectedTab = 2
+                            }
+                            return
+                        }
+                        if state.selectWheel == "" {
+                            withAnimation {
+                                selectedTab = 3
+                            }
+                            return
+                        }
+                        if state.selectInterior == "" {
+                            withAnimation {
+                                selectedTab = 4
+                            }
+                            return
+                        }
+                        if state.selectAdas == "" {
+                            withAnimation {
+                                selectedTab = 5
+                            }
+                            return
+                        }
                         intent.onTapOrder(saleCode: state.saleCode, modelCode: state.selectModel, modelName: state.selectModelName, spareTireCode: state.selectSpareTire, exteriorCode: state.selectExterior, wheelCode: state.selectWheel, interiorCode: state.selectInterior, adasCode: state.selectAdas)
                     }
                 }

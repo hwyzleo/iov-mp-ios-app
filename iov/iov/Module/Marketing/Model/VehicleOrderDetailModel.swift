@@ -36,8 +36,15 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     @Published var agreementIsChecked: Bool = false
     @Published var selectLicenseCityName: String = ""
     @Published var selectLicenseCityCode: String = ""
-    @Published var orderType: Int = 0
+    @Published var selectDealershipName: String = ""
+    @Published var selectDealershipCode: String = ""
+    @Published var selectDeliveryCenterName: String = ""
+    @Published var selectDeliveryCenterCode: String = ""
+    @Published var orderPersonType: Int = 0
     @Published var purchasePlan: Int = 0
+    @Published var orderPersonName: String  = ""
+    @Published var orderPersonIdType: Int = 0
+    @Published var orderPersonIdNum: String = ""
 }
 
 // MARK: - Action Protocol
@@ -79,10 +86,19 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     func updateSelectBookMethod(bookMethod: String) {
         self.selectBookMethod = bookMethod
     }
-    func updateSelectOrderType(orderType: Int) {
-        self.orderType = orderType
+    func updateSelectOrderPersonType(orderPersonType: Int) {
+        self.orderPersonType = orderPersonType
+    }
+    func updateOrderPerson(orderPersonType: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String) {
+        self.orderPersonType = orderPersonType
+        self.orderPersonName = orderPersonName
+        self.orderPersonIdType = orderPersonIdType
+        self.orderPersonIdNum = orderPersonIdNum
     }
     func updateSelectPurchasePlan(purchasePlan: Int) {
+        self.purchasePlan = purchasePlan
+    }
+    func updatePurchasePlan(purchasePlan: Int) {
         self.purchasePlan = purchasePlan
     }
     func toggleAgreement() {
@@ -109,6 +125,15 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     func displayArrangeProduction() {
         contentState = .arrangeProduction
     }
+    func displayPrepareTransport() {
+        contentState = .prepareTransport
+    }
+    func displayPrepareDeliver() {
+        contentState = .prepareDeliver
+    }
+    func displayDelivered() {
+        contentState = .delivered
+    }
     func displayLoading() {
         contentState = .loading
     }
@@ -132,6 +157,12 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelRouterProtocol {
     func routeToLicenseArea() {
         routerSubject.screen.send(.licenseArea)
     }
+    func routeToDealership() {
+        routerSubject.screen.send(.dealership)
+    }
+    func routeToDeliveryCenter() {
+        routerSubject.screen.send(.deliveryCenter)
+    }
 }
 
 extension MarketingTypes.Model {
@@ -144,6 +175,9 @@ extension MarketingTypes.Model {
         case downPaymentUnpaid
         case downPaymentPaid
         case arrangeProduction
+        case prepareTransport
+        case prepareDeliver
+        case delivered
         case error(text: String)
     }
 }

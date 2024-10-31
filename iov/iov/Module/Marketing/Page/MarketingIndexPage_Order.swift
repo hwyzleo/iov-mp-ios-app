@@ -64,6 +64,18 @@ extension MarketingIndexPage {
                                             Text(LocalizedStringKey("arrange_production"))
                                                 .bold()
                                                 .font(.system(size: 20))
+                                        case .PREPARE_TRANSPORT:
+                                            Text(LocalizedStringKey("prepare_transport"))
+                                                .bold()
+                                                .font(.system(size: 20))
+                                        case .PREPARE_DELIVER:
+                                            Text(LocalizedStringKey("prepare_deliver"))
+                                                .bold()
+                                                .font(.system(size: 20))
+                                        case .DELIVERED:
+                                            Text(LocalizedStringKey("delivered"))
+                                                .bold()
+                                                .font(.system(size: 20))
                                         default:
                                             Text(LocalizedStringKey("my_order"))
                                                 .bold()
@@ -171,6 +183,54 @@ extension MarketingIndexPage {
                                     }
                                 }
                             case .ARRANGE_PRODUCTION:
+                                HStack {
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("sign_contract")
+                                    ) {
+                                        
+                                    }
+                                    Spacer().frame(width: 20)
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("pay_final_payment"),
+                                        color: Color.white,
+                                        bgColor: Color.black
+                                    ) {
+                                        intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
+                                    }
+                                }
+                            case .PREPARE_TRANSPORT:
+                                HStack {
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("sign_contract")
+                                    ) {
+                                        
+                                    }
+                                    Spacer().frame(width: 20)
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("pay_final_payment"),
+                                        color: Color.white,
+                                        bgColor: Color.black
+                                    ) {
+                                        intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
+                                    }
+                                }
+                            case .PREPARE_DELIVER:
+                                HStack {
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("sign_contract")
+                                    ) {
+                                        
+                                    }
+                                    Spacer().frame(width: 20)
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("pay_final_payment"),
+                                        color: Color.white,
+                                        bgColor: Color.black
+                                    ) {
+                                        intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
+                                    }
+                                }
+                            case .DELIVERED:
                                 HStack {
                                     RoundedCornerButton(
                                         nameLocal: LocalizedStringKey("sign_contract")

@@ -178,6 +178,34 @@ class TspApi {
         }
     }
     
+    /// 获取销售门店
+    static func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+            TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+                completion(result)
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let res = mockDealership()
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
+    /// 获取交付中心
+    static func getDeliveryCenter(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
+        if(!AppGlobalState.shared.isMock) {
+            TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"D"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+                completion(result)
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                let res = mockDeliveryCenter()
+                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+            }
+        }
+    }
+    
     /// 意向金下订单
     static func earnestMoneyOrder(saleCode: String, orderNum: String?, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCity: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
@@ -207,7 +235,7 @@ class TspApi {
     }
     
     /// 定金下订单
-    static func downPaymentOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, orderType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCity: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    static func downPaymentOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCity: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
             let saleModelConfigType: [String:String] = [
                 "MODEL": modelCode,
@@ -221,7 +249,7 @@ class TspApi {
                 "saleCode": saleCode,
                 "orderNum": orderNum,
                 "saleModelConfigType": saleModelConfigType,
-                "orderType": orderType,
+                "orderPersonType": orderPersonType,
                 "purchasePlan": purchasePlan,
                 "orderPersonName": orderPersonName,
                 "orderPersonIdType": orderPersonIdType,
