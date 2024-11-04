@@ -139,7 +139,7 @@ class VehicleManager {
     }
     
     /// 清除车辆
-    private func clear() {
+    func clear() {
         vehicles.removeAll()
         let realm = RealmManager.vehicle.realm
         do {
