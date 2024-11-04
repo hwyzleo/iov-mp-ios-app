@@ -57,15 +57,13 @@ class VehicleManager {
     func update(vehicleSaleOrderList: [VehicleSaleOrder]) {
         clear()
         for (index, vehicleSaleOrder) in vehicleSaleOrderList.enumerated() {
-            if vehicleSaleOrder.orderState == 100 {
+            switch vehicleSaleOrder.orderState {
+            case 100:
                 add(orderNum: vehicleSaleOrder.orderNum, type: .WISHLIST, displayName: vehicleSaleOrder.displayName)
-            } else if vehicleSaleOrder.orderState == 700 {
+            case 700:
                 add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, displayName: vehicleSaleOrder.displayName)
-            } else {
+            default:
                 add(orderNum: vehicleSaleOrder.orderNum, type: .ORDER, displayName: vehicleSaleOrder.displayName)
-            }
-            if currentVehicleId == nil && index == 0 {
-                setCurrentVehicleId(id: vehicleSaleOrder.orderNum)
             }
         }
         if !vehicles.isEmpty && (currentVehicleId == nil || !vehicles.keys.contains(currentVehicleId!)) {
@@ -141,7 +139,7 @@ class VehicleManager {
     }
     
     /// 清除车辆
-    func clear() {
+    private func clear() {
         vehicles.removeAll()
         let realm = RealmManager.vehicle.realm
         do {

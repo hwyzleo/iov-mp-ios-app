@@ -35,9 +35,15 @@ extension VehicleModelConfigPage {
                             Text(interior.typeName)
                                 .foregroundStyle(AppTheme.colors.fontPrimary)
                                 .font(.system(size: 22))
-                            Text("￥\(interior.typePrice.formatted())")
-                                .foregroundStyle(AppTheme.colors.fontSecondary)
-                                .font(.system(size: 15))
+                            if interior.typePrice == 0 {
+                                Text(LocalizedStringKey("included"))
+                                    .foregroundStyle(AppTheme.colors.fontSecondary)
+                                    .font(.system(size: 15))
+                            } else {
+                                Text("￥\(interior.typePrice.formatted())")
+                                    .foregroundStyle(AppTheme.colors.fontSecondary)
+                                    .font(.system(size: 15))
+                            }
                         }
                     }
                 }
