@@ -129,7 +129,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleEarnestMoneyUnpaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -166,7 +166,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleEarnestMoneyPaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -203,7 +203,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleDownPaymentUnpaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -247,7 +247,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleDownPaymentPaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -284,7 +284,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleArrangeProduction() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -321,7 +321,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handlePrepareTransport() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -358,7 +358,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handlePrepareDeliver() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -395,7 +395,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleDelivered() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     let orderResponse = res.data!
@@ -504,7 +504,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onTapAgreement() {
         self.modelAction?.toggleAgreement()
     }
-    func onTapEarnestMoneyOrder(saleModelName: String, licenseCity: String) {
+    func onTapEarnestMoneyOrder(saleModelName: String, licenseCityCode: String) {
         modelAction?.displayLoading()
         var orderNum: String? = nil
         if let id = VehicleManager.shared.getCurrentVehicleId() {
@@ -519,7 +519,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             wheelCode: AppGlobalState.shared.parameters["wheelCode"] as! String,
             spareTireCode: AppGlobalState.shared.parameters["spareTireCode"] as! String,
             adasCode: AppGlobalState.shared.parameters["adasCode"] as! String,
-            licenseCity: licenseCity
+            licenseCityCode: licenseCityCode
         ) { (result: Result<TspResponse<String>, Error>) in
             switch result {
             case .success(let res):

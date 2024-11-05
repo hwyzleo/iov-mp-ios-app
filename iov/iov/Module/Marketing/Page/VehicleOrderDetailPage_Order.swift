@@ -359,7 +359,7 @@ extension VehicleOrderDetailPage {
                     ) {
                         intent.onTapEarnestMoneyOrder(
                             saleModelName: saleModelName,
-                            licenseCity: selectLicenseCityCode
+                            licenseCityCode: selectLicenseCityCode
                         )
                     }
                 }

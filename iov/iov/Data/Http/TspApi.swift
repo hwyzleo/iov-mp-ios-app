@@ -207,7 +207,7 @@ class TspApi {
     }
     
     /// 意向金下订单
-    static func earnestMoneyOrder(saleCode: String, orderNum: String?, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCity: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    static func earnestMoneyOrder(saleCode: String, orderNum: String?, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCityCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
             let saleModelConfigType: [String:String] = [
                 "MODEL": modelCode,
@@ -221,7 +221,7 @@ class TspApi {
                 "saleCode": saleCode,
                 "orderNum": orderNum as Any,
                 "saleModelConfigType": saleModelConfigType,
-                "licenseCity": licenseCity
+                "licenseCityCode": licenseCityCode
             ]) { (result: Result<TspResponse<String>, Error>) in
                 completion(result)
             }
@@ -270,9 +270,9 @@ class TspApi {
     }
     
     /// 获取订单详情
-    static func getOrder(orderNum: String, completion: @escaping (Result<TspResponse<OrderResponse>, Error>) -> Void) {
+    static func getOrder(orderNum: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/vehicleSaleOrder/order/" + orderNum, parameters: [:]) { (result: Result<TspResponse<OrderResponse>, Error>) in
+            TspManager.requestGet(path: "/mp/vehicleSaleOrder/order/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
                 completion(result)
             }
         } else {

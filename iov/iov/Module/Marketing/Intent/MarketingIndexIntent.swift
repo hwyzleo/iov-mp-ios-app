@@ -36,7 +36,7 @@ class MarketingIndexIntent: MviIntentProtocol {
                                     }
                                 }
                             case .ORDER:
-                                TspApi.getOrder(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<OrderResponse>, Error>) in
+                                TspApi.getOrder(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<Order>, Error>) in
                                     switch result {
                                     case .success(let res):
                                         self.modelAction?.displayOrder(order: res.data!)

@@ -178,8 +178,8 @@ func mockDeliveryCenter() -> [Dealership] {
 }
 
 /// 订单
-func mockOrder() -> OrderResponse {
-    return OrderResponse.init(
+func mockOrder() -> Order {
+    return Order.init(
         orderNum: "ORDERNUM001",
         orderState: 200,
         saleModelConfigType: [

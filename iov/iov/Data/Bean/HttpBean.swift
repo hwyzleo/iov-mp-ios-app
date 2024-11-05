@@ -133,8 +133,10 @@ struct Dealership: Codable {
     var distance: Double?
 }
 
-/// 订单响应
-struct OrderResponse: Codable {
+/// 订单
+struct Order: Codable {
+    /// 销售代码
+    var saleCode: String?
     /// 订单号
     var orderNum: String
     /// 订单状态

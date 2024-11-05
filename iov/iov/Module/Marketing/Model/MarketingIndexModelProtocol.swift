@@ -28,7 +28,7 @@ protocol MarketingIndexModelActionProtocol: MviModelActionProtocol {
     /// 有订单的情况下显示心愿单
     func displayWishlist(wishlist: Wishlist)
     /// 有订单的情况下显示订单
-    func displayOrder(order: OrderResponse)
+    func displayOrder(order: Order)
     /// 显示车辆页
     func displayVehicle();
 }

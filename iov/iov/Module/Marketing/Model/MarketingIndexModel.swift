@@ -40,7 +40,7 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
         self.saleModelDesc = wishlist.saleModelDesc
         contentState = .content
     }
-    func displayOrder(order: OrderResponse) {
+    func displayOrder(order: Order) {
         self.hasOrder = true
         self.currentVehicleType = .ORDER
         if let orderState = OrderState(rawValue: order.orderState) {
