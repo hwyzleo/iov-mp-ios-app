@@ -13,168 +13,95 @@ class TspApi {
     
     /// 发送手机号登录验证码
     static func sendMobileVerifyCode(countryRegionCode: String, mobile: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/login/action/sendSmsVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                completion(.success(TspResponse.init(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
-            }
+        TspManager.requestPost(path: "/mp/login/action/sendSmsVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/login/action/smsVerifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let res = mockLoginResponse()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestPost(path: "/mp/login/action/smsVerifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取有效车辆销售订单列表
     static func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/vehicleSaleOrder/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                var res: [VehicleSaleOrder] = []
-                if(VehicleManager.shared.hasOrder()) {
-                    res = mockVehicleSaleOrderList()
-                }
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/vehicleSaleOrder/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取销售车型列表
     static func getSaleModelList(saleCode: String, completion: @escaping (Result<TspResponse<[SaleModelConfig]>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/saleModel/" + saleCode + "/config", parameters: [:]) { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let res = mockSaleModelList()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/saleModel/" + saleCode + "/config", parameters: [:]) { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
+            completion(result)
         }
     }
     
     /// 创建心愿单
     static func createWishlist(saleCode: String, modelCode: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            let saleModelConfigType: [String:String] = [
-                "MODEL": modelCode,
-                "SPARE_TIRE": spareTireCode,
-                "EXTERIOR": exteriorCode,
-                "WHEEL": wheelCode,
-                "INTERIOR": interiorCode,
-                "ADAS": adasCode
-            ]
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/create", parameters: ["saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppGlobalState.shared.mockOrderState = .WISHLIST
-                let res = "ORDERNUM001"
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        let saleModelConfigType: [String:String] = [
+            "MODEL": modelCode,
+            "SPARE_TIRE": spareTireCode,
+            "EXTERIOR": exteriorCode,
+            "WHEEL": wheelCode,
+            "INTERIOR": interiorCode,
+            "ADAS": adasCode
+        ]
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/create", parameters: ["saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
+            completion(result)
         }
     }
     
     /// 修改心愿单
     static func modifyWishlist(orderNum: String, saleCode: String, modelCode: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            let saleModelConfigType: [String:String] = [
-                "MODEL": modelCode,
-                "SPARE_TIRE": spareTireCode,
-                "EXTERIOR": exteriorCode,
-                "WHEEL": wheelCode,
-                "INTERIOR": interiorCode,
-                "ADAS": adasCode
-            ]
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/modify", parameters: ["orderNum": orderNum,"saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppGlobalState.shared.mockOrderState = .WISHLIST
-                let res = "ORDERNUM001"
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        let saleModelConfigType: [String:String] = [
+            "MODEL": modelCode,
+            "SPARE_TIRE": spareTireCode,
+            "EXTERIOR": exteriorCode,
+            "WHEEL": wheelCode,
+            "INTERIOR": interiorCode,
+            "ADAS": adasCode
+        ]
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/modify", parameters: ["orderNum": orderNum,"saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取心愿单详情
     static func getWishlist(orderNum: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/vehicleSaleOrder/wishlist/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Wishlist>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = mockWishlist()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/vehicleSaleOrder/wishlist/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Wishlist>, Error>) in
+            completion(result)
         }
     }
     
     /// 删除心愿单
     static func deleteWishlist(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/delete", parameters: ["orderNum":orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
-            }
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/delete", parameters: ["orderNum":orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取已选择的销售车型及配置
     static func getSelectedSaleModel(saleCode: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/saleModel/selectedSaleModel", parameters: [
-                "saleCode":saleCode,
-                "modelCode":modelCode,
-                "exteriorCode":exteriorCode,
-                "interiorCode":interiorCode,
-                "wheelCode":wheelCode,
-                "spareTireCode":spareTireCode,
-                "adasCode":adasCode
-            ]) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let res = mockSelectedSaleModel()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/saleModel/selectedSaleModel", parameters: [
+            "saleCode":saleCode,
+            "modelCode":modelCode,
+            "exteriorCode":exteriorCode,
+            "interiorCode":interiorCode,
+            "wheelCode":wheelCode,
+            "spareTireCode":spareTireCode,
+            "adasCode":adasCode
+        ]) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取上牌区域
     static func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/saleModel/licenseArea", parameters: [:]) { (result: Result<TspResponse<[LicenseArea]>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let res = mockLicenseArea()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/saleModel/licenseArea", parameters: [:]) { (result: Result<TspResponse<[LicenseArea]>, Error>) in
+            completion(result)
         }
     }
     
@@ -208,175 +135,95 @@ class TspApi {
     
     /// 意向金下订单
     static func earnestMoneyOrder(saleCode: String, orderNum: String?, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCityCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            let saleModelConfigType: [String:String] = [
-                "MODEL": modelCode,
-                "SPARE_TIRE": spareTireCode,
-                "EXTERIOR": exteriorCode,
-                "WHEEL": wheelCode,
-                "INTERIOR": interiorCode,
-                "ADAS": adasCode
-            ]
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/earnestMoneyOrder", parameters: [
-                "saleCode": saleCode,
-                "orderNum": orderNum as Any,
-                "saleModelConfigType": saleModelConfigType,
-                "licenseCityCode": licenseCityCode
-            ]) { (result: Result<TspResponse<String>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppGlobalState.shared.mockOrderState = .EARNEST_MONEY_UNPAID
-                let res = "ORDERNUM001"
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        let saleModelConfigType: [String:String] = [
+            "MODEL": modelCode,
+            "SPARE_TIRE": spareTireCode,
+            "EXTERIOR": exteriorCode,
+            "WHEEL": wheelCode,
+            "INTERIOR": interiorCode,
+            "ADAS": adasCode
+        ]
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/earnestMoneyOrder", parameters: [
+            "saleCode": saleCode,
+            "orderNum": orderNum as Any,
+            "saleModelConfigType": saleModelConfigType,
+            "licenseCityCode": licenseCityCode
+        ]) { (result: Result<TspResponse<String>, Error>) in
+            completion(result)
         }
     }
     
     /// 定金下订单
-    static func downPaymentOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCity: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            let saleModelConfigType: [String:String] = [
-                "MODEL": modelCode,
-                "SPARE_TIRE": spareTireCode,
-                "EXTERIOR": exteriorCode,
-                "WHEEL": wheelCode,
-                "INTERIOR": interiorCode,
-                "ADAS": adasCode
-            ]
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/downPaymentOrder", parameters: [
-                "saleCode": saleCode,
-                "orderNum": orderNum,
-                "saleModelConfigType": saleModelConfigType,
-                "orderPersonType": orderPersonType,
-                "purchasePlan": purchasePlan,
-                "orderPersonName": orderPersonName,
-                "orderPersonIdType": orderPersonIdType,
-                "orderPersonIdNum": orderPersonIdNum,
-                "licenseCity": licenseCity,
-                "dealership": dealership,
-                "deliveryCenter": deliveryCenter
-            ]) { (result: Result<TspResponse<String>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppGlobalState.shared.mockOrderState = .DOWN_PAYMENT_UNPAID
-                let res = "ORDERNUM001"
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+    static func downPaymentOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        let saleModelConfigType: [String:String] = [
+            "MODEL": modelCode,
+            "SPARE_TIRE": spareTireCode,
+            "EXTERIOR": exteriorCode,
+            "WHEEL": wheelCode,
+            "INTERIOR": interiorCode,
+            "ADAS": adasCode
+        ]
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/downPaymentOrder", parameters: [
+            "saleCode": saleCode,
+            "orderNum": orderNum,
+            "saleModelConfigType": saleModelConfigType,
+            "orderPersonType": orderPersonType,
+            "purchasePlan": purchasePlan,
+            "orderPersonName": orderPersonName,
+            "orderPersonIdType": orderPersonIdType,
+            "orderPersonIdNum": orderPersonIdNum,
+            "licenseCityCode": licenseCityCode,
+            "dealership": dealership,
+            "deliveryCenter": deliveryCenter
+        ]) { (result: Result<TspResponse<String>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取订单详情
     static func getOrder(orderNum: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/vehicleSaleOrder/order/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                var res = mockOrder()
-                res.orderState = AppGlobalState.shared.mockOrderState.rawValue
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/vehicleSaleOrder/order/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
+            completion(result)
         }
     }
     
     /// 取消订单
     static func cancelOrder(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/cancel", parameters: ["orderNum":orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
-            }
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/cancel", parameters: ["orderNum":orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 支付订单
     static func payOrder(orderNum: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/pay", parameters: [
-                "orderNum": orderNum,
-                "orderPaymentPhase": orderPaymentPhase,
-                "paymentAmount": paymentAmount,
-                "paymentChannel": paymentChannel
-            ]) { (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                if orderPaymentPhase == 1 {
-                    AppGlobalState.shared.mockOrderState = .EARNEST_MONEY_PAID
-                }
-                if orderPaymentPhase == 2 {
-                    AppGlobalState.shared.mockOrderState = .DOWN_PAYMENT_PAID
-                }
-                if orderPaymentPhase == 3 {
-                    AppGlobalState.shared.mockOrderState = .ACTIVATED
-                    VehicleManager.shared.add(orderNum: "ORDERNUM001", type: .ACTIVATED, displayName: "车型")
-                }
-                VehicleManager.shared.setCurrentVehicleId(id: "ORDERNUM001")
-                let res = mockOrderPaymentResponse()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/pay", parameters: [
+            "orderNum": orderNum,
+            "orderPaymentPhase": orderPaymentPhase,
+            "paymentAmount": paymentAmount,
+            "paymentChannel": paymentChannel
+        ]) { (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
+            completion(result)
         }
     }
     
     /// 意向金转定金
     static func earnestMoneyToDownPayment(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/earnestMoneyToDownPayment", parameters: ["orderNum": orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppGlobalState.shared.mockOrderState = .DOWN_PAYMENT_PAID
-                VehicleManager.shared.setCurrentVehicleId(id: "ORDERNUM001")
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
-            }
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/earnestMoneyToDownPayment", parameters: ["orderNum": orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 锁定订单
     static func lockOrder(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/lock", parameters: ["orderNum": orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                AppGlobalState.shared.mockOrderState = .ARRANGE_PRODUCTION
-                VehicleManager.shared.setCurrentVehicleId(id: "ORDERNUM001")
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
-            }
+        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/lock", parameters: ["orderNum": orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let data = AccountInfo.init(
-                    mobile: "13917288107",
-                    nickname: "hwyz_leo",
-                    avatar: "https://profile-photo.s3.cn-north-1.amazonaws.com.cn/files/avatar/50531/MTAxMDYzNDY0Nzd4d2h2cWFt/avatar.png?v=c4af49f3cbedbc00f76256a03298b663",
-                    gender: "MALE",
-                    birthday: "1982-10-13",
-                    area: "上海 长宁"
-                )
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
-                debugPrint("Mock API[getAccountInfo] Response")
-                completion(.success(res))
-            }
+        TspManager.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
+            completion(result)
         }
     }
     
@@ -412,16 +259,8 @@ class TspApi {
     
     /// 修改昵称
     static func modifyNickname(nickname: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/account/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = TspResponse<NoReply>(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))
-                debugPrint("Mock API[modifyNickname] Response")
-                completion(.success(res))
-            }
+        TspManager.requestPost(path: "/account/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     

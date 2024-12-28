@@ -53,6 +53,7 @@
 		BF554B1B2CD359020025E7D4 /* DeliveryCenterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B1A2CD359020025E7D4 /* DeliveryCenterIntent.swift */; };
 		BF554B1D2CD35C280025E7D4 /* DeliveryCenterPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B1C2CD35C280025E7D4 /* DeliveryCenterPage.swift */; };
 		BF554B1F2CD35C750025E7D4 /* DeliveryCenterPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B1E2CD35C750025E7D4 /* DeliveryCenterPage+Build.swift */; };
+		BF6D81522D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6D81512D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
 		BFA187742C83111F004D625D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFA187732C83111F004D625D /* Assets.xcassets */; };
@@ -357,6 +358,7 @@
 		BFA18A822C8446A2004D625D /* CommunityPage_Carousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A812C8446A2004D625D /* CommunityPage_Carousel.swift */; };
 		BFA18A842C8446D3004D625D /* CommunityPage_Navi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A832C8446D3004D625D /* CommunityPage_Navi.swift */; };
 		BFA18A862C8446F8004D625D /* CommunityPage_Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A852C8446F7004D625D /* CommunityPage_Topic.swift */; };
+		BFA244242CDB8D5100AAAB6F /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA244232CDB8D5100AAAB6F /* SecurityManager.swift */; };
 		BFACD05C2CAAF73100EF69E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BFACD05A2CAAF73100EF69E4 /* Localizable.strings */; };
 		BFADC2AB2CAD2B4E00834608 /* RoundedCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */; };
 		BFADC2AD2CB23B0400834608 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AC2CB23B0400834608 /* VehicleManager.swift */; };
@@ -428,6 +430,7 @@
 		BF554B1A2CD359020025E7D4 /* DeliveryCenterIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeliveryCenterIntent.swift; sourceTree = "<group>"; };
 		BF554B1C2CD35C280025E7D4 /* DeliveryCenterPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeliveryCenterPage.swift; sourceTree = "<group>"; };
 		BF554B1E2CD35C750025E7D4 /* DeliveryCenterPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeliveryCenterPage+Build.swift"; sourceTree = "<group>"; };
+		BF6D81512D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_AllocationVehicle.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
 		BFA1876F2C83111E004D625D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -734,6 +737,7 @@
 		BFA18A812C8446A2004D625D /* CommunityPage_Carousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPage_Carousel.swift; sourceTree = "<group>"; };
 		BFA18A832C8446D3004D625D /* CommunityPage_Navi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPage_Navi.swift; sourceTree = "<group>"; };
 		BFA18A852C8446F7004D625D /* CommunityPage_Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPage_Topic.swift; sourceTree = "<group>"; };
+		BFA244232CDB8D5100AAAB6F /* SecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
 		BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerButton.swift; sourceTree = "<group>"; };
 		BFADC2AC2CB23B0400834608 /* VehicleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleManager.swift; sourceTree = "<group>"; };
 		BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexPage.swift; sourceTree = "<group>"; };
@@ -1402,6 +1406,7 @@
 				BFA18A782C843E27004D625D /* CodableDefault.swift */,
 				BFA1887D2C841E94004D625D /* CommonUtil.swift */,
 				BFA188552C841A1B004D625D /* RealmManager.swift */,
+				BFA244232CDB8D5100AAAB6F /* SecurityManager.swift */,
 				BFA1884F2C8418A2004D625D /* UserManager.swift */,
 				BFADC2AC2CB23B0400834608 /* VehicleManager.swift */,
 				BFA189612C842CB9004D625D /* WebViewUtil.swift */,
@@ -2436,6 +2441,7 @@
 				BF3CA3352CC69417006CD801 /* VehicleOrderDetailPage_DownPaymentUnpaid.swift */,
 				BF3CA3312CC4E0B1006CD801 /* VehicleOrderDetailPage_DownPaymentPaid.swift */,
 				BF3CA3332CC68481006CD801 /* VehicleOrderDetailPage_ArrangeProduction.swift */,
+				BF6D81512D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift */,
 				BF554B022CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift */,
 				BF554B042CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift */,
 				BF554B062CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift */,
@@ -2785,6 +2791,7 @@
 				BFA188A62C8420D9004D625D /* CommunityTopicRouter.swift in Sources */,
 				BFA18A6A2C843CB7004D625D /* MviActionProcessor.swift in Sources */,
 				BFA1878E2C832D27004D625D /* MviIntentProtocol.swift in Sources */,
+				BFA244242CDB8D5100AAAB6F /* SecurityManager.swift in Sources */,
 				BFA18A132C843595004D625D /* ServiceIntentProtocol.swift in Sources */,
 				BFA1899A2C842F8E004D625D /* MyPointsRouter.swift in Sources */,
 				BFA188D82C8424B0004D625D /* SettingModel.swift in Sources */,
@@ -2846,6 +2853,7 @@
 				BFADC2E62CB385A000834608 /* MarketingRouter.swift in Sources */,
 				BFADC2EC2CB387A800834608 /* MarketingIndexModelProtocol.swift in Sources */,
 				BF3CA3162CBB8018006CD801 /* VehicleOrderDetailModel.swift in Sources */,
+				BF6D81522D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift in Sources */,
 				BFA18A602C8439E6004D625D /* MallPage_Category.swift in Sources */,
 				BFA189102C8427FB004D625D /* MySettingAccountChangeRouter.swift in Sources */,
 				BF554B152CD358060025E7D4 /* DeliveryCenterModelProtocol.swift in Sources */,

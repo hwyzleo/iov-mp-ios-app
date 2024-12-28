@@ -24,7 +24,7 @@ extension MarketingIndexPage {
                 if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
                     HStack {
                         Text(vehiclePo.displayName)
-                        Image("icon_arrow_double")
+                        Image("icon_arrow_up_down")
                             .resizable()
                             .frame(width: 20, height: 20)
                         Spacer()
@@ -62,6 +62,10 @@ extension MarketingIndexPage {
                                                 .font(.system(size: 20))
                                         case .ARRANGE_PRODUCTION:
                                             Text(LocalizedStringKey("arrange_production"))
+                                                .bold()
+                                                .font(.system(size: 20))
+                                        case .ALLOCATION_VEHICLE:
+                                            Text(LocalizedStringKey("allocation_vehicle"))
                                                 .bold()
                                                 .font(.system(size: 20))
                                         case .PREPARE_TRANSPORT:
@@ -183,6 +187,22 @@ extension MarketingIndexPage {
                                     }
                                 }
                             case .ARRANGE_PRODUCTION:
+                                HStack {
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("sign_contract")
+                                    ) {
+                                        
+                                    }
+                                    Spacer().frame(width: 20)
+                                    RoundedCornerButton(
+                                        nameLocal: LocalizedStringKey("pay_final_payment"),
+                                        color: Color.white,
+                                        bgColor: Color.black
+                                    ) {
+                                        intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
+                                    }
+                                }
+                            case .ALLOCATION_VEHICLE:
                                 HStack {
                                     RoundedCornerButton(
                                         nameLocal: LocalizedStringKey("sign_contract")

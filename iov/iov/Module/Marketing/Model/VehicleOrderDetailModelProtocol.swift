@@ -88,6 +88,8 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func displayDownPaymentPaid()
     /// 显示安排生产页
     func displayArrangeProduction()
+    /// 显示已分配车辆页
+    func displayAllocationVehicle()
     /// 显示待运输页
     func displayPrepareTransport()
     /// 显示待交付页

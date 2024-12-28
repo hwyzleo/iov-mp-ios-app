@@ -35,6 +35,8 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                 handleDownPaymentPaid()
             case "ARRANGE_PRODUCTION":
                 handleArrangeProduction()
+            case "ALLOCATION_VEHICLE":
+                handleAllocationVehicle()
             case "PREPARE_TRANSPORT":
                 handlePrepareTransport()
             case "PREPARE_DELIVER":
@@ -319,6 +321,43 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
             }
         }
     }
+    private func handleAllocationVehicle() {
+        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+            TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+                switch result {
+                case .success(let res):
+                    let orderResponse = res.data!
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelIntro(
+                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc
+                    )
+                    self.modelAction?.updateSaleModelPrice(
+                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice
+                    )
+                    self.modelAction?.updateOrder(
+                        orderNum: orderResponse.orderNum,
+                        orderTime: orderResponse.orderTime
+                    )
+                    self.modelAction?.displayAllocationVehicle()
+                case .failure(_):
+                    self.modelAction?.displayError(text: "请求异常")
+                }
+            }
+        }
+    }
     private func handlePrepareTransport() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
             TspApi.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
@@ -533,13 +572,15 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 if lastView == "MODEL_CONFIG" {
                     AppGlobalState.shared.parameters["backCount"] = 1
                 }
+                AppGlobalState.shared.parameters["licenseCityCode"] = nil
+                AppGlobalState.shared.parameters["licenseCityName"] = nil
                 self.modelRouter?.closeScreen()
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")
             }
         }
     }
-    func onTapDownPaymentOrder(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, saleModelName: String, licenseCity: String, dealership: String, deliveryCenter: String) {
+    func onTapDownPaymentOrder(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, saleModelName: String, licenseCityCode: String, dealership: String, deliveryCenter: String) {
         modelAction?.displayLoading()
         var orderNum: String = ""
         if let id = VehicleManager.shared.getCurrentVehicleId() {
@@ -559,7 +600,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             orderPersonName: orderPersonName,
             orderPersonIdType: orderPersonIdType,
             orderPersonIdNum: orderPersonIdNum,
-            licenseCity: licenseCity,
+            licenseCityCode: licenseCityCode,
             dealership: dealership,
             deliveryCenter: deliveryCenter
         ) { (result: Result<TspResponse<String>, Error>) in
@@ -575,6 +616,12 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 if lastView == "MODEL_CONFIG" {
                     AppGlobalState.shared.parameters["backCount"] = 1
                 }
+                AppGlobalState.shared.parameters["licenseCityCode"] = nil
+                AppGlobalState.shared.parameters["licenseCityName"] = nil
+                AppGlobalState.shared.parameters["dealershipCode"] = nil
+                AppGlobalState.shared.parameters["dealershipName"] = nil
+                AppGlobalState.shared.parameters["deliveryCenterCode"] = nil
+                AppGlobalState.shared.parameters["deliveryCenterName"] = nil
                 self.modelRouter?.closeScreen()
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")

@@ -345,7 +345,7 @@ extension VehicleOrderDetailPage {
                             orderPersonIdType: 1,
                             orderPersonIdNum: orderPersonIdNum,
                             saleModelName: saleModelName,
-                            licenseCity: selectLicenseCityCode,
+                            licenseCityCode: selectLicenseCityCode,
                             dealership: selectDealershipCode,
                             deliveryCenter: selectDeliveryCenterCode
                         )
@@ -368,7 +368,11 @@ extension VehicleOrderDetailPage {
             .padding(.trailing, 20)
             .onAppear {
                 if state.selectBookMethod == "" {
-                    intent.onTapDownPaymentBookMethod()
+                    if state.downPayment {
+                        intent.onTapDownPaymentBookMethod()
+                    } else {
+                        intent.onTapEarnestMoneyBookMethod()
+                    }
                 }
             }
             .onChange(of: globalState.backRefresh) { _ in

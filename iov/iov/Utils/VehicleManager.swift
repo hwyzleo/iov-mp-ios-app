@@ -178,6 +178,8 @@ enum OrderState: Int {
     case DOWN_PAYMENT_PAID = 310
     /// 安排生产
     case ARRANGE_PRODUCTION = 400
+    /// 已分配车辆
+    case ALLOCATION_VEHICLE = 450
     /// 待运输
     case PREPARE_TRANSPORT = 500
     /// 待交付

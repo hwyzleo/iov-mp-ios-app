@@ -125,6 +125,9 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     func displayArrangeProduction() {
         contentState = .arrangeProduction
     }
+    func displayAllocationVehicle() {
+        contentState = .allocationVehicle
+    }
     func displayPrepareTransport() {
         contentState = .prepareTransport
     }
@@ -175,6 +178,7 @@ extension MarketingTypes.Model {
         case downPaymentUnpaid
         case downPaymentPaid
         case arrangeProduction
+        case allocationVehicle
         case prepareTransport
         case prepareDeliver
         case delivered

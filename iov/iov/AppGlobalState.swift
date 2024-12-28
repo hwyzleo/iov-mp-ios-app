@@ -15,7 +15,7 @@ class AppGlobalState: ObservableObject {
     @Published var isSecondActive: Bool = false
     @Published var isMock: Bool = true
     @Published var mockOrderState: OrderState = .WISHLIST
-    @Published var tspUrl: String = "http://192.168.2.223:8081"
+    @Published var tspUrl: String = "https://sgw.rox-motor.com"
     @Published var currentView: String = ""
     @Published var productId: String = ""
     @Published var parameters: [String: Any] = [:]

@@ -187,6 +187,27 @@ struct VehicleOrderDetailPage: View {
                     orderNum: state.orderNum,
                     orderTime: state.orderTime
                 )
+            case .allocationVehicle:
+                AllocationVehicle(
+                    container: container,
+                    saleModelImages: state.saleModelImages,
+                    saleModelName: state.saleModelName,
+                    saleModelDesc: state.saleModelDesc,
+                    saleModelPrice: state.saleModelPrice,
+                    saleSpareTireName: state.saleSpareTireName,
+                    saleSpareTirePrice: state.saleSpareTirePrice,
+                    saleExteriorName: state.saleExteriorName,
+                    saleExteriorPrice: state.saleExteriorPrice,
+                    saleWheelName: state.saleWheelName,
+                    saleWheelPrice: state.saleWheelPrice,
+                    saleInteriorName: state.saleInteriorName,
+                    saleInteriorPrice: state.saleInteriorPrice,
+                    saleAdasName: state.saleAdasName,
+                    saleAdasPrice: state.saleAdasPrice,
+                    totalPrice: state.totalPrice,
+                    orderNum: state.orderNum,
+                    orderTime: state.orderTime
+                )
             case .prepareTransport:
                 PrepareTransport(
                     container: container,

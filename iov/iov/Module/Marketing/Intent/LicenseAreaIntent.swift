@@ -22,6 +22,7 @@ class LicenseAreaIntent: MviIntentProtocol {
             case .success(let res):
                 if res.code == 0 {
                     self.modelAction?.displayProvince(licenseAreaList: res.data!)
+                    AppGlobalState.shared.backRefresh = false
                 } else {
                     self.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
