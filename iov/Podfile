@@ -13,6 +13,7 @@ target 'iov' do
   pod 'RealmSwift' #本地数据库
   pod 'RxSwift' #响应式框架
   pod 'SwiftyJSON' #JSON数据解析
+  pod 'KeychainAccess' #安全存储密钥
 
 end
 
