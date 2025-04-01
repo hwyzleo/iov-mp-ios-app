@@ -29,7 +29,7 @@ extension VehicleOrderDetailPage {
                     }
                 }
                 .tabViewStyle(.page)
-                .frame(height: 200)
+                .frame(height: 240)
                 .clipped()
                 Spacer().frame(height: 20)
                 HStack {

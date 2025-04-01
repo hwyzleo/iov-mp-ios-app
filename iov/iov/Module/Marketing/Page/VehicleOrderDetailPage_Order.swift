@@ -66,67 +66,29 @@ extension VehicleOrderDetailPage {
                         }
                         if downPayment {
                             Spacer().frame(height: 10)
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(state.selectBookMethod == "downPayment" ? Color.orange : Color.gray, lineWidth: 1)
-                                .frame(height: 130)
-                                .overlay(
-                                    VStack {
-                                        HStack {
-                                            RoundedCornerButton(name: "锁定限时权益", color: .white, bgColor: .orange, borderColor: .orange, height: 20, fontSize: 10) {}
-                                                .frame(width: 80)
-                                            Text(LocalizedStringKey("down_payment"))
-                                            Text("￥\(downPaymentPrice.formatted())")
-                                            Spacer()
-                                            Text(LocalizedStringKey("view_benefits_detail"))
-                                        }
-                                        Spacer().frame(height: 10)
-                                        HStack {
-                                            Text(purchaseBenefitsIntro)
-                                                .lineSpacing(10.0)
-                                                .fixedSize(horizontal: false, vertical: true)
-                                            Spacer()
-                                        }
-                                        Spacer()
-                                    }
-                                    .font(.system(size: 14))
-                                    .padding()
-                                )
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    intent.onTapDownPaymentBookMethod()
-                                }
+                            BookMethodCard(
+                                isSelected: state.selectBookMethod == "downPayment",
+                                tagText: "锁定限时权益",
+                                tagColor: .orange,
+                                title: "down_payment",
+                                price: downPaymentPrice,
+                                benefits: purchaseBenefitsIntro
+                            ) {
+                                intent.onTapDownPaymentBookMethod()
+                            }
                         }
                         if earnestMoney {
                             Spacer().frame(height: 10)
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(state.selectBookMethod == "earnestMoney" ? Color.orange : Color.gray, lineWidth: 1)
-                                .frame(height: 130)
-                                .overlay(
-                                    VStack {
-                                        HStack {
-                                            RoundedCornerButton(name: "意向金随时可退", color: .white, bgColor: .gray, height: 20, fontSize: 10) {}
-                                                .frame(width: 80)
-                                            Text(LocalizedStringKey("earnest_money"))
-                                            Text("￥\(earnestMoneyPrice.formatted())")
-                                            Spacer()
-                                            Text(LocalizedStringKey("view_benefits_detail"))
-                                        }
-                                        Spacer().frame(height: 10)
-                                        HStack {
-                                            Text(purchaseBenefitsIntro)
-                                                .lineSpacing(10.0)
-                                                .fixedSize(horizontal: false, vertical: true)
-                                            Spacer()
-                                        }
-                                        Spacer()
-                                    }
-                                    .font(.system(size: 14))
-                                    .padding()
-                                )
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    intent.onTapEarnestMoneyBookMethod()
-                                }
+                            BookMethodCard(
+                                isSelected: state.selectBookMethod == "earnestMoney",
+                                tagText: "意向金随时可退",
+                                tagColor: .gray,
+                                title: "earnest_money",
+                                price: earnestMoneyPrice,
+                                benefits: purchaseBenefitsIntro
+                            ) {
+                                intent.onTapEarnestMoneyBookMethod()
+                            }
                         }
                         if state.selectBookMethod == "downPayment" {
                             Spacer().frame(height: 20)

@@ -17,12 +17,12 @@ class LicenseAreaIntent: MviIntentProtocol {
     }
     
     func viewOnAppear() {
+        AppGlobalState.shared.backRefresh = false
         TspApi.getLicenseArea() { (result: Result<TspResponse<[LicenseArea]>, Error>) in
             switch result {
             case .success(let res):
                 if res.code == 0 {
                     self.modelAction?.displayProvince(licenseAreaList: res.data!)
-                    AppGlobalState.shared.backRefresh = false
                 } else {
                     self.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
