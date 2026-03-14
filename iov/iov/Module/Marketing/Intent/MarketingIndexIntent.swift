@@ -19,7 +19,7 @@ class MarketingIndexIntent: MviIntentProtocol {
     func viewOnAppear() {
         modelAction?.displayLoading()
         if UserManager.isLogin() {
-            TspApi.getValidVehicleSaleOrderList() { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
+            ServiceContainer.marketingService.getValidVehicleSaleOrderList { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.code == 0 {
@@ -28,7 +28,7 @@ class MarketingIndexIntent: MviIntentProtocol {
                             if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
                                 switch vehiclePo.type {
                                 case .WISHLIST:
-                                    TspApi.getWishlist(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<Wishlist>, Error>) in
+                                    ServiceContainer.marketingService.getWishlist(orderNum: VehicleManager.shared.getCurrentVehicleId()!) { (result: Result<TspResponse<Wishlist>, Error>) in
                                         switch result {
                                         case .success(let res):
                                             self.modelAction?.displayWishlist(wishlist: res.data!)

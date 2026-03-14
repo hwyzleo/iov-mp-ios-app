@@ -33,7 +33,7 @@ extension LoginIntent: LoginIntentProtocol {
     func onTapSendVerifyCodeButton(countryRegionCode: String, mobile: String) {
         modelAction?.displayLoading()
         let replacedMobile = mobile.replacingOccurrences(of: " ", with: "")
-        TspApi.sendMobileVerifyCode(countryRegionCode: countryRegionCode, mobile: replacedMobile) { (result: Result<TspResponse<NoReply>, Error>) in
+        ServiceContainer.loginService.sendMobileVerifyCode(countryRegionCode: countryRegionCode, mobile: replacedMobile) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(_):
                 self.modelAction?.routeInputVerify(countryRegionCode: countryRegionCode, mobile: mobile)
@@ -47,7 +47,7 @@ extension LoginIntent: LoginIntentProtocol {
     }
     func onTapResendVerifyCodeText(countryRegionCode: String, mobile: String) {
         let replacedMobile = mobile.replacingOccurrences(of: " ", with: "")
-        TspApi.sendMobileVerifyCode(countryRegionCode: countryRegionCode, mobile: replacedMobile) { (result: Result<TspResponse<NoReply>, Error>) in
+        ServiceContainer.loginService.sendMobileVerifyCode(countryRegionCode: countryRegionCode, mobile: replacedMobile) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(_):
                 debugPrint("resend success")
@@ -59,11 +59,13 @@ extension LoginIntent: LoginIntentProtocol {
     func onTapVerifyCodeLoginButton(countryRegionCode: String, mobile: String, verifyCode: String) {
         modelAction?.displayLoading()
         let replacedMobile = mobile.replacingOccurrences(of: " ", with: "")
-        TspApi.mobileVerifyCodeLogin(countryRegionCode: countryRegionCode, mobile: replacedMobile, verifyCode: verifyCode) { (result: Result<TspResponse<LoginResponse>, Error>) in
+        ServiceContainer.loginService.mobileVerifyCodeLogin(countryRegionCode: countryRegionCode, mobile: replacedMobile, verifyCode: verifyCode) { (result: Result<TspResponse<LoginResponse>, Error>) in
             switch result {
             case let .success(response):
                 if response.code == 0 {
                     UserManager.login(response: response.data!)
+                    // 同步全局登录态
+                    AppGlobalState.shared.isLogin = true
                     self.modelRouter?.closeScreen()
                 } else if response.code > 0 {
                     self.modelAction?.displayError(text: response.message ?? "异常")

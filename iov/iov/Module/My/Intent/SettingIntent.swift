@@ -52,6 +52,7 @@ extension SettingIntent: SettingIntentProtocol {
 //    }
     func onTapLogout() {
         UserManager.logout()
+        AppGlobalState.shared.isLogin = false
         modelAction?.logout()
     }
 }

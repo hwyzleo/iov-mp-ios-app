@@ -20,15 +20,15 @@ class VehicleIntent: MviIntentProtocol {
     
     func viewOnAppear() {
         modelAction?.displayLoading()
-        TspApi.getVehicleIndex() { (result: Result<TspResponse<VehicleIndex>, Error>) in
+        ServiceContainer.vehicleService.getVehicleIndex { result in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if response.code == 0 {
                     self.modelAction?.updateContent(vehicleIndex: response.data!)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
-            case let .failure(error):
+            case .failure(let error):
                 print(error)
                 self.modelAction?.displayError(text: "请求异常")
             }
@@ -42,35 +42,20 @@ extension VehicleIntent: VehicleIntentProtocol {
     }
     func onTapLock() {
         modelAction?.buttonLoading(button: "lock")
-        if BluetoothManager.shared.isConnected() {
-            BluetoothApi.lockVehicle() { (result: Result<BluetoothResponse<NoReply>, Error>) in
-                switch result {
-                case .success(let response):
-                    if(response.code == 0) {
-                        var vehicle = mockVehicle()
-                        vehicle.lockState = true
-                        self.modelAction?.updateVehicle(vehicle: vehicle, button: "lock")
-                    } else {
-                        self.modelAction?.displayError(text: response.message ?? "异常")
-                    }
-                case .failure(_):
-                    self.modelAction?.displayError(text: "请求异常")
+        ServiceContainer.vehicleService.lockVehicle { result in
+            switch result {
+            case .success(let response):
+                if response.code == 0 {
+                    // 更新本地状态
+                    var vehicle = mockVehicle()
+                    vehicle.lockState = true
+                    self.modelAction?.updateVehicle(vehicle: vehicle, button: "lock")
+                } else {
+                    self.modelAction?.displayError(text: response.message ?? "异常")
                 }
-            }
-        } else {
-            TspApi.lockVehicle() { (result: Result<TspResponse<NoReply>, Error>) in
-                switch result {
-                case .success(let response):
-                    if(response.code == 0) {
-                        var vehicle = mockVehicle()
-                        vehicle.lockState = true
-                        self.modelAction?.updateVehicle(vehicle: vehicle, button: "lock")
-                    } else {
-                        self.modelAction?.displayError(text: response.message ?? "异常")
-                    }
-                case let .failure(error):
-                    self.modelAction?.displayError(text: "请求异常")
-                }
+            case .failure(let error):
+                print(error)
+                self.modelAction?.displayError(text: "请求异常")
             }
         }
     }

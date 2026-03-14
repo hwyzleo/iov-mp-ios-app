@@ -144,7 +144,7 @@ class VehicleManager {
         let realm = RealmManager.vehicle.realm
         do {
             try realm.write {
-                realm.deleteAll()
+                realm.delete(realm.objects(VehiclePo.self))
                 realm.refresh()
             }
         } catch {

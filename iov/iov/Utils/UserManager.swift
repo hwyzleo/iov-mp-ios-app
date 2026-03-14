@@ -28,7 +28,9 @@ class UserManager: Object {
     
     /// 获取用户信息
     class func getUser() -> UserManager? {
-        return RealmManager.user.realm.objects(UserManager.self).first
+        let realm = RealmManager.user.realm
+        realm.refresh()
+        return realm.objects(UserManager.self).first
     }
     
     /// 是否登录
@@ -65,17 +67,30 @@ class UserManager: Object {
     /// 登录
     @discardableResult
     class func login(response: LoginResponse) -> Observable<UserManager> {
-        clear()
-        let user = UserManager(response: response)
         let realm = RealmManager.user.realm
         do {
+            var userResult: UserManager?
             try realm.write {
-                realm.add(user)
+                if let user = realm.objects(UserManager.self).first {
+                    // 如果已存在对象，则更新其属性，保持引用有效
+                    user.token = response.token
+                    user.nickname = response.nickname
+                    user.avatar = response.avatar
+                    userResult = user
+                } else {
+                    // 如果不存在，则创建新对象
+                    let user = UserManager(response: response)
+                    realm.add(user)
+                    userResult = user
+                }
             }
-            return .just(user)
+            if let result = userResult {
+                return Observable.just(result)
+            }
         } catch {
-            return .error(error)
+            return Observable.error(error)
         }
+        return Observable.error(IovError(message: "登录失败"))
     }
     
     /// 退出登录
@@ -90,12 +105,12 @@ class UserManager: Object {
         let realm = RealmManager.user.realm
         do {
             try realm.write {
-                realm.deleteAll()
+                realm.delete(realm.objects(UserManager.self))
                 realm.refresh()
             }
-            return .just(())
+            return Observable.just(())
         } catch {
-            return .error(error)
+            return Observable.error(error)
         }
     }
     

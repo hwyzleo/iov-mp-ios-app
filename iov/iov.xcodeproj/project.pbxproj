@@ -55,6 +55,11 @@
 		BF554B1F2CD35C750025E7D4 /* DeliveryCenterPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B1E2CD35C750025E7D4 /* DeliveryCenterPage+Build.swift */; };
 		BF6D81522D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6D81512D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift */; };
 		BF8914972F65336200A3F0FE /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914962F65336200A3F0FE /* L10n.swift */; };
+		BF8914992F6537D200A3F0FE /* ServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914982F6537D200A3F0FE /* ServiceContainer.swift */; };
+		BF89149F2F65385300A3F0FE /* MockIndicatorModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF89149E2F65385300A3F0FE /* MockIndicatorModifier.swift */; };
+		BF8914A22F65451900A3F0FE /* VehicleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A02F65451900A3F0FE /* VehicleService.swift */; };
+		BF8914A52F65479000A3F0FE /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A32F65479000A3F0FE /* LoginService.swift */; };
+		BF8914A82F6549F600A3F0FE /* MarketingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A62F6549F600A3F0FE /* MarketingService.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
 		BFA187742C83111F004D625D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFA187732C83111F004D625D /* Assets.xcassets */; };
@@ -434,6 +439,11 @@
 		BF554B1E2CD35C750025E7D4 /* DeliveryCenterPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeliveryCenterPage+Build.swift"; sourceTree = "<group>"; };
 		BF6D81512D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_AllocationVehicle.swift; sourceTree = "<group>"; };
 		BF8914962F65336200A3F0FE /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		BF8914982F6537D200A3F0FE /* ServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceContainer.swift; sourceTree = "<group>"; };
+		BF89149E2F65385300A3F0FE /* MockIndicatorModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockIndicatorModifier.swift; sourceTree = "<group>"; };
+		BF8914A02F65451900A3F0FE /* VehicleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleService.swift; sourceTree = "<group>"; };
+		BF8914A32F65479000A3F0FE /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
+		BF8914A62F6549F600A3F0FE /* MarketingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingService.swift; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
 		BFA1876F2C83111E004D625D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -789,6 +799,30 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		BF8914A12F65451900A3F0FE /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				BF8914A02F65451900A3F0FE /* VehicleService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		BF8914A42F65479000A3F0FE /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				BF8914A32F65479000A3F0FE /* LoginService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		BF8914A72F6549F600A3F0FE /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				BF8914A62F6549F600A3F0FE /* MarketingService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		BFA187612C83111E004D625D = {
 			isa = PBXGroup;
 			children = (
@@ -1141,6 +1175,7 @@
 				BFA187E62C84113D004D625D /* Model */,
 				BFA187E02C8410F4004D625D /* Page */,
 				BFA187E32C841118004D625D /* Intent */,
+				BF8914A42F65479000A3F0FE /* Service */,
 			);
 			path = Login;
 			sourceTree = "<group>";
@@ -1292,6 +1327,7 @@
 		BFA1881B2C841488004D625D /* Tip */ = {
 			isa = PBXGroup;
 			children = (
+				BF89149E2F65385300A3F0FE /* MockIndicatorModifier.swift */,
 				BFA1882F2C84165A004D625D /* ErrorTip.swift */,
 				BF4908E22C9325430071C527 /* InfoTip.swift */,
 				BFA1881C2C841497004D625D /* LoadingTip.swift */,
@@ -1398,6 +1434,7 @@
 		BFA1884E2C84188E004D625D /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				BF8914982F6537D200A3F0FE /* ServiceContainer.swift */,
 				BFA18A782C843E27004D625D /* CodableDefault.swift */,
 				BFA1887D2C841E94004D625D /* CommonUtil.swift */,
 				BFA188552C841A1B004D625D /* RealmManager.swift */,
@@ -2262,6 +2299,7 @@
 				BFA18A232C843670004D625D /* Page */,
 				BFA18A262C84368E004D625D /* Intent */,
 				BFA18A302C8436F7004D625D /* Router */,
+				BF8914A12F65451900A3F0FE /* Service */,
 			);
 			path = Vehicle;
 			sourceTree = "<group>";
@@ -2383,6 +2421,7 @@
 			children = (
 				BFADC2D52CB2C85300834608 /* Model */,
 				BFADC2D62CB2C87000834608 /* Page */,
+				BF8914A72F6549F600A3F0FE /* Service */,
 				BFADC2D72CB2C88100834608 /* Intent */,
 				BFADC2E52CB385A000834608 /* MarketingRouter.swift */,
 				BFADC2ED2CB388EE00834608 /* MarketingTypes.swift */,
@@ -2596,6 +2635,7 @@
 			files = (
 				BFA18A102C843573004D625D /* ServicePage.swift in Sources */,
 				BFA188B82C842237004D625D /* CommunitySubjectView_Articles.swift in Sources */,
+				BF89149F2F65385300A3F0FE /* MockIndicatorModifier.swift in Sources */,
 				BFA189692C842D1B004D625D /* MySettingCommunityConventionView+Build.swift in Sources */,
 				BFA188FB2C8426D1004D625D /* MySettingProfileView_List.swift in Sources */,
 				BFA188EE2C8425B9004D625D /* MySettingProfileRouter.swift in Sources */,
@@ -2813,6 +2853,7 @@
 				BFA188E02C842521004D625D /* MySettingProfileView.swift in Sources */,
 				BFA1889C2C84206D004D625D /* CommunityTopicIntentProtocol.swift in Sources */,
 				BFA187D92C841063004D625D /* OrderModel.swift in Sources */,
+				BF8914A82F6549F600A3F0FE /* MarketingService.swift in Sources */,
 				BFA188F12C842607004D625D /* ImagePicker.swift in Sources */,
 				BFA18A252C84367C004D625D /* VehiclePage.swift in Sources */,
 				BFA18A402C843805004D625D /* VehicleCenterPage.swift in Sources */,
@@ -2840,6 +2881,7 @@
 				BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */,
 				BFA189E42C8432F6004D625D /* TestDriveReportView.swift in Sources */,
 				BF554B172CD358340025E7D4 /* DeliveryCenterModel.swift in Sources */,
+				BF8914A52F65479000A3F0FE /* LoginService.swift in Sources */,
 				BFA187892C832CB8004D625D /* MviContainer.swift in Sources */,
 				BFA18A2F2C8436E8004D625D /* VehicleModel.swift in Sources */,
 				BFA189B42C8430B7004D625D /* MyRightsIntent.swift in Sources */,
@@ -2855,6 +2897,7 @@
 				BFA18A602C8439E6004D625D /* MallPage_Category.swift in Sources */,
 				BFA189102C8427FB004D625D /* MySettingAccountChangeRouter.swift in Sources */,
 				BF554B152CD358060025E7D4 /* DeliveryCenterModelProtocol.swift in Sources */,
+				BF8914992F6537D200A3F0FE /* ServiceContainer.swift in Sources */,
 				BFADC2AB2CAD2B4E00834608 /* RoundedCornerButton.swift in Sources */,
 				BFA1879B2C8408BF004D625D /* RouterProtocol.swift in Sources */,
 				BF8914972F65336200A3F0FE /* L10n.swift in Sources */,
@@ -2944,6 +2987,7 @@
 				BFADC2F42CB391EF00834608 /* VehicleModelConfigIntent.swift in Sources */,
 				BFA188182C841434004D625D /* MviModelActionProtocol.swift in Sources */,
 				BFA18A212C84362C004D625D /* ServiceIntent.swift in Sources */,
+				BF8914A22F65451900A3F0FE /* VehicleService.swift in Sources */,
 				BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */,
 				BFA189FC2C843406004D625D /* ChargingPileIntentProtocol.swift in Sources */,
 				BFA188B22C84219B004D625D /* CommunityTopicIntent.swift in Sources */,

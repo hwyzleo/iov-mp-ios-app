@@ -14,6 +14,7 @@ class AppGlobalState: ObservableObject {
     @Published var isFirstActive: Bool = false
     @Published var isSecondActive: Bool = false
     @Published var isMock: Bool = true
+    @Published var isLogin: Bool = UserManager.isLogin()
     @Published var mockOrderState: OrderState = .WISHLIST
     @Published var tspUrl: String = "https://sgw.rox-motor.com"
     @Published var currentView: String = ""
@@ -23,4 +24,11 @@ class AppGlobalState: ObservableObject {
     @Published var backRefresh: Bool = false
     
     private init() {}
+    
+    func refreshLoginStatus() {
+        let currentStatus = UserManager.isLogin()
+        if isLogin != currentStatus {
+            isLogin = currentStatus
+        }
+    }
 }
