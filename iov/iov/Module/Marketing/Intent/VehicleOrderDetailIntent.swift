@@ -606,23 +606,27 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         ) { (result: Result<TspResponse<String>, Error>) in
             switch result {
             case .success(let res):
-                if !orderNum.isEmpty {
-                    // 心愿单转换的定金订单
-                    VehicleManager.shared.delete(orderNum: orderNum)
+                if res.code == 0 {
+                    if !orderNum.isEmpty {
+                        // 心愿单转换的定金订单
+                        VehicleManager.shared.delete(orderNum: orderNum)
+                    }
+                    VehicleManager.shared.add(orderNum: res.data!, type: .ORDER, displayName: saleModelName)
+                    VehicleManager.shared.setCurrentVehicleId(id: res.data!)
+                    let lastView = AppGlobalState.shared.parameters["lastView"] as! String
+                    if lastView == "MODEL_CONFIG" {
+                        AppGlobalState.shared.parameters["backCount"] = 1
+                    }
+                    AppGlobalState.shared.parameters["licenseCityCode"] = nil
+                    AppGlobalState.shared.parameters["licenseCityName"] = nil
+                    AppGlobalState.shared.parameters["dealershipCode"] = nil
+                    AppGlobalState.shared.parameters["dealershipName"] = nil
+                    AppGlobalState.shared.parameters["deliveryCenterCode"] = nil
+                    AppGlobalState.shared.parameters["deliveryCenterName"] = nil
+                    self.modelRouter?.closeScreen()
+                } else {
+                    self.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
-                VehicleManager.shared.add(orderNum: res.data!, type: .ORDER, displayName: saleModelName)
-                VehicleManager.shared.setCurrentVehicleId(id: res.data!)
-                let lastView = AppGlobalState.shared.parameters["lastView"] as! String
-                if lastView == "MODEL_CONFIG" {
-                    AppGlobalState.shared.parameters["backCount"] = 1
-                }
-                AppGlobalState.shared.parameters["licenseCityCode"] = nil
-                AppGlobalState.shared.parameters["licenseCityName"] = nil
-                AppGlobalState.shared.parameters["dealershipCode"] = nil
-                AppGlobalState.shared.parameters["dealershipName"] = nil
-                AppGlobalState.shared.parameters["deliveryCenterCode"] = nil
-                AppGlobalState.shared.parameters["deliveryCenterName"] = nil
-                self.modelRouter?.closeScreen()
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")
             }

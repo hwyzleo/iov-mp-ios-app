@@ -40,6 +40,12 @@ extension VehicleOrderDetailPage {
         @State private var orderPersonName = ""
         @State private var orderPersonIdType = ""
         @State private var orderPersonIdNum = ""
+        @State private var showError = false
+        @State private var showIdNumError = false
+        @State private var showNameError = false
+        @State private var showLicenseCityError = false
+        @State private var showDealershipError = false
+        @State private var showDeliveryCenterError = false
         @State var selectLicenseCityName: String
         @State var selectLicenseCityCode: String
         @State var selectDealershipName: String
@@ -194,9 +200,19 @@ extension VehicleOrderDetailPage {
                                 if orderPersonType == 2 {
                                     Text("企业名称")
                                     TextField("请输入企业名称", text: $orderPersonName)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .stroke(showNameError ? Color.red : Color.clear, lineWidth: 1)
+                                        )
                                 } else {
                                     Text("车主姓名")
                                     TextField("请输入车主姓名", text: $orderPersonName)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .stroke(showNameError ? Color.red : Color.clear, lineWidth: 1)
+                                        )
                                 }
                             }
                             if orderPersonType != 2 {
@@ -211,9 +227,19 @@ extension VehicleOrderDetailPage {
                                 if orderPersonType == 2 {
                                     Text("企业代码")
                                     TextField("请输入企业代码", text: $orderPersonIdNum)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .stroke(showIdNumError ? Color.red : Color.clear, lineWidth: 1)
+                                        )
                                 } else {
                                     Text("证件号码")
                                     TextField("请输入证件号码", text: $orderPersonIdNum)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .stroke(showIdNumError ? Color.red : Color.clear, lineWidth: 1)
+                                        )
                                 }
                             }
                         }
@@ -227,6 +253,11 @@ extension VehicleOrderDetailPage {
                         HStack {
                             Text("上牌城市")
                             TextField("请选择上牌城市", text: $selectLicenseCityName)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .stroke(showLicenseCityError ? Color.red : Color.clear, lineWidth: 1)
+                                )
                             Image("icon_arrow_right")
                                 .resizable()
                                 .frame(width: 20, height: 20)
@@ -239,6 +270,11 @@ extension VehicleOrderDetailPage {
                             HStack {
                                 Text("销售门店")
                                 TextField("请选择销售门店", text: $selectDealershipName)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(showDealershipError ? Color.red : Color.clear, lineWidth: 1)
+                                    )
                                 Image("icon_arrow_right")
                                     .resizable()
                                     .frame(width: 20, height: 20)
@@ -250,6 +286,11 @@ extension VehicleOrderDetailPage {
                             HStack {
                                 Text("交付中心")
                                 TextField("请选择交付中心", text: $selectDeliveryCenterName)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 4)
+                                            .stroke(showDeliveryCenterError ? Color.red : Color.clear, lineWidth: 1)
+                                    )
                                 Image("icon_arrow_right")
                                     .resizable()
                                     .frame(width: 20, height: 20)
@@ -300,17 +341,45 @@ extension VehicleOrderDetailPage {
                         color: Color.white,
                         bgColor: state.agreementIsChecked == true ? Color.black : Color.gray
                     ) {
-                        intent.onTapDownPaymentOrder(
-                            orderPersonType: orderPersonType,
-                            purchasePlan: purchasePlan,
-                            orderPersonName: orderPersonName,
-                            orderPersonIdType: 1,
-                            orderPersonIdNum: orderPersonIdNum,
-                            saleModelName: saleModelName,
-                            licenseCityCode: selectLicenseCityCode,
-                            dealership: selectDealershipCode,
-                            deliveryCenter: selectDeliveryCenterCode
-                        )
+                        showError = false
+                        if orderPersonIdNum.isEmpty {
+                            showIdNumError = true
+                            showError = true
+                        }
+                        if orderPersonName.isEmpty {
+                            showNameError = true
+                            showError = true
+                        }
+                        if selectLicenseCityName.isEmpty {
+                            showLicenseCityError = true
+                            showError = true
+                        }
+                        if selectDealershipName.isEmpty {
+                            showDealershipError = true
+                            showError = true
+                        }
+                        if selectDeliveryCenterName.isEmpty {
+                            showDeliveryCenterError = true
+                            showError = true
+                        }
+                        if !showError {
+                            showIdNumError = false
+                            showNameError = false
+                            showLicenseCityError = false
+                            showDealershipError = false
+                            showDeliveryCenterError = false
+                            intent.onTapDownPaymentOrder(
+                                orderPersonType: orderPersonType,
+                                purchasePlan: purchasePlan,
+                                orderPersonName: orderPersonName,
+                                orderPersonIdType: 1,
+                                orderPersonIdNum: orderPersonIdNum,
+                                saleModelName: saleModelName,
+                                licenseCityCode: selectLicenseCityCode,
+                                dealership: selectDealershipCode,
+                                deliveryCenter: selectDeliveryCenterCode
+                            )
+                        }
                     }
                 }
                 if state.selectBookMethod == "earnestMoney" {

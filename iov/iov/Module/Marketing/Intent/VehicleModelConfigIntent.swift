@@ -26,7 +26,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
             AppGlobalState.shared.parameters["backCount"] = backCount-1
             self.modelRouter?.closeScreen()
         } else {
-            TspApi.getSaleModelList(saleCode: "H01") { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
+            TspApi.getSaleModelList(saleCode: "HS5") { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
                 switch result {
                 case .success(let res):
                     if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
@@ -65,7 +65,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                             }
                         }
                     }
-                    self.modelAction?.updateSaleModel(saleCode: "H01", saleModels: res.data!)
+                    self.modelAction?.updateSaleModel(saleCode: "HS5", saleModels: res.data!)
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }

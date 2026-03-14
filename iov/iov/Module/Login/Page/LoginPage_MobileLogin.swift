@@ -32,7 +32,7 @@ extension LoginPage {
                     intent.onTapExitLoginIcon()
                 }
                 Spacer().frame(height: 20)
-                Text(LocalizedStringKey("input_mobile"))
+                Text(L10n.input_mobile)
                     .font(.system(size: 24))
                     .foregroundColor(AppTheme.colors.fontPrimary)
                 Spacer().frame(height: 20)
@@ -50,7 +50,7 @@ extension LoginPage {
                 Spacer().frame(height: 20)
                 HStack(alignment: .center) {
                     Spacer()
-                    Button(LocalizedStringKey("get_verify_code")) {
+                    Button(L10n.get_verify_code) {
                         if !agree {
                             self.showAgreeAlert = true
                             return
@@ -69,17 +69,17 @@ extension LoginPage {
                     .foregroundColor(Color.white)
                     .background(mobile.isEmpty || mobile.count != 13 ? Color.gray : Color.black)
                     .cornerRadius(22.5)
-                    .alert(Text(LocalizedStringKey("tip")), isPresented: $showAgreeAlert) {
-                        Button(LocalizedStringKey("cancel"), role: .cancel) { }
-                        Button(LocalizedStringKey("confirm")) {}
+                    .alert(Text(L10n.tip), isPresented: $showAgreeAlert) {
+                        Button(L10n.cancel, role: .cancel) { }
+                        Button(L10n.confirm) {}
                     } message: {
-                        Text(LocalizedStringKey("agree_user_agreement"))
+                        Text(L10n.agree_user_agreement)
                     }
-                    .alert(Text(LocalizedStringKey("tip")), isPresented: $showMobileAlert) {
-                        Button(LocalizedStringKey("cancel"), role: .cancel) { }
-                        Button(LocalizedStringKey("confirm")) {}
+                    .alert(Text(L10n.tip), isPresented: $showMobileAlert) {
+                        Button(L10n.cancel, role: .cancel) { }
+                        Button(L10n.confirm) {}
                     } message: {
-                        Text(LocalizedStringKey("input_mobile"))
+                        Text(L10n.input_mobile)
                     }
                     Spacer()
                 }
@@ -98,7 +98,7 @@ extension LoginPage {
                             .frame(width: 14, height: 14)
                         }
                     }
-                    Text(LocalizedStringKey("login_confirm_tip"))
+                    Text(L10n.login_confirm_tip)
                     .font(.system(size: 12))
                     .lineSpacing(4)
                 }
