@@ -18,16 +18,20 @@ class DealershipIntent: MviIntentProtocol {
     
     func viewOnAppear() {
         modelAction?.displayLoading()
-        TspApi.getDealership() { (result: Result<TspResponse<[Dealership]>, Error>) in
+        ServiceContainer.marketingService.getDealership { [weak self] (result: Result<TspResponse<[Dealership]>, Error>) in
             switch result {
             case .success(let res):
                 if res.code == 0 {
-                    self.modelAction?.displayContent(dealershipList: res.data!)
+                    guard let resData = res.data else {
+                        self?.modelAction?.displayError(text: "数据异常")
+                        return
+                    }
+                    self?.modelAction?.displayContent(dealershipList: resData)
                 } else {
-                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                    self?.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
             case .failure(_):
-                self.modelAction?.displayError(text: "请求异常")
+                self?.modelAction?.displayError(text: "请求异常")
             }
         }
     }

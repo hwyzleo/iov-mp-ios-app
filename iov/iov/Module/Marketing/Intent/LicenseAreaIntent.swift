@@ -18,16 +18,21 @@ class LicenseAreaIntent: MviIntentProtocol {
     
     func viewOnAppear() {
         AppGlobalState.shared.backRefresh = false
-        TspApi.getLicenseArea() { (result: Result<TspResponse<[LicenseArea]>, Error>) in
+        modelAction?.displayLoading()
+        ServiceContainer.marketingService.getLicenseArea { [weak self] (result: Result<TspResponse<[LicenseArea]>, Error>) in
             switch result {
             case .success(let res):
                 if res.code == 0 {
-                    self.modelAction?.displayProvince(licenseAreaList: res.data!)
+                    guard let resData = res.data else {
+                        self?.modelAction?.displayError(text: "数据异常")
+                        return
+                    }
+                    self?.modelAction?.displayProvince(licenseAreaList: resData)
                 } else {
-                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                    self?.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
             case .failure(_):
-                self.modelAction?.displayError(text: "请求异常")
+                self?.modelAction?.displayError(text: "请求异常")
             }
         }
     }

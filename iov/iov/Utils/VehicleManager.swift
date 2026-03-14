@@ -56,14 +56,14 @@ class VehicleManager {
     /// 更新车辆信息
     func update(vehicleSaleOrderList: [VehicleSaleOrder]) {
         clear()
-        for (index, vehicleSaleOrder) in vehicleSaleOrderList.enumerated() {
+        for (_, vehicleSaleOrder) in vehicleSaleOrderList.enumerated() {
             switch vehicleSaleOrder.orderState {
             case 100:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .WISHLIST, displayName: vehicleSaleOrder.displayName)
+                add(orderNum: vehicleSaleOrder.orderNum, type: .WISHLIST, subState: 100, displayName: vehicleSaleOrder.displayName)
             case 700:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, displayName: vehicleSaleOrder.displayName)
+                add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, subState: 700, displayName: vehicleSaleOrder.displayName)
             default:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .ORDER, displayName: vehicleSaleOrder.displayName)
+                add(orderNum: vehicleSaleOrder.orderNum, type: .ORDER, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName)
             }
         }
         if !vehicles.isEmpty && (currentVehicleId == nil || !vehicles.keys.contains(currentVehicleId!)) {
@@ -71,11 +71,26 @@ class VehicleManager {
         }
     }
     
+    /// 更新细分状态
+    func updateSubState(id: String, subState: Int) {
+        let realm = RealmManager.vehicle.realm
+        if let vehiclePo = realm.object(ofType: VehiclePo.self, forPrimaryKey: id) {
+            do {
+                try realm.write {
+                    vehiclePo.subState = subState
+                }
+            } catch {
+                print("Error update subState: \(error)")
+            }
+        }
+    }
+    
     /// 添加车辆信息
-    func add(orderNum: String, type: VehicleType, displayName: String) {
+    func add(orderNum: String, type: VehicleType, subState: Int = 0, displayName: String) {
         let vehicle = VehiclePo()
         vehicle.id = orderNum
         vehicle.type = type
+        vehicle.subState = subState
         vehicle.displayName = displayName
         let realm = RealmManager.vehicle.realm
         do {
@@ -140,25 +155,32 @@ class VehicleManager {
     
     /// 清除车辆
     func clear() {
-        vehicles.removeAll()
         let realm = RealmManager.vehicle.realm
         do {
             try realm.write {
                 realm.delete(realm.objects(VehiclePo.self))
                 realm.refresh()
             }
+            vehicles.removeAll() // 确保内存字典也被清空
         } catch {
             print("Error clear vehicles: \(error)")
         }
     }
     
+    /// 仅供 MockService 调试使用的车辆列表获取
+    func getVehiclesForMock() -> [String: VehiclePo] {
+        return getVehicles()
+    }
+    
     private func getVehicles() -> [String: VehiclePo] {
         let realm = RealmManager.vehicle.realm
-        let vehicles = realm.objects(VehiclePo.self)
+        realm.refresh() // 强制拉取磁盘最新变更
+        let vehiclesResults = realm.objects(VehiclePo.self)
         var result: [String: VehiclePo] = [:]
-        for vehicle in vehicles {
+        for vehicle in vehiclesResults {
             result[vehicle.id] = vehicle
         }
+        self.vehicles = result // 同步刷新内存缓存
         return result
     }
     
@@ -205,6 +227,7 @@ enum VehicleType: String, PersistableEnum {
 class VehiclePo: Object {
     @Persisted(primaryKey: true) var id: String = UUID().uuidString
     @Persisted var type: VehicleType = .ACTIVATED
+    @Persisted var subState: Int = 0 // 细分状态，如 100:心愿单, 200:待支付定金, 201:待支付意向金, 300:已支付...
     @Persisted var vin: String = ""
     @Persisted var displayName: String = ""
 }

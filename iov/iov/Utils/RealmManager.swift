@@ -20,12 +20,9 @@ struct RealmManager {
         do {
             return try Realm(configuration: configuration)
         } catch {
-            print("使用自定义配置初始化 Realm 失败: \(error)")
-            do {
-                return try Realm()
-            } catch {
-                fatalError("初始化 Realm 失败: \(error)")
-            }
+            // 在开发环境下，如果初始化依然失败，直接抛出更详细的错误
+            // 绝不回退到不带配置的 Realm()，因为那会触发默认 schema 的版本冲突
+            fatalError("初始化 Realm 失败 (配置: \(configuration.fileURL?.lastPathComponent ?? "未知")): \(error)")
         }
     }
     
@@ -48,18 +45,15 @@ struct RealmManager {
     
     // MARK: - 用户
     private static let userConfig: Realm.Configuration = {
-        let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0].appendingPathComponent("User")
+        let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0].appendingPathComponent("User.realm")
         let encryptionKey = getEncryptionKey(for: "user")
         
         let config = Realm.Configuration(
             fileURL: url,
             encryptionKey: encryptionKey,
-            schemaVersion: 1,
-            migrationBlock: { migration, oldSchemaVersion in
-                if oldSchemaVersion < 1 {
-                    // 处理数据迁移
-                }
-            },
+            schemaVersion: 2, // 统一提升到 2
+            migrationBlock: { migration, oldSchemaVersion in },
+            deleteRealmIfMigrationNeeded: true,
             objectTypes: [UserManager.self])
         return config
     }()
@@ -69,18 +63,15 @@ struct RealmManager {
     
     // MARK: - 车辆
     private static let vehiclesConfig: Realm.Configuration = {
-        let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0].appendingPathComponent("Vehicles")
+        let url = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask)[0].appendingPathComponent("Vehicles.realm")
         let encryptionKey = getEncryptionKey(for: "vehicles")
         
         let config = Realm.Configuration(
             fileURL: url,
             encryptionKey: encryptionKey,
-            schemaVersion: 1,
-            migrationBlock: { migration, oldSchemaVersion in
-                if oldSchemaVersion < 1 {
-                    // 处理数据迁移
-                }
-            },
+            schemaVersion: 2, // 提升到 2
+            migrationBlock: { migration, oldSchemaVersion in },
+            deleteRealmIfMigrationNeeded: true,
             objectTypes: [VehiclePo.self])
         return config
     }()

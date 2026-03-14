@@ -53,253 +53,130 @@ extension VehicleOrderDetailPage {
         @State var selectDeliveryCenterName: String
         @State var selectDeliveryCenterCode: String
 
-        
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
                 TopBackTitleBar(titleLocal: LocalizedStringKey("book_vehicle"))
                 ScrollView {
-                    VStack {
+                    VStack(spacing: 16) {
                         VehicleOrderDetailPage.Intro(
                             saleModelImages: saleModelImages,
                             saleModelName: saleModelName,
                             saleModelDesc: saleModelDesc
                         )
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text(LocalizedStringKey("book_method"))
-                                .bold()
-                            Spacer()
-                        }
-                        if downPayment {
-                            Spacer().frame(height: 10)
-                            BookMethodCard(
-                                isSelected: state.selectBookMethod == "downPayment",
-                                tagText: "锁定限时权益",
-                                tagColor: .orange,
-                                title: "down_payment",
-                                price: downPaymentPrice,
-                                benefits: purchaseBenefitsIntro
-                            ) {
-                                intent.onTapDownPaymentBookMethod()
+                        .padding(.top, 10)
+                        
+                        // 预定方式
+                        FormSection(title: "预定方式") {
+                            VStack(spacing: 12) {
+                                if downPayment {
+                                    BookMethodCard(
+                                        isSelected: state.selectBookMethod == "downPayment",
+                                        tagText: "锁定限时权益",
+                                        tagColor: .orange,
+                                        title: "down_payment",
+                                        price: downPaymentPrice,
+                                        benefits: purchaseBenefitsIntro
+                                    ) {
+                                        intent.onTapDownPaymentBookMethod()
+                                    }
+                                }
+                                if earnestMoney {
+                                    BookMethodCard(
+                                        isSelected: state.selectBookMethod == "earnestMoney",
+                                        tagText: "意向金随时可退",
+                                        tagColor: .gray,
+                                        title: "earnest_money",
+                                        price: earnestMoneyPrice,
+                                        benefits: purchaseBenefitsIntro
+                                    ) {
+                                        intent.onTapEarnestMoneyBookMethod()
+                                    }
+                                }
                             }
                         }
-                        if earnestMoney {
-                            Spacer().frame(height: 10)
-                            BookMethodCard(
-                                isSelected: state.selectBookMethod == "earnestMoney",
-                                tagText: "意向金随时可退",
-                                tagColor: .gray,
-                                title: "earnest_money",
-                                price: earnestMoneyPrice,
-                                benefits: purchaseBenefitsIntro
-                            ) {
-                                intent.onTapEarnestMoneyBookMethod()
-                            }
-                        }
+                        
                         if state.selectBookMethod == "downPayment" {
-                            Spacer().frame(height: 20)
-                            HStack {
-                                Text("购车类型")
-                                    .bold()
-                                Spacer()
-                            }
-                            Spacer().frame(height: 10)
-                            HStack {
-                                HStack {
-                                    if orderPersonType == 1 {
-                                        Image("icon_circle_check")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image("icon_circle")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
+                            // 购车信息卡片
+                            FormSection(title: "购车方案") {
+                                VStack(spacing: 20) {
+                                    OptionSelector(title: "购车类型", options: ["个人", "企业"], selectedIndex: orderPersonType - 1) { index in
+                                        if index == 0 { intent.onTapOrderPersonTypePerson() }
+                                        else { intent.onTapOrderPersonTypeOrg() }
                                     }
-                                    Text("个人")
-                                }
-                                .onTapGesture {
-                                    intent.onTapOrderPersonTypePerson()
-                                }
-                                Spacer().frame(width: 100)
-                                HStack {
-                                    if orderPersonType == 2 {
-                                        Image("icon_circle_check")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image("icon_circle")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
+                                    
+                                    OptionSelector(title: "支付方式", options: ["全款", "分期"], selectedIndex: purchasePlan - 1) { index in
+                                        if index == 0 { intent.onTapPurchasePlanFullPayment() }
+                                        else { intent.onTapPurchasePlanStaging() }
                                     }
-                                    Text("企业")
-                                }
-                                .onTapGesture {
-                                    intent.onTapOrderPersonTypeOrg()
-                                }
-                                Spacer()
-                            }
-                            Spacer().frame(height: 20)
-                            HStack {
-                                Text("购车方案")
-                                    .bold()
-                                Spacer()
-                            }
-                            Spacer().frame(height: 10)
-                            HStack {
-                                HStack {
-                                    if purchasePlan == 1 {
-                                        Image("icon_circle_check")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image("icon_circle")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                    }
-                                    Text("全款")
-                                }
-                                .onTapGesture {
-                                    intent.onTapPurchasePlanFullPayment()
-                                }
-                                Spacer().frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
-                                HStack {
+                                    
                                     if purchasePlan == 2 {
-                                        Image("icon_circle_check")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
-                                    } else {
-                                        Image("icon_circle")
-                                            .resizable()
-                                            .frame(width: 20, height: 20)
+                                        NavigationLink(destination: EmptyView()) {
+                                            HStack {
+                                                Text("金融方案")
+                                                    .font(.system(size: 15))
+                                                    .foregroundColor(AppTheme.colors.fontPrimary)
+                                                Spacer()
+                                                Text("查看详情")
+                                                    .font(.system(size: 14))
+                                                    .foregroundColor(.gray)
+                                                Image("icon_arrow_right")
+                                                    .resizable()
+                                                    .frame(width: 16, height: 16)
+                                            }
+                                            .padding(.vertical, 4)
+                                        }
                                     }
-                                    Text("分期")
-                                }
-                                .onTapGesture {
-                                    intent.onTapPurchasePlanStaging()
-                                }
-                                Spacer()
-                            }
-                            if purchasePlan == 2 {
-                                Spacer().frame(height: 20)
-                                HStack {
-                                    Text("金融方案")
-                                    Spacer()
-                                    Image("icon_arrow_right")
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
                                 }
                             }
-                            Spacer().frame(height: 20)
-                            HStack {
-                                Text("车主（车辆所有人）信息")
-                                    .bold()
-                                Spacer()
-                            }
-                            Spacer().frame(height: 10)
-                            HStack {
-                                if orderPersonType == 2 {
-                                    Text("企业名称")
-                                    TextField("请输入企业名称", text: $orderPersonName)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 4)
-                                                .stroke(showNameError ? Color.red : Color.clear, lineWidth: 1)
-                                        )
-                                } else {
-                                    Text("车主姓名")
-                                    TextField("请输入车主姓名", text: $orderPersonName)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 4)
-                                                .stroke(showNameError ? Color.red : Color.clear, lineWidth: 1)
-                                        )
-                                }
-                            }
-                            if orderPersonType != 2 {
-                                Divider()
-                                HStack {
-                                    Text("证件类型")
-                                    TextField("请输入证件类型", text: $orderPersonIdType)
-                                }
-                            }
-                            Divider()
-                            HStack {
-                                if orderPersonType == 2 {
-                                    Text("企业代码")
-                                    TextField("请输入企业代码", text: $orderPersonIdNum)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 4)
-                                                .stroke(showIdNumError ? Color.red : Color.clear, lineWidth: 1)
-                                        )
-                                } else {
-                                    Text("证件号码")
-                                    TextField("请输入证件号码", text: $orderPersonIdNum)
-                                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 4)
-                                                .stroke(showIdNumError ? Color.red : Color.clear, lineWidth: 1)
-                                        )
+                            
+                            // 车主信息卡片
+                            FormSection(title: "车主（车辆所有人）信息") {
+                                VStack(spacing: 0) {
+                                    InputField(label: orderPersonType == 2 ? "企业名称" : "车主姓名", placeholder: "请输入", text: $orderPersonName, hasError: showNameError)
+                                    
+                                    if orderPersonType != 2 {
+                                        Divider().padding(.vertical, 12)
+                                        HStack {
+                                            Text("证件类型")
+                                                .font(.system(size: 15))
+                                                .frame(width: 80, alignment: .leading)
+                                            TextField("请选择", text: $orderPersonIdType)
+                                                .font(.system(size: 15))
+                                                .disabled(true)
+                                            Spacer()
+                                            Image("icon_arrow_right")
+                                                .resizable()
+                                                .frame(width: 16, height: 16)
+                                        }
+                                    }
+                                    
+                                    Divider().padding(.vertical, 12)
+                                    InputField(label: orderPersonType == 2 ? "企业代码" : "证件号码", placeholder: "请输入", text: $orderPersonIdNum, hasError: showIdNumError)
                                 }
                             }
                         }
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text("上牌及门店信息")
-                                .bold()
-                            Spacer()
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text("上牌城市")
-                            TextField("请选择上牌城市", text: $selectLicenseCityName)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 4)
-                                        .stroke(showLicenseCityError ? Color.red : Color.clear, lineWidth: 1)
-                                )
-                            Image("icon_arrow_right")
-                                .resizable()
-                                .frame(width: 20, height: 20)
-                        }
-                        .onTapGesture {
-                            intent.onTapLicenseCity()
-                        }
-                        if state.selectBookMethod == "downPayment" {
-                            Divider()
-                            HStack {
-                                Text("销售门店")
-                                TextField("请选择销售门店", text: $selectDealershipName)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(showDealershipError ? Color.red : Color.clear, lineWidth: 1)
-                                    )
-                                Image("icon_arrow_right")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                            }
-                            .onTapGesture {
-                                intent.onTapDealership()
-                            }
-                            Divider()
-                            HStack {
-                                Text("交付中心")
-                                TextField("请选择交付中心", text: $selectDeliveryCenterName)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(showDeliveryCenterError ? Color.red : Color.clear, lineWidth: 1)
-                                    )
-                                Image("icon_arrow_right")
-                                    .resizable()
-                                    .frame(width: 20, height: 20)
-                            }
-                            .onTapGesture {
-                                intent.onTapDeliveryCenter()
+                        
+                        // 上牌及门店
+                        FormSection(title: "交付信息") {
+                            VStack(spacing: 0) {
+                                SelectField(label: "上牌城市", placeholder: "请选择", value: selectLicenseCityName, hasError: showLicenseCityError) {
+                                    intent.onTapLicenseCity()
+                                }
+                                
+                                if state.selectBookMethod == "downPayment" {
+                                    Divider().padding(.vertical, 12)
+                                    SelectField(label: "销售门店", placeholder: "请选择", value: selectDealershipName, hasError: showDealershipError) {
+                                        intent.onTapDealership()
+                                    }
+                                    Divider().padding(.vertical, 12)
+                                    SelectField(label: "交付中心", placeholder: "请选择", value: selectDeliveryCenterName, hasError: showDeliveryCenterError) {
+                                        intent.onTapDeliveryCenter()
+                                    }
+                                }
                             }
                         }
-                        Spacer().frame(height: 20)
+                        
+                        // 价格明细
                         VehicleOrderDetailPage.Price(
                             saleModelPrice: saleModelPrice,
                             saleSpareTireName: saleSpareTireName,
@@ -314,89 +191,60 @@ extension VehicleOrderDetailPage {
                             saleAdasPrice: saleAdasPrice,
                             totalPrice: totalPrice
                         )
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text("订购须知")
-                                .bold()
-                            Spacer()
-                        }
+                        .padding(.top, 10)
+                        
+                        Spacer().frame(height: 40)
                     }
+                    .padding(.horizontal, 16)
                 }
+                .background(Color(white: 0.97)) // 轻微灰色背景衬托卡片
                 .scrollIndicators(.hidden)
-                HStack {
-                    Spacer()
-                    Button(action: { intent.onTapAgreement() }) {
-                        Image(state.agreementIsChecked ? "icon_circle_check" : "icon_circle")
-                            .resizable()
-                            .frame(width: 15, height: 15)
+                
+                // 底部操作区
+                VStack(spacing: 12) {
+                    HStack(spacing: 6) {
+                        Button(action: { intent.onTapAgreement() }) {
+                            Image(state.agreementIsChecked ? "icon_circle_check" : "icon_circle")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                        }
+                        .buttonStyle(.plain)
+                        
+                        Text("我已阅读并同意")
+                            .font(.system(size: 12))
+                            .foregroundColor(.gray)
+                        Text("《订购协议》")
+                            .font(.system(size: 12, weight: .medium))
+                            .foregroundColor(.black)
                     }
-                    .buttonStyle(.plain)
-                    Text("我已约定并同意 《订购协议》")
-                        .font(.system(size: 12))
-                    Spacer()
-                }
-                if state.selectBookMethod == "downPayment" {
-                    RoundedCornerButton(
-                        nameLocal: LocalizedStringKey("pay_down_payment"),
-                        color: Color.white,
-                        bgColor: state.agreementIsChecked == true ? Color.black : Color.gray
-                    ) {
-                        showError = false
-                        if orderPersonIdNum.isEmpty {
-                            showIdNumError = true
-                            showError = true
+                    .padding(.top, 8)
+                    
+                    if state.selectBookMethod == "downPayment" {
+                        RoundedCornerButton(
+                            nameLocal: LocalizedStringKey("pay_down_payment"),
+                            color: Color.white,
+                            bgColor: state.agreementIsChecked ? Color.black : Color.gray.opacity(0.5)
+                        ) {
+                            validateAndSubmit()
                         }
-                        if orderPersonName.isEmpty {
-                            showNameError = true
-                            showError = true
-                        }
-                        if selectLicenseCityName.isEmpty {
-                            showLicenseCityError = true
-                            showError = true
-                        }
-                        if selectDealershipName.isEmpty {
-                            showDealershipError = true
-                            showError = true
-                        }
-                        if selectDeliveryCenterName.isEmpty {
-                            showDeliveryCenterError = true
-                            showError = true
-                        }
-                        if !showError {
-                            showIdNumError = false
-                            showNameError = false
-                            showLicenseCityError = false
-                            showDealershipError = false
-                            showDeliveryCenterError = false
-                            intent.onTapDownPaymentOrder(
-                                orderPersonType: orderPersonType,
-                                purchasePlan: purchasePlan,
-                                orderPersonName: orderPersonName,
-                                orderPersonIdType: 1,
-                                orderPersonIdNum: orderPersonIdNum,
+                    } else {
+                        RoundedCornerButton(
+                            nameLocal: LocalizedStringKey("pay_earnest_money"),
+                            color: Color.white,
+                            bgColor: state.agreementIsChecked && !selectLicenseCityName.isEmpty ? Color.black : Color.gray.opacity(0.5)
+                        ) {
+                            intent.onTapEarnestMoneyOrder(
                                 saleModelName: saleModelName,
-                                licenseCityCode: selectLicenseCityCode,
-                                dealership: selectDealershipCode,
-                                deliveryCenter: selectDeliveryCenterCode
+                                licenseCityCode: selectLicenseCityCode
                             )
                         }
                     }
                 }
-                if state.selectBookMethod == "earnestMoney" {
-                    RoundedCornerButton(
-                        nameLocal: LocalizedStringKey("pay_earnest_money"),
-                        color: Color.white,
-                        bgColor: state.agreementIsChecked && selectLicenseCityName != "" ? Color.black : Color.gray
-                    ) {
-                        intent.onTapEarnestMoneyOrder(
-                            saleModelName: saleModelName,
-                            licenseCityCode: selectLicenseCityCode
-                        )
-                    }
-                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 20)
+                .background(Color.white.shadow(color: .black.opacity(0.05), radius: 10, x: 0, y: -5))
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
             .onAppear {
                 if state.selectBookMethod == "" {
                     if state.downPayment {
@@ -424,6 +272,144 @@ extension VehicleOrderDetailPage {
                 }
             }
         }
+        
+        // MARK: - 辅助逻辑
+        private func validateAndSubmit() {
+            showError = false
+            showIdNumError = orderPersonIdNum.isEmpty
+            showNameError = orderPersonName.isEmpty
+            showLicenseCityError = selectLicenseCityName.isEmpty
+            showDealershipError = selectDealershipName.isEmpty
+            showDeliveryCenterError = selectDeliveryCenterName.isEmpty
+            
+            if showIdNumError || showNameError || showLicenseCityError || showDealershipError || showDeliveryCenterError {
+                showError = true
+                return
+            }
+            
+            intent.onTapDownPaymentOrder(
+                orderPersonType: orderPersonType,
+                purchasePlan: purchasePlan,
+                orderPersonName: orderPersonName,
+                orderPersonIdType: 1,
+                orderPersonIdNum: orderPersonIdNum,
+                saleModelName: saleModelName,
+                licenseCityCode: selectLicenseCityCode,
+                dealership: selectDealershipCode,
+                deliveryCenter: selectDeliveryCenterCode
+            )
+        }
+    }
+}
+
+// MARK: - 美化组件
+private struct FormSection<Content: View>: View {
+    var title: String
+    let content: Content
+    
+    init(title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(title)
+                .font(.system(size: 16, weight: .bold))
+                .foregroundColor(AppTheme.colors.fontPrimary)
+                .padding(.leading, 4)
+            
+            VStack {
+                content
+            }
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(color: .black.opacity(0.02), radius: 5, x: 0, y: 2)
+        }
+    }
+}
+
+private struct OptionSelector: View {
+    var title: String
+    var options: [String]
+    var selectedIndex: Int
+    var onSelect: (Int) -> Void
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(.system(size: 15))
+                .foregroundColor(AppTheme.colors.fontPrimary)
+            Spacer()
+            HStack(spacing: 0) {
+                ForEach(0..<options.count, id: \.self) { index in
+                    Text(options[index])
+                        .font(.system(size: 13, weight: selectedIndex == index ? .medium : .regular))
+                        .foregroundColor(selectedIndex == index ? .white : .black)
+                        .padding(.vertical, 6)
+                        .padding(.horizontal, 16)
+                        .background(selectedIndex == index ? Color.black : Color.clear)
+                        .cornerRadius(20)
+                        .onTapGesture { onSelect(index) }
+                }
+            }
+            .background(Color(white: 0.95))
+            .cornerRadius(20)
+        }
+    }
+}
+
+private struct InputField: View {
+    var label: String
+    var placeholder: String
+    @Binding var text: String
+    var hasError: Bool
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 15))
+                .frame(width: 80, alignment: .leading)
+            TextField(placeholder, text: $text)
+                .font(.system(size: 15))
+            if hasError {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundColor(.red)
+                    .font(.system(size: 14))
+            }
+        }
+    }
+}
+
+private struct SelectField: View {
+    var label: String
+    var placeholder: String
+    var value: String
+    var hasError: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(.system(size: 15))
+                .frame(width: 80, alignment: .leading)
+            Text(value.isEmpty ? placeholder : value)
+                .font(.system(size: 15))
+                .foregroundColor(value.isEmpty ? Color.gray.opacity(0.6) : AppTheme.colors.fontPrimary)
+            Spacer()
+            if hasError {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundColor(.red)
+                    .font(.system(size: 14))
+                    .padding(.trailing, 4)
+            }
+            Image("icon_arrow_right")
+                .resizable()
+                .frame(width: 16, height: 16)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture { action() }
     }
 }
 

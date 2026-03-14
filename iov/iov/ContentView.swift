@@ -82,8 +82,8 @@ struct ContentView: View {
                 .accentColor(Color.black)
             }
             .disableAutocorrection(true)
-            .showMockIndicator()
         }
+        .showMockIndicator()
         .onChange(of: globalState.needRefresh) { _ in
             if globalState.needRefresh {
                 globalState.needRefresh = false
