@@ -15,158 +15,133 @@ extension CommunityPage {
         var action: ((_ id: String, _ type: String) -> Void)?
         
         var body: some View {
-            VStack(alignment: .leading) {
-                VStack {
-                    HStack(alignment: .top) {
-                        AvatarImage(avatar: baseContent.avatar ?? "", width: 50)
-                        VStack(alignment: .leading) {
-                            Text(baseContent.username ?? "")
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                            Spacer()
-                                .frame(height: 5)
-                            Text(tsDisplay(ts: baseContent.ts))
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                        }
-                        Spacer()
+            VStack(alignment: .leading, spacing: 16) {
+                // 用户信息
+                HStack(alignment: .center, spacing: 12) {
+                    AvatarImage(avatar: baseContent.avatar ?? "", width: 44)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(baseContent.username ?? "")
+                            .font(.system(size: 15, weight: .medium))
+                            .foregroundColor(AppTheme.colors.fontPrimary)
+                        Text(tsDisplay(ts: baseContent.ts))
+                            .font(.system(size: 12))
+                            .foregroundColor(AppTheme.colors.fontSecondary)
                     }
-                    Button(action: {
-                        action?(baseContent.id, baseContent.type)
-                    }) {
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text(baseContent.title)
-                                    .bold()
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.black)
-                                Spacer()
-                            }
-                            Spacer()
-                                .frame(height: 10)
-                            Text(baseContent.intro ?? "")
-                                .font(.system(size: 16))
-                                .foregroundColor(.black)
-                                .lineSpacing(5)
-                        }
-                    }
-                    .buttonStyle(.plain)
                     Spacer()
-                        .frame(height: 10)
-                    if let tags = baseContent.tags {
-                        HStack {
-                            VStack {
-                                ForEach(Array(tags.enumerated()), id: \.0) { index, tag in
-                                    Text("# \(tag)")
-                                        .font(.system(size: 12))
-                                }
-                            }
-                            .padding(5)
-                            .background(Color(hex: 0xf2f2f2))
-                            .cornerRadius(10)
-                            Spacer()
+                }
+                
+                // 内容点击区域
+                Button(action: {
+                    action?(baseContent.id, baseContent.type)
+                }) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(baseContent.title)
+                            .font(AppTheme.fonts.title1)
+                            .bold()
+                            .foregroundColor(AppTheme.colors.fontPrimary)
+                        
+                        Text(baseContent.intro ?? "")
+                            .font(AppTheme.fonts.body)
+                            .foregroundColor(AppTheme.colors.fontSecondary)
+                            .lineLimit(3)
+                            .lineSpacing(4)
+                    }
+                }
+                .buttonStyle(.plain)
+                
+                // 标签展示
+                if let tags = baseContent.tags, !tags.isEmpty {
+                    HStack(spacing: 8) {
+                        ForEach(tags, id: \.self) { tag in
+                            Text("# \(tag)")
+                                .font(.system(size: 12))
+                                .foregroundColor(AppTheme.colors.brandMain)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color.white.opacity(0.05))
+                                .cornerRadius(AppTheme.layout.radiusSmall)
                         }
                     }
                 }
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
-                Spacer()
-                    .frame(height: 10)
+                
+                // 图片展示
                 if baseContent.images.count > 0 {
-                    HStack {
-                        if baseContent.images.count == 1 {
-                            Spacer()
-                            KFImage(URL(string: baseContent.images[0])!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity)
-                                .frame(width: 350, height: 200)
-                                .clipped()
-                            Spacer()
-                        } else if baseContent.images.count > 1 {
-                            Spacer()
-                            KFImage(URL(string: baseContent.images[0])!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 175, height: 175)
-                                .clipped()
-                            Spacer()
-                            KFImage(URL(string: baseContent.images[1])!)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(maxWidth: .infinity)
-                                .frame(width: 175, height: 175)
-                                .clipped()
-                            Spacer()
-                        }
-                    }
-                    if baseContent.images.count > 2 {
-                        HStack {
-                            if baseContent.images.count == 3 {
-                                Spacer()
-                                KFImage(URL(string: baseContent.images[2])!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(maxWidth: .infinity)
-                                    .frame(width: 350, height: 200)
-                                    .clipped()
-                                Spacer()
-                            } else if baseContent.images.count > 3 {
-                                Spacer()
-                                KFImage(URL(string: baseContent.images[2])!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 175, height: 175)
-                                    .clipped()
-                                Spacer()
-                                KFImage(URL(string: baseContent.images[3])!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 175, height: 175)
-                                    .clipped()
-                                Spacer()
-                            }
-                        }
-                    }
-                    Spacer()
-                        .frame(height: 10)
+                    ImageGrid(images: baseContent.images)
                 }
-                HStack {
-                    Button(action: {
-                        action?(baseContent.id, baseContent.type)
-                    }) {
-                        Image(systemName: "mappin.and.ellipse")
-                            .foregroundColor(.gray)
-                        Text(baseContent.location ?? "")
-                            .font(.system(size: 14))
-                            .foregroundColor(.gray)
-                    }
-                    
+                
+                // 底部交互
+                HStack(spacing: 24) {
+                    LabelItem(icon: "mappin.and.ellipse", text: baseContent.location ?? "")
                     Spacer()
-                    Button(action: {
-                        action?(baseContent.id, baseContent.type)
-                    }) {
-                        Image(systemName: "bubble")
-                            .font(.system(size: 14))
-                            .foregroundColor(.black)
-                        Text("\(baseContent.commentCount ?? 0)")
-                            .font(.system(size: 14))
-                            .foregroundColor(.black)
-                    }
-                    Spacer()
-                        .frame(width: 20)
-                    Image(systemName: "hand.thumbsup")
-                        .font(.system(size: 14))
-                        .foregroundColor(.black)
-                    Text("\(baseContent.likeCount ?? 0)")
-                        .font(.system(size: 14))
-                        .foregroundColor(.black)
+                    LabelItem(icon: "bubble", text: "\(baseContent.commentCount ?? 0)")
+                    LabelItem(icon: "hand.thumbsup", text: "\(baseContent.likeCount ?? 0)")
                 }
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
-                .padding(.bottom, 20)
+                .padding(.top, 8)
+            }
+            .appCardStyle()
+        }
+    }
+}
+
+// MARK: - 辅助子组件
+private struct ImageGrid: View {
+    var images: [String]
+    
+    var body: some View {
+        let displayImages = Array(images.prefix(4))
+        
+        Group {
+            if displayImages.count == 1 {
+                // 1张图：全宽
+                KFImage(URL(string: displayImages[0])!)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 180)
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(AppTheme.layout.radiusMedium)
+                    .clipped()
+            } else if displayImages.count == 2 {
+                // 2张图：并排
+                HStack(spacing: 8) {
+                    ForEach(displayImages, id: \.self) { url in
+                        KFImage(URL(string: url)!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .frame(height: 120)
+                            .cornerRadius(AppTheme.layout.radiusMedium)
+                            .clipped()
+                    }
+                }
+            } else {
+                // 3-4张图：2x2 田字格
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
+                    ForEach(displayImages, id: \.self) { url in
+                        KFImage(URL(string: url)!)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .frame(height: 100)
+                            .cornerRadius(AppTheme.layout.radiusMedium)
+                            .clipped()
+                    }
+                }
             }
         }
+    }
+}
+
+private struct LabelItem: View {
+    var icon: String
+    var text: String
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 14))
+            Text(text)
+                .font(.system(size: 13))
+        }
+        .foregroundColor(AppTheme.colors.fontSecondary)
     }
 }
 

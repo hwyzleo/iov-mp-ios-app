@@ -15,40 +15,41 @@ extension CommunityPage {
         var action: ((_ id: String, _ type: String) -> Void)?
         
         var body: some View {
-            VStack {
+            VStack(alignment: .leading, spacing: 16) {
                 if let unwrapedTitle = title {
-                    HStack {
-                        Spacer()
-                            .frame(width: 20)
-                        Text(unwrapedTitle)
-                            .bold()
-                        Spacer()
-                    }
+                    Text(unwrapedTitle)
+                        .font(AppTheme.fonts.title1)
+                        .bold()
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                 }
-                HStack {
-                    Spacer()
+                
+                // 使用 Grid 确保完美等分且不撑破布局
+                let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: baseContents.count)
+                
+                LazyVGrid(columns: columns, spacing: 16) {
                     ForEach(baseContents, id: \.id) { baseContent in
                         Button(action: {
                             action?(baseContent.id, baseContent.type)
                         }) {
-                            ZStack {
+                            VStack(spacing: 8) {
                                 KFImage(URL(string: baseContent.images[0])!)
                                     .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(5)
+                                    .scaledToFill()
+                                    .aspectRatio(1.0, contentMode: .fill) // 严格保持正方形
+                                    .cornerRadius(AppTheme.layout.radiusMedium)
+                                    .clipped()
+                                
                                 Text(baseContent.title)
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.white)
-                                    .padding(.top, 70)
+                                    .font(.system(size: 12, weight: .medium))
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
+                                    .lineLimit(1)
                             }
                         }
                         .buttonStyle(.plain)
-                        Spacer()
                     }
                 }
             }
-            .padding(.top, 20)
-            .padding(.bottom, 20)
+            .padding(.vertical, 8)
         }
     }
 }

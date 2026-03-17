@@ -14,35 +14,32 @@ extension CommunityTopicView {
         var baseContent: BaseContent
         
         var body: some View {
-            HStack(alignment: .top) {
+            HStack(alignment: .top, spacing: 16) {
                 if baseContent.images.count > 0 {
                     KFImage(URL(string: baseContent.images[0])!)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 80, height: 80)
+                        .cornerRadius(AppTheme.layout.radiusSmall)
                         .clipped()
-                        .cornerRadius(5)
                 }
-                Spacer()
-                    .frame(width: 15)
-                VStack(alignment: .leading) {
+                
+                VStack(alignment: .leading, spacing: 12) {
                     Text(baseContent.title)
-                        .bold()
-                        .foregroundColor(.black)
-                    Spacer()
-                        .frame(height: 60)
-                    HStack {
-                        AvatarImage(avatar: baseContent.avatar, width: 25)
+                        .font(.system(size: 15, weight: .bold))
+                        .foregroundColor(AppTheme.colors.fontPrimary)
+                        .lineLimit(2)
+                    
+                    HStack(spacing: 8) {
+                        AvatarImage(avatar: baseContent.avatar, width: 20)
                         Text(baseContent.username ?? "")
-                            .font(.system(size: 14))
-                            .foregroundColor(.black)
+                            .font(.system(size: 12))
+                            .foregroundColor(AppTheme.colors.fontSecondary)
                     }
                 }
                 Spacer()
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
-            .padding(.bottom, 10)
+            .appCardStyle(radius: AppTheme.layout.radiusMedium)
         }
     }
 }

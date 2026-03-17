@@ -14,104 +14,57 @@ extension CommunityPage {
         var action: ((_ id: String, _ type: String) -> Void)?
         
         var body: some View {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     Text(contentBlock.title ?? "")
-                        .font(.system(size: 18))
+                        .font(AppTheme.fonts.title1)
                         .bold()
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                     Spacer()
                     Button(action: {
                         action?(contentBlock.id, "topic")
                     }) {
-                        Text("查看更多")
-                            .font(.system(size: 16))
-                            .foregroundColor(.gray)
-                        Image(systemName: "chevron.right")
-                            .foregroundColor(.gray)
+                        HStack(spacing: 4) {
+                            Text("查看更多")
+                                .font(.system(size: 14))
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12))
+                        }
+                        .foregroundColor(AppTheme.colors.fontSecondary)
                     }
                     .buttonStyle(.plain)
                 }
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
+                
                 if contentBlock.data.count > 0 {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            action?(contentBlock.data[0].id, contentBlock.data[0].type)
-                        }) {
-                            VStack(alignment: .leading) {
-                                KFImage(URL(string: contentBlock.data[0].images[0])!)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 175, height: 175)
-                                    .clipped()
-                                Text(contentBlock.data[0].title)
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.black)
-                            }
-                        }
-                        .buttonStyle(.plain)
-                        Spacer()
-                        if contentBlock.data.count > 1 {
+                    // 使用 2 列等分网格，间距 12pt
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 16) {
+                        ForEach(contentBlock.data.prefix(4), id: \.id) { item in
                             Button(action: {
-                                action?(contentBlock.data[1].id, contentBlock.data[1].type)
+                                action?(item.id, item.type)
                             }) {
-                                VStack(alignment: .leading) {
-                                    KFImage(URL(string: contentBlock.data[1].images[0])!)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 175, height: 175)
-                                        .clipped()
-                                    Text(contentBlock.data[1].title)
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.black)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            Spacer()
-                        }
-                    }
-                    if contentBlock.data.count > 2 {
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                action?(contentBlock.data[2].id, contentBlock.data[2].type)
-                            }) {
-                                VStack(alignment: .leading) {
-                                    KFImage(URL(string: contentBlock.data[2].images[0])!)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 175, height: 175)
-                                        .clipped()
-                                    Text(contentBlock.data[2].title)
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.black)
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            Spacer()
-                            if contentBlock.data.count > 3 {
-                                Button(action: {
-                                    action?(contentBlock.data[3].id, contentBlock.data[3].type)
-                                }) {
-                                    VStack(alignment: .leading) {
-                                        KFImage(URL(string: contentBlock.data[3].images[0])!)
+                                VStack(alignment: .leading, spacing: 8) {
+                                    if !item.images.isEmpty {
+                                        KFImage(URL(string: item.images[0])!)
                                             .resizable()
                                             .scaledToFill()
-                                            .frame(width: 175, height: 175)
+                                            .frame(minWidth: 0, maxWidth: .infinity)
+                                            .frame(height: 110) // 强制固定高度防止重叠
+                                            .cornerRadius(AppTheme.layout.radiusMedium)
                                             .clipped()
-                                        Text(contentBlock.data[3].title)
-                                            .font(.system(size: 16))
-                                            .foregroundColor(.black)
                                     }
+                                    
+                                    Text(item.title)
+                                        .font(.system(size: 14, weight: .medium))
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                        .lineLimit(1)
                                 }
-                                .buttonStyle(.plain)
-                                Spacer()
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                 }
             }
+            .appCardStyle()
         }
     }
 }

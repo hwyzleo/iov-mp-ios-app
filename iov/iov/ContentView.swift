@@ -11,78 +11,76 @@ struct ContentView: View {
     
     @EnvironmentObject var globalState: AppGlobalState
     
+    init() {
+        // 设置 TabBar 的外观以适配深色主题
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(AppTheme.colors.background)
+        
+        // 设置未选中项颜色
+        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(AppTheme.colors.fontTertiary)
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(AppTheme.colors.fontTertiary)]
+        
+        // 设置选中项颜色
+        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(AppTheme.colors.brandMain)
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [.foregroundColor: UIColor(AppTheme.colors.brandMain)]
+        
+        UITabBar.appearance().standardAppearance = appearance
+        UITabBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
     var body: some View {
         NavigationStack {
-            ZStack {
-                TabView(selection: $globalState.selectedTab) {
-                    CommunityPage.build()
-                        .tabItem {
-                            if globalState.selectedTab == 0 {
-                                Image("icon_explore_fill")
-                            } else {
-                                Image("icon_explore")
-                            }
-                            Text(LocalizedStringKey("explore"))
-                        }
-                        .tag(0)
-                    ServicePage.build()
-                        .tabItem {
-                            if globalState.selectedTab == 1 {
-                                Image("icon_service_fill")
-                            } else {
-                                Image("icon_service")
-                            }
-                            Text(LocalizedStringKey("service"))
-                        }
-                        .tag(1)
-                    if VehicleManager.shared.hasVehicle() {
-                        VehiclePage.build()
-                            .tabItem {
-                                if globalState.selectedTab == 2 {
-                                    Image("icon_vehicle_fill")
-                                } else {
-                                    Image("icon_vehicle")
-                                }
-                                Text(LocalizedStringKey("my_vehicle"))
-                            }
-                            .tag(2)
-                    } else {
-                        MarketingIndexPage.build()
-                            .tabItem {
-                                if globalState.selectedTab == 2 {
-                                    Image("icon_vehicle_fill")
-                                } else {
-                                    Image("icon_vehicle")
-                                }
-                                Text(LocalizedStringKey("buy_vehicle"))
-                            }
-                            .tag(2)
+            TabView(selection: $globalState.selectedTab) {
+                CommunityPage.build()
+                    .tabItem {
+                        Image(globalState.selectedTab == 0 ? "icon_explore_active_60" : "icon_explore_60")
+                            .renderingMode(.template)
+                        Text(LocalizedStringKey("explore"))
                     }
-                    MallPage.build()
+                    .tag(0)
+                
+                ServicePage.build()
+                    .tabItem {
+                        Image(globalState.selectedTab == 1 ? "icon_service_active_60" : "icon_service_60").renderingMode(.template)
+                        Text(LocalizedStringKey("service"))
+                    }
+                    .tag(1)
+                
+                if VehicleManager.shared.hasVehicle() {
+                    VehiclePage.build()
                         .tabItem {
-                            if globalState.selectedTab == 3 {
-                                Image("icon_mall_fill")
-                            } else {
-                                Image("icon_mall")
-                            }
-                            Text(LocalizedStringKey("mall"))
+                            Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
+                            Text(LocalizedStringKey("my_vehicle"))
                         }
-                        .tag(3)
-                    MyPage.build()
+                        .tag(2)
+                } else {
+                    MarketingIndexPage.build()
                         .tabItem {
-                            if globalState.selectedTab == 4 {
-                                Image("icon_person_fill")
-                            } else {
-                                Image("icon_person")
-                            }
-                            Text(LocalizedStringKey("my"))
+                            Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
+                            Text(LocalizedStringKey("buy_vehicle"))
                         }
-                        .tag(4)
+                        .tag(2)
                 }
-                .accentColor(Color.black)
+                
+                MallPage.build()
+                    .tabItem {
+                        Image(globalState.selectedTab == 3 ? "icon_mall_active_60" : "icon_mall_60").renderingMode(.template)
+                        Text(LocalizedStringKey("mall"))
+                    }
+                    .tag(3)
+                
+                MyPage.build()
+                    .tabItem {
+                        Image(globalState.selectedTab == 4 ? "icon_mine_active_60" : "icon_mine_60").renderingMode(.template)
+                        Text(LocalizedStringKey("my"))
+                    }
+                    .tag(4)
             }
-            .disableAutocorrection(true)
+            .accentColor(AppTheme.colors.brandMain)
         }
+        .preferredColorScheme(.dark) // 强制深色模式
+        .background(AppTheme.colors.background.ignoresSafeArea())
         .showMockIndicator()
         .onChange(of: globalState.needRefresh) { _ in
             if globalState.needRefresh {

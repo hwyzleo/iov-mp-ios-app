@@ -38,6 +38,7 @@ struct CommunityArticleView: View {
                 ErrorTip(text: text)
             }
         }
+        .appBackground()
         .onAppear {
             if appGlobalState.parameters.keys.contains("id") {
                 intent.viewOnAppear(id: appGlobalState.parameters["id"] as! String)
@@ -87,126 +88,119 @@ extension CommunityArticleView {
                             .frame(height: 0)
                             CommunityArticleView.Carousel(images: article.images)
                         }
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 20) {
                             HStack {
-                                AvatarImage(avatar: article.avatar ?? "")
-                                Spacer()
-                                    .frame(width: 10)
-                                VStack(alignment: .leading) {
+                                AvatarImage(avatar: article.avatar ?? "", width: 44)
+                                VStack(alignment: .leading, spacing: 4) {
                                     Text(article.username)
-                                    Spacer()
-                                        .frame(height: 10)
+                                        .font(.system(size: 16, weight: .medium))
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
                                     HStack {
                                         Text(tsDisplay(ts: article.ts))
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.gray)
+                                        Text("·")
                                         Text("\(article.views)次浏览")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.gray)
+                                        Text("·")
                                         Text(article.location ?? "")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.gray)
                                     }
+                                    .font(.system(size: 12))
+                                    .foregroundColor(AppTheme.colors.fontSecondary)
                                 }
                                 Spacer()
                             }
-                            Spacer()
-                                .frame(height: 20)
-                            HStack {
-                                Text(article.title)
-                                    .font(.system(size: 18))
-                                    .bold()
-                            }
-                            HStack {
-                                ForEach(Array(article.tags.enumerated()), id: \.0) { index, tag in
+                            
+                            Text(article.title)
+                                .font(AppTheme.fonts.title1)
+                                .bold()
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            
+                            HStack(spacing: 8) {
+                                ForEach(article.tags, id: \.self) { tag in
                                     Text("# \(tag)")
                                         .font(.system(size: 12))
+                                        .foregroundColor(AppTheme.colors.brandMain)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 4)
+                                        .background(Color.white.opacity(0.05))
+                                        .cornerRadius(AppTheme.layout.radiusSmall)
                                 }
                             }
-                            .padding(5)
-                            .background(Color(hex: 0xf2f2f2))
-                            .cornerRadius(10)
+                            
                             Text(article.content)
-                            Spacer()
-                                .frame(height: 50)
+                                .font(AppTheme.fonts.body)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                                .lineSpacing(6)
+                            
+                            Divider().background(Color.white.opacity(0.1))
+                            
                             Text("评论")
-                                .bold()
-                            Spacer()
-                                .frame(height: 20)
+                                .font(.system(size: 18, weight: .bold))
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            
                             CommunityArticleView_Comment(comments: article.comments)
                         }
-                        .padding(20)
+                        .padding(AppTheme.layout.margin)
                     }
                     .scrollIndicators(.hidden)
                     .ignoresSafeArea()
-                    HStack {
+                    
+                    // 底部交互栏
+                    HStack(spacing: 20) {
                         TextField("说点什么吧", text: $comment)
-                        VStack {
-                            Image(systemName: "bubble")
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                            Text("\(article.comments.count)")
-                                .font(.system(size: 14))
-                                .foregroundColor(.black)
-                        }
-                        Spacer()
-                            .frame(width: 40)
+                            .padding(12)
+                            .background(AppTheme.colors.cardBackground)
+                            .cornerRadius(AppTheme.layout.radiusSmall)
+                        
+                        InteractionButton(icon: "bubble", count: "\(article.comments.count)")
+                        
                         Button(action: {
                             tapLikeAction?()
-                            if(liked) {
-                                likeCount -= 1
-                            } else {
-                                likeCount += 1
-                            }
-                            liked = !liked
+                            if liked { likeCount -= 1 } else { likeCount += 1 }
+                            liked.toggle()
                         }) {
-                            VStack {
-                                if liked {
-                                    Image(systemName: "hand.thumbsup.fill")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.black)
-                                } else {
-                                    Image(systemName: "hand.thumbsup")
-                                        .font(.system(size: 14))
-                                        .foregroundColor(.black)
-                                }
-                                Text("\(likeCount)")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.black)
-                            }
+                            InteractionButton(icon: liked ? "hand.thumbsup.fill" : "hand.thumbsup", count: "\(likeCount)", active: liked)
                         }
                         .buttonStyle(.plain)
-                        Spacer()
-                            .frame(width: 40)
+                        
                         Button(action: { showShare = true }) {
-                            VStack {
-                                Image(systemName: "square.and.arrow.up")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.black)
-                                Text("\(article.shareCount)")
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.black)
-                            }
+                            InteractionButton(icon: "square.and.arrow.up", count: "\(article.shareCount)")
                         }
                         .buttonStyle(.plain)
                     }
-                    .padding(.leading, 20)
-                    .padding(.trailing, 20)
-                    .padding(.top, 10)
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.vertical, 12)
+                    .background(AppTheme.colors.background)
                 }
                 .sheet(isPresented: $showShare) {
                     CommunityArticleView.Share(showShare: $showShare)
                         .padding(20)
                         .presentationDetents([.height(250)])
+                        .preferredColorScheme(.dark)
                 }
+                
                 TopBackTitleBar()
-                    .background(.white)
+                    .background(AppTheme.colors.background)
                     .opacity(showHiddenBar ? 1 : 0)
-                    .animation(.easeInOut(duration: 0.5), value: showHiddenBar)
+                
                 TopBackTitleBar(color: .white)
                     .opacity(showHiddenBar ? 0 : 1)
-                    .animation(.easeInOut(duration: 0.5), value: showHiddenBar)
             }
+        }
+    }
+}
+
+private struct InteractionButton: View {
+    var icon: String
+    var count: String
+    var active: Bool = false
+    
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.system(size: 18))
+                .foregroundColor(active ? AppTheme.colors.brandMain : AppTheme.colors.fontPrimary)
+            Text(count)
+                .font(.system(size: 10))
+                .foregroundColor(AppTheme.colors.fontSecondary)
         }
     }
 }

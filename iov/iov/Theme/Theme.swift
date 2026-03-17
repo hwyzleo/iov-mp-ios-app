@@ -2,55 +2,96 @@
 //  Theme.swift
 //  iov
 //
-//  Created by 叶荣杰 on 2024/9/1.
+//  Created by Gemini on 2026/3/14.
 //
 
 import SwiftUI
 
-// 应用主题接口
-public protocol AppThemeProtocol {}
-
-// 应用颜色集接口
+// MARK: - 颜色协议增强
 public protocol AppColorsProtocol {
-    // 主题风格颜色
-    var themeUi: Color { get set }
-    // 背景颜色
-    var background: Color { get set }
-    // 主要文本颜色
-    var fontPrimary: Color { get set }
-    // 次要文本颜色
-    var fontSecondary: Color { get set }
+    var background: Color { get }      // 基础底色：深青黑色 (#0D1117)
+    var cardBackground: Color { get }  // 卡片背景：深灰色 (#1C212B)
+    var brandMain: Color { get }       // 品牌主色：极光蓝
+    var fontPrimary: Color { get }     // 一级标题：纯白 (#FFFFFF)
+    var fontSecondary: Color { get }   // 二级正文：浅灰 (#A0A0A0)
+    var fontTertiary: Color { get }    // 弱辅助字：深灰 (#666666)
 }
 
-// 应用字体集接口
+// MARK: - 布局规范协议
+public protocol AppLayoutProtocol {
+    var margin: CGFloat { get }        // 页面外边距 (32pt)
+    var spacing: CGFloat { get }       // 组件垂直间距 (24pt)
+    var cardPadding: CGFloat { get }   // 卡片内部 Padding (32pt)
+    
+    var radiusLarge: CGFloat { get }   // 大容器圆角 (40pt)
+    var radiusMedium: CGFloat { get }  // 中型构件圆角 (24pt)
+    var radiusSmall: CGFloat { get }   // 小构件圆角 (12pt)
+}
+
+// MARK: - 字体规范协议
 public protocol AppFontsProtocol {
-    // 列表标题
-    var listTitle: Font { get set }
+    var bigTitle: Font { get }         // 大标题 (32pt Bold)
+    var title1: Font { get }           // 一级标题 (28pt Medium)
+    var body: Font { get }             // 正文内容 (24pt Regular)
+    var subtext: Font { get }          // 辅助标签 (20pt Regular)
 }
 
-// 应用主题
-public struct AppTheme: AppThemeProtocol {
-    public static var colors: AppColorsProtocol = LightAppColors() as AppColorsProtocol
-    public static var fonts: AppFontsProtocol = AppFonts() as AppFontsProtocol
+// MARK: - 默认实现
+public struct AppTheme {
+    public static var colors: AppColorsProtocol = DefaultColors()
+    public static var layout: AppLayoutProtocol = DefaultLayout()
+    public static var fonts: AppFontsProtocol = DefaultFonts()
 }
 
-// 白天应用颜色集
-struct LightAppColors : AppColorsProtocol {
-    var themeUi: Color = Color.white
-    var background: Color = Color.white
-    var fontPrimary: Color = Color(hex: 0x1A171B)
-    var fontSecondary: Color = Color(hex: 0x8E8E8E)
+struct DefaultColors: AppColorsProtocol {
+    let background = Color(hex: "#0D1117")
+    let cardBackground = Color(hex: "#1C212B")
+    let brandMain = Color(hex: "#00E5FF") // 极光蓝/冷青色
+    let fontPrimary = Color(hex: "#FFFFFF")
+    let fontSecondary = Color(hex: "#A0A0A0")
+    let fontTertiary = Color(hex: "#666666")
 }
 
-// 夜晚应用颜色集
-struct DarkAppColors : AppColorsProtocol {
-    var themeUi: Color = Color.black
-    var background: Color = Color.black
-    var fontPrimary: Color = Color.white
-    var fontSecondary: Color = Color.gray
+struct DefaultLayout: AppLayoutProtocol {
+    let margin: CGFloat = 16
+    let spacing: CGFloat = 16
+    let cardPadding: CGFloat = 16
+    
+    let radiusLarge: CGFloat = 20
+    let radiusMedium: CGFloat = 12
+    let radiusSmall: CGFloat = 8
 }
 
-// 字体集
-struct AppFonts : AppFontsProtocol {
-    var listTitle: Font = .system(size: 16)
+struct DefaultFonts: AppFontsProtocol {
+    let bigTitle = Font.system(size: 24, weight: .bold)
+    let title1 = Font.system(size: 18, weight: .bold)
+    let body = Font.system(size: 15, weight: .regular)
+    let subtext = Font.system(size: 12, weight: .regular)
+}
+
+// MARK: - Color 扩展支持 Hex 字符串
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue: Double(b) / 255,
+            opacity: Double(a) / 255
+        )
+    }
 }

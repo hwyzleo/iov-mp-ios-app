@@ -12,92 +12,66 @@ extension CommunityArticleView {
         @Binding var showShare: Bool
         
         var body: some View {
-            VStack {
+            VStack(spacing: 32) {
                 HStack {
                     Text("分享至")
-                        .bold()
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                     Spacer()
                 }
-                .padding(.bottom, 30)
-                HStack {
-                    Spacer()
-                    VStack {
-                        HStack {
-                            Image("wechat_c")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                        }
-                        .frame(width: 50, height: 50)
-                        .background(Color.white)
-                        .clipShape(.circle)
-                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                        Text("微信")
-                            .font(.system(size: 14))
-                            .padding(.top, 5)
-                    }
-                    Spacer()
-                    VStack {
-                        HStack {
-                            Image("wechat.moments_c")
-                                .resizable()
-                                .frame(width: 35, height: 35)
-                        }
-                        .frame(width: 50, height: 50)
-                        .background(Color.white)
-                        .clipShape(.circle)
-                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                        Text("朋友圈")
-                            .font(.system(size: 14))
-                            .padding(.top, 5)
-                    }
-                    Spacer()
-                    VStack {
-                        HStack {
-                            Image(systemName: "link")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                        }
-                        .frame(width: 50, height: 50)
-                        .background(Color.white)
-                        .clipShape(.circle)
-                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                        Text("复制链接")
-                            .font(.system(size: 14))
-                            .padding(.top, 5)
-                    }
-                    Spacer()
-                    VStack {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle")
-                                .resizable()
-                                .frame(width: 25, height: 25)
-                        }
-                        .frame(width: 50, height: 50)
-                        .background(Color.white)
-                        .clipShape(.circle)
-                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                        Text("举报")
-                            .font(.system(size: 14))
-                            .padding(.top, 5)
-                    }
-                    Spacer()
+                
+                HStack(spacing: 0) {
+                    ShareItem(icon: "wechat_c", label: "微信")
+                    ShareItem(icon: "wechat.moments_c", label: "朋友圈")
+                    ShareItem(systemIcon: "link", label: "复制链接")
+                    ShareItem(systemIcon: "exclamationmark.triangle", label: "举报")
                 }
-                .padding(.bottom, 30)
+                
                 Button(action: { showShare = false }) {
                     Text("取消")
-                        .background(.white)
-                        .foregroundColor(.black)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                         .frame(maxWidth: .infinity)
-                        .padding(10)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 30)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                        .contentShape(Rectangle())
+                        .padding(.vertical, 14)
+                        .background(Color.white.opacity(0.05))
+                        .cornerRadius(AppTheme.layout.radiusMedium)
                 }
                 .buttonStyle(.plain)
             }
+            .padding(AppTheme.layout.cardPadding)
+            .background(AppTheme.colors.cardBackground)
         }
+    }
+}
+
+private struct ShareItem: View {
+    var icon: String?
+    var systemIcon: String?
+    var label: String
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(Color.white.opacity(0.05))
+                    .frame(width: 56, height: 56)
+                
+                if let icon = icon {
+                    Image(icon)
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                } else if let systemIcon = systemIcon {
+                    Image(systemName: systemIcon)
+                        .font(.system(size: 24))
+                        .foregroundColor(AppTheme.colors.brandMain)
+                }
+            }
+            
+            Text(label)
+                .font(.system(size: 12))
+                .foregroundColor(AppTheme.colors.fontSecondary)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 

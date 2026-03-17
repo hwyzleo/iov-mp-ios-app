@@ -26,6 +26,7 @@ struct CommunityPage: View {
                 ErrorTip(text: text)
             }
         }
+        .background(AppTheme.colors.background) // 使用不忽略安全区的背景
         .onAppear {
             if state.contentBlocks.count == 0 {
                 intent.viewOnAppear()
@@ -44,28 +45,89 @@ extension CommunityPage {
         let state: CommunityModelStateProtocol
         @State var isRefresh = false
         @State var isMore = false
+        @State private var searchText = ""
+        @State private var selectedMenu = 0
         
         var body: some View {
-            VStack {
-                RefreshScrollView(offDown: CGFloat(state.contentBlocks.count) * 100.0, listH: ScreenH - kNavHeight - kBottomSafeHeight, refreshing: $isRefresh, isMore: $isMore) {
-                    // 下拉刷新触发
+            VStack(spacing: 0) {
+                // 1. 顶部搜索区
+                HStack(spacing: 16) {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                            .foregroundColor(AppTheme.colors.fontTertiary)
+                        TextField("搜索感兴趣的内容", text: $searchText)
+                            .font(.system(size: 14))
+                            .foregroundColor(AppTheme.colors.fontPrimary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(AppTheme.colors.cardBackground)
+                    .cornerRadius(AppTheme.layout.radiusSmall)
+                    
+                    Button(action: { /* 发布逻辑 */ }) {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 28, height: 28)
+                            .foregroundColor(AppTheme.colors.brandMain)
+                            .shadow(color: AppTheme.colors.brandMain.opacity(0.3), radius: 5)
+                    }
+                }
+                .padding(.horizontal, AppTheme.layout.margin)
+                .padding(.top, 10) // 这里的 padding 会在安全区域之后累加
+                .padding(.bottom, 16)
+                
+                // 2. 二级导航菜单
+                HStack(spacing: 32) {
+                    MenuItem(title: "推荐", isSelected: selectedMenu == 0) { selectedMenu = 0 }
+                    MenuItem(title: "活动", isSelected: selectedMenu == 1) { selectedMenu = 1 }
+                    MenuItem(title: "此地", isSelected: selectedMenu == 2) { selectedMenu = 2 }
+                    Spacer()
+                }
+                .padding(.horizontal, AppTheme.layout.margin)
+                .padding(.bottom, 12)
+                
+                // 3. 内容滚动区
+                RefreshScrollView(offDown: CGFloat(state.contentBlocks.count) * 100.0, listH: ScreenH - kNavHeight - kBottomSafeHeight - 100, refreshing: $isRefresh, isMore: $isMore) {
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                        // 刷新完成，关闭刷新
                         intent.viewOnAppear()
                         isRefresh = false
                     })
                 } moreTrigger: {
-                    // 上拉加载更多触发
                     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                        // 加载完成，关闭加载
                         isMore = false
                     })
                 } content: {
                     Content(intent: intent, contentBlocks: state.contentBlocks)
                 }
                 .scrollIndicators(.hidden)
-                .ignoresSafeArea()
             }
+            .background(AppTheme.colors.background) // 不使用 .appBackground() 以免忽略安全区
+        }
+    }
+    
+    private struct MenuItem: View {
+        var title: String
+        var isSelected: Bool
+        var action: () -> Void
+        
+        var body: some View {
+            Button(action: action) {
+                VStack(spacing: 6) {
+                    Text(title)
+                        .font(.system(size: 16, weight: isSelected ? .bold : .regular))
+                        .foregroundColor(isSelected ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
+                    
+                    if isSelected {
+                        Capsule()
+                            .fill(AppTheme.colors.brandMain)
+                            .frame(width: 16, height: 3)
+                    } else {
+                        Capsule().fill(Color.clear).frame(width: 16, height: 3)
+                    }
+                }
+            }
+            .buttonStyle(.plain)
         }
     }
     
@@ -75,7 +137,7 @@ extension CommunityPage {
         @EnvironmentObject var appGlobalState: AppGlobalState
         
         var body: some View {
-            VStack {
+            VStack(spacing: AppTheme.layout.spacing) {
                 ForEach(contentBlocks, id: \.id) { contentBlock in
                     switch contentBlock.type {
                     case "carousel":
@@ -83,40 +145,33 @@ extension CommunityPage {
                             appGlobalState.parameters["id"] = id
                             intent.onTapContent(type: type)
                         }
+                        .padding(.horizontal, AppTheme.layout.margin)
                     case "navigation":
                         CommunityPage.Navi(title: contentBlock.title, baseContents: contentBlock.data) { id, type in
                             appGlobalState.parameters["id"] = id
                             intent.onTapContent(type: type)
                         }
-                        Divider()
-                            .padding(.leading, 20)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 20)
+                        .padding(.horizontal, AppTheme.layout.margin)
                     case "topic":
                         CommunityPage.Topic(contentBlock: contentBlock) { id, type in
                             appGlobalState.parameters["id"] = id
                             intent.onTapContent(type: type)
                         }
-                        Divider()
-                            .padding(.leading, 20)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 20)
+                        .padding(.horizontal, AppTheme.layout.margin)
                     case "article":
                         CommunityPage.Article(baseContent: contentBlock.data[0]) { id, type in
                             appGlobalState.parameters["id"] = id
                             intent.onTapContent(type: type)
                         }
-                        Divider()
-                            .padding(.leading, 20)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 20)
+                        .padding(.horizontal, AppTheme.layout.margin)
                     default:
                         EmptyView()
                     }
                 }
                 Spacer()
-                    .frame(height: 100)
+                    .frame(height: 120)
             }
+            .padding(.top, 20)
         }
     }
 }

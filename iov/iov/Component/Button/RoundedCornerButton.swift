@@ -2,49 +2,74 @@
 //  RoundedCornerButton.swift
 //  iov
 //
-//  Created by 叶荣杰 on 2024/10/2.
+//  Created by Gemini on 2026/3/14.
 //
 
 import SwiftUI
 
-// 圆角按钮
+/// 工业级高圆角交互按钮
 struct RoundedCornerButton: View {
     var name: String?
     var nameLocal: LocalizedStringKey?
-    var color: Color = AppTheme.colors.fontPrimary
-    var bgColor: Color = Color.white
-    var borderColor: Color = Color.gray
-    var height: CGFloat = 40
-    var fontSize: CGFloat = 15
+    var color: Color
+    var bgColor: Color
+    var borderColor: Color
+    var height: CGFloat
+    var fontSize: CGFloat
     var action: (() -> Void)?
     
+    init(
+        name: String? = nil,
+        nameLocal: LocalizedStringKey? = nil,
+        color: Color = AppTheme.colors.fontPrimary,
+        bgColor: Color = AppTheme.colors.brandMain,
+        borderColor: Color = .clear,
+        height: CGFloat = 56,
+        fontSize: CGFloat = 16,
+        action: (() -> Void)? = nil
+    ) {
+        self.name = name
+        self.nameLocal = nameLocal
+        self.color = color
+        self.bgColor = bgColor
+        self.borderColor = borderColor
+        self.height = height
+        self.fontSize = fontSize
+        self.action = action
+    }
+    
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 20)
-                .fill(bgColor)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(borderColor, lineWidth: 1)
-                )
-            if(name != nil) {
-                Text(name!)
-                    .font(.system(size: fontSize))
-                    .foregroundColor(color)
-            } else if(nameLocal != nil) {
-                Text(nameLocal!)
-                    .font(.system(size: fontSize))
-                    .foregroundColor(color)
+        Button(action: { action?() }) {
+            ZStack {
+                Capsule()
+                    .fill(bgColor)
+                    .overlay(
+                        Capsule()
+                            .stroke(borderColor, lineWidth: 1)
+                    )
+                
+                Group {
+                    if let name = name {
+                        Text(name)
+                    } else if let nameLocal = nameLocal {
+                        Text(nameLocal)
+                    }
+                }
+                .font(.system(size: fontSize, weight: .bold)) // 按钮文字加粗
+                .foregroundColor(color)
             }
         }
         .frame(maxWidth: .infinity)
         .frame(height: height)
-        .contentShape(Rectangle())
-        .onTapGesture {
-            action?()
-        }
+        .buttonStyle(PlainButtonStyle()) // 移除原生点击缩放，交给自定义
     }
 }
 
 #Preview {
-    RoundedCornerButton(name: "按钮")
+    VStack {
+        RoundedCornerButton(name: "激活状态")
+        RoundedCornerButton(name: "辅助操作", bgColor: AppTheme.colors.cardBackground)
+    }
+    .padding()
+    .background(AppTheme.colors.background)
 }
