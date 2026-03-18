@@ -16,40 +16,48 @@ extension MyPage {
         var tapSettingAction: (() -> Void)?
         
         var body: some View {
-            ScrollView {
+            VStack(spacing: 0) {
+                Spacer().frame(height: kStatusBarHeight)
                 MyPage.TopBar(
                     tapLoginAction: { tapLoginAction?() },
                     tapMessageAction: { tapMessageAction?() },
                     tapSettingAction: { tapSettingAction?() }
                 )
-                Spacer()
-                    .frame(height: 20)
-                VStack {
-                    Button(action: {
-                        tapLoginAction?()
-                    }) {
-                        VStack(alignment: .center) {
+                .padding(.horizontal, AppTheme.layout.margin)
+                
+                ScrollView {
+                    VStack(spacing: AppTheme.layout.spacing) {
+                        VStack(alignment: .leading, spacing: 24) {
                             HStack {
                                 Text(LocalizedStringKey("not_login_welcome"))
-                                    .font(.system(size: 22))
+                                    .font(AppTheme.fonts.title1)
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
                                     .lineLimit(2)
-                                    .frame(height: 60)
+                                    .frame(height: 80)
                                 Spacer()
                                 Image("my_place_holder")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .clipShape(Circle())
                             }
-                            .padding(.bottom, 20)
-                            RoundedCornerButton(nameLocal: LocalizedStringKey("login_register")) {
+                            
+                            RoundedCornerButton(
+                                nameLocal: LocalizedStringKey("login_register"),
+                                color: .black,
+                                bgColor: AppTheme.colors.brandMain
+                            ) {
                                 tapLoginAction?()
                             }
                         }
+                        .appCardStyle()
                     }
-                    .buttonStyle(.plain)
-                    Spacer()
-                        .frame(height: 50)
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.top, 20)
                 }
+                .scrollIndicators(.hidden)
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
+            .appBackground()
         }
     }
 }

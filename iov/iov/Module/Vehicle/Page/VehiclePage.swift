@@ -57,336 +57,268 @@ extension VehiclePage {
         @Binding var findDuration: Double
         
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
                 if let vehicle = vehicle {
                     VehiclePage_TopBar()
-                        .padding(.leading, 20)
-                        .padding(.trailing, 20)
+                        .padding(.horizontal, AppTheme.layout.margin)
+                        .padding(.bottom, 10)
+                    
                     ScrollView {
-                        VStack {
-                            HStack {
+                        VStack(spacing: AppTheme.layout.spacing) {
+                            // 车辆状态摘要
+                            HStack(spacing: 12) {
                                 Image(systemName: "car.front.waves.up")
-                                    .font(.system(size: 14))
                                 Image(systemName: "key.radiowaves.forward")
-                                    .font(.system(size: 14))
                                 Text("停放中")
-                                    .font(.system(size: 14))
+                                    .font(AppTheme.fonts.subtext)
                                     .bold()
-                                Divider()
+                                Divider().frame(height: 12)
                                 Text("无法获取位置")
-                                    .font(.system(size: 14))
+                                    .font(AppTheme.fonts.subtext)
+                                Spacer()
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14))
-                                    .foregroundColor(.gray)
-                                Spacer()
                             }
-                            Spacer()
-                                .frame(height: 50)
-                            HStack {
-                                Text("\(vehicle.drivingRange)")
-                                    .font(.system(size: 50))
-                                    .bold()
-                                VStack(alignment: .leading) {
+                            .foregroundColor(AppTheme.colors.fontSecondary)
+                            .padding(.horizontal, 4)
+                            
+                            // 续航里程显示
+                            VStack(spacing: 8) {
+                                HStack(alignment: .lastTextBaseline, spacing: 4) {
+                                    Text("\(vehicle.drivingRange)")
+                                        .font(.system(size: 64, weight: .bold, design: .rounded))
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
                                     Text("km")
-                                        .font(.system(size: 16))
-                                    Text("WLTC")
-                                        .font(.system(size: 14))
+                                        .font(AppTheme.fonts.title1)
+                                        .foregroundColor(AppTheme.colors.fontSecondary)
                                 }
+                                Text("WLTC 综合续航")
+                                    .font(AppTheme.fonts.subtext)
+                                    .foregroundColor(AppTheme.colors.fontTertiary)
                             }
-                            HStack {
-                                VStack {
-                                    HStack(alignment: .bottom) {
-                                        Image(systemName: "bolt.fill")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.green)
-                                        Text("\(vehicle.electricDrivingRange)")
-                                            .font(.system(size: 18))
-                                        Text("km")
-                                            .font(.system(size: 12))
-                                        Divider()
-                                            .font(.system(size: 12))
-                                        Text("\(vehicle.electricPercentage)%")
-                                            .font(.system(size: 12))
-                                    }
-                                    ZStack(alignment: .leading) {
-                                        Rectangle()
-                                            .frame(width:100, height: 3)
-                                            .foregroundColor(.gray)
-                                        Rectangle()
-                                            .frame(width:CGFloat(vehicle.electricPercentage), height: 3)
-                                            .foregroundColor(.green)
-                                    }
-                                }
-                                Spacer()
-                                VStack {
-                                    HStack(alignment: .bottom) {
-                                        Image(systemName: "drop.fill")
-                                            .font(.system(size: 14))
-                                            .foregroundColor(.blue)
-                                        Text("\(vehicle.fuelDrivingRange)")
-                                            .font(.system(size: 18))
-                                        Text("km")
-                                            .font(.system(size: 12))
-                                        Divider()
-                                            .font(.system(size: 12))
-                                        Text("\(vehicle.fuelPercentage)%")
-                                            .font(.system(size: 12))
-                                    }
-                                    ZStack(alignment: .leading) {
-                                        Rectangle()
-                                            .frame(width:100, height: 3)
-                                            .foregroundColor(.gray)
-                                        Rectangle()
-                                            .frame(width:CGFloat(vehicle.fuelPercentage), height: 3)
-                                            .foregroundColor(.blue)
-                                    }
-                                }
+                            .padding(.vertical, 20)
+                            
+                            // 能源分布卡片
+                            HStack(spacing: 20) {
+                                EnergyProgress(icon: "bolt.fill", value: vehicle.electricDrivingRange, percentage: vehicle.electricPercentage, color: .green)
+                                EnergyProgress(icon: "drop.fill", value: vehicle.fuelDrivingRange, percentage: vehicle.fuelPercentage, color: AppTheme.colors.brandMain)
                             }
-                            .padding(.leading, 30)
-                            .padding(.trailing, 30)
-                            Spacer()
-                                .frame(height: 50)
-                            HStack {
-                                if let bodyImg = vehicle.bodyImg {
-                                    KFImage(URL(string: bodyImg)!)
-                                        .resizable()
-                                        .scaledToFit()
-                                }
+                            .appCardStyle(radius: AppTheme.layout.radiusMedium)
+                            
+                            // 车辆 3D 预览图
+                            if let bodyImg = vehicle.bodyImg {
+                                KFImage(URL(string: bodyImg)!)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: 180)
+                                    .padding(.vertical, 10)
                             }
-                            .padding(.leading, 50)
-                            .padding(.trailing, 50)
-                            Spacer()
-                                .frame(height: 30)
+                            
+                            // 快捷控车按钮
                             HStack {
-                                if vehicle.lockState {
-                                    CircularImageButton(icon: "icon_lock", name: "解锁", isLoading: $lockLoading, duration: $lockDuration) {
-                                        intent.onTapUnlock()
-                                    }
-                                } else {
-                                    CircularImageButton(icon: "icon_lock", name: "上锁", isLoading: $lockLoading, duration: $lockDuration) {
-                                        intent.onTapLock()
-                                    }
+                                ControlButton(icon: "icon_lock", name: vehicle.lockState ? "解锁" : "上锁", loading: lockLoading) {
+                                    vehicle.lockState ? intent.onTapUnlock() : intent.onTapLock()
                                 }
                                 Spacer()
-                                if vehicle.windowPercentage > 0 {
-                                    CircularImageButton(icon: "icon_window", name: "关窗", isLoading: $windowLoading, duration: $windowDuration) {
-                                        intent.onTapSetWindow(percent: 0)
-                                    }
-                                } else {
-                                    CircularImageButton(icon: "icon_window", name: "通风", isLoading: $windowLoading, duration: $windowDuration) {
-                                        intent.onTapSetWindow(percent: 10)
-                                    }
+                                ControlButton(icon: "icon_window", name: vehicle.windowPercentage > 0 ? "关窗" : "通风", loading: windowLoading) {
+                                    intent.onTapSetWindow(percent: vehicle.windowPercentage > 0 ? 0 : 10)
                                 }
                                 Spacer()
-                                if vehicle.trunkPercentage > 0 {
-                                    CircularImageButton(icon: "icon_trunk", iconSize: 15, name: "关尾门", isLoading: $trunkLoading, duration: $trunkDuration) {
-                                        intent.onTapSetTrunk(percent: 0)
-                                    }
-                                } else {
-                                    CircularImageButton(icon: "icon_trunk", iconSize: 15, name: "开尾门", isLoading: $trunkLoading, duration: $trunkDuration) {
-                                        intent.onTapSetTrunk(percent: 80)
-                                    }
+                                ControlButton(icon: "icon_trunk", name: vehicle.trunkPercentage > 0 ? "关尾门" : "开尾门", loading: trunkLoading) {
+                                    intent.onTapSetTrunk(percent: vehicle.trunkPercentage > 0 ? 0 : 80)
                                 }
                                 Spacer()
-                                CircularImageButton(icon: "icon_vehicle_search", iconSize: 15, name: "寻车", isLoading: $findLoading, duration: $findDuration) {
+                                ControlButton(icon: "icon_vehicle_search", name: "寻车", loading: findLoading) {
                                     intent.onTapFind()
                                 }
                             }
-                            .padding(.leading, 20)
-                            .padding(.trailing, 20)
-                        }
-                        .padding(.leading, 20)
-                        .padding(.trailing, 20)
-                        Spacer()
-                            .frame(height: 20)
-                        VStack {
-                            VStack {
-                                HStack {
-                                    Text("常用功能")
-                                        .font(.system(size: 16))
-                                        .bold()
-                                    Spacer()
-                                    NavigationLink(destination: VehicleServicePage().navigationBarBackButtonHidden()) {
-                                        Text("全部功能和服务 >")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.gray)
-                                    }
+                            .padding(.horizontal, 10)
+                            
+                            // 功能模块卡片组
+                            VStack(spacing: AppTheme.layout.spacing) {
+                                // 常用功能
+                                FeatureGridSection(title: "常用功能", detailText: "全部服务", destination: VehicleServicePage()) {
+                                    FeatureItem(icon: "car.top.lane.dashed.badge.steeringwheel", name: "智驾学习")
+                                    FeatureItem(icon: "key", name: "蓝牙钥匙")
+                                    FeatureItem(icon: "figure.child.and.lock", name: "车辆授权")
                                 }
-                                HStack {
-                                    VStack {
-                                        Image(systemName: "car.top.lane.dashed.badge.steeringwheel")
-                                            .font(.system(size: 34))
-                                        Text("智驾学习")
-                                            .font(.system(size: 14))
-                                    }
-                                    Spacer()
-                                    VStack {
-                                        Image(systemName: "key")
-                                            .font(.system(size: 30))
-                                        Text("蓝牙钥匙")
-                                            .font(.system(size: 14))
-                                    }
-                                    Spacer()
-                                    VStack {
-                                        Image(systemName: "figure.child.and.lock")
-                                            .font(.system(size: 34))
-                                        Text("车辆授权")
-                                            .font(.system(size: 14))
-                                    }
-                                }
-                                .padding(20)
-                            }
-                            .padding(10)
-                            .background(.white)
-                            .cornerRadius(5)
-                        }
-                        .padding(.leading, 20)
-                        .padding(.trailing, 20)
-                        Spacer()
-                            .frame(height: 20)
-                        VStack {
-                            VStack {
-                                HStack {
-                                    Text("空调和座椅")
-                                        .font(.system(size: 16))
-                                        .bold()
-                                    Spacer()
-                                    NavigationLink(destination: VehicleAcSeatPage().navigationBarBackButtonHidden()) {
-                                        Text("全部设置 >")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.gray)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                                Spacer()
-                                    .frame(height: 20)
-                                HStack {
-                                    Text("\(vehicle.interiorTemp)")
-                                        .font(.system(size: 28))
-                                    Text("℃")
-                                }
-                                Text("车内温度")
-                                    .font(.system(size: 14))
-                                HStack {
-                                    VStack {
-                                        Button(action: {}) {
-                                            VStack {
-                                                Image(systemName: "sun.max")
-                                                    .font(.system(size: 22))
-                                                Text("极速升温")
-                                                    .font(.system(size: 12))
-                                                Text("HI")
-                                                    .font(.system(size: 12))
-                                            }
+                                
+                                // 车内环境
+                                FeatureSection(title: "车内环境", detailText: "调节", destination: VehicleAcSeatPage()) {
+                                    VStack(spacing: 16) {
+                                        HStack(alignment: .firstTextBaseline, spacing: 2) {
+                                            Text("\(vehicle.interiorTemp)")
+                                                .font(.system(size: 36, weight: .medium))
+                                            Text("℃")
+                                                .font(.system(size: 16))
                                         }
-                                        .frame(width: 80, height: 80)
-                                        .background(Color.white)
-                                        .cornerRadius(5)
-                                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                                        .buttonStyle(.plain)
-                                    }
-                                    Spacer()
-                                    VStack {
-                                        Button(action: {}) {
-                                            VStack {
-                                                Image(systemName: "snowflake")
-                                                    .font(.system(size: 22))
-                                                Text("极速降温")
-                                                    .font(.system(size: 12))
-                                                Text("LO")
-                                                    .font(.system(size: 12))
-                                            }
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                        
+                                        HStack(spacing: 12) {
+                                            QuickActionBtn(icon: "sun.max", label: "急速升温", sub: "HI")
+                                            QuickActionBtn(icon: "snowflake", label: "急速降温", sub: "LO")
+                                            QuickActionBtn(icon: "thermometer.medium", label: "一键舒适", sub: "24℃")
                                         }
-                                        .frame(width: 80, height: 80)
-                                        .background(Color.white)
-                                        .cornerRadius(5)
-                                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                                        .buttonStyle(.plain)
-                                    }
-                                    Spacer()
-                                    VStack {
-                                        Button(action: {}) {
-                                            VStack {
-                                                Image(systemName: "thermometer.medium")
-                                                    .font(.system(size: 22))
-                                                Text("一键舒适")
-                                                    .font(.system(size: 12))
-                                                Text("24℃")
-                                                    .font(.system(size: 12))
-                                            }
-                                        }
-                                        .frame(width: 80, height: 80)
-                                        .background(Color.white)
-                                        .cornerRadius(5)
-                                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                                        .buttonStyle(.plain)
                                     }
                                 }
-                                .padding(20)
                             }
-                            .padding(10)
-                            .background(.white)
-                            .cornerRadius(5)
                         }
-                        .padding(.leading, 20)
-                        .padding(.trailing, 20)
-                        Spacer()
-                            .frame(height: 20)
-                        VStack {
-                            VStack {
-                                HStack {
-                                    Text("车辆中心")
-                                        .font(.system(size: 16))
-                                        .bold()
-                                    Spacer()
-                                    NavigationLink(destination: VehicleCenterPage().navigationBarBackButtonHidden()) {
-                                        Text("查看详情 >")
-                                            .font(.system(size: 12))
-                                            .foregroundColor(.gray)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text("\(String(format: "%.1f", vehicle.flTirePressure)) bar")
-                                        Divider()
-                                        Text("\(vehicle.flTireTemp)℃")
-                                        Spacer()
-                                            .frame(height: 60)
-                                        Text("\(String(format: "%.1f", vehicle.rlTirePressure)) bar")
-                                        Divider()
-                                        Text("\(vehicle.rlTireTemp)℃")
-                                    }
-                                    if let topImg = vehicle.topImg {
-                                        KFImage(URL(string: topImg)!)
-                                            .resizable()
-                                            .scaledToFit()
-                                    }
-                                    VStack(alignment: .trailing) {
-                                        Text("\(String(format: "%.1f", vehicle.frTirePressure)) bar")
-                                        Divider()
-                                        Text("\(vehicle.frTireTemp)℃")
-                                        Spacer()
-                                            .frame(height: 60)
-                                        Text("\(String(format: "%.1f", vehicle.rrTirePressure)) bar")
-                                        Divider()
-                                        Text("\(vehicle.rrTireTemp)℃")
-                                    }
-                                }
-                                .padding(20)
-                            }
-                            .padding(10)
-                            .background(.white)
-                            .cornerRadius(5)
-                        }
-                        .padding(.leading, 20)
-                        .padding(.trailing, 20)
+                        .padding(.horizontal, AppTheme.layout.margin)
+                        .padding(.bottom, 40)
                     }
-                    .scrollIndicators(.hidden)
                 }
             }
-            .background(Color(hex: 0xf8f8f8))
+            .appBackground()
         }
     }
+}
+
+// MARK: - 局部辅助组件
+private struct EnergyProgress: View {
+    var icon: String
+    var value: Int
+    var percentage: Int
+    var color: Color
     
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 12))
+                Text("\(value)km")
+                    .font(.system(size: 14, weight: .bold))
+                Spacer()
+                Text("\(percentage)%")
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+            }
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Color.white.opacity(0.1)).frame(height: 4)
+                    Capsule().fill(color).frame(width: geo.size.width * CGFloat(percentage) / 100, height: 4)
+                }
+            }
+            .frame(height: 4)
+        }
+    }
+}
+
+private struct ControlButton: View {
+    var icon: String
+    var name: String
+    var loading: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            Button(action: action) {
+                ZStack {
+                    Circle()
+                        .fill(AppTheme.colors.cardBackground)
+                        .frame(width: 60, height: 60)
+                    if loading {
+                        ProgressView().tint(AppTheme.colors.brandMain)
+                    } else {
+                        Image(icon)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundColor(AppTheme.colors.fontPrimary)
+                            .frame(width: 24, height: 24)
+                    }
+                }
+            }
+            Text(name)
+                .font(AppTheme.fonts.subtext)
+                .foregroundColor(AppTheme.colors.fontSecondary)
+        }
+    }
+}
+
+private struct FeatureSection<Content: View>: View {
+    var title: String
+    var detailText: String
+    var destination: any View
+    let content: Content
+    
+    init(title: String, detailText: String, destination: any View, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.detailText = detailText
+        self.destination = destination
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text(title).font(.system(size: 16, weight: .bold)).foregroundColor(.white)
+                Spacer()
+                Text(detailText).font(.system(size: 12)).foregroundColor(.gray)
+                Image(systemName: "chevron.right").font(.system(size: 10)).foregroundColor(.gray)
+            }
+            content
+        }
+        .appCardStyle(radius: AppTheme.layout.radiusMedium)
+    }
+}
+
+private struct FeatureGridSection<Content: View>: View {
+    var title: String
+    var detailText: String
+    var destination: any View
+    let content: Content
+    
+    init(title: String, detailText: String, destination: any View, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.detailText = detailText
+        self.destination = destination
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text(title).font(.system(size: 16, weight: .bold)).foregroundColor(.white)
+                Spacer()
+                Text(detailText).font(.system(size: 12)).foregroundColor(.gray)
+                Image(systemName: "chevron.right").font(.system(size: 10)).foregroundColor(.gray)
+            }
+            HStack(spacing: 0) {
+                content
+            }
+        }
+        .appCardStyle(radius: AppTheme.layout.radiusMedium)
+    }
+}
+
+private struct FeatureItem: View {
+    var icon: String
+    var name: String
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundColor(AppTheme.colors.brandMain)
+            Text(name)
+                .font(.system(size: 12))
+                .foregroundColor(.white)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct QuickActionBtn: View {
+    var icon: String
+    var label: String
+    var sub: String
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon).font(.system(size: 18))
+            Text(label).font(.system(size: 11))
+            Text(sub).font(.system(size: 10)).foregroundColor(.gray)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(Color.white.opacity(0.05))
+        .cornerRadius(AppTheme.layout.radiusSmall)
+    }
 }

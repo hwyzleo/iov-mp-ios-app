@@ -15,7 +15,7 @@ struct MobileTextField: View {
     
     var body: some View {
         TextField("请输入手机号", text: $mobile)
-            .foregroundColor(Color(hex: 0x333333))
+            .foregroundColor(AppTheme.colors.fontPrimary)
             .font(.system(size: 18))
             .keyboardType(.phonePad)
             .modifier(ClearButton(text: $mobile))

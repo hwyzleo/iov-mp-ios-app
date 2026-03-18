@@ -27,87 +27,107 @@ extension LoginPage {
         }
         
         var body: some View {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 0) {
+                Spacer().frame(height: kStatusBarHeight)
+                
                 TopBackTitleBar() {
                     intent.onTapExitLoginIcon()
                 }
-                Spacer().frame(height: 20)
-                Text(L10n.input_mobile)
-                    .font(.system(size: 24))
-                    .foregroundColor(AppTheme.colors.fontPrimary)
-                Spacer().frame(height: 20)
-                HStack {
-                    Text("+86")
-                        .foregroundColor(AppTheme.colors.fontPrimary)
-                        .font(.system(size: 20))
-                    Divider()
-                        .frame(height: 30)
-                        .background(AppTheme.colors.fontPrimary)
-                        .padding(.leading, 5)
-                        .padding(.trailing, 5)
-                    MobileTextField(mobile: $mobile)
-                }
-                Spacer().frame(height: 20)
-                HStack(alignment: .center) {
-                    Spacer()
-                    Button(L10n.get_verify_code) {
-                        if !agree {
-                            self.showAgreeAlert = true
-                            return
-                        }
-                        if mobile.isEmpty {
-                            self.showMobileAlert = true
-                            return
-                        }
-                        intent.onTapSendVerifyCodeButton(
-                            countryRegionCode: "+86",
-                            mobile: mobile
-                        )
-                    }
-                    .padding(10)
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(Color.white)
-                    .background(mobile.isEmpty || mobile.count != 13 ? Color.gray : Color.black)
-                    .cornerRadius(22.5)
-                    .alert(Text(L10n.tip), isPresented: $showAgreeAlert) {
-                        Button(L10n.cancel, role: .cancel) { }
-                        Button(L10n.confirm) {}
-                    } message: {
-                        Text(L10n.agree_user_agreement)
-                    }
-                    .alert(Text(L10n.tip), isPresented: $showMobileAlert) {
-                        Button(L10n.cancel, role: .cancel) { }
-                        Button(L10n.confirm) {}
-                    } message: {
+                .padding(.horizontal, AppTheme.layout.margin)
+                
+                VStack(alignment: .leading, spacing: 40) {
+                    // 标题
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text(L10n.login_register)
+                            .font(AppTheme.fonts.bigTitle)
+                            .foregroundColor(AppTheme.colors.fontPrimary)
                         Text(L10n.input_mobile)
+                            .font(AppTheme.fonts.body)
+                            .foregroundColor(AppTheme.colors.fontSecondary)
                     }
-                    Spacer()
-                }
-                Spacer().frame(height: 20)
-                HStack(alignment: .top) {
-                    Button(action: {
-                        self.agree.toggle()
-                    }) {
-                        if agree {
-                            Image("icon_circle_check")
-                            .resizable()
-                            .frame(width: 14, height: 14)
-                        } else {
-                            Image("icon_circle")
-                            .resizable()
-                            .frame(width: 14, height: 14)
+                    .padding(.top, 40)
+                    
+                    // 输入区
+                    VStack(spacing: 0) {
+                        HStack(spacing: 16) {
+                            Text("+86")
+                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            
+                            Rectangle()
+                                .fill(AppTheme.colors.fontTertiary.opacity(0.3))
+                                .frame(width: 1, height: 24)
+                            
+                            MobileTextField(mobile: $mobile)
+                                .font(.system(size: 18))
+                                .foregroundColor(AppTheme.colors.fontPrimary)
                         }
+                        .padding(.vertical, 16)
+                        
+                        Rectangle()
+                            .fill(AppTheme.colors.brandMain.opacity(0.5))
+                            .frame(height: 1)
                     }
-                    Text(L10n.login_confirm_tip)
-                    .font(.system(size: 12))
-                    .lineSpacing(4)
+                    
+                    // 按钮
+                    VStack(spacing: 20) {
+                        RoundedCornerButton(
+                            nameLocal: LocalizedStringKey("get_verify_code"),
+                            color: .black,
+                            bgColor: (mobile.count == 13 && agree) ? AppTheme.colors.brandMain : AppTheme.colors.brandMain.opacity(0.3)
+                        ) {
+                            if !agree {
+                                self.showAgreeAlert = true
+                                return
+                            }
+                            if mobile.isEmpty {
+                                self.showMobileAlert = true
+                                return
+                            }
+                            intent.onTapSendVerifyCodeButton(
+                                countryRegionCode: "+86",
+                                mobile: mobile
+                            )
+                        }
+                        .disabled(mobile.count != 13)
+                        
+                        // 协议勾选
+                        HStack(alignment: .top, spacing: 8) {
+                            Button(action: {
+                                withAnimation(.spring()) {
+                                    self.agree.toggle()
+                                }
+                            }) {
+                                Image(systemName: agree ? "checkmark.circle.fill" : "circle")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
+                                    .foregroundColor(agree ? AppTheme.colors.brandMain : AppTheme.colors.fontTertiary)
+                            }
+                            .buttonStyle(.plain)
+                            
+                            Text(L10n.login_confirm_tip)
+                                .font(AppTheme.fonts.subtext)
+                                .foregroundColor(AppTheme.colors.fontSecondary)
+                                .lineSpacing(4)
+                        }
+                        .padding(.top, 10)
+                    }
                 }
-                .padding(.leading, 10)
-                .padding(.trailing, 10)
+                .padding(.horizontal, AppTheme.layout.margin * 1.5)
+                
                 Spacer()
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
+            .background(AppTheme.colors.background.ignoresSafeArea())
+            .alert(Text(L10n.tip), isPresented: $showAgreeAlert) {
+                Button(L10n.confirm) {}
+            } message: {
+                Text(L10n.agree_user_agreement)
+            }
+            .alert(Text(L10n.tip), isPresented: $showMobileAlert) {
+                Button(L10n.confirm) {}
+            } message: {
+                Text(L10n.input_mobile)
+            }
         }
         
     }

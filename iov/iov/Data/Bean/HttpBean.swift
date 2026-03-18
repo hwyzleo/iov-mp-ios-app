@@ -27,6 +27,14 @@ struct LoginResponse: Codable {
     var tokenExpires: Int64
     var refreshToken: String
     var refreshTokenExpires: Int64
+    // 社交统计
+    var followingCount: Int?
+    var followerCount: Int?
+    var postCount: Int?
+    var collectionCount: Int?
+    // 消息提醒
+    var unreadMsgCount: Int?
+    var latestMsgTitle: String?
 }
 
 /// 车辆销售订单

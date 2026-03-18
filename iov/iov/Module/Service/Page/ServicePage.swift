@@ -46,289 +46,363 @@ extension ServicePage {
         var state: ServiceModelStateProtocol
         
         var body: some View {
-            ScrollView {
-                VStack {
-                    HStack {
-                        Text("充电服务")
-                            .font(.system(size: 20))
-                            .bold()
-                        Spacer()
-                    }
-                    ZStack {
-                        KFImage(URL(string: "https://pic.imgdb.cn/item/65f69fcc9f345e8d03da5fc4.png")!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 160)
-                            .clipped()
-                            .cornerRadius(5)
-                        VStack {
-                            Spacer()
-                                .frame(height: 20)
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(spacing: AppTheme.layout.spacing) {
+                        // 便捷服务
+                        VStack(alignment: .leading, spacing: 16) {
                             HStack {
-                                Spacer()
-                                    .frame(width: 10)
-                                Text("自营充电中心")
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.white)
+                                Text("便捷服务")
+                                    .font(AppTheme.fonts.title1)
                                     .bold()
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
                                 Spacer()
                             }
-                            Spacer()
+                            
+                            HStack(spacing: 0) {
+                                ServiceIconItem(icon: "car.fill", name: "取送车")
+                                ServiceIconItem(icon: "antenna.radiowaves.left.and.right", name: "流量服务")
+                                ServiceIconItem(icon: "lifepreserver.fill", name: "道路救援")
+                                ServiceIconItem(icon: "square.and.pencil", name: "编辑", isAction: true)
+                            }
                         }
-                    }
-                    Spacer()
-                        .frame(height: 10)
-                    HStack {
-                        ZStack {
-                            KFImage(URL(string: "https://pic.imgdb.cn/item/65f6a0a49f345e8d03df1867.png")!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .clipped()
-                                .cornerRadius(5)
-                            VStack {
+                        .appCardStyle()
+                        
+                        // 能源服务
+                        VStack(alignment: .leading, spacing: 16) {
+                            SectionTitle(title: "能源服务")
+                            
+                            VStack(spacing: 0) {
+                                // 地图组件区域
+                                ZStack {
+                                    Rectangle()
+                                        .fill(Color.white.opacity(0.05))
+                                        .frame(height: 140)
+                                    
+                                    Image(systemName: "map.fill")
+                                        .font(.system(size: 40))
+                                        .foregroundColor(AppTheme.colors.brandMain.opacity(0.2))
+                                    
+                                    // 模拟车辆位置
+                                    VStack {
+                                        Image(systemName: "location.north.fill")
+                                            .foregroundColor(AppTheme.colors.brandMain)
+                                            .font(.system(size: 20))
+                                            .shadow(color: AppTheme.colors.brandMain, radius: 5)
+                                    }
+                                }
+                                .cornerRadius(AppTheme.layout.radiusMedium, corners: [.topLeft, .topRight])
+                                
+                                // 最近站点信息
+                                VStack(alignment: .leading, spacing: 12) {
+                                    HStack(alignment: .top) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            Text("特来电上海静安中心站")
+                                                .font(.system(size: 16, weight: .bold))
+                                                .foregroundColor(AppTheme.colors.fontPrimary)
+                                            Text("上海市静安区南京西路1266号B3层")
+                                                .font(.system(size: 12))
+                                                .foregroundColor(AppTheme.colors.fontSecondary)
+                                        }
+                                        Spacer()
+                                        VStack(alignment: .trailing, spacing: 4) {
+                                            Text("1.2 km")
+                                                .font(.system(size: 14, weight: .medium))
+                                                .foregroundColor(AppTheme.colors.brandMain)
+                                            Text("离车距离")
+                                                .font(.system(size: 10))
+                                                .foregroundColor(AppTheme.colors.fontTertiary)
+                                        }
+                                    }
+                                    
+                                    Divider().background(Color.white.opacity(0.05))
+                                    
+                                    HStack {
+                                        // 充电枪状态
+                                        HStack(spacing: 8) {
+                                            StatusTag(label: "闲 8", color: .green)
+                                            StatusTag(label: "忙 4", color: .orange)
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        // 价格信息
+                                        HStack(alignment: .lastTextBaseline, spacing: 2) {
+                                            Text("￥")
+                                                .font(.system(size: 10))
+                                            Text("1.25")
+                                                .font(.system(size: 16, weight: .bold, design: .rounded))
+                                            Text("/度")
+                                                .font(.system(size: 10))
+                                        }
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                    }
+                                }
+                                .padding(16)
+                                .background(Color.white.opacity(0.02))
+                                .cornerRadius(AppTheme.layout.radiusMedium, corners: [.bottomLeft, .bottomRight])
+                            }
+                            
+                            // 附近站点汇总
+                            HStack {
+                                Image(systemName: "bolt.car.fill")
+                                    .foregroundColor(AppTheme.colors.brandMain)
+                                Text("发现附近共有 24 个充电站")
+                                    .font(.system(size: 13))
+                                    .foregroundColor(AppTheme.colors.fontSecondary)
                                 Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(AppTheme.colors.fontTertiary)
+                            }
+                            .padding(.horizontal, 4)
+                        }
+                        .appCardStyle()
+                        
+                        // 售后服务
+                        VStack(alignment: .leading, spacing: 16) {
+                            SectionTitle(title: "售后服务")
+                            
+                            // 售后中心概览图
+                            ZStack(alignment: .bottomLeading) {
+                                KFImage(URL(string: "https://pic.imgdb.cn/item/65f6a0369f345e8d03dcb099.png")!)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(height: 140)
+                                    .cornerRadius(AppTheme.layout.radiusMedium, corners: [.topLeft, .topRight])
+                                    .clipped()
+                                
+                                LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.6)]), startPoint: .top, endPoint: .bottom)
+                                    .cornerRadius(AppTheme.layout.radiusMedium, corners: [.topLeft, .topRight])
+                                
                                 HStack {
-                                    Spacer()
-                                    Text("超充服务")
-                                        .font(.system(size: 18))
+                                    Image(systemName: "house.fill")
+                                        .foregroundColor(AppTheme.colors.brandMain)
+                                    Text("全国共有 128 家售后服务中心")
+                                        .font(.system(size: 14, weight: .medium))
                                         .foregroundColor(.white)
-                                        .bold()
-                                    Spacer()
-                                        .frame(width: 5)
                                 }
-                                Spacer()
-                                    .frame(height: 5)
+                                .padding(16)
                             }
-                        }
-                        Spacer()
-                            .frame(width: 10)
-                        ZStack {
-                            KFImage(URL(string: "https://pic.imgdb.cn/item/65f6a0f69f345e8d03e0d85a.png")!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .clipped()
-                                .cornerRadius(5)
-                            VStack {
-                                Spacer()
-                                HStack {
+                            
+                            // 最近服务网点
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("最近服务网点")
+                                    .font(.system(size: 12))
+                                    .foregroundColor(AppTheme.colors.fontTertiary)
+                                    .padding(.bottom, 4)
+                                
+                                HStack(alignment: .top) {
+                                    VStack(alignment: .leading, spacing: 6) {
+                                        Text("开源汽车上海虹桥维修中心")
+                                            .font(.system(size: 16, weight: .bold))
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Text("上海市闵行区申昆路1500号")
+                                            .font(.system(size: 13))
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                    }
                                     Spacer()
-                                        .frame(width: 5)
-                                    Text("家充服务")
-                                        .font(.system(size: 18))
-                                        .foregroundColor(.black)
-                                        .bold()
-                                    Spacer()
+                                    VStack(alignment: .trailing, spacing: 4) {
+                                        Text("3.5 km")
+                                            .font(.system(size: 14, weight: .medium))
+                                            .foregroundColor(AppTheme.colors.brandMain)
+                                        Text("离车距离")
+                                            .font(.system(size: 10))
+                                            .foregroundColor(AppTheme.colors.fontTertiary)
+                                    }
                                 }
-                                Spacer()
-                                    .frame(height: 5)
+                                
+                                Button(action: { /* 预约逻辑 */ }) {
+                                    HStack {
+                                        Spacer()
+                                        Text("立即预约")
+                                            .font(.system(size: 14, weight: .bold))
+                                        Spacer()
+                                    }
+                                    .padding(.vertical, 10)
+                                    .background(AppTheme.colors.brandMain.opacity(0.1))
+                                    .foregroundColor(AppTheme.colors.brandMain)
+                                    .cornerRadius(AppTheme.layout.radiusSmall)
+                                }
+                                .padding(.top, 8)
                             }
+                            .padding(16)
+                            .background(Color.white.opacity(0.02))
+                            .cornerRadius(AppTheme.layout.radiusMedium, corners: [.bottomLeft, .bottomRight])
                         }
-                    }
-                    Spacer()
-                        .frame(height: 20)
-                    Divider()
-                    Spacer()
-                        .frame(height: 20)
-                    HStack {
-                        Text("购车服务")
-                            .font(.system(size: 20))
-                            .bold()
-                        Spacer()
-                    }
-                    ZStack {
-                        KFImage(URL(string: "https://pic.imgdb.cn/item/65f6a1749f345e8d03e3b789.png")!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 140)
-                            .clipped()
-                            .cornerRadius(5)
-                        VStack {
-                            Spacer()
-                                .frame(height: 20)
-                            HStack {
-                                Spacer()
-                                    .frame(width: 10)
-                                Text("选购车型")
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.white)
-                                    .bold()
-                                Spacer()
+                        .appCardStyle()
+                        
+                        // 用车服务
+                        VStack(alignment: .leading, spacing: 16) {
+                            SectionTitle(title: "用车服务")
+                            
+                            let columns = [
+                                GridItem(.flexible()),
+                                GridItem(.flexible()),
+                                GridItem(.flexible()),
+                                GridItem(.flexible())
+                            ]
+                            
+                            LazyVGrid(columns: columns, spacing: 20) {
+                                ServiceIconItem(icon: "calendar.badge.plus", name: "服务预约")
+                                ServiceIconItem(icon: "lifepreserver", name: "道路救援")
+                                ServiceIconItem(icon: "car.side.front.open.fill", name: "取送服务")
+                                ServiceIconItem(icon: "exclamationmark.shield", name: "车损上报")
+                                ServiceIconItem(icon: "doc.text.below.ecg", name: "养护报告")
                             }
-                            Spacer()
+                            .padding(.top, 8)
                         }
-                    }
-                    Spacer()
-                        .frame(height: 20)
-                    HStack {
-                        VStack {
-                            Image(systemName: "yensign.circle")
-                                .font(.system(size: 25))
-                            Spacer()
-                                .frame(height: 5)
-                            Text("金融服务")
-                                .font(.system(size: 14))
-                        }
-                        Spacer()
-                        VStack {
-                            Image(systemName: "slider.horizontal.3")
-                                .font(.system(size: 25))
-                            Spacer()
-                                .frame(height: 5)
-                            Text("参数配置")
-                                .font(.system(size: 14))
-                        }
-                        Spacer()
-                        VStack {
-                            Image(systemName: "licenseplate")
-                                .font(.system(size: 25))
-                            Spacer()
-                                .frame(height: 5)
-                            Text("牌照指标")
-                                .font(.system(size: 14))
-                        }
-                        Spacer()
-                        VStack {
-                            Image(systemName: "checkmark.shield")
-                                .font(.system(size: 25))
-                            Spacer()
-                                .frame(height: 5)
-                            Text("车辆保障")
-                                .font(.system(size: 14))
-                        }
-                    }
-                    Spacer()
-                        .frame(height: 20)
-                    Divider()
-                    Spacer()
-                        .frame(height: 20)
-                    HStack {
-                        Text("用车服务")
-                            .font(.system(size: 20))
-                            .bold()
-                        Spacer()
-                    }
-                    ZStack {
-                        KFImage(URL(string: "https://pic.imgdb.cn/item/65f6a0369f345e8d03dcb099.png")!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 180)
-                            .clipped()
-                            .cornerRadius(5)
-                        VStack {
-                            Spacer()
-                            HStack {
-                                Spacer()
-                                    .frame(width: 10)
-                                Text("用车问题随时咨询")
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.white)
-                                    .bold()
-                                Spacer()
+                        .appCardStyle()
+                        
+                        // 用车工具
+                        VStack(alignment: .leading, spacing: 16) {
+                            SectionTitle(title: "用车工具")
+                            
+                            let columns = [
+                                GridItem(.flexible()),
+                                GridItem(.flexible()),
+                                GridItem(.flexible()),
+                                GridItem(.flexible())
+                            ]
+                            
+                            LazyVGrid(columns: columns, spacing: 20) {
+                                ServiceIconItem(icon: "book.closed.fill", name: "使用手册")
+                                ServiceIconItem(icon: "shield.righthalf.filled", name: "三包政策")
+                                ServiceIconItem(icon: "lightbulb.fill", name: "指示灯说明")
+                                ServiceIconItem(icon: "info.circle.fill", name: "关于车辆")
                             }
-                            Spacer()
-                                .frame(height: 60)
+                            .padding(.top, 8)
                         }
+                        .appCardStyle()
+                        
+                        Spacer().frame(height: 100)
                     }
-                    Spacer()
-                        .frame(height: 10)
-                    HStack {
-                        VStack {
-                            Image(systemName: "house.and.flag")
-                                .font(.system(size: 25))
-                            Spacer()
-                                .frame(height: 5)
-                            Text("服务网点")
-                                .font(.system(size: 14))
-                        }
-                        .padding(10)
-                        .frame(height: 80)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(hex: 0xdddfdf))
-                        .cornerRadius(5)
-                        Spacer()
-                            .frame(width: 10)
-                        VStack {
-                            Image(systemName: "truck.pickup.side")
-                                .font(.system(size: 25))
-                            Spacer()
-                                .frame(height: 5)
-                            Text("无忧救援")
-                                .font(.system(size: 14))
-                        }
-                        .padding(10)
-                        .frame(height: 80)
-                        .frame(maxWidth: .infinity)
-                        .background(Color(hex: 0xdddfdf))
-                        .cornerRadius(5)
-                    }
-                    Spacer()
-                        .frame(height: 20)
-                    Divider()
-                    Spacer()
-                        .frame(height: 20)
-                    HStack {
-                        Text("售后服务")
-                            .font(.system(size: 20))
-                            .bold()
-                        Spacer()
-                    }
-                    Spacer()
-                        .frame(height: 20)
-                    HStack {
-                        VStack {
-                            Image(systemName: "checkmark.shield")
-                                .font(.system(size: 25))
-                        }
-                        .frame(width: 50)
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text("车主权益")
-                                    .font(.system(size: 18))
-                                    .bold()
-                                Spacer()
-                            }
-                            Spacer()
-                                .frame(height: 5)
-                            Text("道路救援 家用充电桩 流量无忧方案")
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                        }
-                    }
-                    Spacer()
-                        .frame(height: 20)
-                    HStack {
-                        VStack {
-                            Image(systemName: "wrench.and.screwdriver")
-                                .font(.system(size: 20))
-                        }
-                        .frame(width: 50)
-                        VStack(alignment: .leading) {
-                            HStack {
-                                Text("维修保养")
-                                    .font(.system(size: 18))
-                                    .bold()
-                                Spacer()
-                            }
-                            Spacer()
-                                .frame(height: 5)
-                            Text("保养提醒 远程诊断 便捷服务")
-                                .font(.system(size: 14))
-                                .foregroundColor(.gray)
-                        }
-                    }
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.top, 20)
                 }
-                .padding(20)
+                .scrollIndicators(.hidden)
             }
-            .scrollIndicators(.hidden)
+            .background(AppTheme.colors.background)
         }
+    }
+}
+
+// MARK: - 辅助组件
+private struct SectionTitle: View {
+    var title: String
+    var body: some View {
+        Text(title)
+            .font(AppTheme.fonts.title1)
+            .bold()
+            .foregroundColor(AppTheme.colors.fontPrimary)
+    }
+}
+
+private struct ServiceIconItem: View {
+    var icon: String
+    var name: String
+    var useSystemIcon: Bool = true
+    var isAction: Bool = false
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(Color.white.opacity(0.05))
+                    .frame(width: 48, height: 48)
+                
+                if useSystemIcon {
+                    Image(systemName: icon)
+                        .font(.system(size: 20))
+                        .foregroundColor(isAction ? AppTheme.colors.brandMain : AppTheme.colors.fontPrimary)
+                } else {
+                    Image(icon)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                }
+            }
+            
+            Text(name)
+                .font(.system(size: 12))
+                .foregroundColor(AppTheme.colors.fontSecondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct ImageCard: View {
+    var url: String
+    var title: String
+    var textColor: Color = .white
+    
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            KFImage(URL(string: url)!)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(maxWidth: .infinity)
+                .frame(height: 100)
+                .cornerRadius(AppTheme.layout.radiusSmall)
+                .clipped()
+            
+            LinearGradient(gradient: Gradient(colors: [.clear, .black.opacity(0.4)]), startPoint: .top, endPoint: .bottom)
+                .cornerRadius(AppTheme.layout.radiusSmall)
+            
+            Text(title)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(textColor)
+                .padding(10)
+        }
+    }
+}
+
+private struct AfterSalesItem: View {
+    var icon: String
+    var title: String
+    var subTitle: String
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(AppTheme.colors.brandMain.opacity(0.1))
+                    .frame(width: 48, height: 48)
+                Image(systemName: icon)
+                    .font(.system(size: 20))
+                    .foregroundColor(AppTheme.colors.brandMain)
+            }
+            
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+                Text(subTitle)
+                    .font(.system(size: 12))
+                    .foregroundColor(AppTheme.colors.fontSecondary)
+            }
+            Spacer()
+        }
+    }
+}
+
+private struct StatusTag: View {
+    var label: String
+    var color: Color
+    var body: some View {
+        Text(label)
+            .font(.system(size: 10, weight: .bold))
+            .foregroundColor(color)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(color.opacity(0.1))
+            .cornerRadius(4)
     }
 }
 
 struct ServiceView_Previews: PreviewProvider {
     static var previews: some View {
         let container = ServicePage.buildContainer()
-        ScrollView {
-            ServicePage.Content(intent: container.intent, state: container.model)
-        }
+        ServicePage.Content(intent: container.intent, state: container.model)
+            .environmentObject(AppGlobalState.shared)
     }
 }

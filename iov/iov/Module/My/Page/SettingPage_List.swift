@@ -18,11 +18,11 @@ extension SettingPage {
                     HStack {
                         Text(title)
                             .foregroundStyle(AppTheme.colors.fontPrimary)
-                            .font(AppTheme.fonts.listTitle)
+                            .font(AppTheme.fonts.body)
                         Spacer()
                         Image(systemName: "chevron.right")
                             .foregroundColor(AppTheme.colors.fontSecondary)
-                            .font(AppTheme.fonts.listTitle)
+                            .font(AppTheme.fonts.body)
                     }
                     .padding(.top, 20)
                     Divider()

@@ -116,15 +116,15 @@ extension SettingPage {
                                 HStack {
                                     Text(LocalizedStringKey("version"))
                                         .foregroundStyle(AppTheme.colors.fontPrimary)
-                                        .font(AppTheme.fonts.listTitle)
+                                        .font(AppTheme.fonts.body)
                                     Spacer()
                                     Text("\(appVersion)")
                                         .foregroundStyle(AppTheme.colors.fontSecondary)
-                                        .font(AppTheme.fonts.listTitle)
+                                        .font(AppTheme.fonts.body)
                                     if(isMock) {
                                         Text("(Mock)")
                                             .foregroundStyle(AppTheme.colors.fontSecondary)
-                                            .font(AppTheme.fonts.listTitle)
+                                            .font(AppTheme.fonts.body)
                                     }
                                 }
                                 Spacer().frame(height: 20)

@@ -27,16 +27,11 @@ struct MyPage: View {
                 )
             case .login:
                 MyPage.Login(
-                    nickname: UserManager.getUser()!.nickname,
-                    avatar: UserManager.getUser()!.avatar,
+                    user: UserManager.getUser()!,
                     tapMessageAction: { intent.onTapMessage() },
                     tapSettingAction: { intent.onTapSetting() },
                     tapUserAction: { intent.onTapProfile() },
-                    tapArticleAction: { intent.onTapMyArticle() },
-                    tapPointsAction: { intent.onTapMyPoints() },
-                    tapRightsAction: { intent.onTapMyRights() },
                     tapOrderAction: { intent.onTapMyOrder() },
-                    tapInviteAction: { intent.onTapMyInvite() },
                     tapChargingPileAction: { intent.onTapChargingPile() }
                 )
             case let .error(text):

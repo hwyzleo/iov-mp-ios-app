@@ -14,33 +14,42 @@ extension MyPage {
         var tapSettingAction: (() -> Void)?
         
         var body: some View {
-            VStack(alignment: .trailing) {
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        if UserManager.isLogin() {
-                            tapMessageAction?()
-                        } else {
-                            tapLoginAction?()
-                        }
-                    }) {
-                        Image("icon_bell")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.plain)
-                    Spacer()
-                        .frame(width: 20)
-                    Button(action: {
-                        tapSettingAction?()
-                    }) {
-                        Image("icon_setting")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                    }
-                    .buttonStyle(.plain)
+            HStack(spacing: 24) {
+                Spacer()
+                
+                // 扫码
+                Button(action: { /* 扫码逻辑 */ }) {
+                    Image("icon_scan_qrcode")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
+                        .frame(width: 24, height: 24)
                 }
+                .buttonStyle(.plain)
+                
+                // 二维码
+                Button(action: { /* 二维码逻辑 */ }) {
+                    Image("qrCode")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
+                        .frame(width: 24, height: 24)
+                }
+                .buttonStyle(.plain)
+                
+                // 设置
+                Button(action: {
+                    tapSettingAction?()
+                }) {
+                    Image("icon_setting")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
+                        .frame(width: 24, height: 24)
+                }
+                .buttonStyle(.plain)
             }
+            .padding(.vertical, 10)
         }
     }
 }

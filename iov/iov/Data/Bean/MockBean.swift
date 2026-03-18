@@ -16,7 +16,13 @@ func mockLoginResponse() -> LoginResponse {
         token: "zgZA0dO9gTbhSb6PDBXCb_0mxFq-q33Uo81aNC4hT_hpPvwxJhQASovI0zGlw58K",
         tokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000),
         refreshToken: "rWtoZhVVf6mZW-t1hhqkNazR0r92KkhxDItf05jfQYChT6SrnFi2IXaXD02irjVc",
-        refreshTokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000)
+        refreshTokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000),
+        followingCount: 128,
+        followerCount: 2048,
+        postCount: 56,
+        collectionCount: 92,
+        unreadMsgCount: 3,
+        latestMsgTitle: "您的订单 [ORDER001] 已成功发货"
     )
 }
 

@@ -18,12 +18,26 @@ class UserManager: Object {
     dynamic var nickname: String = ""
     /// 用户头像
     dynamic var avatar: String = ""
+    /// 社交统计
+    dynamic var followingCount: Int = 0
+    dynamic var followerCount: Int = 0
+    dynamic var postCount: Int = 0
+    dynamic var collectionCount: Int = 0
+    /// 消息提醒
+    dynamic var unreadMsgCount: Int = 0
+    dynamic var latestMsgTitle: String = ""
     
     private convenience init(response: LoginResponse) {
         self.init()
         self.nickname = response.nickname
         self.avatar = response.avatar
         self.token = response.token
+        self.followingCount = response.followingCount ?? 0
+        self.followerCount = response.followerCount ?? 0
+        self.postCount = response.postCount ?? 0
+        self.collectionCount = response.collectionCount ?? 0
+        self.unreadMsgCount = response.unreadMsgCount ?? 0
+        self.latestMsgTitle = response.latestMsgTitle ?? ""
     }
     
     /// 获取用户信息
@@ -76,6 +90,12 @@ class UserManager: Object {
                     user.token = response.token
                     user.nickname = response.nickname
                     user.avatar = response.avatar
+                    user.followingCount = response.followingCount ?? 0
+                    user.followerCount = response.followerCount ?? 0
+                    user.postCount = response.postCount ?? 0
+                    user.collectionCount = response.collectionCount ?? 0
+                    user.unreadMsgCount = response.unreadMsgCount ?? 0
+                    user.latestMsgTitle = response.latestMsgTitle ?? ""
                     userResult = user
                 } else {
                     // 如果不存在，则创建新对象
