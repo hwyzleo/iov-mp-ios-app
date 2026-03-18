@@ -328,21 +328,55 @@ func mockVehicle() -> Vehicle {
 
 /// 商城首页
 func mockMallIndex() -> MallIndex {
+
     return MallIndex.init(
         recommendedProducts: [
-            Product.init(id: "1", name: "车载无人机", recommendedCover: "https://pic.imgdb.cn/item/65e9b3879f345e8d036bff96.png"),
-            Product.init(id: "2", name: "露营帐篷", recommendedCover: "https://pic.imgdb.cn/item/65e9b3939f345e8d036c2633.png"),
-            Product.init(id: "3", name: "车辆模型", recommendedCover: "https://pic.imgdb.cn/item/65e9b39f9f345e8d036c4a0a.png")
+            Product.init(id: "1", name: "车载无人机", recommendedCover: "https://i.ibb.co/4R2jgZYw/image-uav-640.png"),
+            Product.init(id: "2", name: "露营帐篷", recommendedCover: "https://i.ibb.co/KxMmhd33/image-tent-640.png"),
+            Product.init(id: "3", name: "车辆模型", recommendedCover: "https://i.ibb.co/WvfFy8yh/image-vehicle-model-640.png")
         ],
         categories: [
-            "品质配件":[
-                Product.init(id: "1", name: "车载无人机", cover: "https://pic.imgdb.cn/item/65e9b3879f345e8d036bff96.png", price: 1000),
-                Product.init(id: "3", name: "车辆模型", cover: "https://pic.imgdb.cn/item/65e9b39f9f345e8d036c4a0a.png", price: 800)
+            "服饰": [
+                Product.init(id: "1", name: "LOGO印花卫衣", cover: "https://i.ibb.co/k2FSBDvt/image-hoodie-640.png", price: 300),
+                Product.init(id: "2", name: "速干弹力训练长裤", cover: "https://i.ibb.co/zV1NqMBL/image-trousers-640.png", price: 500),
+                Product.init(id: "3", name: "户外徒步鞋", cover: "https://i.ibb.co/hRDJmX4Q/image-shoes-640.png", price: 800),
+                Product.init(id: "4", name: "联名双肩包", cover: "https://i.ibb.co/JFRNDC2T/image-bag-640.png", price: 1999)
             ],
-            "精致露营":[
-                Product.init(id: "2", name: "露营帐篷", cover: "https://pic.imgdb.cn/item/65e9b3939f345e8d036c2633.png", price: 500),
-                Product.init(id: "3", name: "车辆模型", cover: "https://pic.imgdb.cn/item/65e9b39f9f345e8d036c4a0a.png", price: 800)
+            "家居": [
+                Product.init(id: "1", name: "不湿车反向自动伞", cover: "https://i.ibb.co/KxHqZCJh/image-umbrella-640.png", price: 200),
+                Product.init(id: "2", name: "白金不粘奶锅", cover: "https://i.ibb.co/7JzDzw7t/image-pot-640.png", price: 200),
+                Product.init(id: "3", name: "氛围台灯", cover: "https://i.ibb.co/LdqXz9sR/image-light-640.png", price: 500),
+                Product.init(id: "4", name: "带茶漏泡茶杯", cover: "https://i.ibb.co/Xf3zNvxV/image-cup-640.png", price: 199)
+            ],
+            "户外": [
+                Product.init(id: "1", name: "车载无人机", cover: "https://i.ibb.co/4R2jgZYw/image-uav-640.png", price: 1000),
+                Product.init(id: "2", name: "露营帐篷", cover: "https://i.ibb.co/KxMmhd33/image-tent-640.png", price: 500),
+                Product.init(id: "3", name: "大容量折叠户外营地车", cover: "https://i.ibb.co/jZJ0WQdy/image-camp-vehicle-640.png", price: 800),
+                Product.init(id: "4", name: "户外电源", cover: "https://i.ibb.co/3YhQmy0L/image-power-640.png", price: 2999)
+            ],
+            "科技": [
+                Product.init(id: "1", name: "胶囊充电宝", cover: "https://i.ibb.co/ZDMDz3m/image-power-bank-640.png", price: 1000),
+                Product.init(id: "2", name: "210W桌面充电站", cover: "https://i.ibb.co/wZDtF6vY/image-desk-power-bank-640.png", price: 500),
+                Product.init(id: "3", name: "智能车载麦克风", cover: "https://i.ibb.co/gLf40Tkf/image-micphone-640.png", price: 800),
+                Product.init(id: "4", name: "三模无线鼠标", cover: "https://i.ibb.co/bMS8VybK/image-mouse-640.png", price: 2999)
+            ],
+            "潮玩": [
+                Product.init(id: "1", name: "车辆模型", cover: "https://i.ibb.co/WvfFy8yh/image-vehicle-model-640.png", price: 1000),
+                Product.init(id: "2", name: "萌萌毛绒公仔", cover: "https://i.ibb.co/0RNvFKs7/image-toy-640.png", price: 500),
+                Product.init(id: "3", name: "儿童轮滑鞋", cover: "https://i.ibb.co/fYrDNpyW/image-skates-640.png", price: 800),
+                Product.init(id: "4", name: "天文望远镜", cover: "https://i.ibb.co/bMS8VybK/image-mouse-640.png", price: 2999)
             ]
+        ],
+        zones: [
+            MallZone.init(
+                title: "精致露营",
+                subtitle: "挑选专业装备，探索自然之美",
+                cover: "https://i.ibb.co/5WVp5mJh/image-camping-640.png",
+                products: [
+                    Product.init(id: "2", name: "露营帐篷", recommendedCover: "https://i.ibb.co/KxMmhd33/image-tent-640.png", price: 500),
+                    Product.init(id: "4", name: "户外电源", recommendedCover: "https://i.ibb.co/3YhQmy0L/image-power-640.png", price: 2999)
+                ]
+            )
         ]
     )
 }

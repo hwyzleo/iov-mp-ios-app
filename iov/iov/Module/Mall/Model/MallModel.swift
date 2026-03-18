@@ -12,6 +12,7 @@ final class MallModel: ObservableObject, MallModelStateProtocol {
     let routerSubject = MallRouter.Subjects()
     var recommendedProducts: [Product] = []
     var categories: [String:[Product]] = [:]
+    var zones: [MallZone] = []
 }
 
 // MARK: - Action Protocol
@@ -23,6 +24,7 @@ extension MallModel: MallModelActionProtocol {
     func updateContent(mallIndex: MallIndex) {
         self.recommendedProducts = mallIndex.recommendedProducts
         self.categories = mallIndex.categories
+        self.zones = mallIndex.zones ?? []
         contentState = .content
     }
     func displayError(text: String) {

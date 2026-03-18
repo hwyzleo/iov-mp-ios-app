@@ -318,6 +318,15 @@ struct Vehicle: Codable {
 struct MallIndex: Codable {
     var recommendedProducts: [Product]
     var categories: [String:[Product]]
+    var zones: [MallZone]?
+}
+
+/// 商城专区
+struct MallZone: Codable {
+    var title: String
+    var subtitle: String?
+    var cover: String?
+    var products: [Product]
 }
 
 /// 商品

@@ -22,6 +22,22 @@ extension View {
             .background(AppTheme.colors.background)
             .ignoresSafeArea()
     }
+    
+    /// 为视图指定特定位置的圆角
+    func cornerRadius(_ radius: CGFloat, corners: UIRectCorner) -> some View {
+        clipShape(RoundedCorner(radius: radius, corners: corners))
+    }
+}
+
+// MARK: - 辅助形状
+struct RoundedCorner: Shape {
+    var radius: CGFloat = .infinity
+    var corners: UIRectCorner = .allCorners
+
+    func path(in rect: CGRect) -> Path {
+        let path = UIBezierPath(roundedRect: rect, byRoundingCorners: corners, cornerRadii: CGSize(width: radius, height: radius))
+        return Path(path.cgPath)
+    }
 }
 
 // MARK: - 导航控制器扩展 (保持原有侧滑返回)

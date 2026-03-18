@@ -14,6 +14,7 @@ protocol MallModelStateProtocol {
     var routerSubject: MallRouter.Subjects { get }
     var recommendedProducts: [Product] { get }
     var categories: [String:[Product]] { get }
+    var zones: [MallZone] { get }
 }
 
 // MARK: - Intent Action
