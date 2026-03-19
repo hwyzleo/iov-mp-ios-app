@@ -86,8 +86,8 @@ func mockWishlist() -> Wishlist {
             "SPARE_TIRE": 0.00
         ],
         saleModelImages: [
-            "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png",
-            "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+            "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",
+            "https://i.ibb.co/7xcNTdX2/image-topic-640-3.png"
         ],
         saleModelDesc: "七座 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
         totalPrice: 198888.00,
@@ -213,8 +213,8 @@ func mockOrder() -> Order {
             "SPARE_TIRE": 0.00
         ],
         saleModelImages: [
-            "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png",
-            "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+            "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",
+            "https://i.ibb.co/7xcNTdX2/image-topic-640-3.png"
         ],
         saleModelDesc: "七座 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
         totalPrice: 11888.00,
@@ -245,8 +245,8 @@ func mockSelectedSaleModel() -> SelectedSaleModel {
         downPaymentPrice: 5000,
         modelConfigCode: "H01060103030102",
         saleModelImages: [
-            "https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png",
-            "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+            "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",
+            "https://i.ibb.co/7xcNTdX2/image-topic-640-3.png"
         ],
         saleModelDesc: "外挂式全尺寸备胎 | 墨玉黑车漆 | 21寸轮毂(四季胎)高亮黑 | 霜雪白内饰",
         saleModelConfigName: [
@@ -310,8 +310,8 @@ func mockVehicleIndex() -> VehicleIndex {
 func mockVehicle() -> Vehicle {
     return Vehicle.init(
         vin: "VIN00000000000001",
-        bodyImg: "https://pic.imgdb.cn/item/65f1bd8b9f345e8d03cf10cc.png",
-        topImg: "https://pic.imgdb.cn/item/65f1bda79f345e8d03cfb31b.png",
+        bodyImg: "https://i.ibb.co/5h8zQ6QH/image-vehicle-45-640.png",
+        topImg: "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png",
         drivingRange: 798,
         electricDrivingRange: 210,
         electricPercentage: 85,

@@ -13,7 +13,7 @@ struct TopBackTitleBar: View {
     @Environment(\.dismiss) private var dismiss
     var title: String?
     var titleLocal: LocalizedStringKey?
-    var color: Color = .black
+    var color: Color = AppTheme.colors.fontPrimary
     var action: (() -> Void)?
     var body: some View {
         ZStack {
@@ -26,20 +26,22 @@ struct TopBackTitleBar: View {
                 }
                 Spacer()
             }
-            .bold()
+            .font(AppTheme.fonts.title1)
             HStack {
                 Button(action: {
                     action?() ?? dismiss()
                 }) {
                     Image("icon_arrow_left")
                         .resizable()
-                        .frame(width: 30, height: 30)
+                        .renderingMode(.template)
+                        .frame(width: 24, height: 24)
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 Spacer()
             }
         }
+        .frame(height: 44)
         .foregroundColor(color)
     }
 }

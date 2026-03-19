@@ -12,6 +12,7 @@ import Kingfisher
 extension VehicleOrderDetailPage {
     struct Wishlist: View {
         @EnvironmentObject var globalState: AppGlobalState
+        @Environment(\.dismiss) private var dismiss
         @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
         private var intent: VehicleOrderDetailIntentProtocol { container.intent }
         var saleModelImages: [String]
@@ -29,132 +30,156 @@ extension VehicleOrderDetailPage {
         var saleAdasPrice: Decimal
         var totalPrice: Decimal
         
+        @State private var currentIndex = 0
+        
         var body: some View {
-            VStack {
-                ZStack {
-                    TopBackTitleBar(titleLocal: LocalizedStringKey("wishlist"))
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            intent.onTapDelete()
-                        }) {
-                            Image("icon_setting")
-                                .resizable()
-                                .frame(width: 30, height: 30)
+            GeometryReader { geometry in
+                ZStack(alignment: .top) {
+                    // 全屏纯背景色
+                    AppTheme.colors.background
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 0) {
+                        // 显式根据系统安全区域预留顶部空间
+                        Color.clear.frame(height: geometry.safeAreaInsets.top)
+                        
+                        // 1. 顶部自定义导航行
+                        ZStack {
+                            // 标题文字居中
+                            Text(LocalizedStringKey("wishlist"))
+                                .font(AppTheme.fonts.title1)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            
+                            HStack {
+                                // 左侧返回按钮
+                                Button(action: {
+                                    dismiss()
+                                }) {
+                                    Image("icon_arrow_left")
+                                        .resizable()
+                                        .renderingMode(.template)
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                        .frame(width: 24, height: 24)
+                                }
+                                .buttonStyle(.plain)
+                                
+                                Spacer()
+                                
+                                // 右侧删除图标
+                                Button(action: {
+                                    intent.onTapDelete()
+                                }) {
+                                    Image(systemName: "trash")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 22, height: 22)
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
-                    }
-                }
-                .frame(height: 50)
-                ScrollView {
-                    VStack {
-                        TabView {
-                            ForEach(saleModelImages, id: \.self) { image in
-                                ZStack {
-                                    if !image.isEmpty {
-                                        KFImage(URL(string: image)!)
-                                            .resizable()
-                                            .scaledToFit()
+                        .frame(height: 54)
+                        .padding(.horizontal, AppTheme.layout.margin)
+                        
+                        // 2. 车型轮播内容
+                        ScrollView {
+                            VStack(spacing: 0) {
+                                // 轮播图 (采用探索页走马灯样式)
+                                ZStack(alignment: .bottom) {
+                                    TabView(selection: $currentIndex) {
+                                        ForEach(0..<saleModelImages.count, id: \.self) { index in
+                                            ZStack {
+                                                if !saleModelImages[index].isEmpty {
+                                                    KFImage(URL(string: saleModelImages[index])!)
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(height: 200)
+                                                }
+
+                                            }
+                                            .tag(index)
+                                        }
+                                    }
+                                    .tabViewStyle(.page(indexDisplayMode: .never))
+                                    .frame(height: 200)
+                                    .cornerRadius(AppTheme.layout.radiusMedium)
+                                    
+                                    // 自定义指示器
+                                    HStack(spacing: 6) {
+                                        ForEach(0..<saleModelImages.count, id: \.self) { index in
+                                            Capsule()
+                                                .fill(currentIndex == index ? AppTheme.colors.brandMain : Color.white.opacity(0.3))
+                                                .frame(width: currentIndex == index ? 16 : 6, height: 4)
+                                                .animation(.spring(), value: currentIndex)
+                                        }
+                                    }
+                                    .padding(.bottom, 12)
+                                }
+                                
+                                // 详细参数列表
+                                VStack(spacing: AppTheme.layout.spacing) {
+                                    HStack {
+                                        Text(saleModelName)
+                                            .font(AppTheme.fonts.bigTitle)
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Spacer()
+                                        Button(action: { intent.onTapModifySaleModel() }) {
+                                            HStack(spacing: 4) {
+                                                Image("icon_modify")
+                                                    .resizable()
+                                                    .renderingMode(.template)
+                                                    .foregroundColor(AppTheme.colors.brandMain)
+                                                    .frame(width: 14, height: 14)
+                                                Text(LocalizedStringKey("modify_model_config"))
+                                                    .font(AppTheme.fonts.subtext)
+                                                    .foregroundColor(AppTheme.colors.brandMain)
+                                            }
+                                        }
+                                        .buttonStyle(.plain)
+                                    }
+                                    
+                                    Divider().background(Color.white.opacity(0.1))
+                                    
+                                    Group {
+                                        PriceRow(label: Text(LocalizedStringKey("retail_price")), price: saleModelPrice)
+                                        PriceRow(label: Text(saleSpareTireName), price: saleSpareTirePrice)
+                                        PriceRow(label: Text(saleExteriorName), price: saleExteriorPrice)
+                                        PriceRow(label: Text(saleWheelName), price: saleWheelPrice)
+                                        PriceRow(label: Text(saleInteriorName), price: saleInteriorPrice)
+                                        PriceRow(label: Text(saleAdasName), price: saleAdasPrice)
+                                    }
+                                    
+                                    Divider().background(Color.white.opacity(0.1))
+                                    
+                                    HStack {
+                                        Text(LocalizedStringKey("total_price"))
+                                            .font(AppTheme.fonts.body)
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Spacer()
+                                        Text("￥\(totalPrice.formatted())")
+                                            .font(AppTheme.fonts.bigTitle)
+                                            .foregroundColor(AppTheme.colors.brandMain)
                                     }
                                 }
+                                .padding(AppTheme.layout.margin)
                             }
                         }
-                        .tabViewStyle(.page)
-                        .frame(height: 200)
-                        .clipped()
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text(saleModelName)
-                                .bold()
-                            Spacer()
-                            Button(action: { intent.onTapModifySaleModel() }) {
-                                HStack {
-                                    Image("icon_modify")
-                                        .resizable()
-                                        .frame(width: 15, height: 15)
-                                    Text(LocalizedStringKey("modify_model_config"))
-                                }
-                            }
-                            .buttonStyle(.plain)
+                        .scrollIndicators(.hidden)
+                        
+                        // 3. 底部操作区
+                        RoundedCornerButton(
+                            nameLocal: LocalizedStringKey("order_now"),
+                            color: .black,
+                            bgColor: AppTheme.colors.brandMain
+                        ) {
+                            intent.onTapOrder()
                         }
-                        Spacer().frame(height: 10)
-                        Divider()
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(LocalizedStringKey("retail_price"))
-                            Spacer()
-                            Text("￥\(saleModelPrice.formatted())")
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleSpareTireName)
-                            Spacer()
-                            if saleSpareTirePrice == 0 {
-                                Text(LocalizedStringKey("included"))
-                            } else {
-                                Text("￥\(saleSpareTirePrice.formatted())")
-                            }
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleExteriorName)
-                            Spacer()
-                            if saleExteriorPrice == 0 {
-                                Text(LocalizedStringKey("included"))
-                            } else {
-                                Text("￥\(saleExteriorPrice.formatted())")
-                            }
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleWheelName)
-                            Spacer()
-                            if saleWheelPrice == 0 {
-                                Text(LocalizedStringKey("included"))
-                            } else {
-                                Text("￥\(saleWheelPrice.formatted())")
-                            }
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleInteriorName)
-                            Spacer()
-                            if saleInteriorPrice == 0 {
-                                Text(LocalizedStringKey("included"))
-                            } else {
-                                Text("￥\(saleInteriorPrice.formatted())")
-                            }
-                        }
-                        Spacer().frame(height: 10)
-                        HStack {
-                            Text(saleAdasName)
-                            Spacer()
-                            if saleAdasPrice == 0 {
-                                Text(LocalizedStringKey("included"))
-                            } else {
-                                Text("￥\(saleAdasPrice.formatted())")
-                            }
-                        }
-                        Spacer().frame(height: 10)
-                        Divider()
-                        Spacer().frame(height: 20)
-                        HStack {
-                            Text(LocalizedStringKey("total_price"))
-                            Spacer()
-                            Text("￥\(totalPrice.formatted())")
-                        }
+                        .padding(.horizontal, AppTheme.layout.margin)
+                        .padding(.bottom, geometry.safeAreaInsets.bottom > 0 ? 0 : 20)
                     }
                 }
-                .scrollIndicators(.hidden)
-                RoundedCornerButton(
-                    nameLocal: LocalizedStringKey("order_now"),
-                    color: Color.white,
-                    bgColor: Color.black
-                ) {
-                    intent.onTapOrder()
-                }
             }
-            .padding(.leading, 20)
-            .padding(.trailing, 20)
+            .preferredColorScheme(.dark)
             .onChange(of: globalState.backRefresh) { _ in
                 if globalState.backRefresh {
                     globalState.backRefresh = false
@@ -162,6 +187,29 @@ extension VehicleOrderDetailPage {
                 }
             }
         }
+    }
+}
+
+private struct PriceRow: View {
+    let label: Text
+    let price: Decimal
+    var body: some View {
+        HStack {
+            label
+                .font(AppTheme.fonts.body)
+                .foregroundColor(AppTheme.colors.fontSecondary)
+            Spacer()
+            if price == 0 {
+                Text(LocalizedStringKey("included"))
+                    .font(AppTheme.fonts.body)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+            } else {
+                Text("￥\(price.formatted())")
+                    .font(AppTheme.fonts.body)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+            }
+        }
+        .padding(.vertical, 4)
     }
 }
 

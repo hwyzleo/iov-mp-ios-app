@@ -1,5 +1,5 @@
 //
-//  VehicleWishlistPage.swift
+//  VehicleOrderDetailPage_Price.swift
 //  iov
 //
 //  Created by 叶荣杰 on 2024/10/13.
@@ -25,102 +25,48 @@ extension VehicleOrderDetailPage {
         var totalPrice: Decimal
         
         var body: some View {
-            VStack {
+            VStack(spacing: 12) {
+                PriceRow(label: "官方指导价", price: saleModelPrice)
+                PriceRow(label: saleSpareTireName, price: saleSpareTirePrice)
+                PriceRow(label: saleExteriorName, price: saleExteriorPrice)
+                PriceRow(label: saleWheelName, price: saleWheelPrice)
+                PriceRow(label: saleInteriorName, price: saleInteriorPrice)
+                PriceRow(label: saleAdasName, price: saleAdasPrice)
+                
+                Divider().background(Color.white.opacity(0.1)).padding(.vertical, 4)
+                
                 HStack {
-                    Text(LocalizedStringKey("price_detail"))
-                        .bold()
-                    Spacer()
-                }
-                Spacer().frame(height: 10)
-                HStack {
-                    Text(LocalizedStringKey("national_unified_retail_price"))
-                    Spacer()
-                    Text("￥\(saleModelPrice.formatted())")
-                }
-                Spacer().frame(height: 5)
-                HStack {
-                    Text(saleSpareTireName)
-                    Spacer()
-                    if saleSpareTirePrice > 0 {
-                        Text("￥\(saleSpareTirePrice.formatted())")
-                    } else {
-                        Text(LocalizedStringKey("price_included"))
-                            .font(.system(size: 14))
-                    }
-                }
-                Spacer().frame(height: 5)
-                HStack {
-                    Text(saleExteriorName)
-                    Spacer()
-                    if saleExteriorPrice > 0 {
-                        Text("￥\(saleExteriorPrice.formatted())")
-                    } else {
-                        Text(LocalizedStringKey("price_included"))
-                            .font(.system(size: 14))
-                    }
-                }
-                Spacer().frame(height: 5)
-                HStack {
-                    Text(saleWheelName)
-                    Spacer()
-                    if saleWheelPrice > 0 {
-                        Text("￥\(saleWheelPrice.formatted())")
-                    } else {
-                        Text(LocalizedStringKey("price_included"))
-                            .font(.system(size: 14))
-                    }
-                }
-                Spacer().frame(height: 5)
-                HStack {
-                    Text(saleInteriorName)
-                    Spacer()
-                    if saleInteriorPrice > 0 {
-                        Text("￥\(saleInteriorPrice.formatted())")
-                    } else {
-                        Text(LocalizedStringKey("price_included"))
-                            .font(.system(size: 14))
-                    }
-                }
-                Spacer().frame(height: 5)
-                HStack {
-                    Text(saleAdasName)
-                    Spacer()
-                    if saleAdasPrice > 0 {
-                        Text("￥\(saleAdasPrice.formatted())")
-                    } else {
-                        Text(LocalizedStringKey("price_included"))
-                            .font(.system(size: 14))
-                    }
-                }
-                Spacer().frame(height: 5)
-                Divider()
-                Spacer().frame(height: 5)
-                HStack {
-                    Text(LocalizedStringKey("total_price"))
+                    Text("总价")
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                     Spacer()
                     Text("￥\(totalPrice.formatted())")
+                        .font(AppTheme.fonts.title1)
+                        .foregroundColor(AppTheme.colors.brandMain)
                 }
             }
         }
     }
 }
 
-struct VehicleOrderDetailPage_Price_Previews: PreviewProvider {
-    static var previews: some View {
-        VehicleOrderDetailPage.Price(
-            saleModelPrice: 188888,
-            saleSpareTireName: "有备胎",
-            saleSpareTirePrice: 6000,
-            saleExteriorName: "翡翠绿车漆",
-            saleExteriorPrice: 0,
-            saleWheelName: "21寸轮毂（四季胎）高亮黑",
-            saleWheelPrice: 0,
-            saleInteriorName: "乌木黑内饰",
-            saleInteriorPrice: 0,
-            saleAdasName: "高价智驾",
-            saleAdasPrice: 10000,
-            totalPrice: 205888
-        )
-        .environment(\.locale, .init(identifier: "zh-Hans"))
+private struct PriceRow: View {
+    let label: String
+    let price: Decimal
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(AppTheme.fonts.subtext)
+                .foregroundColor(AppTheme.colors.fontSecondary)
+            Spacer()
+            if price == 0 {
+                Text("包含")
+                    .font(AppTheme.fonts.subtext)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+            } else {
+                Text("￥\(price.formatted())")
+                    .font(AppTheme.fonts.subtext)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+            }
+        }
     }
 }

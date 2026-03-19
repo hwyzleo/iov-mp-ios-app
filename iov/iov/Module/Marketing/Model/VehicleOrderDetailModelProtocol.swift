@@ -52,6 +52,8 @@ protocol VehicleOrderDetailModelStateProtocol {
 // MARK: - Intent Action
 
 protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
+    /// 获取当前内容状态
+    func getContentState() -> MarketingTypes.Model.VehicleOrderDetailContentState
     /// 更新销售车型图片集
     func updateSaleModelImages(saleModelImages: [String])
     /// 更新销售车型简介

@@ -24,35 +24,45 @@ struct LicenseAreaPage: View {
             case let .error(text):
                 ErrorTip(text: text)
             case .content:
-                VStack {
+                VStack(spacing: 0) {
                     TopBackTitleBar(titleLocal: LocalizedStringKey("license_area"))
                     ScrollView {
-                        ForEach(Array(state.displayLicenseAreaList.enumerated()), id:\.offset) { index, area in
-                            VStack {
-                                Spacer().frame(height: 20)
-                                HStack {
-                                    Text(area.displayName)
-                                    Spacer()
+                        VStack(spacing: 0) {
+                            ForEach(Array(state.displayLicenseAreaList.enumerated()), id:\.offset) { index, area in
+                                Button(action: {
+                                    intent.onTapLicenseArea(
+                                        provinceCode: area.provinceCode,
+                                        cityCode: area.cityCode ?? "",
+                                        displayName: area.displayName
+                                    )
+                                }) {
+                                    HStack {
+                                        Text(area.displayName)
+                                            .font(AppTheme.fonts.body)
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Spacer()
+                                        Image(systemName: "chevron.right")
+                                            .font(.system(size: 12))
+                                            .foregroundColor(AppTheme.colors.fontTertiary)
+                                    }
+                                    .padding(.vertical, 20)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .contentShape(Rectangle())
                                 }
-                                Spacer().frame(height: 20)
+                                .buttonStyle(.plain)
+                                
+                                if index < state.displayLicenseAreaList.count - 1 {
+                                    Divider().background(Color.white.opacity(0.05))
+                                }
                             }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                intent.onTapLicenseArea(
-                                    provinceCode: area.provinceCode,
-                                    cityCode: area.cityCode ?? "",
-                                    displayName: area.displayName
-                                )
-                            }
-                            Divider()
                         }
                     }
                     .scrollIndicators(.hidden)
                 }
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
+                .padding(.horizontal, AppTheme.layout.margin)
             }
         }
+        .background(AppTheme.colors.background.ignoresSafeArea())
         .onAppear {
             intent.viewOnAppear()
         }

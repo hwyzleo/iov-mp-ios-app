@@ -24,36 +24,42 @@ struct DealershipPage: View {
             case let .error(text):
                 ErrorTip(text: text)
             case .content:
-                VStack {
+                VStack(spacing: 0) {
                     TopBackTitleBar(titleLocal: LocalizedStringKey("dealership"))
                     ScrollView {
-                        ForEach(Array(state.dealershipList.enumerated()), id:\.offset) { index, dealership in
-                            VStack {
-                                Spacer().frame(height: 20)
-                                HStack {
-                                    Text(dealership.name)
-                                        .bold()
-                                    Spacer()
+                        VStack(spacing: 0) {
+                            ForEach(Array(state.dealershipList.enumerated()), id:\.offset) { index, dealership in
+                                Button(action: {
+                                    intent.onTapDealership(code: dealership.code, name: dealership.name)
+                                }) {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(dealership.name)
+                                            .font(AppTheme.fonts.body)
+                                            .bold()
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Text(dealership.address)
+                                            .font(AppTheme.fonts.subtext)
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                    .padding(.vertical, 20)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .contentShape(Rectangle())
                                 }
-                                HStack {
-                                    Text(dealership.address)
-                                    Spacer()
+                                .buttonStyle(.plain)
+                                
+                                if index < state.dealershipList.count - 1 {
+                                    Divider().background(Color.white.opacity(0.05))
                                 }
-                                Spacer().frame(height: 20)
                             }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                intent.onTapDealership(code: dealership.code, name: dealership.name)
-                            }
-                            Divider()
                         }
                     }
                     .scrollIndicators(.hidden)
                 }
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
+                .padding(.horizontal, AppTheme.layout.margin)
             }
         }
+        .background(AppTheme.colors.background.ignoresSafeArea())
         .onAppear {
             intent.viewOnAppear()
         }

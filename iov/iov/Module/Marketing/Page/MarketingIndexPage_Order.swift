@@ -19,8 +19,11 @@ extension MarketingIndexPage {
         var totalPrice: Decimal
         var saleModelDesc: String
         
+        @State private var currentIndex = 0
+        
         var body: some View {
             VStack(spacing: AppTheme.layout.spacing) {
+                Spacer().frame(height: kStatusBarHeight)
                 if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
                     HStack {
                         Text(vehiclePo.displayName)
@@ -54,20 +57,36 @@ extension MarketingIndexPage {
                                 Spacer()
                             }
                             
-                            TabView {
-                                ForEach(saleModelImages, id: \.self) { image in
-                                    ZStack {
-                                        if !image.isEmpty {
-                                            KFImage(URL(string: image)!)
-                                                .resizable()
-                                                .scaledToFit()
+                            // 车辆轮播图 (采用探索页走马灯样式)
+                            ZStack(alignment: .bottom) {
+                                TabView(selection: $currentIndex) {
+                                    ForEach(0..<saleModelImages.count, id: \.self) { index in
+                                        ZStack {
+                                            if !saleModelImages[index].isEmpty {
+                                                KFImage(URL(string: saleModelImages[index])!)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(height: 200)
+                                            }
                                         }
+                                        .tag(index)
                                     }
                                 }
+                                .tabViewStyle(.page(indexDisplayMode: .never))
+                                .frame(height: 200)
+                                .cornerRadius(AppTheme.layout.radiusMedium)
+                                
+                                // 自定义指示器
+                                HStack(spacing: 6) {
+                                    ForEach(0..<saleModelImages.count, id: \.self) { index in
+                                        Capsule()
+                                            .fill(currentIndex == index ? AppTheme.colors.brandMain : Color.white.opacity(0.3))
+                                            .frame(width: currentIndex == index ? 16 : 6, height: 4)
+                                            .animation(.spring(), value: currentIndex)
+                                    }
+                                }
+                                .padding(.bottom, 12)
                             }
-                            .tabViewStyle(.page)
-                            .frame(height: 200)
-                            .cornerRadius(AppTheme.layout.radiusMedium)
                             
                             HStack {
                                 Text(LocalizedStringKey("selected_config"))

@@ -24,36 +24,42 @@ struct DeliveryCenterPage: View {
             case let .error(text):
                 ErrorTip(text: text)
             case .content:
-                VStack {
+                VStack(spacing: 0) {
                     TopBackTitleBar(titleLocal: LocalizedStringKey("dealership"))
                     ScrollView {
-                        ForEach(Array(state.deliveryCenterList.enumerated()), id:\.offset) { index, deliveryCenter in
-                            VStack {
-                                Spacer().frame(height: 20)
-                                HStack {
-                                    Text(deliveryCenter.name)
-                                        .bold()
-                                    Spacer()
+                        VStack(spacing: 0) {
+                            ForEach(Array(state.deliveryCenterList.enumerated()), id:\.offset) { index, deliveryCenter in
+                                Button(action: {
+                                    intent.onTapDeliveryCenter(code: deliveryCenter.code, name: deliveryCenter.name)
+                                }) {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(deliveryCenter.name)
+                                            .font(AppTheme.fonts.body)
+                                            .bold()
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Text(deliveryCenter.address)
+                                            .font(AppTheme.fonts.subtext)
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                            .multilineTextAlignment(.leading)
+                                    }
+                                    .padding(.vertical, 20)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .contentShape(Rectangle())
                                 }
-                                HStack {
-                                    Text(deliveryCenter.address)
-                                    Spacer()
+                                .buttonStyle(.plain)
+                                
+                                if index < state.deliveryCenterList.count - 1 {
+                                    Divider().background(Color.white.opacity(0.05))
                                 }
-                                Spacer().frame(height: 20)
                             }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                intent.onTapDeliveryCenter(code: deliveryCenter.code, name: deliveryCenter.name)
-                            }
-                            Divider()
                         }
                     }
                     .scrollIndicators(.hidden)
                 }
-                .padding(.leading, 20)
-                .padding(.trailing, 20)
+                .padding(.horizontal, AppTheme.layout.margin)
             }
         }
+        .background(AppTheme.colors.background.ignoresSafeArea())
         .onAppear {
             intent.viewOnAppear()
         }

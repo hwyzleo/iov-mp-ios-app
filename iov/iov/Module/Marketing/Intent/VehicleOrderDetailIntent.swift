@@ -17,6 +17,11 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     
     func viewOnAppear() {
+        // 如果已经是在下单页（ORDER），且是从子页面返回（没有新的 orderDetailView 参数），则不重新加载，避免跳回心愿单
+        if modelAction?.getContentState() == .order && AppGlobalState.shared.parameters["orderDetailView"] == nil {
+            return
+        }
+        
         var viewName: String? = AppGlobalState.shared.parameters["orderDetailView"] as? String
         
         // 尝试获取当前操作的订单号

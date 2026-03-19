@@ -50,6 +50,9 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
 // MARK: - Action Protocol
 
 extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
+    func getContentState() -> MarketingTypes.Model.VehicleOrderDetailContentState {
+        return contentState
+    }
     func updateSaleModelImages(saleModelImages: [String]) {
         self.saleModelImages = saleModelImages
     }
@@ -169,7 +172,7 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelRouterProtocol {
 }
 
 extension MarketingTypes.Model {
-    enum VehicleOrderDetailContentState {
+    enum VehicleOrderDetailContentState: Equatable {
         case loading
         case wishlist
         case order
