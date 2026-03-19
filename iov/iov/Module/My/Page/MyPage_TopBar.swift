@@ -10,14 +10,15 @@ import SwiftUI
 extension MyPage {
     struct TopBar: View {
         var tapScanAction: (() -> Void)?
+        var tapQrCodeAction: (() -> Void)?
         var tapLoginAction: (() -> Void)?
         var tapMessageAction: (() -> Void)?
         var tapSettingAction: (() -> Void)?
-        
+
         var body: some View {
             HStack(spacing: 24) {
                 Spacer()
-                
+
                 // 扫码
                 Button(action: { tapScanAction?() }) {
                     Image("icon_scan_qrcode")
@@ -27,9 +28,9 @@ extension MyPage {
                         .frame(width: 24, height: 24)
                 }
                 .buttonStyle(.plain)
-                
+
                 // 二维码
-                Button(action: { /* 二维码逻辑 */ }) {
+                Button(action: { tapQrCodeAction?() }) {
                     Image("qrCode")
                         .resizable()
                         .renderingMode(.template)
@@ -37,6 +38,7 @@ extension MyPage {
                         .frame(width: 24, height: 24)
                 }
                 .buttonStyle(.plain)
+
                 
                 // 设置
                 Button(action: {

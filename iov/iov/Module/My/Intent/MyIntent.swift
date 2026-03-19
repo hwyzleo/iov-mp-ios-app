@@ -34,6 +34,13 @@ extension MyIntent: MyIntentProtocol {
             modelRouter?.routeToLogin()
         }
     }
+    func onTapMyQrCode() {
+        if UserManager.isLogin() {
+            modelRouter?.routeToMyQrCode()
+        } else {
+            modelRouter?.routeToLogin()
+        }
+    }
     func onTapBackFromScan() {
         viewOnAppear()
     }

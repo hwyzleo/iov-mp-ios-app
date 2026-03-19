@@ -11,6 +11,7 @@ extension MyPage {
     struct Login: View {
         var user: UserManager
         var tapScanAction: (() -> Void)?
+        var tapQrCodeAction: (() -> Void)?
         var tapMessageAction: (() -> Void)?
         var tapSettingAction: (() -> Void)?
         var tapUserAction: (() -> Void)?
@@ -26,6 +27,7 @@ extension MyPage {
                 Spacer().frame(height: kStatusBarHeight)
                 MyPage.TopBar(
                     tapScanAction: { tapScanAction?() },
+                    tapQrCodeAction: { tapQrCodeAction?() },
                     tapMessageAction: { tapMessageAction?() },
                     tapSettingAction: { tapSettingAction?() }
                 )

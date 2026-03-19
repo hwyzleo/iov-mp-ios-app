@@ -222,7 +222,14 @@ class TspApi {
     
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
-        TspManager.requestGet(path: "/account/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
+        TspManager.requestGet(path: "/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 获取账号二维码信息
+    static func getAccountQrcode(completion: @escaping (Result<TspResponse<AccountQrcode>, Error>) -> Void) {
+        TspManager.requestGet(path: "/mp/account/qrcode", parameters: [:]) { (result: Result<TspResponse<AccountQrcode>, Error>) in
             completion(result)
         }
     }

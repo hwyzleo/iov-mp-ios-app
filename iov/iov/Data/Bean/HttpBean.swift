@@ -210,6 +210,13 @@ struct AccountInfo: Codable {
 }
 
 /**
+ * 账号二维码信息
+ */
+struct AccountQrcode: Codable {
+    var qrcode: String
+}
+
+/**
  * 预签名上传地址
  */
 struct PreSignedUrl: Codable {

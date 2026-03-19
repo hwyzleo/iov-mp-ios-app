@@ -23,6 +23,7 @@ struct MyPage: View {
             case .notLogin:
                 MyPage.NotLogin(
                     tapScanAction: { intent.onTapScan() },
+                    tapQrCodeAction: { intent.onTapMyQrCode() },
                     tapLoginAction: { intent.onTapLogin() },
                     tapSettingAction: { intent.onTapSetting() }
                 )
@@ -30,6 +31,7 @@ struct MyPage: View {
                 MyPage.Login(
                     user: UserManager.getUser()!,
                     tapScanAction: { intent.onTapScan() },
+                    tapQrCodeAction: { intent.onTapMyQrCode() },
                     tapMessageAction: { intent.onTapMessage() },
                     tapSettingAction: { intent.onTapSetting() },
                     tapUserAction: { intent.onTapProfile() },

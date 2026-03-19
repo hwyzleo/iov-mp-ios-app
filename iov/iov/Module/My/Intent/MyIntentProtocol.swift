@@ -8,6 +8,8 @@
 protocol MyIntentProtocol : MviIntentProtocol {
     /// 点击扫码
     func onTapScan()
+    /// 点击我的二维码
+    func onTapMyQrCode()
     /// 从扫码返回
     func onTapBackFromScan()
     /// 点击登录

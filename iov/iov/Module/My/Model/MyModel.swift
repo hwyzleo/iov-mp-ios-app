@@ -50,6 +50,9 @@ extension MyModel: MyModelRouterProtocol {
     func routeToSetting() {
         routerSubject.screen.send(.setting)
     }
+    func routeToMyQrCode() {
+        routerSubject.screen.send(.myQrCode)
+    }
     func routeToProfile() {
         routerSubject.screen.send(.profile)
     }

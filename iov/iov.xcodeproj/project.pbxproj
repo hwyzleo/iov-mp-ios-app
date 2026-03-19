@@ -387,6 +387,14 @@
 		BFADC3022CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3012CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift */; };
 		BFADC3042CB4208400834608 /* VehicleModelConfigPage_Interior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */; };
 		BFADC9EF2D9BD9DF004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */; };
+		BFD4AE442F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */; };
+		BFD4AE452F6C37FC009CA7E6 /* MyAccountQrcodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3F2F6C37FC009CA7E6 /* MyAccountQrcodeView.swift */; };
+		BFD4AE462F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3D2F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift */; };
+		BFD4AE472F6C37FC009CA7E6 /* MyAccountQrcodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3C2F6C37FC009CA7E6 /* MyAccountQrcodeModel.swift */; };
+		BFD4AE482F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE392F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift */; };
+		BFD4AE492F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3A2F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift */; };
+		BFD4AE4A2F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE402F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift */; };
+		BFD4AE4C2F6C3AA5009CA7E6 /* QRCodeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -774,6 +782,14 @@
 		BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_BookMethodCard.swift; sourceTree = "<group>"; };
 		BFD177B82CABBA2A0028941E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BFD177B92CABBBDB0028941E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		BFD4AE392F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeIntent.swift; sourceTree = "<group>"; };
+		BFD4AE3A2F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeIntentProtocol.swift; sourceTree = "<group>"; };
+		BFD4AE3C2F6C37FC009CA7E6 /* MyAccountQrcodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeModel.swift; sourceTree = "<group>"; };
+		BFD4AE3D2F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeModelProtocol.swift; sourceTree = "<group>"; };
+		BFD4AE3F2F6C37FC009CA7E6 /* MyAccountQrcodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeView.swift; sourceTree = "<group>"; };
+		BFD4AE402F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyAccountQrcodeView+Build.swift"; sourceTree = "<group>"; };
+		BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeTypes.swift; sourceTree = "<group>"; };
+		BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeUtil.swift; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1272,6 +1288,7 @@
 				BFA189CC2C8431DE004D625D /* Invite */,
 				BFA189E12C8432D7004D625D /* TestDriveReport */,
 				BFA189F62C8433CB004D625D /* ChargingPile */,
+				BFD4AE432F6C37FC009CA7E6 /* AccountQrcode */,
 			);
 			path = Sub;
 			sourceTree = "<group>";
@@ -1442,6 +1459,7 @@
 				BFA1884F2C8418A2004D625D /* UserManager.swift */,
 				BFADC2AC2CB23B0400834608 /* VehicleManager.swift */,
 				BFA189612C842CB9004D625D /* WebViewUtil.swift */,
+				BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2509,6 +2527,44 @@
 			path = Intent;
 			sourceTree = "<group>";
 		};
+		BFD4AE3B2F6C37FC009CA7E6 /* Intent */ = {
+			isa = PBXGroup;
+			children = (
+				BFD4AE392F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift */,
+				BFD4AE3A2F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift */,
+			);
+			path = Intent;
+			sourceTree = "<group>";
+		};
+		BFD4AE3E2F6C37FC009CA7E6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				BFD4AE3C2F6C37FC009CA7E6 /* MyAccountQrcodeModel.swift */,
+				BFD4AE3D2F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		BFD4AE412F6C37FC009CA7E6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BFD4AE3F2F6C37FC009CA7E6 /* MyAccountQrcodeView.swift */,
+				BFD4AE402F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		BFD4AE432F6C37FC009CA7E6 /* AccountQrcode */ = {
+			isa = PBXGroup;
+			children = (
+				BFD4AE3B2F6C37FC009CA7E6 /* Intent */,
+				BFD4AE3E2F6C37FC009CA7E6 /* Model */,
+				BFD4AE412F6C37FC009CA7E6 /* View */,
+				BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */,
+			);
+			path = AccountQrcode;
+			sourceTree = "<group>";
+		};
 		FC44DBB084FFE8C63EABD32C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -2672,6 +2728,7 @@
 				BFA188FF2C842705004D625D /* MySettingProfileIntent.swift in Sources */,
 				BF3CA3122CBB7F97006CD801 /* VehicleOrderDetailModelProtocol.swift in Sources */,
 				BFA18A2D2C8436D0004D625D /* VehicleTypes.swift in Sources */,
+				BFD4AE4C2F6C3AA5009CA7E6 /* QRCodeUtil.swift in Sources */,
 				BFA189852C842E95004D625D /* MyArticleRouter.swift in Sources */,
 				BFA189D92C843267004D625D /* MyInviteModel.swift in Sources */,
 				BFA18A572C843968004D625D /* MallTypes.swift in Sources */,
@@ -2730,6 +2787,13 @@
 				BF3CA3342CC68481006CD801 /* VehicleOrderDetailPage_ArrangeProduction.swift in Sources */,
 				BFA188272C841597004D625D /* MobileTextField.swift in Sources */,
 				BFA1883A2C84170B004D625D /* AddressModelProtocol.swift in Sources */,
+				BFD4AE442F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift in Sources */,
+				BFD4AE452F6C37FC009CA7E6 /* MyAccountQrcodeView.swift in Sources */,
+				BFD4AE462F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift in Sources */,
+				BFD4AE472F6C37FC009CA7E6 /* MyAccountQrcodeModel.swift in Sources */,
+				BFD4AE482F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift in Sources */,
+				BFD4AE492F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift in Sources */,
+				BFD4AE4A2F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift in Sources */,
 				BFA188412C84175C004D625D /* AddressRouter.swift in Sources */,
 				BFA188C62C842378004D625D /* MyPage_TopBar.swift in Sources */,
 				BFA1890B2C8427C8004D625D /* MySettingAccountChangeTypes.swift in Sources */,

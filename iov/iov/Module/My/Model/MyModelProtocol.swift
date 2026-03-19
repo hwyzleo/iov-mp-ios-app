@@ -36,6 +36,8 @@ protocol MyModelRouterProtocol: MviModelRouterProtocol {
     func routeToMessage()
     /// 跳转至设置
     func routeToSetting()
+    /// 跳转至我的二维码
+    func routeToMyQrCode()
     /// 跳转至简介
     func routeToProfile()
     /// 跳转至我的作品

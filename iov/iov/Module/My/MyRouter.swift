@@ -23,6 +23,7 @@ extension MyRouter {
         case my
         case message
         case setting
+        case myQrCode
         case profile
         case myArticle
         case myPoints
@@ -41,6 +42,8 @@ extension MyRouter {
             case .message:
                 return .navigationLink
             case .setting:
+                return .navigationLink
+            case .myQrCode:
                 return .navigationLink
             case .profile:
                 return .navigationLink
@@ -75,6 +78,9 @@ extension MyRouter {
                 .navigationBarHidden(true)
         case .setting:
             SettingPage.build()
+                .navigationBarHidden(true)
+        case .myQrCode:
+            MyAccountQrcodeView.build()
                 .navigationBarHidden(true)
         case .profile:
             MySettingProfileView.build()
