@@ -14,10 +14,12 @@ struct MobileTextField: View {
     @State private var previousMobile: String = ""
     
     var body: some View {
-        TextField("请输入手机号", text: $mobile)
+        TextField(L10n.input_mobile, text: $mobile)
             .foregroundColor(AppTheme.colors.fontPrimary)
             .font(.system(size: 18))
-            .keyboardType(.phonePad)
+            .keyboardType(.numberPad)
+            .textContentType(.telephoneNumber)
+            .disableAutocorrection(true)
             .modifier(ClearButton(text: $mobile))
             .onChange(of: mobile) { newMobile in
                 if(newMobile.count > previousMobile.count) {

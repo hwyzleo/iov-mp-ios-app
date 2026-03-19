@@ -59,8 +59,6 @@ extension LoginPage {
                                 .frame(width: 1, height: 24)
                             
                             MobileTextField(mobile: $mobile)
-                                .font(.system(size: 18))
-                                .foregroundColor(AppTheme.colors.fontPrimary)
                         }
                         .padding(.vertical, 16)
                         
