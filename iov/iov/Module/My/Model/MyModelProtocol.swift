@@ -23,6 +23,8 @@ protocol MyModelActionProtocol: MviModelActionProtocol {
     func displayNotLogin()
     /// 显示已登录
     func displayLogin()
+    /// 显示扫描
+    func displayScan()
 }
 
 // MARK: - Route

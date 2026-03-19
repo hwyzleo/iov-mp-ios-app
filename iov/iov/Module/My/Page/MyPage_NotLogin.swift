@@ -11,6 +11,7 @@ import MBProgressHUD
 
 extension MyPage {
     struct NotLogin: View {
+        var tapScanAction: (() -> Void)?
         var tapLoginAction: (() -> Void)?
         var tapMessageAction: (() -> Void)?
         var tapSettingAction: (() -> Void)?
@@ -19,6 +20,7 @@ extension MyPage {
             VStack(spacing: 0) {
                 Spacer().frame(height: kStatusBarHeight)
                 MyPage.TopBar(
+                    tapScanAction: { tapScanAction?() },
                     tapLoginAction: { tapLoginAction?() },
                     tapMessageAction: { tapMessageAction?() },
                     tapSettingAction: { tapSettingAction?() }

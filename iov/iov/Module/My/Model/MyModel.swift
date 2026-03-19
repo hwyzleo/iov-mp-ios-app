@@ -25,6 +25,10 @@ extension MyModel: MyModelActionProtocol {
         contentState = .login
     }
     
+    func displayScan() {
+        contentState = .scan
+    }
+    
     func displayLoading() {
         contentState = .loading
     }
@@ -77,6 +81,7 @@ extension MyTypes.Model {
         case loading
         case notLogin
         case login
+        case scan
         case error(text: String)
     }
 }

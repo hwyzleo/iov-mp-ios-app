@@ -22,18 +22,28 @@ struct MyPage: View {
                     .scaleEffect(2)
             case .notLogin:
                 MyPage.NotLogin(
+                    tapScanAction: { intent.onTapScan() },
                     tapLoginAction: { intent.onTapLogin() },
                     tapSettingAction: { intent.onTapSetting() }
                 )
             case .login:
                 MyPage.Login(
                     user: UserManager.getUser()!,
+                    tapScanAction: { intent.onTapScan() },
                     tapMessageAction: { intent.onTapMessage() },
                     tapSettingAction: { intent.onTapSetting() },
                     tapUserAction: { intent.onTapProfile() },
                     tapOrderAction: { intent.onTapMyOrder() },
                     tapChargingPileAction: { intent.onTapChargingPile() }
                 )
+            case .scan:
+                CustomScannerView() {
+                    intent.onTapBackFromScan()
+                } qrcodeAction: { qrcode in
+                    debugPrint("QRCode: \(qrcode)")
+                    intent.onTapBackFromScan()
+                }
+                .ignoresSafeArea()
             case let .error(text):
                 ErrorTip(text: text)
             }

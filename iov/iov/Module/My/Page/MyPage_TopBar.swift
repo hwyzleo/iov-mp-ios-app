@@ -9,6 +9,7 @@ import SwiftUI
 
 extension MyPage {
     struct TopBar: View {
+        var tapScanAction: (() -> Void)?
         var tapLoginAction: (() -> Void)?
         var tapMessageAction: (() -> Void)?
         var tapSettingAction: (() -> Void)?
@@ -18,7 +19,7 @@ extension MyPage {
                 Spacer()
                 
                 // 扫码
-                Button(action: { /* 扫码逻辑 */ }) {
+                Button(action: { tapScanAction?() }) {
                     Image("icon_scan_qrcode")
                         .resizable()
                         .renderingMode(.template)

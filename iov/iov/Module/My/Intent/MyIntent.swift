@@ -27,6 +27,16 @@ class MyIntent: MviIntentProtocol {
 }
 
 extension MyIntent: MyIntentProtocol {
+    func onTapScan() {
+        if UserManager.isLogin() {
+            modelAction?.displayScan()
+        } else {
+            modelRouter?.routeToLogin()
+        }
+    }
+    func onTapBackFromScan() {
+        viewOnAppear()
+    }
     func onTapLogin() {
         modelRouter?.routeToLogin()
     }

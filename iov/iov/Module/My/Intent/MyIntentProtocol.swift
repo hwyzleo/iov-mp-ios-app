@@ -6,6 +6,10 @@
 //
 
 protocol MyIntentProtocol : MviIntentProtocol {
+    /// 点击扫码
+    func onTapScan()
+    /// 从扫码返回
+    func onTapBackFromScan()
     /// 点击登录
     func onTapLogin()
     /// 点击消息

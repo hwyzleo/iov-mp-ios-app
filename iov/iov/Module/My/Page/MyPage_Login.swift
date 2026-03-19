@@ -10,6 +10,7 @@ import SwiftUI
 extension MyPage {
     struct Login: View {
         var user: UserManager
+        var tapScanAction: (() -> Void)?
         var tapMessageAction: (() -> Void)?
         var tapSettingAction: (() -> Void)?
         var tapUserAction: (() -> Void)?
@@ -24,6 +25,7 @@ extension MyPage {
             VStack(spacing: 0) {
                 Spacer().frame(height: kStatusBarHeight)
                 MyPage.TopBar(
+                    tapScanAction: { tapScanAction?() },
                     tapMessageAction: { tapMessageAction?() },
                     tapSettingAction: { tapSettingAction?() }
                 )

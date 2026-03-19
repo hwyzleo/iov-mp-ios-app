@@ -94,6 +94,7 @@ struct ScannerView: UIViewControllerRepresentable {
 
 struct CustomScannerView: View {
     @Environment(\.dismiss) private var dismiss
+    var backAction: (() -> Void)?
     var qrcodeAction: ((_ qrcode:String) -> Void)?
     
     var body: some View {
@@ -104,7 +105,11 @@ struct CustomScannerView: View {
             VStack {
                 HStack {
                     Button(action: {
-                        dismiss()
+                        if let backAction = backAction {
+                            backAction()
+                        } else {
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "chevron.left")
                             .padding(40)
