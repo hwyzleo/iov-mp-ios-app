@@ -39,14 +39,18 @@ extension MyPage {
                         // 第2块：用户信息与社交统计
                         VStack(spacing: 24) {
                             HStack(spacing: 20) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text(user.nickname)
-                                        .font(AppTheme.fonts.bigTitle)
-                                        .foregroundColor(AppTheme.colors.fontPrimary)
-                                    Text("编辑个人资料 >")
-                                        .font(AppTheme.fonts.subtext)
-                                        .foregroundColor(AppTheme.colors.fontSecondary)
+                                Button(action: { tapUserAction?() }) {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Text(user.nickname)
+                                            .font(AppTheme.fonts.bigTitle)
+                                            .foregroundColor(AppTheme.colors.fontPrimary)
+                                        Text("编辑个人资料 >")
+                                            .font(AppTheme.fonts.subtext)
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                    }
                                 }
+                                .buttonStyle(.plain)
+                                
                                 Spacer()
                                 Button(action: { tapUserAction?() }) {
                                     AvatarImage(avatar: user.avatar, width: 70)

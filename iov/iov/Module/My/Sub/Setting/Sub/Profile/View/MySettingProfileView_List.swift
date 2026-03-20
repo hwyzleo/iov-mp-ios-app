@@ -13,22 +13,21 @@ extension MySettingProfileView {
         var value: String
         
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
                 HStack {
                     Text(title)
-                        .font(.system(size: 18))
-                        .foregroundColor(.black)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
                     Spacer()
                     Text(value)
-                        .font(.system(size: 18))
-                        .foregroundColor(.black)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(AppTheme.colors.fontSecondary)
                     Image(systemName: "chevron.right")
-                        .font(.system(size: 18))
-                        .foregroundColor(.black)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(AppTheme.colors.fontTertiary)
                 }
-                .padding(.top, 25)
+                .padding(.vertical, 20)
                 Divider()
-                    .padding(.top, 25)
             }
             .contentShape(Rectangle())
         }

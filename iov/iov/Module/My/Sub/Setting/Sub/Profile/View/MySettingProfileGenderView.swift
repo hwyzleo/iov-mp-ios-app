@@ -12,78 +12,108 @@ struct MySettingProfileGenderView: View {
     @State var selectedGender: String = ""
     @State var showMale = false
     @State var showFemale = false
+    @State var showUnknown = false
     var action: ((_ gender: String)->Void)?
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            Spacer().frame(height: kStatusBarHeight)
             TopBackTitleBar(title: "性别")
-            VStack(alignment: .center) {
-                Button(action: {
-                    showMale = true
-                    showFemale = false
-                    selectedGender = "MALE"
-                }) {
-                    VStack {
+            VStack(alignment: .center, spacing: AppTheme.layout.spacing) {
+                VStack(spacing: 0) {
+                    Button(action: {
+                        showMale = true
+                        showFemale = false
+                        showUnknown = false
+                        selectedGender = "MALE"
+                    }) {
                         HStack {
                             Text("男")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 10)
+                                .font(AppTheme.fonts.body)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            Spacer()
                             if showMale {
-                                Image("tick")
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(AppTheme.colors.brandMain)
                             }
                         }
-                        .padding(.bottom, 30)
-                        .padding(.top, 20)
-                        .modifier(BottomLineModifier())
+                        .padding(.vertical, 20)
+                        .contentShape(Rectangle())
                     }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                Button(action: {
-                    showFemale = true
-                    showMale = false
-                    selectedGender = "FEMALE"
-                }) {
-                    VStack {
+                    .buttonStyle(.plain)
+                    
+                    Divider()
+                    
+                    Button(action: {
+                        showFemale = true
+                        showMale = false
+                        showUnknown = false
+                        selectedGender = "FEMALE"
+                    }) {
                         HStack {
                             Text("女")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.leading, 10)
+                                .font(AppTheme.fonts.body)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            Spacer()
                             if showFemale {
-                                Image("tick")
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(AppTheme.colors.brandMain)
                             }
                         }
-                        .padding(.bottom, 30)
-                        .padding(.top, 20)
-                        .modifier(BottomLineModifier())
+                        .padding(.vertical, 20)
+                        .contentShape(Rectangle())
                     }
-                    .contentShape(Rectangle())
+                    .buttonStyle(.plain)
+                    
+                    Divider()
+                    
+                    Button(action: {
+                        showUnknown = true
+                        showMale = false
+                        showFemale = false
+                        selectedGender = "UNKNOWN"
+                    }) {
+                        HStack {
+                            Text("未知")
+                                .font(AppTheme.fonts.body)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            Spacer()
+                            if showUnknown {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(AppTheme.colors.brandMain)
+                            }
+                        }
+                        .padding(.vertical, 20)
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
-                Button(action: {
+                .appCardStyle()
+                
+                RoundedCornerButton(nameLocal: LocalizedStringKey("confirm"), color: .black, bgColor: AppTheme.colors.brandMain) {
                     action?(selectedGender)
                     dismiss()
-                }) {
-                    Text("保存")
-                        .padding(10)
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(Color.white)
-                        .background(Color.black)
-                        .contentShape(Rectangle())
-                        .cornerRadius(22.5)
                 }
                 .padding(.top, 20)
+                
                 Spacer()
             }
-            .padding(20)
+            .padding(AppTheme.layout.margin)
         }
+        .appBackground()
         .onAppear(perform: {
             if selectedGender == "MALE" {
                 showMale = true
                 showFemale = false
-            } else {
+                showUnknown = false
+            } else if selectedGender == "FEMALE" {
                 showFemale = true
                 showMale = false
+                showUnknown = false
+            } else {
+                showUnknown = true
+                showMale = false
+                showFemale = false
             }
         })
     }

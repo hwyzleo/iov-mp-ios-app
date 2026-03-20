@@ -204,9 +204,11 @@ struct AccountInfo: Codable {
     var mobile: String
     var nickname: String
     var avatar: String?
+    var bio: String?
     var gender: String
     var birthday: String?
     var area: String?
+    var city: String?
 }
 
 /**

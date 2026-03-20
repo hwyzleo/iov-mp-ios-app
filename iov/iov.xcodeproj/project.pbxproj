@@ -395,6 +395,7 @@
 		BFD4AE492F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3A2F6C37FC009CA7E6 /* MyAccountQrcodeIntentProtocol.swift */; };
 		BFD4AE4A2F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE402F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift */; };
 		BFD4AE4C2F6C3AA5009CA7E6 /* QRCodeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */; };
+		BFD4AE4E2F6D0F65009CA7E6 /* MySettingProfileBioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -790,6 +791,7 @@
 		BFD4AE402F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MyAccountQrcodeView+Build.swift"; sourceTree = "<group>"; };
 		BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeTypes.swift; sourceTree = "<group>"; };
 		BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeUtil.swift; sourceTree = "<group>"; };
+		BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySettingProfileBioView.swift; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -1661,6 +1663,7 @@
 				BFA188F42C842655004D625D /* MySettingProfileGenderView.swift */,
 				BFA188F62C842673004D625D /* MySettingProfileAreaView.swift */,
 				BFA188FC2C8426F1004D625D /* MySettingProfileView+Build.swift */,
+				BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -2746,6 +2749,7 @@
 				BF554B0D2CD34AE20025E7D4 /* DealershipPage.swift in Sources */,
 				BFA189972C842F6F004D625D /* MyPointsModel.swift in Sources */,
 				BFA187702C83111E004D625D /* ContentView.swift in Sources */,
+				BFD4AE4E2F6D0F65009CA7E6 /* MySettingProfileBioView.swift in Sources */,
 				BFA188F52C842655004D625D /* MySettingProfileGenderView.swift in Sources */,
 				BFA1883C2C841720004D625D /* AddressTypes.swift in Sources */,
 				BFA187E52C841129004D625D /* LoginIntentProtocol.swift in Sources */,

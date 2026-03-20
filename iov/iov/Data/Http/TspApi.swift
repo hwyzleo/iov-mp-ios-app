@@ -25,6 +25,13 @@ class TspApi {
         }
     }
     
+    /// 退出登录
+    static func logout(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/mp/logout", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
+        }
+    }
+    
     /// 获取有效车辆销售订单列表
     static func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void) {
         TspManager.requestGet(path: "/mp/vehicleSaleOrder/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
@@ -237,7 +244,7 @@ class TspApi {
     /// 生成头像预上传地址
     static func generateAvatarUrl(completion: @escaping (Result<TspResponse<PreSignedUrl>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/account/mp/account/action/generateAvatarUrl", parameters: [:]) { (result: Result<TspResponse<PreSignedUrl>, Error>) in
+            TspManager.requestPost(path: "/mp/account/action/generateAvatarUrl", parameters: [:]) { (result: Result<TspResponse<PreSignedUrl>, Error>) in
                 completion(result)
             }
         } else {
@@ -253,66 +260,43 @@ class TspApi {
     
     /// 修改头像
     static func modifyAvatar(imageUrl: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/account/mp/account/action/modifyAvatar", parameters: ["avatar":imageUrl]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))))
-            }
+        TspManager.requestPost(path: "/mp/account/action/modifyAvatar", parameters: ["avatar":imageUrl]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 修改昵称
     static func modifyNickname(nickname: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/account/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspManager.requestPost(path: "/mp/account/action/modifyNickname", parameters: ["nickname": nickname]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 修改签名简介
+    static func modifyBio(bio: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/mp/account/action/modifyBio", parameters: ["bio": bio]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 修改性别
     static func modifyGender(gender: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/account/mp/account/action/modifyGender", parameters: ["gender": gender]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = TspResponse<NoReply>(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))
-                debugPrint("Mock API[modifyGender] Response")
-                completion(.success(res))
-            }
+        TspManager.requestPost(path: "/mp/account/action/modifyGender", parameters: ["gender": gender]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
     /// 修改生日
     static func modifyBirthday(birthday: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/account/mp/account/action/modifyBirthday", parameters: ["birthday": birthday]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = TspResponse<NoReply>(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))
-                debugPrint("Mock API[modifyBirthday] Response")
-                completion(.success(res))
-            }
+        TspManager.requestPost(path: "/mp/account/action/modifyBirthday", parameters: ["birthday": birthday]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     
-    /// 修改地区
-    static func modifyArea(area: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/account/mp/account/action/modifyArea", parameters: ["area": area]) { (result: Result<TspResponse<NoReply>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = TspResponse<NoReply>(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))
-                debugPrint("Mock API[modifyArea] Response")
-                completion(.success(res))
-            }
+    /// 修改用车城市
+    static func modifyCity(city: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/mp/account/action/modifyCity", parameters: ["city": city]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
         }
     }
     

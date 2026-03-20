@@ -20,9 +20,6 @@ struct ServiceContainer {
     
     /// 获取登录相关的业务服务
     static var loginService: LoginServiceProtocol {
-        if AppGlobalState.shared.isMock {
-            return MockLoginService()
-        }
         return RealLoginService()
     }
     

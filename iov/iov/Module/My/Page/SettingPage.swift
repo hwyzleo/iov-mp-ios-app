@@ -18,14 +18,7 @@ struct SettingPage: View {
     var body: some View {
         ZStack {
             SettingPage.Content(
-//                tapProfile: { intent.onTapProfile() },
-//                tapAccountChange: { intent.onTapAccountChange() },
-//                tapAccountSecurity: { intent.onTapAccountSecurity() },
-//                tapAccountBinding: { intent.onTapAccountBinding() },
-//                tapPrivillegeAction: { intent.onTapPrivillege() },
-//                tapUserProtocolAction: { intent.onTapUserProtocol() },
-//                tapCommunityConvention: { intent.onTapCommunityConvention() },
-//                tapPrivacyAgreement: { intent.onTapPrivacyAgreement() },
+                tapProfile: { intent.onTapProfile() },
                 loginAction: { intent.onTapLogin() },
                 logoutAction: { intent.onTapLogout() }, 
                 appVersion: appVersion,
@@ -33,6 +26,7 @@ struct SettingPage: View {
                 apiUrl: $appGlobalState.tspUrl
             )
         }
+        .appBackground()
         .modifier(MyRouter(subjects: state.routerSubject))
     }
     
@@ -60,59 +54,27 @@ extension SettingPage {
         @Binding var apiUrl: String
         
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
+                Spacer().frame(height: kStatusBarHeight)
                 TopBackTitleBar(titleLocal: LocalizedStringKey("setting"))
                 ScrollView {
-                    VStack {
-//                        MySettingView.List(title: "个人资料") {
-//                            if User.isLogin() {
-//                                tapProfile?()
-//                            } else {
-//                                loginAction?()
-//                            }
-//                        }
-//                        MySettingView.List(title: "主使用人变更") {
-//                            if User.isLogin() {
-//                                tapAccountChange?()
-//                            } else {
-//                                loginAction?()
-//                            }
-//                        }
-//                        MySettingView.List(title: "账号安全") {
-//                            if User.isLogin() {
-//                                tapAccountSecurity?()
-//                            } else {
-//                                loginAction?()
-//                            }
-//                        }
-//                        MySettingView.List(title: "账号绑定") {
-//                            if User.isLogin() {
-//                                tapAccountBinding?()
-//                            } else {
-//                                loginAction?()
-//                            }
-//                        }
-//                        MySettingView.List(title: "权限管理") {
-//                            tapPrivillegeAction?()
-//                        }
-//                        MySettingView.List(title: "用户协议") {
-//                            tapUserProtocolAction?()
-//                        }
-//                        MySettingView.List(title: "社区公约") {
-//                            tapCommunityConvention?()
-//                        }
-//                        MySettingView.List(title: "隐私协议") {
-//                            tapPrivacyAgreement?()
-//                        }
-                        Button(action: { 
-                            mockCount = mockCount + 1
-                            if(isMock && mockCount > 10) {
-                                showMock = true
-                                isMock.toggle()
+                    VStack(spacing: AppTheme.layout.spacing) {
+                        VStack(spacing: 0) {
+                            SettingPage.List(title: "个人资料") {
+                                if UserManager.isLogin() {
+                                    tapProfile?()
+                                } else {
+                                    loginAction?()
+                                }
                             }
-                        }) {
-                            VStack {
-                                Spacer().frame(height: 20)
+                            // 版本信息
+                            Button(action: { 
+                                mockCount = mockCount + 1
+                                if(isMock && mockCount > 10) {
+                                    showMock = true
+                                    isMock.toggle()
+                                }
+                            }) {
                                 HStack {
                                     Text(LocalizedStringKey("version"))
                                         .foregroundStyle(AppTheme.colors.fontPrimary)
@@ -127,37 +89,41 @@ extension SettingPage {
                                             .font(AppTheme.fonts.body)
                                     }
                                 }
-                                Spacer().frame(height: 20)
+                                .padding(.vertical, 20)
                             }
-                            .contentShape(Rectangle())
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
+                        .appCardStyle()
+                        
                         if(showMock) {
                             TextField("", text: $apiUrl)
                                 .frame(height: 35)
                                 .textFieldStyle(.plain)
-                                .onChange(of: apiUrl) { newApiUrl in
-                                }
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                                .padding()
+                                .background(AppTheme.colors.cardBackground)
+                                .cornerRadius(AppTheme.layout.radiusMedium)
                         }
+                        
                         if(UserManager.isLogin()) {
-                            Spacer()
-                                .frame(height: 20)
-                            RoundedCornerButton(nameLocal: LocalizedStringKey("logout")) {
+                            RoundedCornerButton(nameLocal: LocalizedStringKey("logout"), color: .black, bgColor: AppTheme.colors.brandMain) {
                                 showAlert = true
                             }
+                            .padding(.top, 20)
                         }
                     }
-                    .alert(Text(LocalizedStringKey("tip")), isPresented: $showAlert) {
-                        Button(LocalizedStringKey("cancel"), role: .cancel) { }
-                        Button(LocalizedStringKey("confirm")) {
-                            logoutAction?()
-                        }
-                    } message: {
-                        Text(LocalizedStringKey("logout_confirm"))
-                    }
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.top, 20)
                 }
                 .scrollIndicators(.hidden)
-                .padding(20)
+                .alert(Text(LocalizedStringKey("tip")), isPresented: $showAlert) {
+                    Button(LocalizedStringKey("cancel"), role: .cancel) { }
+                    Button(LocalizedStringKey("confirm")) {
+                        logoutAction?()
+                    }
+                } message: {
+                    Text(LocalizedStringKey("logout_confirm"))
+                }
             }
         }
     }

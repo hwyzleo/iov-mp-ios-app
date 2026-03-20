@@ -11,6 +11,8 @@ protocol MySettingProfileIntentProtocol: MviIntentProtocol {
     func onSelectAvatar(image: UIImage)
     /// 点击保存昵称按钮
     func onTapNicknameSaveButton(nickname: String)
+    /// 点击保存签名按钮
+    func onTapBioSaveButton(bio: String)
     /// 点击保存性别按钮
     func onTapGenderSaveButton(gender: String)
     /// 点击生日保存按钮

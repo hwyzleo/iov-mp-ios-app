@@ -25,6 +25,7 @@ struct MySettingProfileView: View {
                 ErrorTip(text: text)
             }
         }
+        .appBackground()
         .onAppear {
             intent.viewOnAppear()
         }
@@ -48,47 +49,56 @@ private extension MySettingProfileView {
         @State var showImagePicker: Bool = false
         
         var body: some View {
-            VStack {
+            VStack(spacing: 0) {
+                Spacer().frame(height: kStatusBarHeight)
                 TopBackTitleBar(title: "个人资料")
-                Spacer()
-                    .frame(height: 50)
-                VStack {
-                    Button(action: { self.showImagePicker.toggle() }) {
-                        AvatarImage(avatar: state.avatar, width: 80)
+                ScrollView {
+                    VStack(spacing: AppTheme.layout.spacing) {
+                        VStack(spacing: 20) {
+                            Button(action: { self.showImagePicker.toggle() }) {
+                                AvatarImage(avatar: state.avatar, width: 80)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 20)
+                        
+                        VStack(spacing: 0) {
+                            NavigationLink(destination: MySettingProfileNicknameView(nickname: state.nickname, action: { nickname in intent.onTapNicknameSaveButton(nickname: nickname) })
+                                .navigationBarHidden(true)) {
+                                MySettingProfileView.List(title: "昵称", value: state.nickname)
+                            }
+                            .buttonStyle(.plain)
+                            NavigationLink(destination: MySettingProfileBioView(bio: state.bio, action: { bio in intent.onTapBioSaveButton(bio: bio) })
+                                .navigationBarHidden(true)) {
+                                MySettingProfileView.List(title: "签名", value: state.bio)
+                            }
+                            .buttonStyle(.plain)
+                            NavigationLink(destination: MySettingProfileGenderView(selectedGender: state.gender, action: { gender in intent.onTapGenderSaveButton(gender: gender) })
+                                .navigationBarHidden(true)) {
+                                MySettingProfileView.List(title: "性别", value: genderStr(state.gender))
+                            }
+                            .buttonStyle(.plain)
+                            Button(action: { showBirthday = true }) {
+                                MySettingProfileView.List(title: "生日", value: state.birthday != nil ? dateToStr(date: state.birthday!) : "")
+                            }
+                            .buttonStyle(.plain)
+                            NavigationLink(destination: MySettingProfileAreaView(action: { city in
+                                intent.onTapCity(city: city)})
+                                .navigationBarHidden(true)) {
+                                MySettingProfileView.List(title: "用车城市", value: cityStr(state.city.isEmpty ? state.area : state.city))
+                            }
+                            .buttonStyle(.plain)
+
+                        }
+                        .appCardStyle()
                     }
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.top, 20)
                 }
-                .sheet(isPresented: $showImagePicker) {
-                    ImagePicker(sourceType: .photoLibrary) { image in
-                        self.image = image
-                        intent.onSelectAvatar(image: image)
-                    }
-                }
-                VStack {
-                    NavigationLink(destination: MySettingProfileNicknameView(nickname: state.nickname, action: { nickname in intent.onTapNicknameSaveButton(nickname: nickname) })
-                        .navigationBarHidden(true)) {
-                        MySettingProfileView.List(title: "昵称", value: state.nickname)
-                    }
-                    .buttonStyle(.plain)
-                    NavigationLink(destination: MySettingProfileGenderView(selectedGender: state.gender, action: { gender in intent.onTapGenderSaveButton(gender: gender) })
-                        .navigationBarHidden(true)) {
-                        MySettingProfileView.List(title: "性别", value: genderStr(state.gender))
-                    }
-                    .buttonStyle(.plain)
-                    Button(action: { showBirthday = true }) {
-                        MySettingProfileView.List(title: "生日", value: dateToStr(date: state.birthday))
-                    }
-                    NavigationLink(destination: MySettingProfileAreaView(action: { city in
-                        intent.onTapCity(city: city)})
-                        .navigationBarHidden(true)) {
-                        MySettingProfileView.List(title: "地区", value: state.area)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(20)
-                Spacer()
             }
             .onAppear {
-                selectedDate = state.birthday
+                selectedDate = state.birthday ?? Date()
             }
             .sheet(isPresented: $showBirthday) {
                 VStack {
@@ -99,25 +109,26 @@ private extension MySettingProfileView {
                         DatePicker("选择日期", selection: $selectedDate, displayedComponents: .date)
                             .datePickerStyle(WheelDatePickerStyle())
                             .labelsHidden()
+                            .colorScheme(.dark) // 强制深色模式以匹配主题
                             .environment(\.locale, Locale(identifier: "zh_CN"))
-                        Button(action: {
+                        
+                        RoundedCornerButton(nameLocal: LocalizedStringKey("confirm"), color: .black, bgColor: AppTheme.colors.brandMain) {
                             intent.onTapBirthdaySaveButton(date: selectedDate)
                             showBirthday = false
-                        }) {
-                            Text("保存")
-                                .padding(10)
-                                .frame(maxWidth: .infinity)
-                                .foregroundColor(Color.white)
-                                .background(Color.black)
-                                .cornerRadius(22.5)
-                                .contentShape(Rectangle())
                         }
-                        .buttonStyle(.plain)
+                        .padding(.top, 20)
                         Spacer()
                     }
                 }
                 .padding(20)
-                .presentationDetents([.height(350)])
+                .background(AppTheme.colors.background)
+                .presentationDetents([.height(380)])
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(sourceType: .photoLibrary) { image in
+                    self.image = image
+                    intent.onSelectAvatar(image: image)
+                }
             }
         }
     }

@@ -99,11 +99,27 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
             }
         }
     }
+    func onTapBioSaveButton(bio: String) {
+        TspApi.modifyBio(bio: bio) { (result: Result<TspResponse<NoReply>, Error>) in
+            switch result {
+            case .success(let response):
+                if(response.code == 0) {
+                    self.viewOnAppear()
+                } else {
+                    self.modelAction?.displayError(text: response.message ?? "异常")
+                }
+            case let .failure(error):
+                print(error)
+                self.modelAction?.displayError(text: "请求异常")
+            }
+        }
+    }
     func onTapGenderSaveButton(gender: String) {
         TspApi.modifyGender(gender: gender) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.code == 0) {
+                    self.viewOnAppear()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
@@ -142,11 +158,11 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
     }
     func onTapCity(city: String) {
         modelAction?.displayLoading()
-        TspApi.modifyArea(area: city) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.modifyCity(city: city) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.code == 0) {
-                    
+                    self.viewOnAppear()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }

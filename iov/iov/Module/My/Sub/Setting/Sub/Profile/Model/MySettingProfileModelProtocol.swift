@@ -14,9 +14,11 @@ protocol MySettingProfileModelStateProtocol {
     var loadingText: String { get }
     var avatar: String { get }
     var nickname: String { get }
+    var bio: String { get }
     var gender: String { get }
-    var birthday: Date { get }
+    var birthday: Date? { get }
     var area: String { get }
+    var city: String { get }
     var routerSubject: MySettingProfileRouter.Subjects { get }
 }
 

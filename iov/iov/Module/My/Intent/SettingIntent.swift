@@ -26,9 +26,9 @@ extension SettingIntent: SettingIntentProtocol {
     func onTapBack() {
         modelRouter?.closeScreen()
     }
-//    func onTapProfile() {
-//        modelRouter?.routeToProfile()
-//    }
+    func onTapProfile() {
+        modelRouter?.routeToProfile()
+    }
 //    func onTapAccountChange() {
 //        modelRouter?.routeToAccountChange()
 //    }
@@ -51,8 +51,10 @@ extension SettingIntent: SettingIntentProtocol {
 //        modelRouter?.routeToPrivacyAgreement()
 //    }
     func onTapLogout() {
-        UserManager.logout()
-        AppGlobalState.shared.isLogin = false
-        modelAction?.logout()
+        TspApi.logout { _ in
+            UserManager.logout()
+            AppGlobalState.shared.isLogin = false
+            self.modelAction?.logout()
+        }
     }
 }

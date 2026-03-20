@@ -21,6 +21,7 @@ class TspManager {
     
     // POST请求
     static func requestPost<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
+        print("request post tsp:", path, parameters, tspHeaders)
         NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let.success(data):
@@ -33,7 +34,7 @@ class TspManager {
     }
     
     static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        print("request tsp:", path, parameters, tspHeaders)
+        print("request get tsp:", path, parameters, tspHeaders)
         NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):

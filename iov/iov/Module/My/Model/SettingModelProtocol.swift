@@ -26,8 +26,8 @@ protocol SettingModelActionProtocol: MviModelActionProtocol {
 protocol SettingModelRouterProtocol: MviModelRouterProtocol {
     /// 跳转至登录页
     func routeToLogin()
-//    /// 跳转至个人资料
-//    func routeToProfile()
+    /// 跳转至个人资料
+    func routeToProfile()
 //    /// 跳转至主使用人变更
 //    func routeToAccountChange()
 //    /// 跳转至账号安全

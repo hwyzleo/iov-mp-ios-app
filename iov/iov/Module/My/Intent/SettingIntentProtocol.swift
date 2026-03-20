@@ -10,8 +10,8 @@ protocol SettingIntentProtocol : MviIntentProtocol {
     func onTapLogin()
     /// 点击返回
     func onTapBack()
-//    /// 点击个人资料
-//    func onTapProfile()
+    /// 点击个人资料
+    func onTapProfile()
 //    /// 点击主使用人变更
 //    func onTapAccountChange()
 //    /// 点击账号安全

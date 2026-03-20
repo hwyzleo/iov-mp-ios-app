@@ -40,9 +40,9 @@ extension SettingModel: SettingModelRouterProtocol {
     func routeToLogin() {
         routerSubject.screen.send(.login)
     }
-//    func routeToProfile() {
-//        routerSubject.screen.send(.profile)
-//    }
+    func routeToProfile() {
+        routerSubject.screen.send(.profile)
+    }
 //    func routeToAccountChange() {
 //        routerSubject.screen.send(.accountChange)
 //    }

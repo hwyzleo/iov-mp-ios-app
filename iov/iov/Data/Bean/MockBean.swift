@@ -12,7 +12,7 @@ func mockLoginResponse() -> LoginResponse {
     return LoginResponse.init(
         mobile: "13917288107",
         nickname: "hwyz_leo",
-        avatar: "https://pic.imgdb.cn/item/66e667a0d9c307b7e93075e8.png",
+        avatar: "https://i.ibb.co/btr3Ntz/avatar-default.png",
         token: "zgZA0dO9gTbhSb6PDBXCb_0mxFq-q33Uo81aNC4hT_hpPvwxJhQASovI0zGlw58K",
         tokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000),
         refreshToken: "rWtoZhVVf6mZW-t1hhqkNazR0r92KkhxDItf05jfQYChT6SrnFi2IXaXD02irjVc",

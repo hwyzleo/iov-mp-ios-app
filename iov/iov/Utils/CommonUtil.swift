@@ -19,6 +19,11 @@ func genderStr(_ gender: String) -> String {
     }
 }
 
+/// 转换城市码为城市名
+func cityStr(_ cityCode: String) -> String {
+    return Cities[cityCode] ?? Provinces[cityCode] ?? cityCode
+}
+
 /// 日期转字符串
 func dateToStr(date: Date, format: String = "yyyy-MM-dd") -> String {
     let dateFormatter = DateFormatter()
