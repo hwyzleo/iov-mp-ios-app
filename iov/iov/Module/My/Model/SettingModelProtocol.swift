@@ -28,6 +28,8 @@ protocol SettingModelRouterProtocol: MviModelRouterProtocol {
     func routeToLogin()
     /// 跳转至个人资料
     func routeToProfile()
+    /// 跳转至权限管理
+    func routeToPermissionManagement()
 //    /// 跳转至主使用人变更
 //    func routeToAccountChange()
 //    /// 跳转至账号安全

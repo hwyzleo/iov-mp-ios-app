@@ -12,6 +12,8 @@ protocol SettingIntentProtocol : MviIntentProtocol {
     func onTapBack()
     /// 点击个人资料
     func onTapProfile()
+    /// 点击权限管理
+    func onTapPermissionManagement()
 //    /// 点击主使用人变更
 //    func onTapAccountChange()
 //    /// 点击账号安全

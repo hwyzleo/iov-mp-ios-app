@@ -29,6 +29,9 @@ extension SettingIntent: SettingIntentProtocol {
     func onTapProfile() {
         modelRouter?.routeToProfile()
     }
+    func onTapPermissionManagement() {
+        modelRouter?.routeToPermissionManagement()
+    }
 //    func onTapAccountChange() {
 //        modelRouter?.routeToAccountChange()
 //    }
