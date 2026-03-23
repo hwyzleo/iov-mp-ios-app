@@ -33,6 +33,7 @@ extension MyRouter {
         case testDriveReport
         case chargingPile
         case permissionManagement
+        case aboutUs
 
         var routeType: RouterScreenPresentationType {
             switch self {
@@ -63,6 +64,8 @@ extension MyRouter {
             case .chargingPile:
                 return .navigationLink
             case .permissionManagement:
+                return .navigationLink
+            case .aboutUs:
                 return .navigationLink
             }
         }
@@ -111,6 +114,9 @@ extension MyRouter {
                 .navigationBarHidden(true)
         case .permissionManagement:
             PermissionManagementView.build()
+                .navigationBarHidden(true)
+        case .aboutUs:
+            AboutUsView.build()
                 .navigationBarHidden(true)
         }
     }

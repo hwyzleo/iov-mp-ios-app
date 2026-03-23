@@ -387,6 +387,7 @@
 		BFADC3022CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3012CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift */; };
 		BFADC3042CB4208400834608 /* VehicleModelConfigPage_Interior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */; };
 		BFADC9EF2D9BD9DF004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */; };
+		BFD12FEB2F711DBB00BF26C4 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */; };
 		BFD4AE442F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */; };
 		BFD4AE452F6C37FC009CA7E6 /* MyAccountQrcodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3F2F6C37FC009CA7E6 /* MyAccountQrcodeView.swift */; };
 		BFD4AE462F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3D2F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift */; };
@@ -781,6 +782,7 @@
 		BFADC3012CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Wheel.swift; sourceTree = "<group>"; };
 		BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Interior.swift; sourceTree = "<group>"; };
 		BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_BookMethodCard.swift; sourceTree = "<group>"; };
+		BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		BFD177B82CABBA2A0028941E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BFD177B92CABBBDB0028941E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		BFD4AE392F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeIntent.swift; sourceTree = "<group>"; };
@@ -1462,6 +1464,7 @@
 				BFADC2AC2CB23B0400834608 /* VehicleManager.swift */,
 				BFA189612C842CB9004D625D /* WebViewUtil.swift */,
 				BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */,
+				BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -2890,6 +2893,7 @@
 				BFA1885B2C841AC6004D625D /* OrderPayView.swift in Sources */,
 				BFA187EA2C841160004D625D /* LoginTypes.swift in Sources */,
 				BFA188802C841ED4004D625D /* CommunityArticleView_Comment.swift in Sources */,
+				BFD12FEB2F711DBB00BF26C4 /* CacheManager.swift in Sources */,
 				BF3CA3102CBB7F57006CD801 /* VehicleOrderDetailIntentProtocol.swift in Sources */,
 				BFA189672C842D09004D625D /* MySettingCommunityConventionView.swift in Sources */,
 				BFA188472C8417C0004D625D /* AddressAddView.swift in Sources */,
@@ -3244,7 +3248,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.3;
+				MARKETING_VERSION = 0.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -3282,7 +3286,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.0.3;
+				MARKETING_VERSION = 0.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

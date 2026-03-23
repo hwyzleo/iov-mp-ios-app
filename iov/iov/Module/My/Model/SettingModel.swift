@@ -46,6 +46,9 @@ extension SettingModel: SettingModelRouterProtocol {
     func routeToPermissionManagement() {
         routerSubject.screen.send(.permissionManagement)
     }
+    func routeToAboutUs() {
+        routerSubject.screen.send(.aboutUs)
+    }
 //    func routeToAccountChange() {
 //        routerSubject.screen.send(.accountChange)
 //    }

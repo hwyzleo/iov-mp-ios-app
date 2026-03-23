@@ -38,6 +38,8 @@
 "login_register" = "login / register";
 "logout" = "logout";
 "logout_confirm" = "Are you sure you want to log out?";
+"clear_cache" = "Clear Cache";
+"clear_cache_confirm" = "Are you sure you want to clear the local cache?";
 "mall" = "Mall";
 "modify_model_config" = "modify config";
 "my" = "My";
@@ -70,6 +72,11 @@
 "permission_status_not_determined" = "Not Determined";
 "permission_alert_title" = "Permission Settings";
 "permission_alert_message" = "You can go to System Settings to modify the status of \"%@\".";
+"about_us" = "About Us";
+"official_website" = "Official Website";
+"email" = "Email";
+"customer_service_phone" = "Customer Service Phone";
+"app_filing_number" = "App Filing Number";
 "prepare_deliver" = "prepare deliver";
 "prepare_transport" = "prepare transport";
 "price_detail" = "price detail";

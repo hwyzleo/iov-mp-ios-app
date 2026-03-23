@@ -25,6 +25,7 @@ struct SettingPage: View {
             SettingPage.Content(
                 tapProfile: { intent.onTapProfile() },
                 tapPermissionManagement: { intent.onTapPermissionManagement() },
+                tapAboutUs: { intent.onTapAboutUs() },
                 loginAction: { intent.onTapLogin() },
                 logoutAction: { intent.onTapLogout() }, 
                 appVersion: appVersion,
@@ -44,6 +45,7 @@ extension SettingPage {
         
         var tapProfile: (()->Void)?
         var tapPermissionManagement: (()->Void)?
+        var tapAboutUs: (()->Void)?
         var tapAccountChange: (()->Void)?
         var tapAccountSecurity: (()->Void)?
         var tapAccountBinding: (()->Void)?
@@ -55,6 +57,8 @@ extension SettingPage {
         var logoutAction: (()->Void)?
         var appVersion: String
         @State private var showAlert = false
+        @State private var showClearCacheAlert = false
+        @State private var cacheSizeDisplay = "0 MB"
         @State private var showMock = false
         @State private var mockCount: Int = 0
         @Binding var isMock: Bool
@@ -77,16 +81,38 @@ extension SettingPage {
                             SettingPage.List(title: "权限管理") {
                                 tapPermissionManagement?()
                             }
-                            // 版本信息
+                            
+                            // 清除缓存
                             Button(action: { 
-                                mockCount = mockCount + 1
-                                if(isMock && mockCount > 10) {
-                                    showMock = true
-                                    isMock.toggle()
+                                showClearCacheAlert = true
+                            }) {
+                                VStack {
+                                    HStack {
+                                        Text(LocalizedStringKey("clear_cache"))
+                                            .foregroundStyle(AppTheme.colors.fontPrimary)
+                                            .font(AppTheme.fonts.body)
+                                        Spacer()
+                                        Text(cacheSizeDisplay)
+                                            .foregroundStyle(AppTheme.colors.fontSecondary)
+                                            .font(AppTheme.fonts.body)
+                                        Image(systemName: "chevron.right")
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                            .font(AppTheme.fonts.body)
+                                    }
+                                    .padding(.top, 20)
+                                    Divider()
+                                        .padding(.top, 15)
                                 }
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            
+                            // 关于我们
+                            Button(action: { 
+                                tapAboutUs?()
                             }) {
                                 HStack {
-                                    Text(LocalizedStringKey("version"))
+                                    Text(LocalizedStringKey("about_us"))
                                         .foregroundStyle(AppTheme.colors.fontPrimary)
                                         .font(AppTheme.fonts.body)
                                     Spacer()
@@ -98,6 +124,9 @@ extension SettingPage {
                                             .foregroundStyle(AppTheme.colors.fontSecondary)
                                             .font(AppTheme.fonts.body)
                                     }
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(AppTheme.colors.fontSecondary)
+                                        .font(AppTheme.fonts.body)
                                 }
                                 .padding(.vertical, 20)
                             }
@@ -134,6 +163,27 @@ extension SettingPage {
                 } message: {
                     Text(LocalizedStringKey("logout_confirm"))
                 }
+                .alert(Text(LocalizedStringKey("tip")), isPresented: $showClearCacheAlert) {
+                    Button(LocalizedStringKey("cancel"), role: .cancel) { }
+                    Button(LocalizedStringKey("confirm")) {
+                        CacheManager.clearCache {
+                            refreshCacheSize()
+                        }
+                    }
+                } message: {
+                    Text(LocalizedStringKey("clear_cache_confirm"))
+                }
+                .onAppear {
+                    refreshCacheSize()
+                    // 重置 mock 计数
+                    mockCount = 0
+                }
+            }
+        }
+        
+        private func refreshCacheSize() {
+            CacheManager.getCacheSize { size in
+                cacheSizeDisplay = CacheManager.formatCacheSize(size)
             }
         }
     }
@@ -247,8 +297,6 @@ struct PermissionManagementView: View {
             pAddStatus = pReadStatus
         }
         
-        // 在 iOS 17 “私密访问”下，pReadStatus 可能是 notDetermined，但 pAddStatus 可能是 authorized
-        // 或者只要有 entry 存在，我们认为用户已经做出了某种形式的授权选择
         if pReadStatus == .authorized || pReadStatus == .limited || pAddStatus == .authorized || pAddStatus == .limited {
             photoStatus = "permission_status_authorized"
         } else if pReadStatus == .denied || pReadStatus == .restricted || pAddStatus == .denied || pAddStatus == .restricted {
@@ -280,7 +328,6 @@ struct PermissionManagementView: View {
             case .restricted: self.networkStatus = "permission_status_denied"
             case .notRestricted: self.networkStatus = "permission_status_authorized"
             case .restrictedStateUnknown:
-                // 默认认为已授权，因为 unknown 通常出现在能够正常联网但系统尚未分类时
                 self.networkStatus = "permission_status_authorized"
             @unknown default:
                 self.networkStatus = "permission_status_not_determined"
@@ -334,6 +381,86 @@ struct PermissionItem: View {
             }
         }
         .buttonStyle(.plain)
+    }
+}
+
+// MARK: - About Us
+
+struct AboutUsView: View {
+    @EnvironmentObject var appGlobalState: AppGlobalState
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            Spacer().frame(height: kStatusBarHeight)
+            TopBackTitleBar(titleLocal: LocalizedStringKey("about_us"))
+            ScrollView {
+                VStack(spacing: 40) {
+                    // Logo & App Name
+                    VStack(spacing: 15) {
+                        Image("icon_app_320")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 80, height: 80)
+                            .cornerRadius(16)
+
+                        VStack(spacing: 5) {
+                            Text("Open IOV")
+                                .font(AppTheme.fonts.title1)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            Text("Version \(appVersion)")
+                                .font(AppTheme.fonts.subtext)
+                                .foregroundColor(AppTheme.colors.fontSecondary)
+                        }
+                    }
+                    .padding(.top, 40)
+                    
+                    // Info List
+                    VStack(spacing: 0) {
+                        AboutUsItem(title: "official_website", content: "www.open-iov.com")
+                        AboutUsItem(title: "email", content: "support@open-iov.com")
+                        AboutUsItem(title: "customer_service_phone", content: "400-123-4567")
+                        AboutUsItem(title: "app_filing_number", content: "京ICP备2024000001号-1", isLast: true)
+                    }
+                    .appCardStyle()
+                    .padding(.horizontal, AppTheme.layout.margin)
+                }
+            }
+        }
+        .appBackground()
+        .onAppear {
+            appGlobalState.currentView = "AboutUs"
+        }
+    }
+}
+
+struct AboutUsItem: View {
+    var title: String
+    var content: String
+    var isLast: Bool = false
+    
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(LocalizedStringKey(title))
+                    .font(AppTheme.fonts.body)
+                    .foregroundColor(AppTheme.colors.fontPrimary)
+                Spacer()
+                Text(content)
+                    .font(AppTheme.fonts.body)
+                    .foregroundColor(AppTheme.colors.fontSecondary)
+            }
+            .padding(.vertical, 20)
+            if !isLast {
+                Divider()
+            }
+        }
+    }
+}
+
+extension AboutUsView {
+    static func build() -> some View {
+        AboutUsView()
     }
 }
 

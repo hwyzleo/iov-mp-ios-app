@@ -38,6 +38,8 @@
 "login_register" = "登录 / 注册";
 "logout" = "退出登录";
 "logout_confirm" = "您确定登出？";
+"clear_cache" = "清除缓存";
+"clear_cache_confirm" = "您确定要清除本地缓存？";
 "mall" = "商城";
 "modify_model_config" = "修改配置";
 "my" = "我的";
@@ -70,6 +72,11 @@
 "permission_status_not_determined" = "未确定";
 "permission_alert_title" = "权限设置";
 "permission_alert_message" = "您可以前往系统设置中修改“%@”状态。";
+"about_us" = "关于我们";
+"official_website" = "官方网站";
+"email" = "邮箱";
+"customer_service_phone" = "客服电话";
+"app_filing_number" = "APP 备案号";
 "prepare_deliver" = "已达到交付中心，交付准备中";
 "prepare_transport" = "正在安排运输";
 "price_detail" = "价格明细";

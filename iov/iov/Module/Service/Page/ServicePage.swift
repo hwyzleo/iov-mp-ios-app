@@ -165,7 +165,7 @@ extension ServicePage {
                             
                             // 售后中心概览图
                             ZStack(alignment: .bottomLeading) {
-                                KFImage(URL(string: "https://pic.imgdb.cn/item/65f6a0369f345e8d03dcb099.png")!)
+                                KFImage(URL(string: "https://i.ibb.co/7tHhCRMf/image-cc-640.png")!)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(height: 140)
