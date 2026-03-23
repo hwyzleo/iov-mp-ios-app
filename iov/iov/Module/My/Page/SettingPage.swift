@@ -129,6 +129,7 @@ extension SettingPage {
                                         .font(AppTheme.fonts.body)
                                 }
                                 .padding(.vertical, 20)
+                                .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
                         }
