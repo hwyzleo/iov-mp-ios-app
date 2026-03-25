@@ -41,7 +41,11 @@
 "clear_cache" = "清除缓存";
 "clear_cache_confirm" = "您确定要清除本地缓存？";
 "mall" = "商城";
-"modify_model_config" = "修改配置";
+"modify_model_config" = "修改车型配置";
+"confirm_delete" = "确认删除";
+"confirm_delete_wishlist_msg" = "确定要删除这个心愿单吗？";
+"delete" = "删除";
+"cancel" = "取消";
 "my" = "我的";
 "my_order" = "我的订单";
 "my_vehicle" = "爱车";

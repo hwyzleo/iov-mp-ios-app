@@ -62,9 +62,9 @@ struct SaleModelConfig: Codable, Hashable {
     /// 销售车型配置类型图片
     var typeImage: [String]
     /// 销售车型配置类型描述
-    var typeDesc: String
+    var typeDesc: String?
     /// 销售车型配置类型参数
-    var typeParam: String
+    var typeParam: String?
 }
 
 /// 已选择的销售车型

@@ -41,7 +41,11 @@
 "clear_cache" = "Clear Cache";
 "clear_cache_confirm" = "Are you sure you want to clear the local cache?";
 "mall" = "Mall";
-"modify_model_config" = "modify config";
+"modify_model_config" = "Modify Config";
+"confirm_delete" = "Confirm Delete";
+"confirm_delete_wishlist_msg" = "Are you sure you want to delete this wishlist?";
+"delete" = "Delete";
+"cancel" = "Cancel";
 "my" = "My";
 "my_order" = "my order";
 "my_vehicle" = "Vehicle";

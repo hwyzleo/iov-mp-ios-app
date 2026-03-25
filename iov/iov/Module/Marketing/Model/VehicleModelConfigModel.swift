@@ -13,7 +13,7 @@ final class VehicleModelConfigModel: ObservableObject, VehicleModelConfigModelSt
     var saleCode: String = ""
     var models: [SaleModelConfig] = []
     @Published var selectModel: String = ""
-    var selectModelName: String = ""
+    @Published var selectModelName: String = ""
     @Published var selectModelPrice: Decimal = 0
     var spareTires: [SaleModelConfig] = []
     @Published var selectSpareTire: String = ""

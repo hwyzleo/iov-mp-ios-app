@@ -19,93 +19,91 @@ extension VehicleModelConfigPage {
         
         var body: some View {
             VStack(spacing: 0) {
-                TabView(selection: $selectedTab) {
-                    ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
-                        KFImage(URL(string: exterior.typeImage[0])!)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: .infinity)
-                            .tag(index)
-                    }
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
-                    VStack {
-                        if selectedTab == index {
-                            Text(exterior.typeName)
-                                .foregroundStyle(AppTheme.colors.fontPrimary)
-                                .font(.system(size: 22))
-                            if exterior.typePrice == 0 {
-                                Text(LocalizedStringKey("included"))
-                                    .foregroundStyle(AppTheme.colors.fontSecondary)
-                                    .font(.system(size: 15))
-                            } else {
-                                Text("￥\(exterior.typePrice.formatted())")
-                                    .foregroundStyle(AppTheme.colors.fontSecondary)
-                                    .font(.system(size: 15))
-                            }
+                // 展示舞台
+                ZStack(alignment: .bottom) {
+                    // 底部阴影/舞台光
+                    Ellipse()
+                        .fill(RadialGradient(colors: [Color.white.opacity(0.1), Color.clear], center: .center, startRadius: 0, endRadius: 150))
+                        .frame(width: 300, height: 60)
+                        .blur(radius: 20)
+                        .offset(y: 20)
+                    
+                    TabView(selection: $selectedTab) {
+                        ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
+                            KFImage(URL(string: exterior.typeImage[0])!)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                                .tag(index)
                         }
                     }
+                    .frame(height: 240)
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
-                HStack {
+                .padding(.top, 20)
+                
+                // 选中的文字描述
+                if !exteriors.isEmpty && selectedTab < exteriors.count {
+                    VStack(spacing: 6) {
+                        Text(exteriors[selectedTab].typeName)
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundColor(AppTheme.colors.fontPrimary)
+                        
+                        Text(exteriors[selectedTab].typePrice == 0 ? LocalizedStringKey("included") : "￥\(exteriors[selectedTab].typePrice.formatted())")
+                            .font(AppTheme.fonts.body)
+                            .foregroundColor(AppTheme.colors.brandMain)
+                    }
+                    .padding(.top, 24)
+                }
+                
+                // 色块选择器
+                HStack(spacing: 18) {
                     ForEach(Array(exteriors.enumerated()), id:\.offset) { index, exterior in
                         Button(action: {
-                            intent.onTapExterior(code: exterior.typeCode, price: exterior.typePrice)
-                            selectedTab = index
+                            withAnimation(.spring()) {
+                                selectedTab = index
+                                intent.onTapExterior(code: exterior.typeCode, price: exterior.typePrice)
+                            }
                         }) {
                             ZStack {
-                                Image(systemName: "circle.fill")
-                                    .resizable()
-                                    .frame(width: 30, height: 30)
-                                if selectedTab == index {
-                                    Image(systemName: "circle")
-                                        .resizable()
-                                        .frame(width: 50, height: 50)
-                                }
+                                Circle()
+                                    .fill(Color(hexStr: exterior.typeParam ?? ""))
+                                    .frame(width: 36, height: 32)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(Color.white, lineWidth: selectedTab == index ? 2 : 0)
+                                            .padding(-4)
+                                    )
+                                    .shadow(color: Color(hexStr: exterior.typeParam ?? "").opacity(selectedTab == index ? 0.6 : 0), radius: 8)
                             }
                         }
-                        .foregroundColor(Color(hexStr: exterior.typeParam))
-                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.plain)
                     }
                 }
-                .padding()
-                .background(Color(UIColor.systemBackground))
-                Spacer().frame(height: 100)
+                .padding(.top, 32)
+                
+                Spacer()
             }
             .onAppear() {
                 if exteriors.isEmpty {
                     exteriors = state.exteriors
                 }
-                if !exteriors.isEmpty {
-                    if state.selectExterior == "" {
-                        if let firstExterior = exteriors.first {
-                            intent.onTapExterior(code: firstExterior.typeCode, price: firstExterior.typePrice)
-                        }
-                    } else {
-                        var i = 0
-                        for exterior in exteriors {
-                            if exterior.typeCode == state.selectExterior {
-                                selectedTab = i
-                            }
-                            i = i + 1
-                        }
+                syncSelectedIndex()
+                if !exteriors.isEmpty && state.selectExterior == "" {
+                    if let firstExterior = exteriors.first {
+                        intent.onTapExterior(code: firstExterior.typeCode, price: firstExterior.typePrice)
                     }
                 }
             }
+            .onChange(of: state.selectExterior) { _ in
+                syncSelectedIndex()
+            }
         }
-    }
-}
-
-struct VehicleModelConfigPage_Exterior_Previews: PreviewProvider {
-    static var previews: some View {
-        VehicleModelConfigPage.Exterior(container: VehicleModelConfigPage.buildContainer(), exteriors: [
-            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS06", typeName: "冰川白车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], typeDesc: "", typeParam: "#e8e8e7"),
-            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS05", typeName: "银河灰车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], typeDesc: "", typeParam: "#868888"),
-            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS04", typeName: "星尘银车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], typeDesc: "", typeParam: "#cbcbce"),
-            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS03", typeName: "天际蓝车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], typeDesc: "", typeParam: "#4681ad"),
-            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS02", typeName: "翡翠绿车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], typeDesc: "", typeParam: "#3a5337"),
-            SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS01", typeName: "墨玉黑车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: "#0f0e11")
-        ])
-            .environment(\.locale, .init(identifier: "zh-Hans"))
+        
+        private func syncSelectedIndex() {
+            if let index = exteriors.firstIndex(where: { $0.typeCode == state.selectExterior }) {
+                selectedTab = index
+            }
+        }
     }
 }

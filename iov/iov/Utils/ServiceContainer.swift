@@ -25,9 +25,6 @@ struct ServiceContainer {
     
     /// 获取购车营销相关的业务服务
     static var marketingService: MarketingServiceProtocol {
-        if AppGlobalState.shared.isMock {
-            return MockMarketingService()
-        }
         return RealMarketingService()
     }
 }

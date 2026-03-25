@@ -114,29 +114,15 @@ class TspApi {
     
     /// 获取销售门店
     static func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let res = mockDealership()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+            completion(result)
         }
     }
     
     /// 获取交付中心
     static func getDeliveryCenter(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"D"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let res = mockDeliveryCenter()
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
+        TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"D"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+            completion(result)
         }
     }
     
