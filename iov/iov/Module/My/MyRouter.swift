@@ -34,6 +34,7 @@ extension MyRouter {
         case chargingPile
         case permissionManagement
         case aboutUs
+        case languageSetting
 
         var routeType: RouterScreenPresentationType {
             switch self {
@@ -66,6 +67,8 @@ extension MyRouter {
             case .permissionManagement:
                 return .navigationLink
             case .aboutUs:
+                return .navigationLink
+            case .languageSetting:
                 return .navigationLink
             }
         }
@@ -117,6 +120,9 @@ extension MyRouter {
                 .navigationBarHidden(true)
         case .aboutUs:
             AboutUsView.build()
+                .navigationBarHidden(true)
+        case .languageSetting:
+            LanguageSettingView.build()
                 .navigationBarHidden(true)
         }
     }

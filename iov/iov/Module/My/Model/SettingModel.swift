@@ -49,6 +49,9 @@ extension SettingModel: SettingModelRouterProtocol {
     func routeToAboutUs() {
         routerSubject.screen.send(.aboutUs)
     }
+    func routeToLanguageSetting() {
+        routerSubject.screen.send(.languageSetting)
+    }
 //    func routeToAccountChange() {
 //        routerSubject.screen.send(.accountChange)
 //    }

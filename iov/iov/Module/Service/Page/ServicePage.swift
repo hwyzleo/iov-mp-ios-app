@@ -52,7 +52,7 @@ extension ServicePage {
                         // 便捷服务
                         VStack(alignment: .leading, spacing: 16) {
                             HStack {
-                                Text("便捷服务")
+                                Text(LocalizedStringKey("convenient_service"))
                                     .font(AppTheme.fonts.title1)
                                     .bold()
                                     .foregroundColor(AppTheme.colors.fontPrimary)
@@ -60,17 +60,17 @@ extension ServicePage {
                             }
                             
                             HStack(spacing: 0) {
-                                ServiceIconItem(icon: "car.fill", name: "取送车")
-                                ServiceIconItem(icon: "antenna.radiowaves.left.and.right", name: "流量服务")
-                                ServiceIconItem(icon: "lifepreserver.fill", name: "道路救援")
-                                ServiceIconItem(icon: "square.and.pencil", name: "编辑", isAction: true)
+                                ServiceIconItem(icon: "car.fill", nameKey: "pick_up_and_drop_off")
+                                ServiceIconItem(icon: "antenna.radiowaves.left.and.right", nameKey: "data_service")
+                                ServiceIconItem(icon: "lifepreserver.fill", nameKey: "roadside_assistance")
+                                ServiceIconItem(icon: "square.and.pencil", nameKey: "edit", isAction: true)
                             }
                         }
                         .appCardStyle()
                         
                         // 能源服务
                         VStack(alignment: .leading, spacing: 16) {
-                            SectionTitle(title: "能源服务")
+                            SectionTitle(titleKey: "energy_service")
                             
                             VStack(spacing: 0) {
                                 // 地图组件区域
@@ -161,7 +161,7 @@ extension ServicePage {
                         
                         // 售后服务
                         VStack(alignment: .leading, spacing: 16) {
-                            SectionTitle(title: "售后服务")
+                            SectionTitle(titleKey: "after_sales_service")
                             
                             // 售后中心概览图
                             ZStack(alignment: .bottomLeading) {
@@ -234,7 +234,7 @@ extension ServicePage {
                         
                         // 用车服务
                         VStack(alignment: .leading, spacing: 16) {
-                            SectionTitle(title: "用车服务")
+                            SectionTitle(titleKey: "vehicle_service")
                             
                             let columns = [
                                 GridItem(.flexible()),
@@ -244,11 +244,11 @@ extension ServicePage {
                             ]
                             
                             LazyVGrid(columns: columns, spacing: 20) {
-                                ServiceIconItem(icon: "calendar.badge.plus", name: "服务预约")
-                                ServiceIconItem(icon: "lifepreserver", name: "道路救援")
-                                ServiceIconItem(icon: "car.side.front.open.fill", name: "取送服务")
-                                ServiceIconItem(icon: "exclamationmark.shield", name: "车损上报")
-                                ServiceIconItem(icon: "doc.text.below.ecg", name: "养护报告")
+                                ServiceIconItem(icon: "calendar.badge.plus", nameKey: "service_booking")
+                                ServiceIconItem(icon: "lifepreserver", nameKey: "roadside_assistance")
+                                ServiceIconItem(icon: "car.side.front.open.fill", nameKey: "pick_up_service")
+                                ServiceIconItem(icon: "exclamationmark.shield", nameKey: "vehicle_damage_report")
+                                ServiceIconItem(icon: "doc.text.below.ecg", nameKey: "maintenance_report")
                             }
                             .padding(.top, 8)
                         }
@@ -256,7 +256,7 @@ extension ServicePage {
                         
                         // 用车工具
                         VStack(alignment: .leading, spacing: 16) {
-                            SectionTitle(title: "用车工具")
+                            SectionTitle(titleKey: "vehicle_tools")
                             
                             let columns = [
                                 GridItem(.flexible()),
@@ -266,10 +266,10 @@ extension ServicePage {
                             ]
                             
                             LazyVGrid(columns: columns, spacing: 20) {
-                                ServiceIconItem(icon: "book.closed.fill", name: "使用手册")
-                                ServiceIconItem(icon: "shield.righthalf.filled", name: "三包政策")
-                                ServiceIconItem(icon: "lightbulb.fill", name: "指示灯说明")
-                                ServiceIconItem(icon: "info.circle.fill", name: "关于车辆")
+                                ServiceIconItem(icon: "book.closed.fill", nameKey: "user_manual")
+                                ServiceIconItem(icon: "shield.righthalf.filled", nameKey: "warranty_policy")
+                                ServiceIconItem(icon: "lightbulb.fill", nameKey: "indicator_lights_explanation")
+                                ServiceIconItem(icon: "info.circle.fill", nameKey: "about_vehicle")
                             }
                             .padding(.top, 8)
                         }
@@ -289,9 +289,9 @@ extension ServicePage {
 
 // MARK: - 辅助组件
 private struct SectionTitle: View {
-    var title: String
+    var titleKey: String
     var body: some View {
-        Text(title)
+        Text(LocalizedStringKey(titleKey))
             .font(AppTheme.fonts.title1)
             .bold()
             .foregroundColor(AppTheme.colors.fontPrimary)
@@ -300,7 +300,7 @@ private struct SectionTitle: View {
 
 private struct ServiceIconItem: View {
     var icon: String
-    var name: String
+    var nameKey: String
     var useSystemIcon: Bool = true
     var isAction: Bool = false
     
@@ -322,7 +322,7 @@ private struct ServiceIconItem: View {
                 }
             }
             
-            Text(name)
+            Text(LocalizedStringKey(nameKey))
                 .font(.system(size: 12))
                 .foregroundColor(AppTheme.colors.fontSecondary)
         }

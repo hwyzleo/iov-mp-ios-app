@@ -9,16 +9,23 @@ import SwiftUI
 
 extension SettingPage {
     struct List: View {
-        var title: String
+        var title: String = ""
+        var titleLocal: LocalizedStringKey?
         var action: (() -> Void)?
         
         var body: some View {
             Button(action: { action?() }) {
                 VStack {
                     HStack {
-                        Text(title)
-                            .foregroundStyle(AppTheme.colors.fontPrimary)
-                            .font(AppTheme.fonts.body)
+                        if let local = titleLocal {
+                            Text(local)
+                                .foregroundStyle(AppTheme.colors.fontPrimary)
+                                .font(AppTheme.fonts.body)
+                        } else {
+                            Text(title)
+                                .foregroundStyle(AppTheme.colors.fontPrimary)
+                                .font(AppTheme.fonts.body)
+                        }
                         Spacer()
                         Image(systemName: "chevron.right")
                             .foregroundColor(AppTheme.colors.fontSecondary)

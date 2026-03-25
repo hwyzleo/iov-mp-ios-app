@@ -55,7 +55,7 @@ extension CommunityPage {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(AppTheme.colors.fontTertiary)
-                        TextField("搜索感兴趣的内容", text: $searchText)
+                        TextField(LocalizedStringKey("search_explore_placeholder"), text: $searchText)
                             .font(.system(size: 14))
                             .foregroundColor(AppTheme.colors.fontPrimary)
                     }

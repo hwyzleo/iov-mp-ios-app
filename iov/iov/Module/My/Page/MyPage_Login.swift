@@ -44,9 +44,12 @@ extension MyPage {
                                         Text(user.nickname)
                                             .font(AppTheme.fonts.bigTitle)
                                             .foregroundColor(AppTheme.colors.fontPrimary)
-                                        Text("编辑个人资料 >")
-                                            .font(AppTheme.fonts.subtext)
-                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                        HStack(spacing: 4) {
+                                            Text(LocalizedStringKey("edit_profile"))
+                                            Text(">")
+                                        }
+                                        .font(AppTheme.fonts.subtext)
+                                        .foregroundColor(AppTheme.colors.fontSecondary)
                                     }
                                 }
                                 .buttonStyle(.plain)
@@ -59,10 +62,10 @@ extension MyPage {
                             }
                             
                             HStack(spacing: 0) {
-                                StatItem(count: user.followingCount, label: "关注")
-                                StatItem(count: user.followerCount, label: "粉丝")
-                                StatItem(count: user.postCount, label: "发布")
-                                StatItem(count: user.collectionCount, label: "收藏")
+                                StatItem(count: user.followingCount, labelKey: "following")
+                                StatItem(count: user.followerCount, labelKey: "followers")
+                                StatItem(count: user.postCount, labelKey: "posts")
+                                StatItem(count: user.collectionCount, labelKey: "favorites")
                             }
                         }
                         .appCardStyle()
@@ -87,15 +90,13 @@ extension MyPage {
                                             .offset(x: 10, y: -10)
                                     }
                                 }
-                                
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text("消息中心")
+                                    Text(LocalizedStringKey("message_center"))
                                         .font(AppTheme.fonts.body)
                                         .foregroundColor(AppTheme.colors.fontPrimary)
-                                    Text(user.latestMsgTitle.isEmpty ? "暂无新消息" : user.latestMsgTitle)
+                                    Text(user.latestMsgTitle.isEmpty ? LocalizedStringKey("no_new_messages") : LocalizedStringKey(user.latestMsgTitle))
                                         .font(AppTheme.fonts.subtext)
                                         .foregroundColor(AppTheme.colors.fontSecondary)
-                                        .lineLimit(1)
                                 }
                                 Spacer()
                                 Image(systemName: "chevron.right")
@@ -108,22 +109,22 @@ extension MyPage {
                         
                         // 第4块：功能宫格
                         VStack(alignment: .leading, spacing: 16) {
-                            Text("常用功能")
+                            Text(LocalizedStringKey("common_features"))
                                 .font(AppTheme.fonts.title1)
                                 .foregroundColor(AppTheme.colors.fontPrimary)
                             
                             LazyVGrid(columns: gridItems, spacing: 24) {
-                                FeatureItem(icon: "diamond", label: "我的积分")
-                                FeatureItem(icon: "medal", label: "我的权益")
-                                FeatureItem(icon: "file", label: "我的卡包")
-                                FeatureItem(icon: "order", label: "我的订单")
-                                FeatureItem(icon: "icon_lock", label: "我的金融")
-                                FeatureItem(icon: "invite", label: "我的卡券")
-                                FeatureItem(icon: "icon_vehicle", label: "我的预约")
-                                FeatureItem(icon: "testDriveReport", label: "我的试驾")
-                                FeatureItem(icon: "icon_circle_check", label: "我的保单")
-                                FeatureItem(icon: "article", label: "我的活动")
-                                FeatureItem(icon: "chargingPile", label: "我的家充桩")
+                                FeatureItem(icon: "diamond", labelKey: "my_points")
+                                FeatureItem(icon: "medal", labelKey: "my_rights")
+                                FeatureItem(icon: "file", labelKey: "my_card_pack")
+                                FeatureItem(icon: "order", labelKey: "my_order")
+                                FeatureItem(icon: "icon_lock", labelKey: "my_finance")
+                                FeatureItem(icon: "invite", labelKey: "my_card_pack")
+                                FeatureItem(icon: "icon_vehicle", labelKey: "my_booking")
+                                FeatureItem(icon: "testDriveReport", labelKey: "my_test_drive")
+                                FeatureItem(icon: "icon_circle_check", labelKey: "my_insurance")
+                                FeatureItem(icon: "article", labelKey: "my_activities")
+                                FeatureItem(icon: "chargingPile", labelKey: "my_charging_pile")
                                 Spacer()
                             }
                         }
@@ -131,9 +132,9 @@ extension MyPage {
                         
                         // 第5块：服务支持
                         VStack(spacing: 0) {
-                            ListRowItem(icon: "icon_modify", label: "意见反馈")
+                            ListRowItem(icon: "icon_modify", labelKey: "feedback")
                             Divider().background(Color.white.opacity(0.05)).padding(.leading, 50)
-                            ListRowItem(icon: "phone", label: "联系客服")
+                            ListRowItem(icon: "phone", labelKey: "contact_customer_service")
                         }
                         .appCardStyle()
                         
@@ -153,13 +154,13 @@ extension MyPage {
 
 private struct StatItem: View {
     let count: Int
-    let label: String
+    let labelKey: String
     var body: some View {
         VStack(spacing: 4) {
             Text("\(count)")
                 .font(.system(size: 18, weight: .bold))
                 .foregroundColor(AppTheme.colors.fontPrimary)
-            Text(label)
+            Text(LocalizedStringKey(labelKey))
                 .font(AppTheme.fonts.subtext)
                 .foregroundColor(AppTheme.colors.fontSecondary)
         }
@@ -169,7 +170,7 @@ private struct StatItem: View {
 
 private struct FeatureItem: View {
     let icon: String
-    let label: String
+    let labelKey: String
     var body: some View {
         VStack(spacing: 12) {
             Image(icon)
@@ -177,7 +178,7 @@ private struct FeatureItem: View {
                 .renderingMode(.template)
                 .foregroundColor(AppTheme.colors.brandMain)
                 .frame(width: 26, height: 26)
-            Text(label)
+            Text(LocalizedStringKey(labelKey))
                 .font(.system(size: 12))
                 .foregroundColor(AppTheme.colors.fontPrimary)
         }
@@ -187,7 +188,7 @@ private struct FeatureItem: View {
 
 private struct ListRowItem: View {
     let icon: String
-    let label: String
+    let labelKey: String
     var body: some View {
         HStack(spacing: 16) {
             Image(icon)
@@ -195,7 +196,7 @@ private struct ListRowItem: View {
                 .renderingMode(.template)
                 .foregroundColor(AppTheme.colors.fontSecondary)
                 .frame(width: 20, height: 20)
-            Text(label)
+            Text(LocalizedStringKey(labelKey))
                 .font(AppTheme.fonts.body)
                 .foregroundColor(AppTheme.colors.fontPrimary)
             Spacer()

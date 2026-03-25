@@ -32,6 +32,13 @@ class TspApi {
         }
     }
     
+    /// 更新客户端语言
+    static func updateLanguage(language: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/mp/client/action/updateLanguage", parameters: ["language": language]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
+        }
+    }
+    
     /// 获取有效车辆销售订单列表
     static func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void) {
         TspManager.requestGet(path: "/mp/vehicleSaleOrder/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in

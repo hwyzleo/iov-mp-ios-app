@@ -55,7 +55,7 @@ extension MallPage {
                     HStack(spacing: 12) {
                         Image(systemName: "magnifyingglass")
                             .foregroundColor(AppTheme.colors.fontTertiary)
-                        TextField("搜索商城好物", text: $searchText)
+                        TextField(LocalizedStringKey("search_mall_placeholder"), text: $searchText)
                             .font(.system(size: 14))
                             .foregroundColor(AppTheme.colors.fontPrimary)
                     }

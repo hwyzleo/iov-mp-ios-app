@@ -388,6 +388,7 @@
 		BFADC3042CB4208400834608 /* VehicleModelConfigPage_Interior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */; };
 		BFADC9EF2D9BD9DF004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */; };
 		BFD12FEB2F711DBB00BF26C4 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */; };
+		BFD12FF02F738E5400BF26C4 /* LanguageSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD12FED2F738E5400BF26C4 /* LanguageSettingView.swift */; };
 		BFD4AE442F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */; };
 		BFD4AE452F6C37FC009CA7E6 /* MyAccountQrcodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3F2F6C37FC009CA7E6 /* MyAccountQrcodeView.swift */; };
 		BFD4AE462F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE3D2F6C37FC009CA7E6 /* MyAccountQrcodeModelProtocol.swift */; };
@@ -783,6 +784,7 @@
 		BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Interior.swift; sourceTree = "<group>"; };
 		BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_BookMethodCard.swift; sourceTree = "<group>"; };
 		BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		BFD12FED2F738E5400BF26C4 /* LanguageSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingView.swift; sourceTree = "<group>"; };
 		BFD177B82CABBA2A0028941E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = ../en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BFD177B92CABBBDB0028941E /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "../zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		BFD4AE392F6C37FC009CA7E6 /* MyAccountQrcodeIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeIntent.swift; sourceTree = "<group>"; };
@@ -1641,6 +1643,8 @@
 				BFA1895E2C842C83004D625D /* UserProtocol */,
 				BFA189652C842CF5004D625D /* CommunityConvention */,
 				BFA1896A2C842D3E004D625D /* PrivacyAgreement */,
+				BFD12FEC2F738E4D00BF26C4 /* AboutUs */,
+				BFD12FEF2F738E5400BF26C4 /* Language */,
 			);
 			path = Sub;
 			sourceTree = "<group>";
@@ -2533,6 +2537,29 @@
 			path = Intent;
 			sourceTree = "<group>";
 		};
+		BFD12FEC2F738E4D00BF26C4 /* AboutUs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AboutUs;
+			sourceTree = "<group>";
+		};
+		BFD12FEE2F738E5400BF26C4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				BFD12FED2F738E5400BF26C4 /* LanguageSettingView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		BFD12FEF2F738E5400BF26C4 /* Language */ = {
+			isa = PBXGroup;
+			children = (
+				BFD12FEE2F738E5400BF26C4 /* View */,
+			);
+			path = Language;
+			sourceTree = "<group>";
+		};
 		BFD4AE3B2F6C37FC009CA7E6 /* Intent */ = {
 			isa = PBXGroup;
 			children = (
@@ -3039,6 +3066,7 @@
 				BFA188822C841EFB004D625D /* CommunityArticleView_Carousel.swift in Sources */,
 				BFA187BA2C840DDD004D625D /* CommunityArticleRouter.swift in Sources */,
 				BF3CA3382CC7CDD7006CD801 /* VehicleModelConfigPage_Adas.swift in Sources */,
+				BFD12FF02F738E5400BF26C4 /* LanguageSettingView.swift in Sources */,
 				BFA18A032C84344F004D625D /* ChargingPileModel.swift in Sources */,
 				BFA188BA2C842259004D625D /* CommunityPage_Article.swift in Sources */,
 				BFA18A522C843938004D625D /* MallIntentProtocol.swift in Sources */,

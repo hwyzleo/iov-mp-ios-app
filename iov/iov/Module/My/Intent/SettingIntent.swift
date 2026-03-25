@@ -36,6 +36,9 @@ extension SettingIntent: SettingIntentProtocol {
     func onTapAboutUs() {
         modelRouter?.routeToAboutUs()
     }
+    func onTapLanguageSetting() {
+        modelRouter?.routeToLanguageSetting()
+    }
 //    func onTapAccountChange() {
 //        modelRouter?.routeToAccountChange()
 //    }

@@ -25,6 +25,7 @@ struct SettingPage: View {
             SettingPage.Content(
                 tapProfile: { intent.onTapProfile() },
                 tapPermissionManagement: { intent.onTapPermissionManagement() },
+                tapLanguageSetting: { intent.onTapLanguageSetting() },
                 tapAboutUs: { intent.onTapAboutUs() },
                 loginAction: { intent.onTapLogin() },
                 logoutAction: { intent.onTapLogout() }, 
@@ -45,6 +46,7 @@ extension SettingPage {
         
         var tapProfile: (()->Void)?
         var tapPermissionManagement: (()->Void)?
+        var tapLanguageSetting: (()->Void)?
         var tapAboutUs: (()->Void)?
         var tapAccountChange: (()->Void)?
         var tapAccountSecurity: (()->Void)?
@@ -71,14 +73,17 @@ extension SettingPage {
                 ScrollView {
                     VStack(spacing: AppTheme.layout.spacing) {
                         VStack(spacing: 0) {
-                            SettingPage.List(title: "个人资料") {
+                            SettingPage.List(titleLocal: LocalizedStringKey("profile")) {
                                 if UserManager.isLogin() {
                                     tapProfile?()
                                 } else {
                                     loginAction?()
                                 }
                             }
-                            SettingPage.List(title: "权限管理") {
+                            SettingPage.List(titleLocal: LocalizedStringKey("multi_language")) {
+                                tapLanguageSetting?()
+                            }
+                            SettingPage.List(titleLocal: LocalizedStringKey("permission_management")) {
                                 tapPermissionManagement?()
                             }
                             

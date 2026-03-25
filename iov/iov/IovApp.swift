@@ -17,6 +17,7 @@ struct IovApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appGlobalState)
+                .environment(\.locale, appGlobalState.appLocale)
                 .onAppear() {
                     requestNotificationPrivillege()
                     BluetoothManager.shared.scan()

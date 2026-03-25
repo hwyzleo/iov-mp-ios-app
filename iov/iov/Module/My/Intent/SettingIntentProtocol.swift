@@ -18,6 +18,8 @@ protocol SettingIntentProtocol : MviIntentProtocol {
     func onTapClearCache()
     /// 点击关于我们
     func onTapAboutUs()
+    /// 点击多语言
+    func onTapLanguageSetting()
 //    /// 点击主使用人变更
 //    func onTapAccountChange()
 //    /// 点击账号安全

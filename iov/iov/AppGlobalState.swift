@@ -22,8 +22,23 @@ class AppGlobalState: ObservableObject {
     @Published var parameters: [String: Any] = [:]
     @Published var needRefresh: Bool = false
     @Published var backRefresh: Bool = false
+    @Published var appLocale: Locale = {
+        if let language = UserDefaults.standard.string(forKey: "AppLanguage") {
+            return Locale(identifier: language)
+        }
+        return .current
+    }()
     
     private init() {}
+    
+    func setLanguage(_ language: String) {
+        UserDefaults.standard.set(language, forKey: "AppLanguage")
+        appLocale = Locale(identifier: language)
+        
+        // 云端同步语言设置 (参数传 2 字缩写)
+        let langCode = language.contains("zh") ? "zh" : "en"
+        TspApi.updateLanguage(language: langCode) { _ in }
+    }
     
     func refreshLoginStatus() {
         let currentStatus = UserManager.isLogin()
