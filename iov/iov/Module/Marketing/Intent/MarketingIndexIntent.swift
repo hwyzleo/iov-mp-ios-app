@@ -127,12 +127,16 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             AppGlobalState.shared.parameters["orderDetailView"] = "DOWN_PAYMENT_PAID"
         case .ARRANGE_PRODUCTION:
             AppGlobalState.shared.parameters["orderDetailView"] = "ARRANGE_PRODUCTION"
-        case .ALLOCATION_VEHICLE:
+        case .ALLOCATION_VEHICLE, .SHIPPING_APPLY:
             AppGlobalState.shared.parameters["orderDetailView"] = "ALLOCATION_VEHICLE"
-        case .PREPARE_TRANSPORT:
+        case .PREPARE_TRANSPORT, .TRANSPORTING:
             AppGlobalState.shared.parameters["orderDetailView"] = "PREPARE_TRANSPORT"
         case .PREPARE_DELIVER:
             AppGlobalState.shared.parameters["orderDetailView"] = "PREPARE_DELIVER"
+        case .FINAL_PAYMENT_PAID:
+            AppGlobalState.shared.parameters["orderDetailView"] = "FINAL_PAYMENT_PAID"
+        case .INVOICED:
+            AppGlobalState.shared.parameters["orderDetailView"] = "INVOICED"
         case .DELIVERED:
             AppGlobalState.shared.parameters["orderDetailView"] = "DELIVERED"
         case .ACTIVATED:

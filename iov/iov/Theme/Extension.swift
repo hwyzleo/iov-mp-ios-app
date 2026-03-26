@@ -15,7 +15,18 @@ extension View {
             .background(AppTheme.colors.cardBackground)
             .cornerRadius(radius)
     }
-    
+
+    /// 占位符修饰符
+    func placeholder<Content: View>(
+        when shouldShow: Bool,
+        alignment: Alignment = .leading,
+        @ViewBuilder placeholder: () -> Content) -> some View {
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
+    }
+
     /// 全屏应用深青黑底色
     func appBackground() -> some View {
         self.frame(maxWidth: .infinity, maxHeight: .infinity)

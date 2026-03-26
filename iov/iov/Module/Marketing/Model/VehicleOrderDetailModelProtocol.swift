@@ -68,7 +68,11 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updateSelectOrderPersonType(orderPersonType: Int)
     /// 更新下单人信息
     func updateOrderPerson(orderPersonType: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String)
-    /// 更新选择购车方案
+    /// 更新人员姓名
+    func updateOrderPersonName(name: String)
+    /// 更新人员证件号码
+    func updateOrderPersonIdNum(idNum: String)
+    /// 更新购车方案类型
     func updateSelectPurchasePlan(purchasePlan: Int)
     /// 更新购车方案
     func updatePurchasePlan(purchasePlan: Int)
@@ -94,9 +98,13 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func displayAllocationVehicle()
     /// 显示待运输页
     func displayPrepareTransport()
-    /// 显示待交付页
+    /// 显示待提车
     func displayPrepareDeliver()
-    /// 显示已提车页
+    /// 显示已支付尾款
+    func displayFinalPaymentPaid()
+    /// 显示已开票
+    func displayInvoiced()
+    /// 显示已提车
     func displayDelivered()
 }
 

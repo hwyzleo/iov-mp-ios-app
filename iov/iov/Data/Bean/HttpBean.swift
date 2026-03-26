@@ -95,6 +95,11 @@ struct SelectedSaleModel: Codable {
     var totalPrice: Decimal
     /// 购车权益简介
     var purchaseBenefitsIntro: String
+    
+    enum CodingKeys: String, CodingKey {
+        case saleCode, modelName, earnestMoney, earnestMoneyPrice, downPayment, downPaymentPrice, saleModelImages, saleModelDesc, saleModelConfigName, saleModelConfigPrice, totalPrice, purchaseBenefitsIntro
+        case modelConfigCode = "buildConfigCode"
+    }
 }
 
 /// 心愿单

@@ -163,6 +163,18 @@ extension MarketingIndexPage {
                 RoundedCornerButton(nameLocal: LocalizedStringKey("lock_order"), color: .black, bgColor: AppTheme.colors.brandMain) {
                     intent.onTapLockOrder()
                 }
+            case .FINAL_PAYMENT_PAID:
+                RoundedCornerButton(nameLocal: LocalizedStringKey("final_payment_paid"), color: .black, bgColor: AppTheme.colors.fontTertiary) {
+                    // 已支付尾款，等待提车
+                }
+            case .INVOICED:
+                RoundedCornerButton(nameLocal: LocalizedStringKey("invoiced"), color: .black, bgColor: AppTheme.colors.fontTertiary) {
+                    // 已开票
+                }
+            case .DELIVERED:
+                RoundedCornerButton(nameLocal: LocalizedStringKey("delivered"), color: .black, bgColor: AppTheme.colors.fontTertiary) {
+                    // 已提车
+                }
             default:
                 RoundedCornerButton(nameLocal: LocalizedStringKey("pay_final_payment"), color: .black, bgColor: AppTheme.colors.brandMain) {
                     intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
@@ -177,9 +189,11 @@ extension MarketingIndexPage {
             case .DOWN_PAYMENT_UNPAID: return "down_payment_to_be_paid"
             case .DOWN_PAYMENT_PAID: return "down_payment_paid"
             case .ARRANGE_PRODUCTION: return "arrange_production"
-            case .ALLOCATION_VEHICLE: return "allocation_vehicle"
-            case .PREPARE_TRANSPORT: return "prepare_transport"
+            case .ALLOCATION_VEHICLE, .SHIPPING_APPLY: return "allocation_vehicle"
+            case .PREPARE_TRANSPORT, .TRANSPORTING: return "prepare_transport"
             case .PREPARE_DELIVER: return "prepare_deliver"
+            case .FINAL_PAYMENT_PAID: return "final_payment_paid"
+            case .INVOICED: return "invoiced"
             case .DELIVERED: return "delivered"
             default: return "my_order"
             }

@@ -59,7 +59,7 @@ extension VehicleOrderDetailPage {
                 
                 VStack(spacing: 0) {
                     // 顶部导航 (显式设置文字颜色为白色)
-                    TopBackTitleBar(titleLocal: LocalizedStringKey("book_vehicle"), color: .white)
+                    TopBackTitleBar(titleLocal: L10n.book_vehicle, color: .white)
                         .frame(height: 54)
                     
                     ScrollView {
@@ -74,14 +74,18 @@ extension VehicleOrderDetailPage {
                             .padding(.top, 10)
                             
                             // 2. 预定方式
-                            FormSection(title: "预定方式") {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(L10n.book_method)
+                                    .font(AppTheme.fonts.title1)
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
+                                
                                 VStack(spacing: 12) {
                                     if downPayment {
                                         BookMethodCard(
                                             isSelected: state.selectBookMethod == "downPayment",
                                             tagText: "锁定限时权益",
                                             tagColor: .orange,
-                                            title: "down_payment",
+                                            title: L10n.down_payment,
                                             price: downPaymentPrice,
                                             benefits: purchaseBenefitsIntro
                                         ) {
@@ -93,7 +97,7 @@ extension VehicleOrderDetailPage {
                                             isSelected: state.selectBookMethod == "earnestMoney",
                                             tagText: "意向金随时可退",
                                             tagColor: AppTheme.colors.fontTertiary,
-                                            title: "earnest_money",
+                                            title: L10n.earnest_money,
                                             price: earnestMoneyPrice,
                                             benefits: purchaseBenefitsIntro
                                         ) {
@@ -105,14 +109,14 @@ extension VehicleOrderDetailPage {
                             
                             if state.selectBookMethod == "downPayment" {
                                 // 3. 购车方案
-                                FormSection(title: "购车方案") {
+                                FormSection(title: L10n.purchase_plan) {
                                     VStack(spacing: 20) {
-                                        OptionSelector(title: "购车类型", options: ["个人", "企业"], selectedIndex: orderPersonType - 1) { index in
+                                        OptionSelector(title: L10n.purchase_type, options: ["个人", "企业"], selectedIndex: orderPersonType - 1) { index in
                                             if index == 0 { intent.onTapOrderPersonTypePerson() }
                                             else { intent.onTapOrderPersonTypeOrg() }
                                         }
                                         
-                                        OptionSelector(title: "支付方式", options: ["全款", "分期"], selectedIndex: purchasePlan - 1) { index in
+                                        OptionSelector(title: L10n.payment_method, options: ["全款", "分期"], selectedIndex: purchasePlan - 1) { index in
                                             if index == 0 { intent.onTapPurchasePlanFullPayment() }
                                             else { intent.onTapPurchasePlanStaging() }
                                         }
@@ -120,38 +124,38 @@ extension VehicleOrderDetailPage {
                                 }
                                 
                                 // 4. 车主信息
-                                FormSection(title: "车主（车辆所有人）信息") {
+                                FormSection(title: L10n.owner_info) {
                                     VStack(spacing: 0) {
-                                        InputField(label: orderPersonType == 2 ? "企业名称" : "车主姓名", placeholder: "请输入", text: $orderPersonName, hasError: showNameError)
+                                        InputField(label: orderPersonType == 2 ? L10n.enterprise_name : L10n.owner_name, placeholder: "请输入", text: $orderPersonName, hasError: showNameError)
                                         Divider().background(Color.white.opacity(0.05)).padding(.vertical, 16)
-                                        InputField(label: orderPersonType == 2 ? "企业代码" : "证件号码", placeholder: "请输入", text: $orderPersonIdNum, hasError: showIdNumError)
+                                        InputField(label: orderPersonType == 2 ? L10n.enterprise_code : L10n.certificate_number, placeholder: "请输入", text: $orderPersonIdNum, hasError: showIdNumError)
                                     }
                                 }
                             }
                             
                             // 5. 交付信息
-                            FormSection(title: "交付信息") {
+                            FormSection(title: L10n.delivery_info) {
                                 VStack(spacing: 0) {
-                                    SelectField(label: "上牌城市", placeholder: "请选择", value: selectLicenseCityName, hasError: showLicenseCityError) {
+                                    SelectField(label: L10n.license_city, placeholder: "请选择", value: selectLicenseCityName, hasError: showLicenseCityError) {
                                         intent.onTapLicenseCity()
                                     }
                                     
                                     if state.selectBookMethod == "downPayment" {
                                         Divider().background(Color.white.opacity(0.05)).padding(.vertical, 16)
-                                        SelectField(label: "销售门店", placeholder: "请选择", value: selectDealershipName, hasError: showDealershipError) {
+                                        SelectField(label: L10n.dealership, placeholder: "请选择", value: selectDealershipName, hasError: showDealershipError) {
                                             intent.onTapDealership()
                                         }
                                         Divider().background(Color.white.opacity(0.05)).padding(.vertical, 16)
-                                        SelectField(label: "交付中心", placeholder: "请选择", value: selectDeliveryCenterName, hasError: showDeliveryCenterError) {
+                                        SelectField(label: L10n.delivery_center, placeholder: "请选择", value: selectDeliveryCenterName, hasError: showDeliveryCenterError) {
                                             intent.onTapDeliveryCenter()
                                         }
                                     }
                                 }
                             }
                             
-                            // 6. 价格明细 (将标题拉出来与其他对齐)
+                            // 6. 价格明细
                             VStack(alignment: .leading, spacing: 12) {
-                                Text("价格明细")
+                                Text(L10n.price_detail)
                                     .font(AppTheme.fonts.title1)
                                     .foregroundColor(AppTheme.colors.fontPrimary)
                                 
@@ -164,7 +168,7 @@ extension VehicleOrderDetailPage {
                                     PriceDetailRow(label: saleAdasName, price: saleAdasPrice)
                                     Divider().background(Color.white.opacity(0.1)).padding(.vertical, 4)
                                     HStack {
-                                        Text("总价")
+                                        Text(L10n.total_price_label)
                                             .font(AppTheme.fonts.body)
                                             .foregroundColor(AppTheme.colors.fontPrimary)
                                         Spacer()
@@ -197,16 +201,16 @@ extension VehicleOrderDetailPage {
                             }
                             .buttonStyle(.plain)
                             
-                            Text("我已阅读并同意")
+                            Text(L10n.i_have_read_and_agree)
                                 .font(AppTheme.fonts.subtext)
                                 .foregroundColor(AppTheme.colors.fontSecondary)
-                            Text("《订购协议》")
+                            Text(L10n.order_agreement)
                                 .font(AppTheme.fonts.subtext)
                                 .foregroundColor(AppTheme.colors.brandMain)
                         }
                         
                         RoundedCornerButton(
-                            nameLocal: state.selectBookMethod == "downPayment" ? LocalizedStringKey("pay_down_payment") : LocalizedStringKey("pay_earnest_money"),
+                            nameLocal: state.selectBookMethod == "downPayment" ? L10n.pay_down_payment : L10n.pay_earnest_money,
                             color: .black,
                             bgColor: (state.agreementIsChecked && (state.selectBookMethod != "earnestMoney" || !selectLicenseCityName.isEmpty)) ? AppTheme.colors.brandMain : AppTheme.colors.brandMain.opacity(0.3)
                         ) {
@@ -281,7 +285,7 @@ private struct PriceDetailRow: View {
                 .foregroundColor(AppTheme.colors.fontSecondary)
             Spacer()
             if price == 0 {
-                Text("包含")
+                Text(L10n.price_included_text)
                     .font(AppTheme.fonts.subtext)
                     .foregroundColor(AppTheme.colors.fontPrimary)
             } else {
@@ -294,9 +298,9 @@ private struct PriceDetailRow: View {
 }
 
 private struct FormSection<Content: View>: View {
-    var title: String
+    var title: LocalizedStringKey
     let content: Content
-    init(title: String, @ViewBuilder content: () -> Content) {
+    init(title: LocalizedStringKey, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
     }
@@ -312,7 +316,7 @@ private struct FormSection<Content: View>: View {
 }
 
 private struct OptionSelector: View {
-    var title: String
+    var title: LocalizedStringKey
     var options: [String]
     var selectedIndex: Int
     var onSelect: (Int) -> Void
@@ -341,7 +345,7 @@ private struct OptionSelector: View {
 }
 
 private struct InputField: View {
-    var label: String
+    var label: LocalizedStringKey
     var placeholder: String
     @Binding var text: String
     var hasError: Bool
@@ -367,7 +371,7 @@ private struct InputField: View {
 }
 
 private struct SelectField: View {
-    var label: String
+    var label: LocalizedStringKey
     var placeholder: String
     var value: String
     var hasError: Bool
@@ -398,56 +402,4 @@ private struct SelectField: View {
     }
 }
 
-extension View {
-    func placeholder<Content: View>(
-        when shouldShow: Bool,
-        alignment: Alignment = .leading,
-        @ViewBuilder placeholder: () -> Content) -> some View {
-        ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
-        }
-    }
-}
-
-struct VehicleOrderDetailPage_Order_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState.shared
-    static var previews: some View {
-        VehicleOrderDetailPage.Order(
-            container: VehicleOrderDetailPage.buildContainer(),
-            saleModelImages: [
-                "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png",
-                "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
-            ],
-            saleModelName: "寒01七座版",
-            saleModelDesc: "寒01七座版 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
-            downPayment: true,
-            downPaymentPrice: 5000,
-            earnestMoney: true,
-            earnestMoneyPrice: 5000,
-            purchaseBenefitsIntro: "创始权益（价值6000元）\n首年用车服务包（价值999元）\n5000元选配基金（价值5000元）",
-            orderPersonType: 1,
-            purchasePlan: 1,
-            saleModelPrice: 188888,
-            saleSpareTireName: "有备胎",
-            saleSpareTirePrice: 6000,
-            saleExteriorName: "翡翠绿车漆",
-            saleExteriorPrice: 0,
-            saleWheelName: "21寸轮毂（四季胎）高亮黑",
-            saleWheelPrice: 0,
-            saleInteriorName: "乌木黑内饰",
-            saleInteriorPrice: 0,
-            saleAdasName: "高价智驾",
-            saleAdasPrice: 10000,
-            totalPrice: 205888,
-            selectLicenseCityName: "上海",
-            selectLicenseCityCode: "3101",
-            selectDealershipName: "上海中心店",
-            selectDealershipCode: "SHSA01",
-            selectDeliveryCenterName: "上海交付中心",
-            selectDeliveryCenterCode: "SHDE01"
-        )
-        .environmentObject(appGlobalState)
-        .environment(\.locale, .init(identifier: "zh-Hans"))
-    }
-}
+// MARK: - 价格明细行

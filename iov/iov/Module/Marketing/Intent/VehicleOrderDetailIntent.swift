@@ -39,9 +39,11 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                 case 300: viewName = "DOWN_PAYMENT_UNPAID"
                 case 310: viewName = "DOWN_PAYMENT_PAID"
                 case 400: viewName = "ARRANGE_PRODUCTION"
-                case 450: viewName = "ALLOCATION_VEHICLE"
-                case 500: viewName = "PREPARE_TRANSPORT"
+                case 450, 470: viewName = "ALLOCATION_VEHICLE"
+                case 500, 550: viewName = "PREPARE_TRANSPORT"
                 case 600: viewName = "PREPARE_DELIVER"
+                case 620: viewName = "FINAL_PAYMENT_PAID"
+                case 630: viewName = "INVOICED"
                 case 650: viewName = "DELIVERED"
                 default: break
                 }
@@ -70,6 +72,8 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
             case "ALLOCATION_VEHICLE": handleAllocationVehicle()
             case "PREPARE_TRANSPORT": handlePrepareTransport()
             case "PREPARE_DELIVER": handlePrepareDeliver()
+            case "FINAL_PAYMENT_PAID": handleFinalPaymentPaid()
+            case "INVOICED": handleInvoiced()
             case "DELIVERED": handleDelivered()
             default: handleOrder() // 默认走下单流程
             }
@@ -489,6 +493,86 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
             }
         }
     }
+    private func handleFinalPaymentPaid() {
+        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+                switch result {
+                case .success(let res):
+                    guard let orderResponse = res.data else {
+                        self.modelAction?.displayError(text: "请求异常")
+                        return
+                    }
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelIntro(
+                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc
+                    )
+                    self.modelAction?.updateSaleModelPrice(
+                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice
+                    )
+                    self.modelAction?.updateOrder(
+                        orderNum: orderResponse.orderNum,
+                        orderTime: orderResponse.orderTime
+                    )
+                    self.modelAction?.displayFinalPaymentPaid()
+                case .failure(_):
+                    self.modelAction?.displayError(text: "请求异常")
+                }
+            }
+        }
+    }
+    private func handleInvoiced() {
+        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+                switch result {
+                case .success(let res):
+                    guard let orderResponse = res.data else {
+                        self.modelAction?.displayError(text: "请求异常")
+                        return
+                    }
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelIntro(
+                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc
+                    )
+                    self.modelAction?.updateSaleModelPrice(
+                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice
+                    )
+                    self.modelAction?.updateOrder(
+                        orderNum: orderResponse.orderNum,
+                        orderTime: orderResponse.orderTime
+                    )
+                    self.modelAction?.displayInvoiced()
+                case .failure(_):
+                    self.modelAction?.displayError(text: "请求异常")
+                }
+            }
+        }
+    }
     private func handleDelivered() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
             ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
@@ -703,6 +787,12 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 self.modelAction?.displayError(text: "请求异常")
             }
         }
+    }
+    func onUpdateOrderPersonName(name: String) {
+        modelAction?.updateOrderPersonName(name: name)
+    }
+    func onUpdateOrderPersonIdNum(idNum: String) {
+        modelAction?.updateOrderPersonIdNum(idNum: idNum)
     }
     func onTapLicenseCity() {
         modelRouter?.routeToLicenseArea()

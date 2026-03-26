@@ -37,6 +37,10 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapEarnestMoneyOrder(saleModelName: String, licenseCityCode: String)
     /// 点击定金预定
     func onTapDownPaymentOrder(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, saleModelName: String, licenseCityCode: String, dealership: String, deliveryCenter: String)
+    /// 更新下单人员姓名
+    func onUpdateOrderPersonName(name: String)
+    /// 更新下单人员证件号码
+    func onUpdateOrderPersonIdNum(idNum: String)
     /// 点击取消订单
     func onTapCancelOrder()
     /// 点击订单支付

@@ -66,6 +66,11 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
         self.earnestMoney = earnestMoney
         self.earnestMoneyPrice = earnestMoneyPrice
         self.purchaseBenefitsIntro = purchaseDenefitsIntro
+        if downPayment {
+            self.selectBookMethod = "downPayment"
+        } else if earnestMoney {
+            self.selectBookMethod = "earnestMoney"
+        }
     }
     func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, saleSpareTireName: String, saleSpareTirePrice: Decimal, saleExteriorName: String, saleExteriorPrice: Decimal, saleWheelName: String, saleWheelPrice: Decimal, saleInteriorName: String, saleInteriorPrice: Decimal, saleAdasName: String, saleAdasPrice: Decimal, totalPrice: Decimal) {
         self.saleModelName = saleModelName
@@ -97,6 +102,12 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
         self.orderPersonName = orderPersonName
         self.orderPersonIdType = orderPersonIdType
         self.orderPersonIdNum = orderPersonIdNum
+    }
+    func updateOrderPersonName(name: String) {
+        self.orderPersonName = name
+    }
+    func updateOrderPersonIdNum(idNum: String) {
+        self.orderPersonIdNum = idNum
     }
     func updateSelectPurchasePlan(purchasePlan: Int) {
         self.purchasePlan = purchasePlan
@@ -136,6 +147,12 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     }
     func displayPrepareDeliver() {
         contentState = .prepareDeliver
+    }
+    func displayFinalPaymentPaid() {
+        contentState = .finalPaymentPaid
+    }
+    func displayInvoiced() {
+        contentState = .invoiced
     }
     func displayDelivered() {
         contentState = .delivered
@@ -184,6 +201,8 @@ extension MarketingTypes.Model {
         case allocationVehicle
         case prepareTransport
         case prepareDeliver
+        case finalPaymentPaid
+        case invoiced
         case delivered
         case error(text: String)
     }

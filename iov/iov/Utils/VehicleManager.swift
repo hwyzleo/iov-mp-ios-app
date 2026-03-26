@@ -202,10 +202,18 @@ enum OrderState: Int {
     case ARRANGE_PRODUCTION = 400
     /// 已分配车辆
     case ALLOCATION_VEHICLE = 450
+    /// 发运申请
+    case SHIPPING_APPLY = 470
     /// 待运输
     case PREPARE_TRANSPORT = 500
+    /// 运输中
+    case TRANSPORTING = 550
     /// 待交付
     case PREPARE_DELIVER = 600
+    /// 已支付尾款
+    case FINAL_PAYMENT_PAID = 620
+    /// 已开票
+    case INVOICED = 630
     /// 已交付
     case DELIVERED = 650
     /// 已激活

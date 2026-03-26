@@ -41,6 +41,8 @@
 		BF554B032CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B022CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift */; };
 		BF554B052CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B042CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift */; };
 		BF554B072CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B062CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift */; };
+		BFA6202C2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */; };
+		BFA6302C2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */; };
 		BF554B092CD34A620025E7D4 /* DealershipModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B082CD34A620025E7D4 /* DealershipModelProtocol.swift */; };
 		BF554B0B2CD34A9B0025E7D4 /* DealershipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B0A2CD34A9B0025E7D4 /* DealershipModel.swift */; };
 		BF554B0D2CD34AE20025E7D4 /* DealershipPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B0C2CD34AE20025E7D4 /* DealershipPage.swift */; };
@@ -436,6 +438,8 @@
 		BF554B022CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_PrepareTransport.swift; sourceTree = "<group>"; };
 		BF554B042CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_PrepareDeliver.swift; sourceTree = "<group>"; };
 		BF554B062CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Delivered.swift; sourceTree = "<group>"; };
+		BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_FinalPaymentPaid.swift; sourceTree = "<group>"; };
+		BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Invoiced.swift; sourceTree = "<group>"; };
 		BF554B082CD34A620025E7D4 /* DealershipModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealershipModelProtocol.swift; sourceTree = "<group>"; };
 		BF554B0A2CD34A9B0025E7D4 /* DealershipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealershipModel.swift; sourceTree = "<group>"; };
 		BF554B0C2CD34AE20025E7D4 /* DealershipPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealershipPage.swift; sourceTree = "<group>"; };
@@ -2510,6 +2514,8 @@
 				BF554B022CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift */,
 				BF554B042CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift */,
 				BF554B062CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift */,
+				BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */,
+				BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */,
 				BF554AFE2CCF65030025E7D4 /* VehicleOrderDetailPage_Intro.swift */,
 				BF3CA3452CCF5B70006CD801 /* VehicleOrderDetailPage_Price.swift */,
 				BF554B002CCF665F0025E7D4 /* VehicleOrderDetailPage_OrderInfo.swift */,
@@ -3038,6 +3044,8 @@
 				BFA187C02C840E51004D625D /* ProductView.swift in Sources */,
 				BFA188C02C842320004D625D /* MyPage+Build.swift in Sources */,
 				BF554B072CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift in Sources */,
+				BFA6202C2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift in Sources */,
+				BFA6302C2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift in Sources */,
 				BFA188F92C84269E004D625D /* Constants.swift in Sources */,
 				BFA188722C841D5A004D625D /* ProductView_Carousel.swift in Sources */,
 				BFA18A282C84369E004D625D /* VehicleIntentProtocol.swift in Sources */,

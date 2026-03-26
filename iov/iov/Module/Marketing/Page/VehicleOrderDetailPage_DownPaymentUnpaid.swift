@@ -11,6 +11,7 @@ import Kingfisher
 /// 车辆订单详情 - 定金待支付页
 extension VehicleOrderDetailPage {
     struct DownPaymentUnpaid: View {
+        @EnvironmentObject var globalState: AppGlobalState
         @StateObject var container: MviContainer<VehicleOrderDetailIntentProtocol, VehicleOrderDetailModelStateProtocol>
         private var intent: VehicleOrderDetailIntentProtocol { container.intent }
         private var state: VehicleOrderDetailModelStateProtocol { container.model }
@@ -41,165 +42,167 @@ extension VehicleOrderDetailPage {
         var deliveryCenterName: String
         
         var body: some View {
-            GeometryReader { geometry in
-                ZStack(alignment: .top) {
-                    AppTheme.colors.background.ignoresSafeArea()
+            ZStack(alignment: .top) {
+                AppTheme.colors.background.ignoresSafeArea()
+                
+                VStack(spacing: 0) {
+                    // 顶部导航
+                    TopBackTitleBar(titleLocal: L10n.order_detail, color: .white)
+                        .frame(height: 54)
                     
-                    VStack(spacing: 0) {
-                        // 顶部导航
-                        TopBackTitleBar(titleLocal: LocalizedStringKey("order_detail"))
-                            .frame(height: 54)
-                            .padding(.horizontal, AppTheme.layout.margin)
-                        
-                        ScrollView {
-                            VStack(spacing: AppTheme.layout.spacing) {
-                                // 1. 状态标题
-                                HStack {
-                                    Text(LocalizedStringKey("down_payment_to_be_paid"))
+                    ScrollView {
+                        VStack(spacing: AppTheme.layout.spacing) {
+                            // 1. 状态展示
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(L10n.down_payment_to_be_paid)
                                         .font(AppTheme.fonts.bigTitle)
                                         .foregroundColor(AppTheme.colors.fontPrimary)
-                                    Spacer()
                                 }
-                                .padding(.top, 10)
-                                
-                                // 2. 车型简介卡片
-                                VehicleOrderDetailPage.Intro(
-                                    saleModelImages: saleModelImages,
-                                    saleModelName: saleModelName,
-                                    saleModelDesc: saleModelDesc
-                                )
-                                .appCardStyle()
-                                
-                                // 3. 购车方案
-                                FormSection(title: "购车方案") {
-                                    VStack(spacing: 20) {
-                                        OptionSelector(title: "购车类型", options: ["个人", "企业"], selectedIndex: orderPersonType - 1) { index in
-                                            if index == 0 { intent.onTapOrderPersonTypePerson() }
-                                            else { intent.onTapOrderPersonTypeOrg() }
-                                        }
-                                        
-                                        OptionSelector(title: "支付方式", options: ["全款", "分期"], selectedIndex: purchasePlan - 1) { index in
-                                            if index == 0 { intent.onTapPurchasePlanFullPayment() }
-                                            else { intent.onTapPurchasePlanStaging() }
-                                        }
-                                        
-                                        if purchasePlan == 2 {
-                                            HStack {
-                                                Text("金融方案")
-                                                    .font(AppTheme.fonts.body)
-                                                    .foregroundColor(AppTheme.colors.fontPrimary)
-                                                Spacer()
-                                                Image(systemName: "chevron.right")
-                                                    .font(.system(size: 12))
-                                                    .foregroundColor(AppTheme.colors.fontTertiary)
-                                            }
-                                        }
-                                    }
-                                }
-                                
-                                // 4. 车主信息
-                                FormSection(title: "车主（车辆所有人）信息") {
-                                    VStack(spacing: 12) {
-                                        InfoRow(label: orderPersonType == 2 ? "企业名称" : "车主姓名", value: orderPersonName)
-                                        if orderPersonType != 2 {
-                                            InfoRow(label: "证件类型", value: "身份证")
-                                        }
-                                        InfoRow(label: orderPersonType == 2 ? "企业代码" : "证件号码", value: orderPersonIdNum)
-                                    }
-                                }
-                                
-                                // 5. 交付信息
-                                FormSection(title: "交付信息") {
-                                    VStack(spacing: 16) {
-                                        SelectField(label: "上牌城市", placeholder: "", value: licenseCity, hasError: false) {
-                                            intent.onTapLicenseCity()
-                                        }
-                                        Divider().background(Color.white.opacity(0.05))
-                                        SelectField(label: "销售门店", placeholder: "", value: dealershipName, hasError: false) {
-                                            intent.onTapDealership()
-                                        }
-                                        Divider().background(Color.white.opacity(0.05))
-                                        SelectField(label: "交付中心", placeholder: "", value: deliveryCenterName, hasError: false) {
-                                            intent.onTapDeliveryCenter()
-                                        }
-                                    }
-                                }
-                                
-                                // 6. 价格明细
-                                FormSection(title: "价格明细") {
-                                    VehicleOrderDetailPage.Price(
-                                        saleModelPrice: saleModelPrice,
-                                        saleSpareTireName: saleSpareTireName,
-                                        saleSpareTirePrice: saleSpareTirePrice,
-                                        saleExteriorName: saleExteriorName,
-                                        saleExteriorPrice: saleExteriorPrice,
-                                        saleWheelName: saleWheelName,
-                                        saleWheelPrice: saleWheelPrice,
-                                        saleInteriorName: saleInteriorName,
-                                        saleInteriorPrice: saleInteriorPrice,
-                                        saleAdasName: saleAdasName,
-                                        saleAdasPrice: saleAdasPrice,
-                                        totalPrice: totalPrice
-                                    )
-                                }
-                                
-                                // 7. 订单信息
-                                FormSection(title: "订单信息") {
-                                    VehicleOrderDetailPage.OrderInfo(
-                                        orderNum: orderNum,
-                                        orderTime: orderTime
-                                    )
-                                }
-                                
-                                Spacer().frame(height: 120)
+                                Spacer()
+                                Image(systemName: "creditcard.fill")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(AppTheme.colors.brandMain)
                             }
-                            .padding(.horizontal, AppTheme.layout.margin)
-                        }
-                    }
-                    
-                    // 底部操作区
-                    VStack(spacing: 0) {
-                        Spacer()
-                        HStack(spacing: 16) {
-                            RoundedCornerButton(
-                                nameLocal: LocalizedStringKey("cancel_order"),
-                                color: AppTheme.colors.fontPrimary,
-                                bgColor: AppTheme.colors.cardBackground
-                            ) {
-                                intent.onTapCancelOrder()
+                            .padding(.vertical, 10)
+                            
+                            // 2. 车型简介卡片
+                            VehicleOrderDetailPage.Intro(
+                                saleModelImages: saleModelImages,
+                                saleModelName: saleModelName,
+                                saleModelDesc: saleModelDesc
+                            )
+                            .appCardStyle()
+                            
+                            // 3. 购车方案
+                            FormSection(title: L10n.purchase_plan) {
+                                VStack(spacing: 20) {
+                                    OptionSelector(title: L10n.purchase_type, options: ["个人", "企业"], selectedIndex: orderPersonType - 1) { index in
+                                        if index == 0 { intent.onTapOrderPersonTypePerson() }
+                                        else { intent.onTapOrderPersonTypeOrg() }
+                                    }
+                                    
+                                    OptionSelector(title: L10n.payment_method, options: ["全款", "分期"], selectedIndex: purchasePlan - 1) { index in
+                                        if index == 0 { intent.onTapPurchasePlanFullPayment() }
+                                        else { intent.onTapPurchasePlanStaging() }
+                                    }
+                                }
                             }
                             
-                            RoundedCornerButton(
-                                nameLocal: LocalizedStringKey("pay_down_payment"),
-                                color: .black,
-                                bgColor: AppTheme.colors.brandMain
-                            ) {
-                                intent.onTapPayOrder(orderPaymentPhase: 2, paymentAmount: 5000, paymentChannel: "ALIPAY")
+                            // 4. 车主信息
+                            FormSection(title: L10n.owner_info) {
+                                VStack(spacing: 0) {
+                                    InputField(
+                                        label: orderPersonType == 2 ? L10n.enterprise_name : L10n.owner_name,
+                                        placeholder: "请输入",
+                                        text: Binding(get: { orderPersonName }, set: { intent.onUpdateOrderPersonName(name: $0) })
+                                    )
+                                    Divider().background(Color.white.opacity(0.05)).padding(.vertical, 12)
+                                    InputField(
+                                        label: orderPersonType == 2 ? L10n.enterprise_code : L10n.certificate_number,
+                                        placeholder: "请输入",
+                                        text: Binding(get: { orderPersonIdNum }, set: { intent.onUpdateOrderPersonIdNum(idNum: $0) })
+                                    )
+                                }
                             }
+                            
+                            // 5. 交付信息
+                            FormSection(title: L10n.delivery_info) {
+                                VStack(spacing: 16) {
+                                    SelectField(label: L10n.license_city, placeholder: "请选择", value: licenseCity) {
+                                        intent.onTapLicenseCity()
+                                    }
+                                    Divider().background(Color.white.opacity(0.05))
+                                    SelectField(label: L10n.dealership, placeholder: "请选择", value: dealershipName) {
+                                        intent.onTapDealership()
+                                    }
+                                    Divider().background(Color.white.opacity(0.05))
+                                    SelectField(label: L10n.delivery_center, placeholder: "请选择", value: deliveryCenterName) {
+                                        intent.onTapDeliveryCenter()
+                                    }
+                                }
+                            }
+                            
+                            // 6. 价格明细
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(L10n.price_detail)
+                                    .font(AppTheme.fonts.title1)
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
+                                
+                                VehicleOrderDetailPage.Price(
+                                    saleModelPrice: saleModelPrice,
+                                    saleSpareTireName: saleSpareTireName,
+                                    saleSpareTirePrice: saleSpareTirePrice,
+                                    saleExteriorName: saleExteriorName,
+                                    saleExteriorPrice: saleExteriorPrice,
+                                    saleWheelName: saleWheelName,
+                                    saleWheelPrice: saleWheelPrice,
+                                    saleInteriorName: saleInteriorName,
+                                    saleInteriorPrice: saleInteriorPrice,
+                                    saleAdasName: saleAdasName,
+                                    saleAdasPrice: saleAdasPrice,
+                                    totalPrice: totalPrice
+                                )
+                                .appCardStyle()
+                            }
+                            
+                            // 7. 订单信息
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text(L10n.order_info)
+                                    .font(AppTheme.fonts.title1)
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
+                                
+                                VehicleOrderDetailPage.OrderInfo(
+                                    orderNum: orderNum,
+                                    orderTime: orderTime
+                                )
+                                .appCardStyle()
+                            }
+                            
+                            Spacer().frame(height: 120)
                         }
                         .padding(.horizontal, AppTheme.layout.margin)
-                        .padding(.top, 20)
-                        .padding(.bottom, geometry.safeAreaInsets.bottom > 0 ? geometry.safeAreaInsets.bottom : 20)
-                        .background(AppTheme.colors.cardBackground.shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5))
                     }
-                    .ignoresSafeArea()
                 }
+                
+                // 底部操作区
+                VStack(spacing: 0) {
+                    Spacer()
+                    HStack(spacing: 16) {
+                        RoundedCornerButton(
+                            nameLocal: L10n.cancel_order,
+                            color: .white,
+                            bgColor: Color.white.opacity(0.1)
+                        ) {
+                            intent.onTapCancelOrder()
+                        }
+                        
+                        RoundedCornerButton(
+                            nameLocal: L10n.pay_down_payment,
+                            color: .black,
+                            bgColor: AppTheme.colors.brandMain
+                        ) {
+                            intent.onTapPayOrder(orderPaymentPhase: 2, paymentAmount: 5000, paymentChannel: "ALIPAY")
+                        }
+                    }
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.top, 20)
+                    .padding(.bottom, 34)
+                    .background(AppTheme.colors.cardBackground.shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5))
+                }
+                .ignoresSafeArea()
             }
             .preferredColorScheme(.dark)
-            .onAppear {
-                if state.selectBookMethod == "" {
-                    intent.onTapDownPaymentBookMethod()
-                }
-            }
         }
     }
 }
 
-// MARK: - 辅助组件
+// MARK: - 私有辅助组件
+
 private struct FormSection<Content: View>: View {
-    var title: String
+    var title: LocalizedStringKey
     let content: Content
-    init(title: String, @ViewBuilder content: () -> Content) {
+    init(title: LocalizedStringKey, @ViewBuilder content: () -> Content) {
         self.title = title
         self.content = content()
     }
@@ -214,24 +217,31 @@ private struct FormSection<Content: View>: View {
     }
 }
 
-private struct InfoRow: View {
-    let label: String
-    let value: String
+private struct InputField: View {
+    var label: LocalizedStringKey
+    var placeholder: String
+    @Binding var text: String
     var body: some View {
         HStack {
             Text(label)
                 .font(AppTheme.fonts.body)
-                .foregroundColor(AppTheme.colors.fontSecondary)
-            Spacer()
-            Text(value)
+                .foregroundColor(AppTheme.colors.fontPrimary)
+                .frame(width: 100, alignment: .leading)
+            TextField("", text: $text)
                 .font(AppTheme.fonts.body)
                 .foregroundColor(AppTheme.colors.fontPrimary)
+                .placeholder(when: text.isEmpty) {
+                    Text(placeholder).foregroundColor(AppTheme.colors.fontTertiary)
+                }
+                .multilineTextAlignment(.trailing)
+                .disableAutocorrection(true)
+                .autocapitalization(.none)
         }
     }
 }
 
 private struct OptionSelector: View {
-    var title: String
+    var title: LocalizedStringKey
     var options: [String]
     var selectedIndex: Int
     var onSelect: (Int) -> Void
@@ -260,10 +270,9 @@ private struct OptionSelector: View {
 }
 
 private struct SelectField: View {
-    var label: String
+    var label: LocalizedStringKey
     var placeholder: String
     var value: String
-    var hasError: Bool
     var action: () -> Void
     var body: some View {
         Button(action: action) {
@@ -286,6 +295,7 @@ private struct SelectField: View {
 }
 
 struct VehicleOrderDetailPage_DownPaymentUnpaid_Previews: PreviewProvider {
+    @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
         VehicleOrderDetailPage.DownPaymentUnpaid(
             container: VehicleOrderDetailPage.buildContainer(),
@@ -318,6 +328,7 @@ struct VehicleOrderDetailPage_DownPaymentUnpaid_Previews: PreviewProvider {
             dealershipName: "上海服务中心",
             deliveryCenterName: "上海交付中心"
         )
+        .environmentObject(appGlobalState)
         .environment(\.locale, .init(identifier: "zh-Hans"))
     }
 }
