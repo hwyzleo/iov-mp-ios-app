@@ -25,7 +25,7 @@ extension OrderIntent: OrderIntentProtocol {
         TspApi.buyProductConfirm(id: id, buyCount: buyCount) { (result: Result<TspResponse<ProductOrder>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.modelAction?.updateContent(productOrder: response.data!)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")

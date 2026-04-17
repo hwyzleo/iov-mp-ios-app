@@ -22,7 +22,7 @@ class MarketingIndexIntent: MviIntentProtocol {
             ServiceContainer.marketingService.getValidVehicleSaleOrderList { [weak self] (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         guard let resData = res.data else {
                             self?.modelAction?.displayNoOrder()
                             return
@@ -150,7 +150,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             ServiceContainer.marketingService.payOrder(orderNum: orderNum, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { [weak self] (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         // 根据支付阶段更新本地状态码
                         let nextSubState: Int
                         if orderPaymentPhase == 1 {
@@ -188,7 +188,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             ServiceContainer.marketingService.cancelOrder(orderNum: orderNum) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         VehicleManager.shared.delete(orderNum: orderNum)
                         self?.viewOnAppear()
                     } else {
@@ -219,7 +219,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             ServiceContainer.marketingService.lockOrder(orderNum: orderNum) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         // 更新本地状态为：安排生产
                         VehicleManager.shared.updateSubState(id: orderNum, subState: 400)
                         self?.viewOnAppear()

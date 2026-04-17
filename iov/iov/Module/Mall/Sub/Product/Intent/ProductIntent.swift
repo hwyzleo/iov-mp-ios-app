@@ -27,7 +27,7 @@ extension ProductIntent: ProductIntentProtocol {
         TspApi.getProduct(id: id) { (result: Result<TspResponse<Product>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.modelAction?.updateContent(product: response.data!)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")

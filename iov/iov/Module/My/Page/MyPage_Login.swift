@@ -215,8 +215,8 @@ struct MyView_Login_Previews: PreviewProvider {
         // 或者简单地传一个 mock 对象
         let user = UserManager()
         let mock = mockLoginResponse()
-        user.nickname = mock.nickname
-        user.avatar = mock.avatar
+        user.nickname = mock.nickname ?? ""
+        user.avatar = mock.avatar ?? ""
         user.followingCount = mock.followingCount ?? 0
         user.followerCount = mock.followerCount ?? 0
         user.postCount = mock.postCount ?? 0

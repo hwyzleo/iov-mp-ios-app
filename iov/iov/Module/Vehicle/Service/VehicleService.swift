@@ -30,7 +30,7 @@ class MockVehicleService: VehicleServiceProtocol {
         // 模拟网络延迟
         DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
             let mockData = mockVehicleIndex()
-            let response = TspResponse(code: 0, message: "Success", ts: Int64(Date().timeIntervalSince1970 * 1000), data: mockData)
+            let response = TspResponse(code: "000000", message: "Success", ts: Int64(Date().timeIntervalSince1970 * 1000), data: mockData, traceId: nil, timestamp: Int64(Date().timeIntervalSince1970 * 1000))
             DispatchQueue.main.async {
                 completion(.success(response))
             }
@@ -39,7 +39,7 @@ class MockVehicleService: VehicleServiceProtocol {
     
     func lockVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         DispatchQueue.global().asyncAfter(deadline: .now() + 0.5) {
-            let response = TspResponse<NoReply>(code: 0, message: "Success", ts: Int64(Date().timeIntervalSince1970 * 1000), data: nil)
+            let response = TspResponse<NoReply>(code: "000000", message: "Success", ts: Int64(Date().timeIntervalSince1970 * 1000), data: nil, traceId: nil, timestamp: Int64(Date().timeIntervalSince1970 * 1000))
             DispatchQueue.main.async {
                 completion(.success(response))
             }

@@ -30,21 +30,29 @@ extension MySettingProfileModel: MySettingProfileModelActionProtocol {
         contentState = .content
     }
     func updateProfile(account: AccountInfo) {
-        self.avatar = account.avatar ?? ""
-        self.nickname = account.nickname
-        self.bio = account.bio ?? ""
-        self.gender = account.gender.isEmpty ? "UNKNOWN" : account.gender
+        self.avatar = account.avatarUrl ?? ""
+        self.nickname = account.nickname ?? ""
+        self.bio = account.description ?? ""
+        switch account.gender {
+        case 1: self.gender = "MALE"
+        case 2: self.gender = "FEMALE"
+        default: self.gender = "UNKNOWN"
+        }
         self.birthday = nil
-        if let birthdayStr = account.birthday, !birthdayStr.isEmpty {
-            if let birthday = strToDate(str: birthdayStr) {
+        if let birthdayArr = account.birthday, birthdayArr.count == 3 {
+            var components = DateComponents()
+            components.year = birthdayArr[0]
+            components.month = birthdayArr[1]
+            components.day = birthdayArr[2]
+            if let birthday = Calendar.current.date(from: components) {
                 self.birthday = birthday
             }
         }
-        if let area = account.area {
-            self.area = area
+        if let regionCode = account.regionCode {
+            self.area = regionCode
         }
-        if let city = account.city {
-            self.city = city
+        if let regionName = account.regionName {
+            self.city = regionName
         }
         contentState = .content
     }

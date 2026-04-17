@@ -9,10 +9,45 @@ import Foundation
 
 /// TSP平台通用响应实体
 struct TspResponse<Model: Codable>: Codable {
-    var code: Int
+    var code: String
     var message: String?
     var ts: Int64
     var data: Model?
+    var traceId: String?
+    var timestamp: Int64
+
+    enum CodingKeys: String, CodingKey {
+        case code, message, ts, data, traceId, timestamp
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        if let stringCode = try? container.decode(String.self, forKey: .code) {
+            code = stringCode
+        } else if let intCode = try? container.decode(Int.self, forKey: .code) {
+            code = String(intCode)
+        } else {
+            code = ""
+        }
+        message = try? container.decode(String.self, forKey: .message)
+        ts = (try? container.decode(Int64.self, forKey: .ts)) ?? 0
+        data = try? container.decode(Model.self, forKey: .data)
+        traceId = try? container.decode(String.self, forKey: .traceId)
+        timestamp = (try? container.decode(Int64.self, forKey: .timestamp)) ?? 0
+    }
+
+    init(code: String = "", message: String? = nil, ts: Int64 = 0, data: Model? = nil, traceId: String? = nil, timestamp: Int64 = 0) {
+        self.code = code
+        self.message = message
+        self.ts = ts
+        self.data = data
+        self.traceId = traceId
+        self.timestamp = timestamp
+    }
+
+    var isSuccess: Bool {
+        return code == "000000"
+    }
 }
 
 /// 无响应内容
@@ -20,21 +55,33 @@ struct NoReply: Codable {}
 
 /// 登录响应
 struct LoginResponse: Codable {
-    var mobile: String
-    var nickname: String
-    var avatar: String
-    var token: String
-    var tokenExpires: Int64
-    var refreshToken: String
-    var refreshTokenExpires: Int64
-    // 社交统计
+    var userId: String
+    var newUser: Bool
+    var sessionId: String?
+    var challengeRequired: Bool?
+    var captchaChallenge: String?
+    var fallbackRequired: Bool?
+    var accessToken: String?
+    var accessTokenTtl: Int64?
+    var refreshToken: String?
+    var mobile: String?
+    var nickname: String?
+    var avatar: String?
     var followingCount: Int?
     var followerCount: Int?
     var postCount: Int?
     var collectionCount: Int?
-    // 消息提醒
     var unreadMsgCount: Int?
     var latestMsgTitle: String?
+
+    var token: String? {
+        return accessToken
+    }
+
+    var tokenExpires: Int64? {
+        guard let ttl = accessTokenTtl else { return nil }
+        return Int64(Date().timeIntervalSince1970 * 1000) + ttl * 1000
+    }
 }
 
 /// 车辆销售订单
@@ -206,14 +253,16 @@ struct OrderPaymentResponse: Codable {
  * 账号信息
  */
 struct AccountInfo: Codable {
-    var mobile: String
-    var nickname: String
-    var avatar: String?
-    var bio: String?
-    var gender: String
-    var birthday: String?
-    var area: String?
-    var city: String?
+    var userId: String?
+    var profileId: String?
+    var nickname: String?
+    var avatarUrl: String?
+    var realName: String?
+    var gender: Int?
+    var birthday: [Int]?
+    var regionCode: String?
+    var regionName: String?
+    var description: String?
 }
 
 /**
@@ -382,4 +431,18 @@ struct RemoteControlState: Codable {
     var cmdState: String
     /// 远控指令错误信息
     var failureMsg: String?
+}
+
+/// 发送手机验证码请求
+struct SendMobileCodeRequest: Codable {
+    var mobile: String
+    var countryCode: String
+}
+
+/// 手机验证码登录请求
+struct MobileLoginRequest: Codable {
+    var mobile: String
+    var countryCode: String
+    var code: String
+    var deviceInfo: String?
 }

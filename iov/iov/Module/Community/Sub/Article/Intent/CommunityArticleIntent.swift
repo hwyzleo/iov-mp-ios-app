@@ -29,7 +29,7 @@ extension CommunityArticleIntent: CommunityArticleIntentProtocol {
         TspApi.getArticle(id: id) { (result: Result<TspResponse<Article>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.modelAction?.updateContent(article: response.data!)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
@@ -44,7 +44,7 @@ extension CommunityArticleIntent: CommunityArticleIntentProtocol {
         TspApi.likeArticle(id: id, liked: liked) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.modelAction?.updateLike(liked: liked)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")

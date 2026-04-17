@@ -29,7 +29,7 @@ extension CommunitySubjectIntent: CommunitySubjectIntentProtocol {
         TspApi.getSubject(id: id) { (result: Result<TspResponse<Subject>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.modelAction?.updateContent(subject: response.data!)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")

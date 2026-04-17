@@ -16,4 +16,8 @@ struct BluetoothResponse<Model: Codable>: Codable {
     var message: String?
     var ts: Int64
     var data: Model?
+
+    var isSuccess: Bool {
+        return code == 0
+    }
 }

@@ -29,9 +29,9 @@ class UserManager: Object {
     
     private convenience init(response: LoginResponse) {
         self.init()
-        self.nickname = response.nickname
-        self.avatar = response.avatar
-        self.token = response.token
+        self.nickname = response.nickname ?? ""
+        self.avatar = response.avatar ?? ""
+        self.token = response.token ?? ""
         self.followingCount = response.followingCount ?? 0
         self.followerCount = response.followerCount ?? 0
         self.postCount = response.postCount ?? 0
@@ -61,9 +61,9 @@ class UserManager: Object {
     class func getToken() -> String {
         return getUser()?.token ?? ""
     }
-    
-    /// 修改昵称
-    class func modifyNickname(nickname: String) -> Observable<UserManager> {
+
+    /// 修改昵称（内部方法）
+    private class func updateNickname(nickname: String) -> Observable<UserManager> {
         do {
             if let user = getUser() {
                 let realm = RealmManager.user.realm
@@ -86,10 +86,9 @@ class UserManager: Object {
             var userResult: UserManager?
             try realm.write {
                 if let user = realm.objects(UserManager.self).first {
-                    // 如果已存在对象，则更新其属性，保持引用有效
-                    user.token = response.token
-                    user.nickname = response.nickname
-                    user.avatar = response.avatar
+                    user.token = response.token ?? ""
+                    user.nickname = response.nickname ?? ""
+                    user.avatar = response.avatar ?? ""
                     user.followingCount = response.followingCount ?? 0
                     user.followerCount = response.followerCount ?? 0
                     user.postCount = response.postCount ?? 0
@@ -98,7 +97,6 @@ class UserManager: Object {
                     user.latestMsgTitle = response.latestMsgTitle ?? ""
                     userResult = user
                 } else {
-                    // 如果不存在，则创建新对象
                     let user = UserManager(response: response)
                     realm.add(user)
                     userResult = user
@@ -113,6 +111,26 @@ class UserManager: Object {
         return Observable.error(IovError(message: "登录失败"))
     }
     
+    /// 修改昵称
+    class func modifyNickname(nickname: String) -> Observable<UserManager> {
+        return updateNickname(nickname: nickname)
+    }
+
+    /// 更新昵称和头像（登录后获取用户信息）
+    class func updateNicknameAndAvatar(nickname: String, avatar: String) {
+        let realm = RealmManager.user.realm
+        do {
+            try realm.write {
+                if let user = realm.objects(UserManager.self).first {
+                    user.nickname = nickname
+                    user.avatar = avatar
+                }
+            }
+        } catch {
+            print("更新昵称头像失败: \(error)")
+        }
+    }
+
     /// 退出登录
     @discardableResult
     class func logout() -> Observable<Void> {

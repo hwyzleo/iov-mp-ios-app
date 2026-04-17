@@ -10,13 +10,18 @@ import Foundation
 /// 登录信息
 func mockLoginResponse() -> LoginResponse {
     return LoginResponse.init(
+        userId: "123456",
+        newUser: false,
+        sessionId: "session123",
+        challengeRequired: false,
+        captchaChallenge: nil,
+        fallbackRequired: false,
+        accessToken: "mockAccessToken",
+        accessTokenTtl: 1800,
+        refreshToken: "mockRefreshToken",
         mobile: "13917288107",
         nickname: "hwyz_leo",
         avatar: "https://i.ibb.co/btr3Ntz/avatar-default.png",
-        token: "zgZA0dO9gTbhSb6PDBXCb_0mxFq-q33Uo81aNC4hT_hpPvwxJhQASovI0zGlw58K",
-        tokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000),
-        refreshToken: "rWtoZhVVf6mZW-t1hhqkNazR0r92KkhxDItf05jfQYChT6SrnFi2IXaXD02irjVc",
-        refreshTokenExpires: Int64(Date().timeIntervalSince1970*1000+24*60*60*1000),
         followingCount: 128,
         followerCount: 2048,
         postCount: 56,

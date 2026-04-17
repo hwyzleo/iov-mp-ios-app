@@ -35,8 +35,12 @@ extension LoginIntent: LoginIntentProtocol {
         let replacedMobile = mobile.replacingOccurrences(of: " ", with: "")
         ServiceContainer.loginService.sendMobileVerifyCode(countryRegionCode: countryRegionCode, mobile: replacedMobile) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
-            case .success(_):
-                self.modelAction?.routeInputVerify(countryRegionCode: countryRegionCode, mobile: mobile)
+            case let .success(response):
+                if response.isSuccess {
+                    self.modelAction?.routeInputVerify(countryRegionCode: countryRegionCode, mobile: mobile)
+                } else {
+                    self.modelAction?.displayError(text: response.message ?? "请求异常")
+                }
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")
             }
@@ -49,8 +53,10 @@ extension LoginIntent: LoginIntentProtocol {
         let replacedMobile = mobile.replacingOccurrences(of: " ", with: "")
         ServiceContainer.loginService.sendMobileVerifyCode(countryRegionCode: countryRegionCode, mobile: replacedMobile) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
-            case .success(_):
-                debugPrint("resend success")
+            case let .success(response):
+                if !response.isSuccess {
+                    self.modelAction?.displayError(text: response.message ?? "请求异常")
+                }
             case .failure(_):
                 self.modelAction?.displayError(text: "请求异常")
             }
@@ -62,12 +68,25 @@ extension LoginIntent: LoginIntentProtocol {
         ServiceContainer.loginService.mobileVerifyCodeLogin(countryRegionCode: countryRegionCode, mobile: replacedMobile, verifyCode: verifyCode) { (result: Result<TspResponse<LoginResponse>, Error>) in
             switch result {
             case let .success(response):
-                if response.code == 0 {
+                if response.isSuccess {
                     UserManager.login(response: response.data!)
-                    // 同步全局登录态
                     AppGlobalState.shared.isLogin = true
-                    self.modelRouter?.closeScreen()
-                } else if response.code > 0 {
+                    TspApi.getAccountInfo() { (result: Result<TspResponse<AccountInfo>, Error>) in
+                        switch result {
+                        case let .success(accountResponse):
+                            if accountResponse.isSuccess, let account = accountResponse.data {
+                                let nickname = account.nickname ?? "未设置昵称"
+                                let avatar = account.avatarUrl ?? ""
+                                UserManager.updateNicknameAndAvatar(nickname: nickname, avatar: avatar)
+                            }
+                        case .failure(_):
+                            break
+                        }
+                        DispatchQueue.main.async {
+                            self.modelRouter?.closeScreen()
+                        }
+                    }
+                } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
             case .failure(_):

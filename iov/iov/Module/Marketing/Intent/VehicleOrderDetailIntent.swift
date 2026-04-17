@@ -125,7 +125,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
         ) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
             switch result {
             case .success(let res):
-                if res.code == 0 {
+                if res.isSuccess {
                     guard let selectedSaleModel = res.data else {
                         self.modelAction?.displayError(text: "请求异常")
                         return
@@ -622,7 +622,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 ServiceContainer.marketingService.deleteWishlist(orderNum: vehiclePo.id) { (result: Result<TspResponse<NoReply>, Error>) in
                     switch result {
                     case .success(let res):
-                        if res.code == 0 {
+                        if res.isSuccess {
                             VehicleManager.shared.delete(orderNum: vehiclePo.id)
                             self.modelRouter?.closeScreen()
                         } else {
@@ -758,7 +758,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         ) { (result: Result<TspResponse<String>, Error>) in
             switch result {
             case .success(let res):
-                if res.code == 0 {
+                if res.isSuccess {
                     guard let resData = res.data else {
                         self.modelAction?.displayError(text: "请求异常")
                         return
@@ -823,7 +823,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             ServiceContainer.marketingService.payOrder(orderNum: orderNum, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { [weak self] (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         // 根据支付阶段更新本地状态码
                         let nextSubState: Int
                         if orderPaymentPhase == 1 {
@@ -876,7 +876,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             ServiceContainer.marketingService.lockOrder(orderNum: orderNum) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         // 更新本地状态为：安排生产
                         VehicleManager.shared.updateSubState(id: orderNum, subState: 400)
                         AppGlobalState.shared.needRefresh = true

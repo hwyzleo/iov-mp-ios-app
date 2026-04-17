@@ -11,8 +11,8 @@ import UIKit
 
 // TSP请求头
 var tspHeaders: HTTPHeaders { [
-    "token": UserManager.getToken(),
-    "clientType": "MP",
+    "Authorization": "Bearer " + UserManager.getToken(),
+    "clientType": "MOBILE",
     "clientId": getDeviceId()
 ] }
 
@@ -36,6 +36,19 @@ class TspManager {
     static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
         print("request get tsp:", path, parameters, tspHeaders)
         NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
+            switch result {
+            case let .success(data):
+                let parseResult: Result<T, Error> = parseData(data)
+                completion(parseResult)
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    static func requestPut<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
+        print("request put tsp:", path, parameters, tspHeaders)
+        NetworkManager.shared.requestPut(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)

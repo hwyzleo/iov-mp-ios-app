@@ -22,7 +22,7 @@ class LicenseAreaIntent: MviIntentProtocol {
         ServiceContainer.marketingService.getLicenseArea { [weak self] (result: Result<TspResponse<[LicenseArea]>, Error>) in
             switch result {
             case .success(let res):
-                if res.code == 0 {
+                if res.isSuccess {
                     guard let resData = res.data else {
                         self?.modelAction?.displayError(text: "数据异常")
                         return

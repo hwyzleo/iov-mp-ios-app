@@ -21,7 +21,7 @@ class DealershipIntent: MviIntentProtocol {
         ServiceContainer.marketingService.getDealership { [weak self] (result: Result<TspResponse<[Dealership]>, Error>) in
             switch result {
             case .success(let res):
-                if res.code == 0 {
+                if res.isSuccess {
                     guard let resData = res.data else {
                         self?.modelAction?.displayError(text: "数据异常")
                         return

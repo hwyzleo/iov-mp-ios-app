@@ -19,7 +19,7 @@ class MyAccountQrcodeIntent: MviIntentProtocol {
         TspApi.getAccountQrcode { (result: Result<TspResponse<AccountQrcode>, Error>) in
             switch result {
             case .success(let response):
-                if response.code == 0 {
+                if response.isSuccess {
                     self.modelAction?.displayContent(qrcode: response.data?.qrcode ?? "")
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "未知错误")

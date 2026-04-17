@@ -57,6 +57,25 @@ class NetworkManager {
                 }
             }
     }
+    
+    @discardableResult
+    func requestPut(path: String,
+                    parameters: Parameters?,
+                    headers: HTTPHeaders?,
+                    completion: @escaping NetworkRequestCompletion) -> DataRequest {
+        AF.request(path,
+                   method: .put,
+                   parameters: parameters,
+                   encoding: JSONEncoding.prettyPrinted,
+                   headers: headers,
+                   requestModifier: { $0.timeoutInterval = 30 })
+            .responseData { response in
+                switch response.result {
+                case let .success(data): completion(.success(data))
+                case let .failure(error): completion(self.handleError(error))
+                }
+            }
+    }
 
     // 图片上传
     @discardableResult

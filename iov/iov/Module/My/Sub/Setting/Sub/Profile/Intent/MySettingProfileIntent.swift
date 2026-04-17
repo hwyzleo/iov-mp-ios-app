@@ -24,8 +24,8 @@ class MySettingProfileIntent: MviIntentProtocol {
         TspApi.getAccountInfo() { (result: Result<TspResponse<AccountInfo>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
-                    self.modelAction?.updateProfile(account: response.data!)
+                if response.isSuccess, let account = response.data {
+                    self.modelAction?.updateProfile(account: account)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
@@ -46,7 +46,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         TspApi.generateAvatarUrl() { (result: Result<TspResponse<PreSignedUrl>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     let uploadUrl = response.data!.uploadUrl
                     let objectKey = response.data!.objectKey
                     TspApi.uploadCos(url: uploadUrl, image: image, objectKey: objectKey) { (result: Result<String, Error>) in
@@ -58,7 +58,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
                             TspApi.modifyAvatar(imageUrl: String(imageUrl)) { (result: Result<TspResponse<NoReply>, Error>) in
                                 switch result {
                                 case .success(let response):
-                                    if(response.code == 0) {
+                                    if(response.isSuccess) {
                                         self.userAvatar = String(imageUrl)
                                         self.modelAction?.updateAvatar(imageUrl: String(imageUrl))
                                     } else {
@@ -85,10 +85,10 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         }
     }
     func onTapNicknameSaveButton(nickname: String) {
-        TspApi.modifyNickname(nickname: nickname) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nickname, avatarUrl: nil, gender: nil, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     UserManager.modifyNickname(nickname: nickname)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
@@ -100,10 +100,10 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         }
     }
     func onTapBioSaveButton(bio: String) {
-        TspApi.modifyBio(bio: bio) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: nil, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.viewOnAppear()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
@@ -115,10 +115,16 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         }
     }
     func onTapGenderSaveButton(gender: String) {
-        TspApi.modifyGender(gender: gender) { (result: Result<TspResponse<NoReply>, Error>) in
+        var genderInt: Int? = nil
+        switch gender {
+        case "MALE": genderInt = 1
+        case "FEMALE": genderInt = 2
+        default: genderInt = 0
+        }
+        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: genderInt, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.viewOnAppear()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
@@ -130,14 +136,14 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         }
     }
     func onTapBirthdaySaveButton(date: Date) {
-        TspApi.modifyBirthday(birthday: dateToStr(date: date)) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: nil, birthday: dateToStr(date: date), regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     TspApi.getAccountInfo() { (result: Result<TspResponse<AccountInfo>, Error>) in
                         switch result {
                         case .success(let response):
-                            if(response.code == 0) {
+                            if(response.isSuccess) {
                                 self.modelAction?.updateProfile(account: response.data!)
                             } else {
                                 self.modelAction?.displayError(text: response.message ?? "异常")
@@ -158,10 +164,11 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
     }
     func onTapCity(city: String) {
         modelAction?.displayLoading()
-        TspApi.modifyCity(city: city) { (result: Result<TspResponse<NoReply>, Error>) in
+        let regionCode = "china"
+        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: nil, birthday: nil, regionCode: regionCode, regionName: city) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
-                if(response.code == 0) {
+                if(response.isSuccess) {
                     self.viewOnAppear()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")

@@ -7,21 +7,44 @@
 
 import Foundation
 import UIKit
+import Alamofire
 
 /// TSP接口
 class TspApi {
     
     /// 发送手机号登录验证码
     static func sendMobileVerifyCode(countryRegionCode: String, mobile: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/login/action/sendSmsVerifyCode", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile]) { (result: Result<TspResponse<NoReply>, Error>) in
-            completion(result)
+        let headers: HTTPHeaders = [
+            "X-Client-Id": getDeviceId()
+        ]
+        let request = SendMobileCodeRequest(mobile: mobile, countryCode: countryRegionCode)
+        let parameters = TspManager.model2Dic(request) ?? [:]
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/sms/send", parameters: parameters, headers: headers) { result in
+            switch result {
+            case let .success(data):
+                let parseResult: Result<TspResponse<NoReply>, Error> = TspManager.parseData(data)
+                completion(parseResult)
+            case let .failure(error):
+                completion(.failure(error))
+            }
         }
     }
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/login/action/smsVerifyCodeLogin", parameters: ["countryRegionCode": countryRegionCode, "mobile": mobile, "verifyCode": verifyCode]) { (result: Result<TspResponse<LoginResponse>, Error>) in
-            completion(result)
+        let headers: HTTPHeaders = [
+            "X-Client-Id": getDeviceId()
+        ]
+        let request = MobileLoginRequest(mobile: mobile, countryCode: countryRegionCode, code: verifyCode, deviceInfo: nil)
+        let parameters = TspManager.model2Dic(request) ?? [:]
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/login/mobile", parameters: parameters, headers: headers) { result in
+            switch result {
+            case let .success(data):
+                let parseResult: Result<TspResponse<LoginResponse>, Error> = TspManager.parseData(data)
+                completion(parseResult)
+            case let .failure(error):
+                completion(.failure(error))
+            }
         }
     }
     
@@ -222,7 +245,7 @@ class TspApi {
     
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/account/info", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/account/v1/profile", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in
             completion(result)
         }
     }
@@ -246,7 +269,7 @@ class TspApi {
                     uploadUrl: "http://xxxxxx",
                     objectKey: "xxxx"
                 )
-                completion(.success(TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
+                completion(.success(TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
             }
         }
     }
@@ -286,9 +309,23 @@ class TspApi {
         }
     }
     
-    /// 修改用车城市
+    /// 修改城市
     static func modifyCity(city: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         TspManager.requestPost(path: "/mp/account/action/modifyCity", parameters: ["city": city]) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 统一更新用户资料
+    static func updateProfile(nickname: String?, avatarUrl: String?, gender: Int?, birthday: String?, regionCode: String?, regionName: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        var params: [String: Any] = [:]
+        if let nickname = nickname { params["nickname"] = nickname }
+        if let avatarUrl = avatarUrl { params["avatarUrl"] = avatarUrl }
+        if let gender = gender { params["gender"] = gender }
+        if let birthday = birthday { params["birthday"] = birthday }
+        if let regionCode = regionCode { params["regionCode"] = regionCode }
+        if let regionName = regionName { params["regionName"] = regionName }
+        TspManager.requestPut(path: "/api/mobile/account/v1/profile", parameters: params) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
@@ -347,7 +384,7 @@ class TspApi {
                 topics.append(BaseContent.init(id: "4", type: "article", title: "城市穿越", images: ["https://i.ibb.co/8LbQvbc4/image-topic-640-4.png"], ts: 1709182971760))
                 data.append(ContentBlock.init(id: "4", type: "topic", title: "北境之旅，开源出发", data: topics))
                 data.append(ContentBlock.init(id: "5", type: "article", data: article))
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getContentBlock] Response")
                 completion(.success(res))
             }
@@ -363,7 +400,7 @@ class TspApi {
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 let data: Article = mockArticle()
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getArticle] Response")
                 completion(.success(res))
             }
@@ -403,7 +440,7 @@ class TspApi {
                         ], ts: 1709275436479, username: "旅游达人", location: "河南省")
                     ]
                 )
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getSubject] Response")
                 completion(.success(res))
             }
@@ -428,7 +465,7 @@ class TspApi {
                         BaseContent.init(id: "3", type: "article", title: "一键舒享的航空座椅", images: ["https://pic.imgdb.cn/item/65df13639f345e8d033d11fb.png"], ts: 1709284625762, username: "一起探索")
                     ]
                 )
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getTopic] Response")
                 completion(.success(res))
             }
@@ -443,7 +480,7 @@ class TspApi {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = TspResponse<NoReply>(code: 0, ts: Int64(Date().timeIntervalSince1970*1000))
+                let res = TspResponse<NoReply>(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000))
                 debugPrint("Mock API[likeArticle] Response")
                 completion(.success(res))
             }
@@ -459,7 +496,7 @@ class TspApi {
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 var data: VehicleIndex =  mockVehicleIndex()
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getVehicleIndex] Response")
                 completion(.success(res))
             }
@@ -474,7 +511,7 @@ class TspApi {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<NoReply>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<NoReply>(code: "000000", ts: Date().timestamp())
                 debugPrint("Mock HTTP API[unlockVehicle] Response")
                 completion(.success(res))
             }
@@ -489,7 +526,7 @@ class TspApi {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<NoReply>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<NoReply>(code: "000000", ts: Date().timestamp())
                 debugPrint("Mock HTTP API[lockVehicle] Response")
                 completion(.success(res))
             }
@@ -504,7 +541,7 @@ class TspApi {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<NoReply>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<NoReply>(code: "000000", ts: Date().timestamp())
                 debugPrint("Mock HTTP API[setWindow] Response")
                 completion(.success(res))
             }
@@ -519,7 +556,7 @@ class TspApi {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<NoReply>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<NoReply>(code: "000000", ts: Date().timestamp())
                 debugPrint("Mock HTTP API[setTrunk] Response")
                 completion(.success(res))
             }
@@ -537,7 +574,7 @@ class TspApi {
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<RemoteControlState>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<RemoteControlState>(code: "000000", ts: Date().timestamp())
                 debugPrint("Mock HTTP API[findVehicle] Response")
                 completion(.success(res))
             }
@@ -553,7 +590,7 @@ class TspApi {
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 let data: MallIndex = mockMallIndex()
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getMallIndex] Response")
                 completion(.success(res))
             }
@@ -569,7 +606,7 @@ class TspApi {
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 let data: Product = mockProduct()
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[getProdct] Response")
                 completion(.success(res))
             }
@@ -585,7 +622,7 @@ class TspApi {
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 let data: ProductOrder = mockProductOrder()
-                let res = TspResponse(code: 0, ts: Int64(Date().timeIntervalSince1970*1000), data: data)
+                let res = TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: data)
                 debugPrint("Mock API[buyProductConfirm] Response")
                 completion(.success(res))
             }
@@ -599,7 +636,7 @@ class TspApi {
                 completion(result)}
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                let res = TspResponse<RemoteControlState>(code: 0, ts: Date().timestamp())
+                let res = TspResponse<RemoteControlState>(code: "000000", ts: Date().timestamp())
                 debugPrint("Mock HTTP API[findVehicle] Response")
                 completion(.success(res))
             }

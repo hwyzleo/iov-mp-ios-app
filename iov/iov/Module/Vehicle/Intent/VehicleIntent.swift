@@ -23,7 +23,7 @@ class VehicleIntent: MviIntentProtocol {
         ServiceContainer.vehicleService.getVehicleIndex { result in
             switch result {
             case .success(let response):
-                if response.code == 0 {
+                if response.isSuccess {
                     self.modelAction?.updateContent(vehicleIndex: response.data!)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
@@ -45,7 +45,7 @@ extension VehicleIntent: VehicleIntentProtocol {
         ServiceContainer.vehicleService.lockVehicle { result in
             switch result {
             case .success(let response):
-                if response.code == 0 {
+                if response.isSuccess {
                     // 更新本地状态
                     var vehicle = mockVehicle()
                     vehicle.lockState = true
@@ -65,7 +65,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             BluetoothApi.unlockVehicle() { (result: Result<BluetoothResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         var vehicle = mockVehicle()
                         vehicle.lockState = false
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "lock")
@@ -80,7 +80,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             TspApi.unlockVehicle() { (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         var vehicle = mockVehicle()
                         vehicle.lockState = false
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "lock")
@@ -99,7 +99,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             BluetoothApi.setWindow(percent: percent) { (result: Result<BluetoothResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         var vehicle = mockVehicle()
                         vehicle.windowPercentage = percent
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "window")
@@ -114,7 +114,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             TspApi.setWindow(percent: percent) { (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         var vehicle = mockVehicle()
                         vehicle.windowPercentage = percent
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "window")
@@ -133,7 +133,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             BluetoothApi.setTrunk(percent: percent) { (result: Result<BluetoothResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         var vehicle = mockVehicle()
                         vehicle.trunkPercentage = percent
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "trunk")
@@ -148,7 +148,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             TspApi.setTrunk(percent: percent) { (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         var vehicle = mockVehicle()
                         vehicle.trunkPercentage = percent
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "trunk")
@@ -167,7 +167,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             BluetoothApi.findVehicle() { (result: Result<BluetoothResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         let vehicle = mockVehicle()
                         self.modelAction?.updateVehicle(vehicle: vehicle, button: "find")
                     } else {
@@ -181,7 +181,7 @@ extension VehicleIntent: VehicleIntentProtocol {
             TspApi.findVehicle(vin: "HWYZTEST000000001") { (result: Result<TspResponse<RemoteControlState>, Error>) in
                 switch result {
                 case .success(let response):
-                    if(response.code == 0) {
+                    if(response.isSuccess) {
                         if let cmdId = response.data?.cmdId as? String {
                             self.modelAction?.mappingCmdId(cmdId: cmdId, button: "find")
                             self.startGetFindVehicleState(cmdId: cmdId)
@@ -212,7 +212,7 @@ extension VehicleIntent: VehicleIntentProtocol {
         TspApi.getCmdState(vin: "HWYZTEST000000001", cmdId: cmdId) { (result: Result<TspResponse<RemoteControlState>, Error>) in
             switch result {
             case .success(let response):
-                if response.code == 0 {
+                if response.isSuccess {
                     let cmdId = response.data?.cmdId
                     let button: String = (self.modelAction?.getCmdIdMapping(cmdId: cmdId!)!)!
                     let cmdState = response.data?.cmdState

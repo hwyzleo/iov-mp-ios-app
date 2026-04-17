@@ -116,7 +116,7 @@ class RealMarketingService: MarketingServiceProtocol {
 /// Mock 数据实现
 class MockMarketingService: MarketingServiceProtocol {
     private func createMockResponse<T>(data: T?) -> TspResponse<T> {
-        return TspResponse(code: 0, message: "Success", ts: Int64(Date().timeIntervalSince1970 * 1000), data: data)
+        return TspResponse(code: "000000", message: "Success", ts: Int64(Date().timeIntervalSince1970 * 1000), data: data)
     }
 
     private func mockDelayedSuccess<T>(data: T?, completion: @escaping (Result<TspResponse<T>, Error>) -> Void) {

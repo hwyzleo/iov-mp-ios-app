@@ -25,7 +25,12 @@ struct MySettingProfileView: View {
                 ErrorTip(text: text)
             }
         }
-        .appBackground()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(AppTheme.colors.background)
+        .safeAreaInset(edge: .top) {
+            TopBackTitleBar(title: "个人资料")
+                .background(AppTheme.colors.background)
+        }
         .onAppear {
             intent.viewOnAppear()
         }
@@ -50,8 +55,6 @@ private extension MySettingProfileView {
         
         var body: some View {
             VStack(spacing: 0) {
-                Spacer().frame(height: kStatusBarHeight)
-                TopBackTitleBar(title: "个人资料")
                 ScrollView {
                     VStack(spacing: AppTheme.layout.spacing) {
                         VStack(spacing: 20) {

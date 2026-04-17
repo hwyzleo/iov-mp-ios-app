@@ -98,7 +98,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
             TspApi.modifyWishlist(orderNum: orderNum, saleCode: saleCode, modelCode: modelCode, spareTireCode: spareTireCode, exteriorCode: exteriorCode, wheelCode: wheelCode, interiorCode: interiorCode, adasCode: adasCode) { (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         self.modelRouter?.closeScreen()
@@ -113,7 +113,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
             TspApi.createWishlist(saleCode: saleCode, modelCode: modelCode, spareTireCode: spareTireCode, exteriorCode: exteriorCode, wheelCode: wheelCode, interiorCode: interiorCode, adasCode: adasCode) { (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
-                    if res.code == 0 {
+                    if res.isSuccess {
                         VehicleManager.shared.add(orderNum: res.data!, type: .WISHLIST, displayName: modelName)
                         VehicleManager.shared.setCurrentVehicleId(id: res.data!)
                         AppGlobalState.shared.backRefresh = true
