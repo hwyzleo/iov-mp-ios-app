@@ -14,6 +14,10 @@ class UserManager: Object {
     
     /// 用户令牌
     dynamic var token: String = ""
+    /// 刷新令牌
+    dynamic var refreshToken: String = ""
+    /// 令牌过期时间
+    dynamic var tokenExpiresAt: Date?
     /// 用户昵称
     dynamic var nickname: String = ""
     /// 用户头像
@@ -32,6 +36,8 @@ class UserManager: Object {
         self.nickname = response.nickname ?? ""
         self.avatar = response.avatar ?? ""
         self.token = response.token ?? ""
+        self.refreshToken = response.refreshToken ?? ""
+        self.tokenExpiresAt = response.tokenExpires.map { Date(timeIntervalSince1970: Double($0) / 1000.0) }
         self.followingCount = response.followingCount ?? 0
         self.followerCount = response.followerCount ?? 0
         self.postCount = response.postCount ?? 0
@@ -61,6 +67,43 @@ class UserManager: Object {
     class func getToken() -> String {
         return getUser()?.token ?? ""
     }
+    
+    /// 获取刷新令牌
+    class func getRefreshToken() -> String {
+        return getUser()?.refreshToken ?? ""
+    }
+    
+    /// 检查 token 是否有效
+    class func isTokenValid() -> Bool {
+        guard let expiresAt = getUser()?.tokenExpiresAt else {
+            return false
+        }
+        return expiresAt.timeIntervalSinceNow > 0
+    }
+    
+    /// 检查 token 是否即将过期（剩余时间小于指定秒数）
+    class func isTokenExpiringSoon(threshold: TimeInterval = 300) -> Bool {
+        guard let expiresAt = getUser()?.tokenExpiresAt else {
+            return true
+        }
+        return expiresAt.timeIntervalSinceNow <= threshold
+    }
+    
+    /// 更新令牌
+    class func updateTokens(token: String, refreshToken: String, expiresAt: Date) {
+        let realm = RealmManager.user.realm
+        do {
+            try realm.write {
+                if let user = realm.objects(UserManager.self).first {
+                    user.token = token
+                    user.refreshToken = refreshToken
+                    user.tokenExpiresAt = expiresAt
+                }
+            }
+        } catch {
+            print("更新令牌失败：\(error)")
+        }
+    }
 
     /// 修改昵称（内部方法）
     private class func updateNickname(nickname: String) -> Observable<UserManager> {
@@ -87,6 +130,8 @@ class UserManager: Object {
             try realm.write {
                 if let user = realm.objects(UserManager.self).first {
                     user.token = response.token ?? ""
+                    user.refreshToken = response.refreshToken ?? ""
+                    user.tokenExpiresAt = response.tokenExpires.map { Date(timeIntervalSince1970: Double($0) / 1000.0) }
                     user.nickname = response.nickname ?? ""
                     user.avatar = response.avatar ?? ""
                     user.followingCount = response.followingCount ?? 0

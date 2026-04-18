@@ -45,9 +45,32 @@ class TspApi {
         }
     }
     
+    /// 刷新访问令牌
+    static func refreshToken(refreshToken: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
+        let parameters: Parameters = ["refreshToken": refreshToken]
+        var headers: HTTPHeaders = [
+            "X-Device-Id": getDeviceId(),
+            "X-Platform": "ios",
+            "X-Os-Version": UIDevice.current.systemVersion,
+            "X-App-Version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
+            "X-Client-Id": "iphone-capp",
+            "X-Client-Type": "MOBILE"
+        ]
+        print("request refresh token:", parameters, headers)
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/refresh", parameters: parameters, headers: headers) { result in
+            switch result {
+            case let .success(data):
+                let parseResult: Result<TspResponse<LoginResponse>, Error> = TspManager.parseData(data)
+                completion(parseResult)
+            case let .failure(error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     /// 退出登录
     static func logout(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/logout", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/auth/v1/logout", parameters: [:]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }

@@ -61,10 +61,25 @@ extension SettingIntent: SettingIntentProtocol {
 //        modelRouter?.routeToPrivacyAgreement()
 //    }
     func onTapLogout() {
-        TspApi.logout { _ in
-            UserManager.logout()
-            AppGlobalState.shared.isLogin = false
-            self.modelAction?.logout()
+        TspApi.logout { result in
+            switch result {
+            case .success(let response):
+                if response.isSuccess {
+                    UserManager.logout()
+                    AppGlobalState.shared.isLogin = false
+                    self.modelAction?.logout()
+                } else {
+                    print("退出登录失败：\(response.message ?? "")")
+                    UserManager.logout()
+                    AppGlobalState.shared.isLogin = false
+                    self.modelAction?.logout()
+                }
+            case .failure(let error):
+                print("退出登录请求失败：\(error)")
+                UserManager.logout()
+                AppGlobalState.shared.isLogin = false
+                self.modelAction?.logout()
+            }
         }
     }
 }
