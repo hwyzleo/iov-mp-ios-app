@@ -2,7 +2,7 @@
 //  HttpBean.swift
 //  iov
 //
-//  Created by 叶荣杰 on 2024/9/1.
+//  Created by hwyz_leo on 2024/9/1.
 //
 
 import Foundation
@@ -439,10 +439,20 @@ struct SendMobileCodeRequest: Codable {
     var countryCode: String
 }
 
+/// 设备信息
+struct DeviceInfo: Codable {
+    var deviceId: String?
+    var deviceType: String?
+    var deviceName: String?
+    var deviceOs: String?
+    var appVersion: String?
+    var deviceFingerprint: String?
+}
+
 /// 手机验证码登录请求
 struct MobileLoginRequest: Codable {
     var mobile: String
     var countryCode: String
     var code: String
-    var deviceInfo: String?
+    var deviceInfo: DeviceInfo?
 }

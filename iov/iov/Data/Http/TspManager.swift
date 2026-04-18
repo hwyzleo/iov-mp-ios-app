@@ -2,7 +2,7 @@
 //  BaseAPI.swift
 //  iov
 //
-//  Created by 叶荣杰 on 2024/9/1.
+//  Created by hwyz_leo on 2024/9/1.
 //
 
 import Foundation
@@ -10,11 +10,25 @@ import Alamofire
 import UIKit
 
 // TSP请求头
-var tspHeaders: HTTPHeaders { [
-    "Authorization": "Bearer " + UserManager.getToken(),
-    "clientType": "MOBILE",
-    "clientId": getDeviceId()
-] }
+var tspHeaders: HTTPHeaders {
+    let token = UserManager.getToken()
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+
+    var headers: HTTPHeaders = [
+        "X-Device-Id": getDeviceId(),
+        "X-Platform": "ios",
+        "X-Os-Version": UIDevice.current.systemVersion,
+        "X-App-Version": appVersion,
+        "X-Client-Id": "iphone-capp",
+        "X-Client-Type": "MOBILE"
+    ]
+
+    if !token.isEmpty {
+        headers["Authorization"] = "Bearer \(token)"
+    }
+
+    return headers
+}
 
 /// TSP管理
 class TspManager {

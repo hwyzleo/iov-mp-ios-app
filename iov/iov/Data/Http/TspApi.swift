@@ -2,7 +2,7 @@
 //  TspApi.swift
 //  iov
 //
-//  Created by 叶荣杰 on 2024/9/1.
+//  Created by hwyz_leo on 2024/9/1.
 //
 
 import Foundation
@@ -12,14 +12,14 @@ import Alamofire
 /// TSP接口
 class TspApi {
     
+    
+    
     /// 发送手机号登录验证码
     static func sendMobileVerifyCode(countryRegionCode: String, mobile: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        let headers: HTTPHeaders = [
-            "X-Client-Id": getDeviceId()
-        ]
+        
         let request = SendMobileCodeRequest(mobile: mobile, countryCode: countryRegionCode)
         let parameters = TspManager.model2Dic(request) ?? [:]
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/sms/send", parameters: parameters, headers: headers) { result in
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/sms/send", parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<TspResponse<NoReply>, Error> = TspManager.parseData(data)
@@ -32,12 +32,9 @@ class TspApi {
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        let headers: HTTPHeaders = [
-            "X-Client-Id": getDeviceId()
-        ]
-        let request = MobileLoginRequest(mobile: mobile, countryCode: countryRegionCode, code: verifyCode, deviceInfo: nil)
+        let request = MobileLoginRequest(mobile: mobile, countryCode: countryRegionCode, code: verifyCode, deviceInfo: DeviceInfo(deviceName: UIDevice.current.name, deviceFingerprint: UIDevice.current.identifierForVendor?.uuidString))
         let parameters = TspManager.model2Dic(request) ?? [:]
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/login/mobile", parameters: parameters, headers: headers) { result in
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/login/mobile", parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<TspResponse<LoginResponse>, Error> = TspManager.parseData(data)

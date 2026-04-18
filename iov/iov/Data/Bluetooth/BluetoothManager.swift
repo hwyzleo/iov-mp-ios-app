@@ -2,7 +2,7 @@
 //  BluetoothManager.swift
 //  iov
 //
-//  Created by 叶荣杰 on 2024/9/1.
+//  Created by hwyz_leo on 2024/9/1.
 //
 
 import CoreBluetooth
@@ -39,7 +39,7 @@ extension BluetoothManager {
     }
     /// 扫描外部设备
     func scan() {
-        debugPrint("扫描外设")
+        // debugPrint("扫描外设")
         if cbManagerState == .poweredOn {
             centralManager.scanForPeripherals(withServices: nil)
         }
