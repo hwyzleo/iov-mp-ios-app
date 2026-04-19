@@ -447,6 +447,7 @@ struct DeviceInfo: Codable {
     var deviceOs: String?
     var appVersion: String?
     var deviceFingerprint: String?
+    var language: String?
 }
 
 /// 手机验证码登录请求

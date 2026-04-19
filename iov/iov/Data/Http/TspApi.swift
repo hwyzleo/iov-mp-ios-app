@@ -32,7 +32,8 @@ class TspApi {
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        let request = MobileLoginRequest(mobile: mobile, countryCode: countryRegionCode, code: verifyCode, deviceInfo: DeviceInfo(deviceName: UIDevice.current.name, deviceFingerprint: UIDevice.current.identifierForVendor?.uuidString))
+        let langCode = AppGlobalState.shared.appLocale.identifier.contains("zh") ? "zh" : "en"
+        let request = MobileLoginRequest(mobile: mobile, countryCode: countryRegionCode, code: verifyCode, deviceInfo: DeviceInfo(deviceName: UIDevice.current.name, deviceFingerprint: UIDevice.current.identifierForVendor?.uuidString, language: langCode))
         let parameters = TspManager.model2Dic(request) ?? [:]
         NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/login/mobile", parameters: parameters, headers: tspHeaders) { result in
             switch result {
@@ -48,16 +49,8 @@ class TspApi {
     /// 刷新访问令牌
     static func refreshToken(refreshToken: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
         let parameters: Parameters = ["refreshToken": refreshToken]
-        var headers: HTTPHeaders = [
-            "X-Device-Id": getDeviceId(),
-            "X-Platform": "ios",
-            "X-Os-Version": UIDevice.current.systemVersion,
-            "X-App-Version": Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "",
-            "X-Client-Id": "iphone-capp",
-            "X-Client-Type": "MOBILE"
-        ]
-        print("request refresh token:", parameters, headers)
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/refresh", parameters: parameters, headers: headers) { result in
+        print("request refresh token:", parameters, tspHeaders)
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/refresh", parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<TspResponse<LoginResponse>, Error> = TspManager.parseData(data)
@@ -75,9 +68,9 @@ class TspApi {
         }
     }
     
-    /// 更新客户端语言
-    static func updateLanguage(language: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/client/action/updateLanguage", parameters: ["language": language]) { (result: Result<TspResponse<NoReply>, Error>) in
+    /// 切换语言
+    static func changeLanguage(language: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/auth/v1/device/language", parameters: ["language": language]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }

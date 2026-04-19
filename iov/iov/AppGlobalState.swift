@@ -37,7 +37,7 @@ class AppGlobalState: ObservableObject {
         
         // 云端同步语言设置 (参数传 2 字缩写)
         let langCode = language.contains("zh") ? "zh" : "en"
-        TspApi.updateLanguage(language: langCode) { _ in }
+        TspApi.changeLanguage(language: langCode) { _ in }
     }
     
     func refreshLoginStatus() {
