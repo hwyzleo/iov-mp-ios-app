@@ -87,6 +87,40 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
         self.saleAdasPrice = saleAdasPrice
         self.totalPrice = totalPrice
     }
+    
+    func updateDynamicConfigs(_ configs: [(String, String, Decimal)]) {
+        // 将动态配置项转换为固定字段（兼容现有UI）
+        for (familyName, featureName, featurePrice) in configs {
+            switch familyName {
+            case "车型", "BASE_MODEL":
+                self.saleModelName = featureName
+                self.saleModelPrice = featurePrice
+            case "备胎", "RZ", "SPARE_TIRE":
+                self.saleSpareTireName = featureName
+                self.saleSpareTirePrice = featurePrice
+            case "外饰颜色", "QA", "EXTERIOR":
+                self.saleExteriorName = featureName
+                self.saleExteriorPrice = featurePrice
+            case "车轮", "FA", "WHEEL":
+                self.saleWheelName = featureName
+                self.saleWheelPrice = featurePrice
+            case "内饰风格", "NA", "INTERIOR":
+                self.saleInteriorName = featureName
+                self.saleInteriorPrice = featurePrice
+            case "智能驾驶平台", "智驾", "HA", "ADAS":
+                self.saleAdasName = featureName
+                self.saleAdasPrice = featurePrice
+            default:
+                break
+            }
+        }
+        
+        // 计算总价（如果没有总价，从配置项累加）
+        if totalPrice == 0 {
+            self.totalPrice = configs.reduce(0) { sum, config in sum + config.2 }
+        }
+    }
+    
     func updateOrder(orderNum: String, orderTime: Int64) {
         self.orderNum = orderNum
         self.orderTime = orderTime

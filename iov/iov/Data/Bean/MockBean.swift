@@ -133,31 +133,19 @@ func mockFeatureCodeRanges() -> [FeatureCodeRangeVo] {
 /// 心愿单
 func mockWishlist() -> Wishlist {
     return Wishlist.init(
+        wishlistId: "WL123456789",
         saleCode: "H01",
-        orderNum: "ORDERNUM001",
-        saleModelConfigType: [
-            "ADAS": "X02",
-            "WHEEL": "CL03",
-            "EXTERIOR": "WS02",
-            "INTERIOR": "NS01",
-            "MODEL": "H0107",
-            "SPARE_TIRE": "X00"
-        ],
-        saleModelConfigName: [
-            "ADAS": "高阶智驾",
-            "WHEEL": "21寸轮毂(四季胎)高亮黑",
-            "EXTERIOR": "翡翠绿车漆",
-            "INTERIOR": "乌木黑内饰",
-            "MODEL": "寒01七座版",
-            "SPARE_TIRE": "无备胎"
-        ],
-        saleModelConfigPrice: [
-            "ADAS": 10000.00,
-            "WHEEL": 0.00,
-            "EXTERIOR": 0.00,
-            "INTERIOR": 0.00,
-            "MODEL": 188888.00,
-            "SPARE_TIRE": 0.00
+        buildConfigCode: "BC001",
+        createTime: Date(),
+        modifyTime: Date(),
+        displayName: "寒01七座版",
+        saleModelConfigs: [
+            SaleModelConfigItem(familyCode: "BASE_MODEL", familyName: "车型", featureCode: "H0107", featureName: "寒01七座版", featurePrice: 188888.00, featureImages: nil),
+            SaleModelConfigItem(familyCode: "QA", familyName: "外观颜色", featureCode: "WS02", featureName: "翡翠绿车漆", featurePrice: 0.00, featureImages: nil),
+            SaleModelConfigItem(familyCode: "NA", familyName: "内饰颜色", featureCode: "NS01", featureName: "乌木黑内饰", featurePrice: 0.00, featureImages: nil),
+            SaleModelConfigItem(familyCode: "FA", familyName: "轮毂", featureCode: "CL03", featureName: "21寸轮毂(四季胎)高亮黑", featurePrice: 0.00, featureImages: nil),
+            SaleModelConfigItem(familyCode: "RZ", familyName: "备胎", featureCode: "X00", featureName: "无备胎", featurePrice: 0.00, featureImages: nil),
+            SaleModelConfigItem(familyCode: "HA", familyName: "智驾", featureCode: "X02", featureName: "高阶智驾", featurePrice: 10000.00, featureImages: nil)
         ],
         saleModelImages: [
             "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",

@@ -81,8 +81,8 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     
     private func handleWishlist() {
-        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getWishlist(orderNum: orderNum) { (result: Result<TspResponse<Wishlist>, Error>) in
+        if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
+            ServiceContainer.marketingService.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let wishlist = res.data else {
@@ -90,27 +90,32 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: wishlist.saleModelImages)
-                    self.modelAction?.updateSaleModelPrice(
-                        saleModelName: wishlist.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: wishlist.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: wishlist.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: wishlist.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: wishlist.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: wishlist.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: wishlist.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: wishlist.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: wishlist.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: wishlist.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: wishlist.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: wishlist.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: wishlist.totalPrice
-                    )
+                    
+                    // 动态处理所有配置项
+                    self.processConfigItems(wishlist.saleModelConfigs, totalPrice: wishlist.totalPrice)
+                    
                     self.modelAction?.displayWishlist()
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
             }
         }
+    }
+    
+    /// 动态处理配置项列表
+    private func processConfigItems(_ configItems: [SaleModelConfigItem], totalPrice: Decimal) {
+        // 将配置项转换为显示用的数据结构
+        var displayConfigs: [(String, String, Decimal)] = []  // (familyName, featureName, featurePrice)
+        
+        for item in configItems {
+            displayConfigs.append((item.familyName, item.featureName, item.featurePrice))
+        }
+        
+        // 更新显示（这里需要Model层提供新的方法）
+        self.modelAction?.updateDynamicConfigs(displayConfigs)
+        
+        // 更新总价
+        // Model层会在 updateDynamicConfigs 中处理总价计算
     }
     
     private func handleOrder() {
@@ -619,7 +624,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onTapDelete() {
         if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
             if vehiclePo.type == .WISHLIST {
-                ServiceContainer.marketingService.deleteWishlist(orderNum: vehiclePo.id) { (result: Result<TspResponse<NoReply>, Error>) in
+                ServiceContainer.marketingService.deleteWishlist(wishlistId: vehiclePo.id) { (result: Result<TspResponse<NoReply>, Error>) in
                     switch result {
                     case .success(let res):
                         if res.isSuccess {
@@ -646,20 +651,24 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onTapOrder() {
         if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.getWishlist(orderNum: vehiclePo.id) { (result: Result<TspResponse<Wishlist>, Error>) in
+            ServiceContainer.marketingService.getWishlist(wishlistId: vehiclePo.id) { (result: Result<TspResponse<Wishlist>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let wishlist = res.data else {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
+                    
+                    // 将配置项列表转换为特征代码字典
+                    let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
+                    
                     AppGlobalState.shared.parameters["saleCode"] = wishlist.saleCode
-                    AppGlobalState.shared.parameters["modelCode"] = wishlist.saleModelConfigType["MODEL"]
-                    AppGlobalState.shared.parameters["exteriorCode"] = wishlist.saleModelConfigType["EXTERIOR"]
-                    AppGlobalState.shared.parameters["interiorCode"] = wishlist.saleModelConfigType["INTERIOR"]
-                    AppGlobalState.shared.parameters["wheelCode"] = wishlist.saleModelConfigType["WHEEL"]
-                    AppGlobalState.shared.parameters["spareTireCode"] = wishlist.saleModelConfigType["SPARE_TIRE"]
-                    AppGlobalState.shared.parameters["adasCode"] = wishlist.saleModelConfigType["ADAS"]
+                    AppGlobalState.shared.parameters["modelCode"] = featureCodes["BASE_MODEL"]
+                    AppGlobalState.shared.parameters["exteriorCode"] = featureCodes["QA"]
+                    AppGlobalState.shared.parameters["interiorCode"] = featureCodes["NA"]
+                    AppGlobalState.shared.parameters["wheelCode"] = featureCodes["FA"]
+                    AppGlobalState.shared.parameters["spareTireCode"] = featureCodes["RZ"]
+                    AppGlobalState.shared.parameters["adasCode"] = featureCodes["HA"]
                     AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
                     AppGlobalState.shared.parameters["lastView"] = "ORDER_DETAIL"
                     self.viewOnAppear()
@@ -668,6 +677,15 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 }
             }
         }
+    }
+    
+    /// 从配置项列表提取特征代码字典
+    private func extractFeatureCodes(_ configItems: [SaleModelConfigItem]) -> [String: String] {
+        var featureCodes: [String: String] = [:]
+        for item in configItems {
+            featureCodes[item.familyCode] = item.featureCode
+        }
+        return featureCodes
     }
     func onTapDownPaymentBookMethod() {
         self.modelAction?.updateSelectBookMethod(bookMethod: "downPayment")

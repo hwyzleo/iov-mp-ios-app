@@ -9,21 +9,30 @@ import RealmSwift
 import KeychainAccess
 
 ///Realm存储管理
-struct RealmManager {
+class RealmManager {
     let configuration: Realm.Configuration
+    private var cachedRealm: Realm?
     
     private init(configuration: Realm.Configuration) {
         self.configuration = configuration
     }
     
     var realm: Realm {
+        if let cached = cachedRealm {
+            cached.refresh()
+            return cached
+        }
         do {
-            return try Realm(configuration: configuration)
+            let newRealm = try Realm(configuration: configuration)
+            cachedRealm = newRealm
+            return newRealm
         } catch {
-            // 在开发环境下，如果初始化依然失败，直接抛出更详细的错误
-            // 绝不回退到不带配置的 Realm()，因为那会触发默认 schema 的版本冲突
             fatalError("初始化 Realm 失败 (配置: \(configuration.fileURL?.lastPathComponent ?? "未知")): \(error)")
         }
+    }
+    
+    func invalidateRealm() {
+        cachedRealm = nil
     }
     
     // 获取或创建加密密钥

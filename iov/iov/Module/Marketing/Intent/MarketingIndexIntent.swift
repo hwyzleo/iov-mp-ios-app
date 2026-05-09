@@ -19,47 +19,52 @@ class MarketingIndexIntent: MviIntentProtocol {
     func viewOnAppear() {
         modelAction?.displayLoading()
         if UserManager.isLogin() {
-            ServiceContainer.marketingService.getValidVehicleSaleOrderList { [weak self] (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
+            ServiceContainer.marketingService.getMyVehicleList { [weak self] (result: Result<TspResponse<[MyVehicleVo]>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
                         guard let resData = res.data else {
+                            self?.modelAction?.displayError(text: "数据异常")
+                            return
+                        }
+                        // 无论云端返回什么，都要同步本地数据
+                        VehicleManager.shared.update(myVehicleList: resData)
+                        
+                        if resData.isEmpty {
                             self?.modelAction?.displayNoOrder()
                             return
                         }
-                        VehicleManager.shared.update(vehicleSaleOrderList: resData)
-                        if VehicleManager.shared.hasOrder() {
-                            if let vehiclePo = VehicleManager.shared.getCurrentVehicle(), let vehicleId = VehicleManager.shared.getCurrentVehicleId() {
-                                switch vehiclePo.type {
-                                case .WISHLIST:
-                                    ServiceContainer.marketingService.getWishlist(orderNum: vehicleId) { (result: Result<TspResponse<Wishlist>, Error>) in
-                                        switch result {
-                                        case .success(let res):
-                                            guard let wishlist = res.data else {
-                                                self?.modelAction?.displayError(text: "数据异常")
-                                                return
-                                            }
-                                            self?.modelAction?.displayWishlist(wishlist: wishlist)
-                                        case .failure(_):
-                                            self?.modelAction?.displayError(text: "请求异常")
+                        
+                        if let vehiclePo = VehicleManager.shared.getCurrentVehicle(), let vehicleId = VehicleManager.shared.getCurrentVehicleId() {
+                            switch vehiclePo.type {
+                            case .WISHLIST:
+                                ServiceContainer.marketingService.getWishlist(wishlistId: vehicleId) { (result: Result<TspResponse<Wishlist>, Error>) in
+                                    switch result {
+                                    case .success(let res):
+                                        guard let wishlist = res.data else {
+                                            self?.modelAction?.displayError(text: "数据异常")
+                                            return
                                         }
+                                        self?.modelAction?.displayWishlist(wishlist: wishlist)
+                                    case .failure(_):
+                                        self?.modelAction?.displayError(text: "请求异常")
                                     }
-                                case .ORDER:
-                                    ServiceContainer.marketingService.getOrder(orderNum: vehicleId) { (result: Result<TspResponse<Order>, Error>) in
-                                        switch result {
-                                        case .success(let res):
-                                            guard let order = res.data else {
-                                                self?.modelAction?.displayError(text: "数据异常")
-                                                return
-                                            }
-                                            self?.modelAction?.displayOrder(order: order)
-                                        case .failure(_):
-                                            self?.modelAction?.displayError(text: "请求异常")
-                                        }
-                                    }
-                                case .ACTIVATED:
-                                    self?.modelAction?.displayVehicle()
                                 }
+                            case .ORDER:
+                                ServiceContainer.marketingService.getOrder(orderNum: vehicleId) { (result: Result<TspResponse<Order>, Error>) in
+                                    switch result {
+                                    case .success(let res):
+                                        guard let order = res.data else {
+                                            self?.modelAction?.displayError(text: "数据异常")
+                                            return
+                                        }
+                                        self?.modelAction?.displayOrder(order: order)
+                                    case .failure(_):
+                                        self?.modelAction?.displayError(text: "请求异常")
+                                    }
+                                }
+                            case .ACTIVATED:
+                                self?.modelAction?.displayVehicle()
                             }
                         } else {
                             self?.modelAction?.displayNoOrder()
@@ -86,21 +91,25 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         }
     }
     func onTapOrder() {
-        guard let orderNum = VehicleManager.shared.getCurrentVehicleId() else { return }
-        ServiceContainer.marketingService.getWishlist(orderNum: orderNum) { [weak self] (result: Result<TspResponse<Wishlist>, Error>) in
+        guard let wishlistId = VehicleManager.shared.getCurrentVehicleId() else { return }
+        ServiceContainer.marketingService.getWishlist(wishlistId: wishlistId) { [weak self] (result: Result<TspResponse<Wishlist>, Error>) in
             switch result {
             case .success(let res):
                 guard let wishlist = res.data else {
                     self?.modelAction?.displayError(text: res.message ?? "请求异常")
                     return
                 }
+                
+                // 将配置项列表转换为特征代码字典
+                let featureCodes = self?.extractFeatureCodes(wishlist.saleModelConfigs) ?? [:]
+                
                 AppGlobalState.shared.parameters["saleCode"] = wishlist.saleCode
-                AppGlobalState.shared.parameters["modelCode"] = wishlist.saleModelConfigType["MODEL"]
-                AppGlobalState.shared.parameters["exteriorCode"] = wishlist.saleModelConfigType["EXTERIOR"]
-                AppGlobalState.shared.parameters["interiorCode"] = wishlist.saleModelConfigType["INTERIOR"]
-                AppGlobalState.shared.parameters["wheelCode"] = wishlist.saleModelConfigType["WHEEL"]
-                AppGlobalState.shared.parameters["spareTireCode"] = wishlist.saleModelConfigType["SPARE_TIRE"]
-                AppGlobalState.shared.parameters["adasCode"] = wishlist.saleModelConfigType["ADAS"]
+                AppGlobalState.shared.parameters["modelCode"] = featureCodes["BASE_MODEL"]
+                AppGlobalState.shared.parameters["exteriorCode"] = featureCodes["QA"]
+                AppGlobalState.shared.parameters["interiorCode"] = featureCodes["NA"]
+                AppGlobalState.shared.parameters["wheelCode"] = featureCodes["FA"]
+                AppGlobalState.shared.parameters["spareTireCode"] = featureCodes["RZ"]
+                AppGlobalState.shared.parameters["adasCode"] = featureCodes["HA"]
                 AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
                 AppGlobalState.shared.parameters["lastView"] = "MARKETING_INDEX"
                 self?.modelRouter?.routeToOrderDetail()
@@ -108,6 +117,15 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
                 self?.modelAction?.displayError(text: "请求异常")
             }
         }
+    }
+    
+    /// 从配置项列表提取特征代码字典
+    private func extractFeatureCodes(_ configItems: [SaleModelConfigItem]) -> [String: String] {
+        var featureCodes: [String: String] = [:]
+        for item in configItems {
+            featureCodes[item.familyCode] = item.featureCode
+        }
+        return featureCodes
     }
     func onTapWishlistDetail() {
         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"

@@ -32,13 +32,16 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                     if let featureRanges = res.data {
                         self.modelAction?.updateFeatureRanges(saleCode: "HS5", featureRanges: featureRanges)
                         
-                        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-                            TspApi.getWishlist(orderNum: orderNum) { (result: Result<TspResponse<Wishlist>, Error>) in
+                        if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
+                            TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
                                 switch result {
                                 case .success(let res):
                                     if let wishlist = res.data {
+                                        // 将配置项列表转换为特征代码字典
+                                        let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
+                                        
                                         for range in featureRanges {
-                                            if let code = wishlist.saleModelConfigType[range.familyCode],
+                                            if let code = featureCodes[range.familyCode],
                                                let feature = range.featureDetails.first(where: { $0.featureCode == code }) {
                                                 self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
                                             }
@@ -56,6 +59,15 @@ class VehicleModelConfigIntent: MviIntentProtocol {
             }
         }
     }
+    
+    /// 从配置项列表提取特征代码字典
+    private func extractFeatureCodes(_ configItems: [SaleModelConfigItem]) -> [String: String] {
+        var featureCodes: [String: String] = [:]
+        for item in configItems {
+            featureCodes[item.familyCode] = item.featureCode
+        }
+        return featureCodes
+    }
 }
 
 extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
@@ -69,13 +81,19 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         let saleCode = modelState.saleCode
         let selections = modelState.selections
         
-        var saleModelConfigType: [String: String] = [:]
+        var featureConfig: [String: String] = [:]
         for (familyCode, feature) in selections {
-            saleModelConfigType[familyCode] = feature.featureCode
+            featureConfig[familyCode] = feature.featureCode
         }
         
-        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            TspApi.modifyWishlist(orderNum: orderNum, saleCode: saleCode, saleModelConfigType: saleModelConfigType) { (result: Result<TspResponse<String>, Error>) in
+        // 打印当前状态
+        let currentId = VehicleManager.shared.getCurrentVehicleId()
+        print("🚗 onTapSaveWishlist() - CurrentVehicleId: \(currentId ?? "nil")")
+        print("🚗 onTapSaveWishlist() - Vehicles count: \(VehicleManager.shared.getVehiclesForMock().count)")
+        
+        if let wishlistId = currentId {
+            print("📝 onTapSaveWishlist() - MODIFYING existing wishlist: \(wishlistId)")
+            TspApi.modifyWishlist(wishlistId: wishlistId, featureConfig: featureConfig) { (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
@@ -90,7 +108,8 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                 }
             }
         } else {
-            TspApi.createWishlistNew(saleCode: saleCode, saleModelConfigType: saleModelConfigType) { (result: Result<TspResponse<String>, Error>) in
+            print("🆕 onTapSaveWishlist() - CREATING new wishlist")
+            TspApi.createWishlist(saleCode: saleCode, featureConfig: featureConfig) { (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {

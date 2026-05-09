@@ -76,6 +76,14 @@ class TspApi {
     }
     
     /// 获取有效车辆销售订单列表
+    /// 获取我的车辆列表（合并心愿单和订单）
+    static func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/order/v1/myVehicleList", parameters: [:]) { (result: Result<TspResponse<[MyVehicleVo]>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 获取订单列表
     static func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void) {
         TspManager.requestGet(path: "/api/mobile/order/v1/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
             completion(result)
@@ -90,29 +98,29 @@ class TspApi {
     }
     
     /// 创建心愿单（动态配置模式）
-    static func createWishlistNew(saleCode: String, saleModelConfigType: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/create", parameters: ["saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
+    static func createWishlist(saleCode: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/wishlist/action/create", parameters: ["saleCode":saleCode,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
     
     /// 修改心愿单（动态配置模式）
-    static func modifyWishlist(orderNum: String, saleCode: String, saleModelConfigType: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/modify", parameters: ["orderNum": orderNum,"saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
+    static func modifyWishlist(wishlistId: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/wishlist/action/modify", parameters: ["wishlistId": wishlistId,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
     
     /// 获取心愿单详情
-    static func getWishlist(orderNum: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/vehicleSaleOrder/wishlist/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Wishlist>, Error>) in
+    static func getWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/order/v1/wishlist/" + wishlistId, parameters: [:]) { (result: Result<TspResponse<Wishlist>, Error>) in
             completion(result)
         }
     }
     
     /// 删除心愿单
-    static func deleteWishlist(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/delete", parameters: ["orderNum":orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func deleteWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/wishlist/action/delete", parameters: ["wishlistId":wishlistId]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }

@@ -71,6 +71,54 @@ class VehicleManager {
         }
     }
     
+    /// 更新我的车辆列表（合并心愿单和订单）
+    func update(myVehicleList: [MyVehicleVo]) {
+        print("🔄 VehicleManager.update() - Received \(myVehicleList.count) vehicles from cloud")
+        
+        // 先清除本地数据
+        clear()
+        
+        // 验证是否真的清空了
+        let realm = RealmManager.vehicle.realm
+        let realmCount = realm.objects(VehiclePo.self).count
+        print("🔄 VehicleManager.update() - Realm has \(realmCount) vehicles after clear()")
+        
+        if realmCount > 0 {
+            print("⚠️ WARNING: Realm still has \(realmCount) vehicles after clear()! Forcing file deletion...")
+            deleteRealmFile()
+        }
+        
+        // 如果云端返回空列表，直接返回
+        if myVehicleList.isEmpty {
+            print("✅ VehicleManager.update() - Cloud returned empty list, local data cleared")
+            return
+        }
+        
+        // 添加云端数据
+        for myVehicle in myVehicleList {
+            // 处理 displayName 为 nil 的情况
+            let displayName = myVehicle.displayName ?? "未命名车辆"
+            
+            switch myVehicle.type {
+            case "WISHLIST":
+                add(orderNum: myVehicle.id, type: .WISHLIST, subState: myVehicle.state, displayName: displayName)
+            case "ORDER":
+                add(orderNum: myVehicle.id, type: .ORDER, subState: myVehicle.state, displayName: displayName)
+            case "ACTIVATED":
+                add(orderNum: myVehicle.id, type: .ACTIVATED, subState: myVehicle.state, displayName: displayName)
+            default:
+                add(orderNum: myVehicle.id, type: .ORDER, subState: myVehicle.state, displayName: displayName)
+            }
+        }
+        
+        // 设置当前车辆
+        if !vehicles.isEmpty {
+            setCurrentVehicleId(id: vehicles.first!.key)
+        }
+        
+        print("✅ VehicleManager.update() - Updated with \(vehicles.count) vehicles, currentVehicleId=\(currentVehicleId ?? "nil")")
+    }
+    
     /// 更新细分状态
     func updateSubState(id: String, subState: Int) {
         let realm = RealmManager.vehicle.realm
@@ -132,55 +180,105 @@ class VehicleManager {
     
     /// 获取当前选择的车辆ID
     func getCurrentVehicleId() -> String? {
+        // 先检查内存缓存
         if currentVehicleId != nil && vehicles.keys.contains(currentVehicleId!) {
+            print("📍 getCurrentVehicleId() - Returning cached ID: \(currentVehicleId!)")
             return currentVehicleId
         }
+        
+        // 内存缓存失效，清空并检查是否有订单
+        currentVehicleId = nil
         if hasOrder() {
-            setCurrentVehicleId(id: vehicles.keys.first!)
-            return vehicles.keys.first!
+            currentVehicleId = vehicles.keys.first!
+            print("📍 getCurrentVehicleId() - Setting new ID: \(currentVehicleId!)")
+            return currentVehicleId
         }
+        
+        print("📍 getCurrentVehicleId() - No vehicles, returning nil")
         return nil
     }
     
     /// 获取当前选择的车辆
     func getCurrentVehicle() -> VehiclePo? {
-        if currentVehicleId == nil {
+        guard let id = currentVehicleId else {
             return nil
         }
-        if getVehicles()[currentVehicleId!] == nil {
-            return nil
-        }
-        return getVehicles()[currentVehicleId!]
+        return vehicles[id]
     }
     
-    /// 清除车辆
+    /// 清除车辆（彻底清除，包括 Realm 文件）
     func clear() {
         let realm = RealmManager.vehicle.realm
+        
+        // 打印删除前的数据数量
+        let beforeCount = realm.objects(VehiclePo.self).count
+        print("🧹 VehicleManager.clear() - Before: \(beforeCount) vehicles in Realm")
+        
         do {
             try realm.write {
                 realm.delete(realm.objects(VehiclePo.self))
-                realm.refresh()
             }
-            vehicles.removeAll() // 确保内存字典也被清空
         } catch {
-            print("Error clear vehicles: \(error)")
+            print("❌ Error deleting Realm objects: \(error)")
+            // 删除失败时，尝试删除 Realm 文件
+            deleteRealmFile()
+        }
+        
+        // 验证删除是否成功
+        RealmManager.vehicle.invalidateRealm()
+        let realmAfter = RealmManager.vehicle.realm
+        let afterCount = realmAfter.objects(VehiclePo.self).count
+        print("🧹 VehicleManager.clear() - After: \(afterCount) vehicles in Realm")
+        
+        // 如果还有数据，强制删除文件
+        if afterCount > 0 {
+            print("⚠️ Realm delete failed, forcing file deletion")
+            deleteRealmFile()
+        }
+        
+        vehicles.removeAll()
+        currentVehicleId = nil
+    }
+    
+    /// 强制删除 Realm 文件（最后的手段）
+    private func deleteRealmFile() {
+        guard let realmURL = RealmManager.vehicle.realm.configuration.fileURL else {
+            return
+        }
+        
+        do {
+            // 删除 Realm 文件
+            try FileManager.default.removeItem(at: realmURL)
+            print("✅ Realm file deleted: \(realmURL.path)")
+            
+            // 删除相关文件（锁文件、管理文件等）
+            let lockURL = realmURL.appendingPathExtension("lock")
+            let managementURL = realmURL.deletingLastPathComponent().appendingPathComponent("Management")
+            
+            try? FileManager.default.removeItem(at: lockURL)
+            try? FileManager.default.removeItem(at: managementURL)
+            
+            // 清除缓存，下次会创建新的 Realm
+            RealmManager.vehicle.invalidateRealm()
+        } catch {
+            print("❌ Failed to delete Realm file: \(error)")
         }
     }
     
     /// 仅供 MockService 调试使用的车辆列表获取
     func getVehiclesForMock() -> [String: VehiclePo] {
-        return getVehicles()
+        return vehicles
     }
     
     private func getVehicles() -> [String: VehiclePo] {
         let realm = RealmManager.vehicle.realm
-        realm.refresh() // 强制拉取磁盘最新变更
+        realm.refresh()
         let vehiclesResults = realm.objects(VehiclePo.self)
         var result: [String: VehiclePo] = [:]
         for vehicle in vehiclesResults {
             result[vehicle.id] = vehicle
         }
-        self.vehicles = result // 同步刷新内存缓存
+        self.vehicles = result
         return result
     }
     

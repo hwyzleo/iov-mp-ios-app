@@ -239,26 +239,46 @@ struct SelectedSaleModel: Codable {
     }
 }
 
-/// 心愿单
+/// 我的车辆（合并心愿单和订单）
+struct MyVehicleVo: Codable {
+    var id: String
+    var type: String
+    var displayName: String?
+    var state: Int
+    var createTime: Date?
+    var modifyTime: Date?
+    
+    var saleCode: String?
+    var buildConfigCode: String?
+    var saleModelImages: [String]?
+    var totalPrice: Decimal?
+    var isValid: Bool?
+}
+
+/// 心愿单详情
 struct Wishlist: Codable {
-    /// 销售代码
+    var wishlistId: String
     var saleCode: String
-    /// 订单号
-    var orderNum: String
-    /// 销售车型配置类型
-    var saleModelConfigType: [String:String]
-    /// 销售车型配置名称
-    var saleModelConfigName: [String:String]
-    /// 销售车型配置价格
-    var saleModelConfigPrice: [String:Decimal]
-    /// 销售车型图片集
+    var buildConfigCode: String
+    var createTime: Date?
+    var modifyTime: Date?
+    
+    var displayName: String?
+    var saleModelConfigs: [SaleModelConfigItem]
     var saleModelImages: [String]
-    /// 销售车型描述
     var saleModelDesc: String
-    /// 总价格
     var totalPrice: Decimal
-    /// 是否有效
     var isValid: Bool
+}
+
+/// 销售车型配置项
+struct SaleModelConfigItem: Codable {
+    var familyCode: String
+    var familyName: String
+    var featureCode: String
+    var featureName: String
+    var featurePrice: Decimal
+    var featureImages: [String]?
 }
 
 /// 上牌区域
