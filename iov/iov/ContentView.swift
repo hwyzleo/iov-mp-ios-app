@@ -31,55 +31,66 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            TabView(selection: $globalState.selectedTab) {
-                CommunityPage.build()
-                    .tabItem {
-                        Image(globalState.selectedTab == 0 ? "icon_explore_active_60" : "icon_explore_60")
-                            .renderingMode(.template)
-                        Text(LocalizedStringKey("explore"))
+            if globalState.needShowLoginPage {
+                LoginPage.buildMobileLogin()
+                    .onAppear {
+                        globalState.parameters.removeAll()
                     }
-                    .tag(0)
-                
-                ServicePage.build()
-                    .tabItem {
-                        Image(globalState.selectedTab == 1 ? "icon_service_active_60" : "icon_service_60").renderingMode(.template)
-                        Text(LocalizedStringKey("service"))
+                    .onDisappear {
+                        globalState.needShowLoginPage = false
+                        globalState.refreshLoginStatus()
                     }
-                    .tag(1)
-                
-                if VehicleManager.shared.hasVehicle() {
-                    VehiclePage.build()
+            } else {
+                TabView(selection: $globalState.selectedTab) {
+                    CommunityPage.build()
                         .tabItem {
-                            Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
-                            Text(LocalizedStringKey("my_vehicle"))
+                            Image(globalState.selectedTab == 0 ? "icon_explore_active_60" : "icon_explore_60")
+                                .renderingMode(.template)
+                            Text(LocalizedStringKey("explore"))
                         }
-                        .tag(2)
-                } else {
-                    MarketingIndexPage.build()
+                        .tag(0)
+                    
+                    ServicePage.build()
                         .tabItem {
-                            Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
-                            Text(LocalizedStringKey("buy_vehicle"))
+                            Image(globalState.selectedTab == 1 ? "icon_service_active_60" : "icon_service_60").renderingMode(.template)
+                            Text(LocalizedStringKey("service"))
                         }
-                        .tag(2)
+                        .tag(1)
+                    
+                    if VehicleManager.shared.hasVehicle() {
+                        VehiclePage.build()
+                            .tabItem {
+                                Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
+                                Text(LocalizedStringKey("my_vehicle"))
+                            }
+                            .tag(2)
+                    } else {
+                        MarketingIndexPage.build()
+                            .tabItem {
+                                Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
+                                Text(LocalizedStringKey("buy_vehicle"))
+                            }
+                            .tag(2)
+                    }
+                    
+                    MallPage.build()
+                        .tabItem {
+                            Image(globalState.selectedTab == 3 ? "icon_mall_active_60" : "icon_mall_60").renderingMode(.template)
+                            Text(LocalizedStringKey("mall"))
+                        }
+                        .tag(3)
+                    
+                    MyPage.build()
+                        .tabItem {
+                            Image(globalState.selectedTab == 4 ? "icon_mine_active_60" : "icon_mine_60").renderingMode(.template)
+                            Text(LocalizedStringKey("my"))
+                        }
+                        .tag(4)
                 }
-                
-                MallPage.build()
-                    .tabItem {
-                        Image(globalState.selectedTab == 3 ? "icon_mall_active_60" : "icon_mall_60").renderingMode(.template)
-                        Text(LocalizedStringKey("mall"))
-                    }
-                    .tag(3)
-                
-                MyPage.build()
-                    .tabItem {
-                        Image(globalState.selectedTab == 4 ? "icon_mine_active_60" : "icon_mine_60").renderingMode(.template)
-                        Text(LocalizedStringKey("my"))
-                    }
-                    .tag(4)
+                .accentColor(AppTheme.colors.brandMain)
             }
-            .accentColor(AppTheme.colors.brandMain)
         }
-        .preferredColorScheme(.dark) // 强制深色模式
+        .preferredColorScheme(.dark)
         .background(AppTheme.colors.background.ignoresSafeArea())
         .showMockIndicator()
         .onChange(of: globalState.needRefresh) { _ in

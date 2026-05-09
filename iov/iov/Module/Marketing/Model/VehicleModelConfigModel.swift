@@ -11,98 +11,47 @@ final class VehicleModelConfigModel: ObservableObject, VehicleModelConfigModelSt
     @Published var contentState: MarketingTypes.Model.VehicleModelConfigContentState = .loading
     let routerSubject = MarketingRouter.Subjects()
     var saleCode: String = ""
-    var models: [SaleModelConfig] = []
-    @Published var selectModel: String = ""
-    @Published var selectModelName: String = ""
-    @Published var selectModelPrice: Decimal = 0
-    var spareTires: [SaleModelConfig] = []
-    @Published var selectSpareTire: String = ""
-    @Published var selectSpareTirePrice: Decimal = 0
-    var exteriors: [SaleModelConfig] = []
-    @Published var selectExterior: String = ""
-    @Published var selectExteriorPrice: Decimal = 0
-    var wheels: [SaleModelConfig] = []
-    @Published var selectWheel: String = ""
-    @Published var selectWheelPrice: Decimal = 0
-    var interiors: [SaleModelConfig] = []
-    @Published var selectInterior: String = ""
-    @Published var selectInteriorPrice: Decimal = 0
-    var adases: [SaleModelConfig] = []
-    @Published var selectAdas: String = ""
-    @Published var selectAdasPrice: Decimal = 0
+    var featureRanges: [FeatureCodeRangeVo] = []
+    @Published var selections: [String: FeatureCodeDetailVo] = [:]
     @Published var totalPrice: Decimal = 0
 }
 
 // MARK: - Action Protocol
 
 extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
-    func updateSaleModel(saleCode: String, saleModels: [SaleModelConfig]) {
+    func updateFeatureRanges(saleCode: String, featureRanges: [FeatureCodeRangeVo]) {
         self.saleCode = saleCode
-        models.removeAll()
-        spareTires.removeAll()
-        exteriors.removeAll()
-        wheels.removeAll()
-        interiors.removeAll()
-        adases.removeAll()
-        for saleModel in saleModels {
-            switch saleModel.type {
-            case "MODEL":
-                models.append(saleModel)
-            case "SPARE_TIRE":
-                spareTires.append(saleModel)
-            case "EXTERIOR":
-                exteriors.append(saleModel)
-            case "WHEEL":
-                wheels.append(saleModel)
-            case "INTERIOR":
-                interiors.append(saleModel)
-            case "ADAS":
-                adases.append(saleModel)
-            default:
-                break
+        self.featureRanges = featureRanges
+        self.selections.removeAll()
+        self.totalPrice = 0
+        
+        for range in featureRanges {
+            if let firstFeature = range.featureDetails.first {
+                selections[range.familyCode] = firstFeature
+                totalPrice += firstFeature.featurePrice
             }
         }
         contentState = .content
     }
-    func selectModel(code: String, name: String, price: Decimal) {
-        selectModel = code
-        selectModelName = name
-        selectModelPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
+    
+    func selectFeature(familyCode: String, feature: FeatureCodeDetailVo) {
+        if let oldFeature = selections[familyCode] {
+            totalPrice -= oldFeature.featurePrice
+        }
+        totalPrice += feature.featurePrice
+        selections[familyCode] = feature
     }
-    func selectSpareTire(code: String, price: Decimal) {
-        selectSpareTire = code
-        selectSpareTirePrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
-    }
-    func selectExterior(code: String, price: Decimal) {
-        selectExterior = code
-        selectExteriorPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
-    }
-    func selectWheel(code: String, price: Decimal) {
-        selectWheel = code
-        selectWheelPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
-    }
-    func selectInterior(code: String, price: Decimal) {
-        selectInterior = code
-        selectInteriorPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
-    }
-    func selectAdas(code: String, price: Decimal) {
-        selectAdas = code
-        selectAdasPrice = price
-        totalPrice = selectModelPrice + selectSpareTirePrice + selectExteriorPrice + selectWheelPrice + selectInteriorPrice + selectAdasPrice
-    }
+    
     func saveOrder(orderNum: String) {
         VehicleManager.order(orderNum: orderNum)
         AppGlobalState.shared.needRefresh = true
         routerSubject.close.send()
     }
+    
     func displayError(text: String) {
         contentState = .error(text: text)
     }
+    
     func displayLoading() {
         contentState = .loading
     }
@@ -114,6 +63,7 @@ extension VehicleModelConfigModel: VehicleModelConfigModelRouterProtocol {
     func closeScreen() {
         routerSubject.close.send()
     }
+    
     func routeToOrderDetail() {
         routerSubject.screen.send(.orderDetail)
     }

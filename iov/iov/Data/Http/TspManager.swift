@@ -208,11 +208,20 @@ class TspManager {
         let dataStr = String(data: data, encoding: .utf8)!
         print("response tsp:", dataStr)
         
+        if let rawResponse = try? decoder.decode(TspResponse<AnyCodable>.self, from: data) {
+            if rawResponse.code == "701304" {
+                DispatchQueue.main.async {
+                    AppGlobalState.shared.handleTokenExpired()
+                }
+            }
+        }
+        
         guard let decodedData = try? decoder.decode(T.self, from: data) else {
             let error = NSError(domain: "NetworkAPIError", code: 0,
                                 userInfo: [NSLocalizedDescriptionKey: "Can not parse data"])
             return .failure(error)
         }
+        
         return .success(decodedData)
     }
     

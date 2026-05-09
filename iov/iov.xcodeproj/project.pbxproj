@@ -10,7 +10,6 @@
 		755FC02ABF529F44CB803BE3 /* Pods_iov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */; };
 		BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */; };
 		BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB712C9FC40C007519B4 /* AppDelegate.swift */; };
-		BF3CA30A2CB6AC6A006CD801 /* VehicleModelConfigPage_SpareTire.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3092CB6AC6A006CD801 /* VehicleModelConfigPage_SpareTire.swift */; };
 		BF3CA30C2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA30B2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift */; };
 		BF3CA30E2CBB7EB9006CD801 /* VehicleOrderDetailPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA30D2CBB7EB9006CD801 /* VehicleOrderDetailPage.swift */; };
 		BF3CA3102CBB7F57006CD801 /* VehicleOrderDetailIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA30F2CBB7F57006CD801 /* VehicleOrderDetailIntentProtocol.swift */; };
@@ -27,7 +26,6 @@
 		BF3CA3322CC4E0B1006CD801 /* VehicleOrderDetailPage_DownPaymentPaid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3312CC4E0B1006CD801 /* VehicleOrderDetailPage_DownPaymentPaid.swift */; };
 		BF3CA3342CC68481006CD801 /* VehicleOrderDetailPage_ArrangeProduction.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3332CC68481006CD801 /* VehicleOrderDetailPage_ArrangeProduction.swift */; };
 		BF3CA3362CC69417006CD801 /* VehicleOrderDetailPage_DownPaymentUnpaid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3352CC69417006CD801 /* VehicleOrderDetailPage_DownPaymentUnpaid.swift */; };
-		BF3CA3382CC7CDD7006CD801 /* VehicleModelConfigPage_Adas.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3372CC7CDD7006CD801 /* VehicleModelConfigPage_Adas.swift */; };
 		BF3CA33A2CCD1121006CD801 /* LicenseAreaPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA3392CCD1121006CD801 /* LicenseAreaPage.swift */; };
 		BF3CA33C2CCD132A006CD801 /* LicenseAreaPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA33B2CCD132A006CD801 /* LicenseAreaPage+Build.swift */; };
 		BF3CA33E2CCE2B49006CD801 /* LicenseAreaModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA33D2CCE2B49006CD801 /* LicenseAreaModelProtocol.swift */; };
@@ -41,8 +39,6 @@
 		BF554B032CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B022CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift */; };
 		BF554B052CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B042CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift */; };
 		BF554B072CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B062CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift */; };
-		BFA6202C2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */; };
-		BFA6302C2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */; };
 		BF554B092CD34A620025E7D4 /* DealershipModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B082CD34A620025E7D4 /* DealershipModelProtocol.swift */; };
 		BF554B0B2CD34A9B0025E7D4 /* DealershipModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B0A2CD34A9B0025E7D4 /* DealershipModel.swift */; };
 		BF554B0D2CD34AE20025E7D4 /* DealershipPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF554B0C2CD34AE20025E7D4 /* DealershipPage.swift */; };
@@ -367,6 +363,8 @@
 		BFA18A842C8446D3004D625D /* CommunityPage_Navi.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A832C8446D3004D625D /* CommunityPage_Navi.swift */; };
 		BFA18A862C8446F8004D625D /* CommunityPage_Topic.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA18A852C8446F7004D625D /* CommunityPage_Topic.swift */; };
 		BFA244242CDB8D5100AAAB6F /* SecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA244232CDB8D5100AAAB6F /* SecurityManager.swift */; };
+		BFA6202C2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */; };
+		BFA6302C2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */; };
 		BFACD05C2CAAF73100EF69E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BFACD05A2CAAF73100EF69E4 /* Localizable.strings */; };
 		BFADC2AB2CAD2B4E00834608 /* RoundedCornerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */; };
 		BFADC2AD2CB23B0400834608 /* VehicleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2AC2CB23B0400834608 /* VehicleManager.swift */; };
@@ -384,10 +382,6 @@
 		BFADC2F62CB3922400834608 /* VehicleModelConfigModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2F52CB3922400834608 /* VehicleModelConfigModelProtocol.swift */; };
 		BFADC2F82CB3925700834608 /* VehicleModelConfigModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2F72CB3925700834608 /* VehicleModelConfigModel.swift */; };
 		BFADC2FA2CB3952800834608 /* VehicleModelConfigPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2F92CB3952800834608 /* VehicleModelConfigPage+Build.swift */; };
-		BFADC2FC2CB4074200834608 /* VehicleModelConfigPage_Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2FB2CB4074100834608 /* VehicleModelConfigPage_Model.swift */; };
-		BFADC2FE2CB4096C00834608 /* VehicleModelConfigPage_Exterior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2FD2CB4096C00834608 /* VehicleModelConfigPage_Exterior.swift */; };
-		BFADC3022CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3012CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift */; };
-		BFADC3042CB4208400834608 /* VehicleModelConfigPage_Interior.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */; };
 		BFADC9EF2D9BD9DF004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */; };
 		BFD12FEB2F711DBB00BF26C4 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */; };
 		BFD12FF02F738E5400BF26C4 /* LanguageSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD12FED2F738E5400BF26C4 /* LanguageSettingView.swift */; };
@@ -400,6 +394,7 @@
 		BFD4AE4A2F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE402F6C37FC009CA7E6 /* MyAccountQrcodeView+Build.swift */; };
 		BFD4AE4C2F6C3AA5009CA7E6 /* QRCodeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */; };
 		BFD4AE4E2F6D0F65009CA7E6 /* MySettingProfileBioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */; };
+		BFE89D372FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -407,7 +402,6 @@
 		BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageButton.swift; sourceTree = "<group>"; };
 		BF24BB702C9FC1EE007519B4 /* Iov-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Iov-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF24BB712C9FC40C007519B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BF3CA3092CB6AC6A006CD801 /* VehicleModelConfigPage_SpareTire.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_SpareTire.swift; sourceTree = "<group>"; };
 		BF3CA30B2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingIndexPage_NoOrder.swift; sourceTree = "<group>"; };
 		BF3CA30D2CBB7EB9006CD801 /* VehicleOrderDetailPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage.swift; sourceTree = "<group>"; };
 		BF3CA30F2CBB7F57006CD801 /* VehicleOrderDetailIntentProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailIntentProtocol.swift; sourceTree = "<group>"; };
@@ -424,7 +418,6 @@
 		BF3CA3312CC4E0B1006CD801 /* VehicleOrderDetailPage_DownPaymentPaid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_DownPaymentPaid.swift; sourceTree = "<group>"; };
 		BF3CA3332CC68481006CD801 /* VehicleOrderDetailPage_ArrangeProduction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_ArrangeProduction.swift; sourceTree = "<group>"; };
 		BF3CA3352CC69417006CD801 /* VehicleOrderDetailPage_DownPaymentUnpaid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_DownPaymentUnpaid.swift; sourceTree = "<group>"; };
-		BF3CA3372CC7CDD7006CD801 /* VehicleModelConfigPage_Adas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Adas.swift; sourceTree = "<group>"; };
 		BF3CA3392CCD1121006CD801 /* LicenseAreaPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicenseAreaPage.swift; sourceTree = "<group>"; };
 		BF3CA33B2CCD132A006CD801 /* LicenseAreaPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LicenseAreaPage+Build.swift"; sourceTree = "<group>"; };
 		BF3CA33D2CCE2B49006CD801 /* LicenseAreaModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LicenseAreaModelProtocol.swift; sourceTree = "<group>"; };
@@ -438,8 +431,6 @@
 		BF554B022CD31E140025E7D4 /* VehicleOrderDetailPage_PrepareTransport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_PrepareTransport.swift; sourceTree = "<group>"; };
 		BF554B042CD346510025E7D4 /* VehicleOrderDetailPage_PrepareDeliver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_PrepareDeliver.swift; sourceTree = "<group>"; };
 		BF554B062CD348E80025E7D4 /* VehicleOrderDetailPage_Delivered.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Delivered.swift; sourceTree = "<group>"; };
-		BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_FinalPaymentPaid.swift; sourceTree = "<group>"; };
-		BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Invoiced.swift; sourceTree = "<group>"; };
 		BF554B082CD34A620025E7D4 /* DealershipModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealershipModelProtocol.swift; sourceTree = "<group>"; };
 		BF554B0A2CD34A9B0025E7D4 /* DealershipModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealershipModel.swift; sourceTree = "<group>"; };
 		BF554B0C2CD34AE20025E7D4 /* DealershipPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DealershipPage.swift; sourceTree = "<group>"; };
@@ -766,6 +757,8 @@
 		BFA18A832C8446D3004D625D /* CommunityPage_Navi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPage_Navi.swift; sourceTree = "<group>"; };
 		BFA18A852C8446F7004D625D /* CommunityPage_Topic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityPage_Topic.swift; sourceTree = "<group>"; };
 		BFA244232CDB8D5100AAAB6F /* SecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityManager.swift; sourceTree = "<group>"; };
+		BFA6202B2603202600000001 /* VehicleOrderDetailPage_FinalPaymentPaid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_FinalPaymentPaid.swift; sourceTree = "<group>"; };
+		BFA6302B2603202600000001 /* VehicleOrderDetailPage_Invoiced.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Invoiced.swift; sourceTree = "<group>"; };
 		BFADC2AA2CAD2B4E00834608 /* RoundedCornerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedCornerButton.swift; sourceTree = "<group>"; };
 		BFADC2AC2CB23B0400834608 /* VehicleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleManager.swift; sourceTree = "<group>"; };
 		BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexPage.swift; sourceTree = "<group>"; };
@@ -782,10 +775,6 @@
 		BFADC2F52CB3922400834608 /* VehicleModelConfigModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigModelProtocol.swift; sourceTree = "<group>"; };
 		BFADC2F72CB3925700834608 /* VehicleModelConfigModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigModel.swift; sourceTree = "<group>"; };
 		BFADC2F92CB3952800834608 /* VehicleModelConfigPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VehicleModelConfigPage+Build.swift"; sourceTree = "<group>"; };
-		BFADC2FB2CB4074100834608 /* VehicleModelConfigPage_Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Model.swift; sourceTree = "<group>"; };
-		BFADC2FD2CB4096C00834608 /* VehicleModelConfigPage_Exterior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Exterior.swift; sourceTree = "<group>"; };
-		BFADC3012CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Wheel.swift; sourceTree = "<group>"; };
-		BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_Interior.swift; sourceTree = "<group>"; };
 		BFADC9EE2D9BD9C8004C2655 /* VehicleOrderDetailPage_BookMethodCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_BookMethodCard.swift; sourceTree = "<group>"; };
 		BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		BFD12FED2F738E5400BF26C4 /* LanguageSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingView.swift; sourceTree = "<group>"; };
@@ -800,6 +789,7 @@
 		BFD4AE422F6C37FC009CA7E6 /* MyAccountQrcodeTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAccountQrcodeTypes.swift; sourceTree = "<group>"; };
 		BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeUtil.swift; sourceTree = "<group>"; };
 		BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySettingProfileBioView.swift; sourceTree = "<group>"; };
+		BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_FeatureConfig.swift; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -2483,17 +2473,12 @@
 		BFADC2D62CB2C87000834608 /* Page */ = {
 			isa = PBXGroup;
 			children = (
+				BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */,
 				BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */,
 				BF3CA30B2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift */,
 				BF3CA31B2CBBBF9B006CD801 /* MarketingIndexPage_Order.swift */,
 				BFADC2E72CB3869000834608 /* MarketingIndexPage+Build.swift */,
 				BFADC2C12CB28A2E00834608 /* VehicleModelConfigPage.swift */,
-				BFADC2FB2CB4074100834608 /* VehicleModelConfigPage_Model.swift */,
-				BF3CA3092CB6AC6A006CD801 /* VehicleModelConfigPage_SpareTire.swift */,
-				BFADC2FD2CB4096C00834608 /* VehicleModelConfigPage_Exterior.swift */,
-				BFADC3012CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift */,
-				BFADC3032CB4208400834608 /* VehicleModelConfigPage_Interior.swift */,
-				BF3CA3372CC7CDD7006CD801 /* VehicleModelConfigPage_Adas.swift */,
 				BFADC2F92CB3952800834608 /* VehicleModelConfigPage+Build.swift */,
 				BF3CA3392CCD1121006CD801 /* LicenseAreaPage.swift */,
 				BF3CA33B2CCD132A006CD801 /* LicenseAreaPage+Build.swift */,
@@ -2801,7 +2786,6 @@
 				BF4908E32C9325430071C527 /* InfoTip.swift in Sources */,
 				BFA189EA2C84332E004D625D /* TestDriveReportModelProtocol.swift in Sources */,
 				BFA1886E2C841CEC004D625D /* TopCloseTitleBar.swift in Sources */,
-				BF3CA30A2CB6AC6A006CD801 /* VehicleModelConfigPage_SpareTire.swift in Sources */,
 				BFA18A4F2C843900004D625D /* MallPage.swift in Sources */,
 				BFA187C32C840E7E004D625D /* ProductIntentProtocol.swift in Sources */,
 				BFADC2EA2CB3873700834608 /* MarketingIndexIntent.swift in Sources */,
@@ -2867,6 +2851,7 @@
 				BFA1882A2C8415C1004D625D /* ClearButton.swift in Sources */,
 				BF3CA3442CCE2C51006CD801 /* LicenseAreaIntent.swift in Sources */,
 				BFA18A3C2C8437C9004D625D /* VehicleAcSeatPage.swift in Sources */,
+				BFE89D372FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift in Sources */,
 				BF554B092CD34A620025E7D4 /* DealershipModelProtocol.swift in Sources */,
 				BFA187A22C840934004D625D /* RouterNavigationStackModifier.swift in Sources */,
 				BFA1883E2C84173B004D625D /* AddressModel.swift in Sources */,
@@ -2889,7 +2874,6 @@
 				BFA187F62C84120D004D625D /* MyIntentProtocol.swift in Sources */,
 				BFA187E22C841102004D625D /* LoginPage.swift in Sources */,
 				BFA188342C8416C7004D625D /* AddressView.swift in Sources */,
-				BFADC3022CB41C1600834608 /* VehicleModelConfigPage_Wheel.swift in Sources */,
 				BFA187DE2C84109E004D625D /* OrderRouter.swift in Sources */,
 				BFA188842C841F2F004D625D /* CommunityArticleView_Share.swift in Sources */,
 				BFA188EB2C842598004D625D /* MySettingProfileModel.swift in Sources */,
@@ -2964,7 +2948,6 @@
 				BFA18A402C843805004D625D /* VehicleCenterPage.swift in Sources */,
 				BFA188D42C842481004D625D /* SettingModelProtocol.swift in Sources */,
 				BFA189062C842799004D625D /* MySettingAccountChangeIntentProtocol.swift in Sources */,
-				BFADC2FE2CB4096C00834608 /* VehicleModelConfigPage_Exterior.swift in Sources */,
 				BFA1888B2C841F99004D625D /* CommunitySubjectIntentProtocol.swift in Sources */,
 				BFA189DE2C8432A5004D625D /* MyInviteView+Build.swift in Sources */,
 				BFA1880B2C84131D004D625D /* MyMessageModelProtocol.swift in Sources */,
@@ -3039,7 +3022,6 @@
 				BFA188A32C8420B6004D625D /* CommunityTopicModel.swift in Sources */,
 				BFA188212C8414F3004D625D /* Theme.swift in Sources */,
 				BFA1899C2C842FB3004D625D /* MyPointsView+Build.swift in Sources */,
-				BFADC2FC2CB4074200834608 /* VehicleModelConfigPage_Model.swift in Sources */,
 				BFA18A552C843955004D625D /* MallModelProtocol.swift in Sources */,
 				BFA187C02C840E51004D625D /* ProductView.swift in Sources */,
 				BFA188C02C842320004D625D /* MyPage+Build.swift in Sources */,
@@ -3073,7 +3055,6 @@
 				BFA189142C842834004D625D /* MySettingAccountChangeIntent.swift in Sources */,
 				BFA188822C841EFB004D625D /* CommunityArticleView_Carousel.swift in Sources */,
 				BFA187BA2C840DDD004D625D /* CommunityArticleRouter.swift in Sources */,
-				BF3CA3382CC7CDD7006CD801 /* VehicleModelConfigPage_Adas.swift in Sources */,
 				BFD12FF02F738E5400BF26C4 /* LanguageSettingView.swift in Sources */,
 				BFA18A032C84344F004D625D /* ChargingPileModel.swift in Sources */,
 				BFA188BA2C842259004D625D /* CommunityPage_Article.swift in Sources */,
@@ -3105,7 +3086,6 @@
 				BFA1891E2C8428B8004D625D /* MySettingAccountSecurityModelProtocol.swift in Sources */,
 				BFA187CD2C840EF9004D625D /* ProductRouter.swift in Sources */,
 				BFA187D72C841051004D625D /* OrderModelProtocol.swift in Sources */,
-				BFADC3042CB4208400834608 /* VehicleModelConfigPage_Interior.swift in Sources */,
 				BFA18A162C8435B1004D625D /* ServiceModelProtocol.swift in Sources */,
 				BFA18A062C843474004D625D /* ChargingPileRouter.swift in Sources */,
 				BFA189BB2C84310A004D625D /* MyOrderIntentProtocol.swift in Sources */,

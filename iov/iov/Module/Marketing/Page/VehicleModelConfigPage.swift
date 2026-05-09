@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-/// 车辆车型配置页
 struct VehicleModelConfigPage: View {
     @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
     private var intent: VehicleModelConfigIntentProtocol { container.intent }
@@ -37,7 +36,7 @@ struct VehicleModelConfigPage: View {
 
 extension VehicleModelConfigPage {
     struct TabItem: Identifiable {
-        let id: Int
+        let id: String
         let name: String
         let view: AnyView
     }
@@ -46,29 +45,23 @@ extension VehicleModelConfigPage {
         @StateObject var container: MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol>
         private var intent: VehicleModelConfigIntentProtocol { container.intent }
         private var state: VehicleModelConfigModelStateProtocol { container.model }
-        @State private var selectedTab = 0
+        @State private var selectedTabId: String = ""
         
         private var visibleTabs: [TabItem] {
-            var tabs: [TabItem] = []
-            if !state.models.isEmpty {
-                tabs.append(TabItem(id: 0, name: "vehicle_model", view: AnyView(VehicleModelConfigPage.Model(container: container))))
+            state.featureRanges.map { range in
+                TabItem(
+                    id: range.familyCode,
+                    name: range.familyName,
+                    view: AnyView(FeatureConfigView(
+                        container: container,
+                        featureRange: range,
+                        selectedFeature: Binding(
+                            get: { state.selections[range.familyCode] },
+                            set: { _ in }
+                        )
+                    ))
+                )
             }
-            if !state.spareTires.isEmpty {
-                tabs.append(TabItem(id: 1, name: "spare_tire", view: AnyView(VehicleModelConfigPage.SpareTire(container: container))))
-            }
-            if !state.exteriors.isEmpty {
-                tabs.append(TabItem(id: 2, name: "exterior", view: AnyView(VehicleModelConfigPage.Exterior(container: container))))
-            }
-            if !state.wheels.isEmpty {
-                tabs.append(TabItem(id: 3, name: "wheel", view: AnyView(VehicleModelConfigPage.Wheel(container: container))))
-            }
-            if !state.interiors.isEmpty {
-                tabs.append(TabItem(id: 4, name: "interior", view: AnyView(VehicleModelConfigPage.Interior(container: container))))
-            }
-            if !state.adases.isEmpty {
-                tabs.append(TabItem(id: 5, name: "adas", view: AnyView(VehicleModelConfigPage.Adas(container: container))))
-            }
-            return tabs
         }
         
         var body: some View {
@@ -76,24 +69,23 @@ extension VehicleModelConfigPage {
                 Spacer().frame(height: kStatusBarHeight)
                 TopBackTitleBar(titleLocal: LocalizedStringKey("choose_vehicle"))
                 
-                // 二级导航 - 极简药丸样式
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
                             ForEach(visibleTabs) { tab in
                                 Button(action: {
                                     withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                                        selectedTab = tab.id
+                                        selectedTabId = tab.id
                                     }
                                 }) {
-                                    Text(LocalizedStringKey(tab.name))
+                                    Text(tab.name)
                                         .font(AppTheme.fonts.subtext)
-                                        .fontWeight(selectedTab == tab.id ? .bold : .regular)
+                                        .fontWeight(selectedTabId == tab.id ? .bold : .regular)
                                         .padding(.horizontal, 16)
                                         .padding(.vertical, 8)
                                         .background(
                                             ZStack {
-                                                if selectedTab == tab.id {
+                                                if selectedTabId == tab.id {
                                                     Capsule()
                                                         .fill(AppTheme.colors.brandMain.opacity(0.15))
                                                     Capsule()
@@ -104,7 +96,7 @@ extension VehicleModelConfigPage {
                                                 }
                                             }
                                         )
-                                        .foregroundColor(selectedTab == tab.id ? AppTheme.colors.brandMain : AppTheme.colors.fontSecondary)
+                                        .foregroundColor(selectedTabId == tab.id ? AppTheme.colors.brandMain : AppTheme.colors.fontSecondary)
                                 }
                                 .id(tab.id)
                             }
@@ -112,21 +104,19 @@ extension VehicleModelConfigPage {
                         .padding(.horizontal, AppTheme.layout.margin)
                     }
                     .padding(.vertical, 16)
-                    .onChange(of: selectedTab) { newValue in
+                    .onChange(of: selectedTabId) { newValue in
                         withAnimation { proxy.scrollTo(newValue, anchor: .center) }
                     }
                 }
                 
-                // 主内容区 - 增加背景光效
                 ZStack {
-                    // 背景装饰光晕
                     Circle()
                         .fill(AppTheme.colors.brandMain.opacity(0.05))
                         .frame(width: 400, height: 400)
                         .blur(radius: 60)
                         .offset(y: -100)
                     
-                    TabView(selection: $selectedTab) {
+                    TabView(selection: $selectedTabId) {
                         ForEach(visibleTabs) { tab in
                             tab.view.tag(tab.id)
                         }
@@ -134,7 +124,6 @@ extension VehicleModelConfigPage {
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
                 
-                // 底部操作栏 - 悬浮质感
                 VStack(spacing: 0) {
                     LinearGradient(
                         gradient: Gradient(colors: [Color.clear, AppTheme.colors.background]),
@@ -161,7 +150,7 @@ extension VehicleModelConfigPage {
                         HStack(spacing: 12) {
                             Button(action: {
                                 handleAction {
-                                    intent.onTapSaveWishlist(saleCode: state.saleCode, modelCode: state.selectModel, modelName: state.selectModelName, spareTireCode: state.selectSpareTire, exteriorCode: state.selectExterior, wheelCode: state.selectWheel, interiorCode: state.selectInterior, adasCode: state.selectAdas)
+                                    intent.onTapSaveWishlist()
                                 }
                             }) {
                                 Text(LocalizedStringKey("save_wishlist"))
@@ -175,7 +164,7 @@ extension VehicleModelConfigPage {
                             
                             Button(action: {
                                 handleAction {
-                                    intent.onTapOrder(saleCode: state.saleCode, modelCode: state.selectModel, modelName: state.selectModelName, spareTireCode: state.selectSpareTire, exteriorCode: state.selectExterior, wheelCode: state.selectWheel, interiorCode: state.selectInterior, adasCode: state.selectAdas)
+                                    intent.onTapOrder()
                                 }
                             }) {
                                 Text(LocalizedStringKey("order_now"))
@@ -190,36 +179,26 @@ extension VehicleModelConfigPage {
                         }
                     }
                     .padding(.horizontal, AppTheme.layout.margin)
-                    .padding(.bottom, 34) // 适配全面屏底部
+                    .padding(.bottom, 34)
                     .background(AppTheme.colors.background)
                 }
             }
             .ignoresSafeArea(edges: .bottom)
             .onAppear {
                 if let firstTab = visibleTabs.first {
-                    selectedTab = firstTab.id
+                    selectedTabId = firstTab.id
                 }
             }
         }
         
         private func handleAction(completion: () -> Void) {
-            if !state.models.isEmpty && state.selectModel == "" { 
-                if let tab = visibleTabs.first(where: { $0.id == 0 }) { withAnimation { selectedTab = tab.id } }; return 
-            }
-            if !state.spareTires.isEmpty && state.selectSpareTire == "" { 
-                if let tab = visibleTabs.first(where: { $0.id == 1 }) { withAnimation { selectedTab = tab.id } }; return 
-            }
-            if !state.exteriors.isEmpty && state.selectExterior == "" { 
-                if let tab = visibleTabs.first(where: { $0.id == 2 }) { withAnimation { selectedTab = tab.id } }; return 
-            }
-            if !state.wheels.isEmpty && state.selectWheel == "" { 
-                if let tab = visibleTabs.first(where: { $0.id == 3 }) { withAnimation { selectedTab = tab.id } }; return 
-            }
-            if !state.interiors.isEmpty && state.selectInterior == "" { 
-                if let tab = visibleTabs.first(where: { $0.id == 4 }) { withAnimation { selectedTab = tab.id } }; return 
-            }
-            if !state.adases.isEmpty && state.selectAdas == "" { 
-                if let tab = visibleTabs.first(where: { $0.id == 5 }) { withAnimation { selectedTab = tab.id } }; return 
+            for range in state.featureRanges {
+                if state.selections[range.familyCode] == nil {
+                    if let firstUnselectedTab = visibleTabs.first(where: { $0.id == range.familyCode }) {
+                        withAnimation { selectedTabId = firstUnselectedTab.id }
+                    }
+                    return
+                }
             }
             completion()
         }

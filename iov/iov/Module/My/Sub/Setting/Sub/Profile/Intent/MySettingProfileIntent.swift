@@ -90,6 +90,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
             case .success(let response):
                 if(response.isSuccess) {
                     UserManager.modifyNickname(nickname: nickname)
+                    self.modelRouter?.closeScreen()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
@@ -104,7 +105,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
-                    self.viewOnAppear()
+                    self.modelRouter?.closeScreen()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
@@ -125,7 +126,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
-                    self.viewOnAppear()
+                    self.modelRouter?.closeScreen()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }
@@ -169,7 +170,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
-                    self.viewOnAppear()
+                    self.modelRouter?.closeScreen()
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
                 }

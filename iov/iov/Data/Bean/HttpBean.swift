@@ -7,6 +7,54 @@
 
 import Foundation
 
+struct AnyCodable: Codable {
+    let value: Any
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        
+        if let intValue = try? container.decode(Int.self) {
+            value = intValue
+        } else if let doubleValue = try? container.decode(Double.self) {
+            value = doubleValue
+        } else if let stringValue = try? container.decode(String.self) {
+            value = stringValue
+        } else if let boolValue = try? container.decode(Bool.self) {
+            value = boolValue
+        } else if let arrayValue = try? container.decode([AnyCodable].self) {
+            value = arrayValue.map { $0.value }
+        } else if let dictValue = try? container.decode([String: AnyCodable].self) {
+            value = dictValue.mapValues { $0.value }
+        } else {
+            value = ""
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        
+        if let intValue = value as? Int {
+            try container.encode(intValue)
+        } else if let doubleValue = value as? Double {
+            try container.encode(doubleValue)
+        } else if let stringValue = value as? String {
+            try container.encode(stringValue)
+        } else if let boolValue = value as? Bool {
+            try container.encode(boolValue)
+        } else if let arrayValue = value as? [Any] {
+            try container.encode(arrayValue.map { AnyCodable(value: $0) })
+        } else if let dictValue = value as? [String: Any] {
+            try container.encode(dictValue.mapValues { AnyCodable(value: $0) })
+        } else {
+            try container.encode("")
+        }
+    }
+    
+    init(value: Any) {
+        self.value = value
+    }
+}
+
 /// TSP平台通用响应实体
 struct TspResponse<Model: Codable>: Codable {
     var code: String
@@ -112,6 +160,48 @@ struct SaleModelConfig: Codable, Hashable {
     var typeDesc: String?
     /// 销售车型配置类型参数
     var typeParam: String?
+}
+
+/// 特征值详细信息
+struct FeatureCodeDetailVo: Codable, Hashable {
+    /// 特征值编码
+    var featureCode: String
+    /// 特征值名称
+    var featureName: String
+    /// 特征值价格
+    var featurePrice: Decimal
+    /// 特征值图片列表
+    var featureImage: [String]
+    /// 特征值描述
+    var featureDesc: String?
+    /// 特征值参数
+    var featureParam: String?
+    /// 是否启用
+    var enable: Bool
+    /// 排序
+    var sort: Int
+}
+
+/// 特征值范围（特征族）
+struct FeatureCodeRangeVo: Codable, Hashable {
+    /// 特征族编码
+    var familyCode: String
+    /// 特征族名称
+    var familyName: String
+    /// 特征族价格
+    var familyPrice: Decimal
+    /// 特征族图片列表
+    var familyImage: [String]
+    /// 特征族描述
+    var familyDesc: String?
+    /// 特征族参数
+    var familyParam: String?
+    /// 是否启用
+    var enable: Bool
+    /// 排序
+    var sort: Int
+    /// 特征值详细信息列表
+    var featureDetails: [FeatureCodeDetailVo]
 }
 
 /// 已选择的销售车型
@@ -263,6 +353,48 @@ struct AccountInfo: Codable {
     var regionCode: String?
     var regionName: String?
     var description: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case userId
+        case profileId
+        case nickname
+        case avatarUrl
+        case realName
+        case gender
+        case birthday
+        case regionCode
+        case regionName
+        case description
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        userId = try container.decodeIfPresent(String.self, forKey: .userId)
+        profileId = try container.decodeIfPresent(String.self, forKey: .profileId)
+        nickname = try container.decodeIfPresent(String.self, forKey: .nickname)
+        avatarUrl = try container.decodeIfPresent(String.self, forKey: .avatarUrl)
+        realName = try container.decodeIfPresent(String.self, forKey: .realName)
+        gender = try container.decodeIfPresent(Int.self, forKey: .gender)
+        regionCode = try container.decodeIfPresent(String.self, forKey: .regionCode)
+        regionName = try container.decodeIfPresent(String.self, forKey: .regionName)
+        description = try container.decodeIfPresent(String.self, forKey: .description)
+        
+        if let birthdayString = try container.decodeIfPresent(String.self, forKey: .birthday) {
+            self.birthday = parseBirthdayString(birthdayString)
+        } else if let birthdayArray = try container.decodeIfPresent([Int].self, forKey: .birthday) {
+            self.birthday = birthdayArray
+        } else {
+            self.birthday = nil
+        }
+    }
+    
+    private func parseBirthdayString(_ string: String) -> [Int]? {
+        let components = string.split(separator: "-").compactMap { Int($0) }
+        if components.count == 3 {
+            return components
+        }
+        return nil
+    }
 }
 
 /**

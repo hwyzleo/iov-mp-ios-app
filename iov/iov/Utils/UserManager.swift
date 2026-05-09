@@ -50,7 +50,11 @@ class UserManager: Object {
     class func getUser() -> UserManager? {
         let realm = RealmManager.user.realm
         realm.refresh()
-        return realm.objects(UserManager.self).first
+        guard let user = realm.objects(UserManager.self).first,
+              !user.isInvalidated else {
+            return nil
+        }
+        return user
     }
     
     /// 是否登录
@@ -65,17 +69,24 @@ class UserManager: Object {
     
     /// 获取令牌
     class func getToken() -> String {
-        return getUser()?.token ?? ""
+        guard let user = getUser(), !user.isInvalidated else {
+            return ""
+        }
+        return user.token
     }
     
     /// 获取刷新令牌
     class func getRefreshToken() -> String {
-        return getUser()?.refreshToken ?? ""
+        guard let user = getUser(), !user.isInvalidated else {
+            return ""
+        }
+        return user.refreshToken
     }
     
     /// 检查 token 是否有效
     class func isTokenValid() -> Bool {
-        guard let expiresAt = getUser()?.tokenExpiresAt else {
+        guard let user = getUser(), !user.isInvalidated,
+              let expiresAt = user.tokenExpiresAt else {
             return false
         }
         return expiresAt.timeIntervalSinceNow > 0
@@ -83,7 +94,8 @@ class UserManager: Object {
     
     /// 检查 token 是否即将过期（剩余时间小于指定秒数）
     class func isTokenExpiringSoon(threshold: TimeInterval = 300) -> Bool {
-        guard let expiresAt = getUser()?.tokenExpiresAt else {
+        guard let user = getUser(), !user.isInvalidated,
+              let expiresAt = user.tokenExpiresAt else {
             return true
         }
         return expiresAt.timeIntervalSinceNow <= threshold
@@ -94,7 +106,7 @@ class UserManager: Object {
         let realm = RealmManager.user.realm
         do {
             try realm.write {
-                if let user = realm.objects(UserManager.self).first {
+                if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
                     user.token = token
                     user.refreshToken = refreshToken
                     user.tokenExpiresAt = expiresAt
@@ -107,13 +119,17 @@ class UserManager: Object {
 
     /// 修改昵称（内部方法）
     private class func updateNickname(nickname: String) -> Observable<UserManager> {
+        let realm = RealmManager.user.realm
         do {
-            if let user = getUser() {
-                let realm = RealmManager.user.realm
-                try realm.write {
+            var userResult: UserManager?
+            try realm.write {
+                if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
                     user.nickname = nickname
+                    userResult = user
                 }
-                return .just(user)
+            }
+            if let result = userResult {
+                return Observable.just(result)
             }
             return .error(IovError(message: "用户不存在"))
         } catch {
@@ -128,7 +144,7 @@ class UserManager: Object {
         do {
             var userResult: UserManager?
             try realm.write {
-                if let user = realm.objects(UserManager.self).first {
+                if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
                     user.token = response.token ?? ""
                     user.refreshToken = response.refreshToken ?? ""
                     user.tokenExpiresAt = response.tokenExpires.map { Date(timeIntervalSince1970: Double($0) / 1000.0) }
@@ -166,7 +182,7 @@ class UserManager: Object {
         let realm = RealmManager.user.realm
         do {
             try realm.write {
-                if let user = realm.objects(UserManager.self).first {
+                if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
                     user.nickname = nickname
                     user.avatar = avatar
                 }
@@ -191,6 +207,7 @@ class UserManager: Object {
                 realm.delete(realm.objects(UserManager.self))
                 realm.refresh()
             }
+            VehicleManager.shared.clear()
             return Observable.just(())
         } catch {
             return Observable.error(error)

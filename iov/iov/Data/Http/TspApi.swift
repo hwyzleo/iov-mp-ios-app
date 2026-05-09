@@ -50,7 +50,7 @@ class TspApi {
     static func refreshToken(refreshToken: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
         let parameters: Parameters = ["refreshToken": refreshToken]
         print("request refresh token:", parameters, tspHeaders)
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/refresh", parameters: parameters, headers: tspHeaders) { result in
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/token/refresh", parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<TspResponse<LoginResponse>, Error> = TspManager.parseData(data)
@@ -77,43 +77,27 @@ class TspApi {
     
     /// 获取有效车辆销售订单列表
     static func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/vehicleSaleOrder/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/order/v1/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
             completion(result)
         }
     }
     
-    /// 获取销售车型列表
-    static func getSaleModelList(saleCode: String, completion: @escaping (Result<TspResponse<[SaleModelConfig]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/saleModel/" + saleCode + "/config", parameters: [:]) { (result: Result<TspResponse<[SaleModelConfig]>, Error>) in
+    /// 获取销售车型特征值范围列表（动态配置模式）
+    static func getFeatureCodeRanges(saleCode: String, completion: @escaping (Result<TspResponse<[FeatureCodeRangeVo]>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/saleModel/v1/" + saleCode + "/featureCodeRanges", parameters: [:]) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
             completion(result)
         }
     }
     
-    /// 创建心愿单
-    static func createWishlist(saleCode: String, modelCode: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        let saleModelConfigType: [String:String] = [
-            "MODEL": modelCode,
-            "SPARE_TIRE": spareTireCode,
-            "EXTERIOR": exteriorCode,
-            "WHEEL": wheelCode,
-            "INTERIOR": interiorCode,
-            "ADAS": adasCode
-        ]
+    /// 创建心愿单（动态配置模式）
+    static func createWishlistNew(saleCode: String, saleModelConfigType: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/create", parameters: ["saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
     
-    /// 修改心愿单
-    static func modifyWishlist(orderNum: String, saleCode: String, modelCode: String, spareTireCode: String, exteriorCode: String, wheelCode: String, interiorCode: String, adasCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        let saleModelConfigType: [String:String] = [
-            "MODEL": modelCode,
-            "SPARE_TIRE": spareTireCode,
-            "EXTERIOR": exteriorCode,
-            "WHEEL": wheelCode,
-            "INTERIOR": interiorCode,
-            "ADAS": adasCode
-        ]
+    /// 修改心愿单（动态配置模式）
+    static func modifyWishlist(orderNum: String, saleCode: String, saleModelConfigType: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         TspManager.requestPost(path: "/mp/vehicleSaleOrder/wishlist/action/modify", parameters: ["orderNum": orderNum,"saleCode":saleCode,"saleModelConfigType":saleModelConfigType]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }

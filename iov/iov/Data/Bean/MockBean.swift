@@ -38,26 +38,95 @@ func mockVehicleSaleOrderList() -> [VehicleSaleOrder] {
     ]
 }
 
-/// 销售车型
-func mockSaleModelList() -> [SaleModelConfig] {
+/// 特征值范围列表（动态配置）
+func mockFeatureCodeRanges() -> [FeatureCodeRangeVo] {
     return [
-        SaleModelConfig.init(saleCode: "H01", type: "ADAS", typeCode: "X02", typeName: "高阶智驾", typePrice: 3000, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "ADAS", typeCode: "X00", typeName: "标准智驾", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS03", typeName: "霜雪白内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], typeDesc: "", typeParam: "#dcdcd6"),
-        SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS02", typeName: "珊瑚橙内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], typeDesc: "", typeParam: "#a35d31"),
-        SaleModelConfig.init(saleCode: "H01", type: "INTERIOR", typeCode: "NS01", typeName: "乌木黑内饰", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], typeDesc: "", typeParam: "#424141"),
-        SaleModelConfig.init(saleCode: "H01", type: "WHEEL", typeCode: "CL04", typeName: "21寸轮毂(四季胎)枪灰色", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], typeDesc: "标配倍耐力Scorpion轮胎", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "WHEEL", typeCode: "CL03", typeName: "21寸轮毂(四季胎)高亮黑", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], typeDesc: "标配倍耐力Scorpion轮胎", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS06", typeName: "冰川白车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064442d29ded1a8c8801fa.png"], typeDesc: "", typeParam: "#e8e8e7"),
-        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS05", typeName: "银河灰车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706473ad29ded1a8c8aa3a9.png"], typeDesc: "", typeParam: "#868888"),
-        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS04", typeName: "星尘银车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/6706487dd29ded1a8c8bb358.png"], typeDesc: "", typeParam: "#cbcbce"),
-        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS03", typeName: "天际蓝车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], typeDesc: "", typeParam: "#4681ad"),
-        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS02", typeName: "翡翠绿车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], typeDesc: "", typeParam: "#3a5337"),
-        SaleModelConfig.init(saleCode: "H01", type: "EXTERIOR", typeCode: "WS01", typeName: "墨玉黑车漆", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "", typeParam: "#0f0e11"),
-        SaleModelConfig.init(saleCode: "H01", type: "SPARE_TIRE", typeCode: "X05", typeName: "外挂式全尺寸备胎", typePrice: 6000, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "含备胎车长5295毫米", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "SPARE_TIRE", typeCode: "X00", typeName: "无备胎", typePrice: 0, typeImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], typeDesc: "车长5050毫米", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "MODEL", typeCode: "H0106", typeName: "寒01六座版", typePrice: 88888, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", typeParam: ""),
-        SaleModelConfig.init(saleCode: "H01", type: "MODEL", typeCode: "H0107", typeName: "寒01七座版", typePrice: 88888, typeImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], typeDesc: "2-2-3七座，二排超宽通道，二三排可放平", typeParam: "")
+        FeatureCodeRangeVo(
+            familyCode: "MODEL",
+            familyName: "车型",
+            familyPrice: 88888,
+            familyImage: [],
+            familyDesc: nil,
+            familyParam: nil,
+            enable: true,
+            sort: 0,
+            featureDetails: [
+                FeatureCodeDetailVo(featureCode: "H0106", featureName: "寒01六座版", featurePrice: 88888, featureImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], featureDesc: "2-2-2六座，双侧零重力航空座椅，行政奢华", featureParam: nil, enable: true, sort: 0),
+                FeatureCodeDetailVo(featureCode: "H0107", featureName: "寒01七座版", featurePrice: 88888, featureImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], featureDesc: "2-2-3七座，二排超宽通道，二三排可放平", featureParam: nil, enable: true, sort: 1)
+            ]
+        ),
+        FeatureCodeRangeVo(
+            familyCode: "SPARE_TIRE",
+            familyName: "备胎",
+            familyPrice: 0,
+            familyImage: [],
+            familyDesc: nil,
+            familyParam: nil,
+            enable: true,
+            sort: 1,
+            featureDetails: [
+                FeatureCodeDetailVo(featureCode: "X05", featureName: "外挂式全尺寸备胎", featurePrice: 6000, featureImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], featureDesc: "含备胎车长5295毫米", featureParam: nil, enable: true, sort: 0),
+                FeatureCodeDetailVo(featureCode: "X00", featureName: "无备胎", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], featureDesc: "车长5050毫米", featureParam: nil, enable: true, sort: 1)
+            ]
+        ),
+        FeatureCodeRangeVo(
+            familyCode: "EXTERIOR",
+            familyName: "外饰",
+            familyPrice: 0,
+            familyImage: [],
+            familyDesc: nil,
+            familyParam: nil,
+            enable: true,
+            sort: 2,
+            featureDetails: [
+                FeatureCodeDetailVo(featureCode: "WS01", featureName: "墨玉黑车漆", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], featureDesc: nil, featureParam: "#0f0e11", enable: true, sort: 0),
+                FeatureCodeDetailVo(featureCode: "WS02", featureName: "翡翠绿车漆", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png"], featureDesc: nil, featureParam: "#3a5337", enable: true, sort: 1),
+                FeatureCodeDetailVo(featureCode: "WS03", featureName: "天际蓝车漆", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/67064bc8d29ded1a8c8e461b.png"], featureDesc: nil, featureParam: "#4681ad", enable: true, sort: 2)
+            ]
+        ),
+        FeatureCodeRangeVo(
+            familyCode: "WHEEL",
+            familyName: "轮毂",
+            familyPrice: 0,
+            familyImage: [],
+            familyDesc: nil,
+            familyParam: nil,
+            enable: true,
+            sort: 3,
+            featureDetails: [
+                FeatureCodeDetailVo(featureCode: "CL03", featureName: "21寸轮毂(四季胎)高亮黑", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], featureDesc: "标配倍耐力Scorpion轮胎", featureParam: nil, enable: true, sort: 0),
+                FeatureCodeDetailVo(featureCode: "CL04", featureName: "21寸轮毂(四季胎)枪灰色", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/67067e41d29ded1a8cb3ac99.png"], featureDesc: "标配倍耐力Scorpion轮胎", featureParam: nil, enable: true, sort: 1)
+            ]
+        ),
+        FeatureCodeRangeVo(
+            familyCode: "INTERIOR",
+            familyName: "内饰",
+            familyPrice: 0,
+            familyImage: [],
+            familyDesc: nil,
+            familyParam: nil,
+            enable: true,
+            sort: 4,
+            featureDetails: [
+                FeatureCodeDetailVo(featureCode: "NS01", featureName: "乌木黑内饰", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/670688dbd29ded1a8cbc1321.png"], featureDesc: nil, featureParam: "#424141", enable: true, sort: 0),
+                FeatureCodeDetailVo(featureCode: "NS02", featureName: "珊瑚橙内饰", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/670687ecd29ded1a8cbb5280.png"], featureDesc: nil, featureParam: "#a35d31", enable: true, sort: 1),
+                FeatureCodeDetailVo(featureCode: "NS03", featureName: "霜雪白内饰", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"], featureDesc: nil, featureParam: "#dcdcd6", enable: true, sort: 2)
+            ]
+        ),
+        FeatureCodeRangeVo(
+            familyCode: "ADAS",
+            familyName: "智驾",
+            familyPrice: 0,
+            familyImage: [],
+            familyDesc: nil,
+            familyParam: nil,
+            enable: true,
+            sort: 5,
+            featureDetails: [
+                FeatureCodeDetailVo(featureCode: "X00", featureName: "标准智驾", featurePrice: 0, featureImage: ["https://pic.imgdb.cn/item/670674cfd29ded1a8cac9cb3.png"], featureDesc: "基础安全驾驶辅助", featureParam: nil, enable: true, sort: 0),
+                FeatureCodeDetailVo(featureCode: "X02", featureName: "高阶智驾", featurePrice: 3000, featureImage: ["https://pic.imgdb.cn/item/67065c4fd29ded1a8c9a3714.png"], featureDesc: "全场景智能驾驶辅助", featureParam: nil, enable: true, sort: 1)
+            ]
+        )
     ]
 }
 
