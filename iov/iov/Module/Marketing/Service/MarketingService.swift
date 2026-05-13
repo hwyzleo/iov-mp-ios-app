@@ -15,17 +15,18 @@ protocol MarketingServiceProtocol {
     func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void)
     func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void)
     func getDeliveryCenter(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void)
-    func getSelectedSaleModel(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void)
+    func getSelectedSaleModel(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void)
     func getOrder(orderNo: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void)
     func deleteWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
-    func earnestMoneyOrder(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
+    func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
     func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void)
-    func paymentCallback(paymentNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
-    func downPaymentOrder(saleCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void)
+    func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
+    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void)
     func cancelOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func payOrder(orderNo: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void)
     func earnestMoneyToDownPayment(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
+    func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void)
 }
 
 /// 真实的 TSP API 实现
@@ -54,8 +55,8 @@ class RealMarketingService: MarketingServiceProtocol {
         TspApi.getDeliveryCenter(completion: completion)
     }
     
-    func getSelectedSaleModel(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
-        TspApi.getSelectedSaleModel(saleCode: saleCode, orderNo: orderNo, saleModelConfigType: saleModelConfigType, completion: completion)
+    func getSelectedSaleModel(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
+        TspApi.getSelectedSaleModel(saleModelCode: saleModelCode, orderNo: orderNo, saleModelConfigType: saleModelConfigType, completion: completion)
     }
     
     func getOrder(orderNo: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void) {
@@ -66,9 +67,9 @@ class RealMarketingService: MarketingServiceProtocol {
         TspApi.deleteWishlist(wishlistId: wishlistId, completion: completion)
     }
     
-    func earnestMoneyOrder(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         TspApi.earnestMoneyOrder(
-            saleCode: saleCode,
+            saleModelCode: saleModelCode,
             orderNo: orderNo,
             saleModelConfigType: saleModelConfigType,
             licenseCityCode: licenseCityCode,
@@ -80,13 +81,13 @@ class RealMarketingService: MarketingServiceProtocol {
         TspApi.initiatePayment(smallOrderNo: smallOrderNo, paymentChannel: paymentChannel, completion: completion)
     }
 
-    func paymentCallback(paymentNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspApi.paymentCallback(paymentNo: paymentNo, completion: completion)
+    func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspApi.paymentCallback(paymentNo: paymentNo, externalTradeNo: externalTradeNo, paymentStage: paymentStage, paymentAmount: paymentAmount, paymentStatus: paymentStatus, payTime: payTime, idempotentKey: idempotentKey, completion: completion)
     }
     
-    func downPaymentOrder(saleCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         TspApi.downPaymentOrder(
-            saleCode: saleCode,
+            saleModelCode: saleModelCode,
             orderNo: orderNo,
             saleModelConfigType: saleModelConfigType,
             orderPersonType: orderPersonType,
@@ -115,6 +116,10 @@ class RealMarketingService: MarketingServiceProtocol {
     
     func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         TspApi.lockOrder(orderNo: orderNo, completion: completion)
+    }
+    
+    func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void) {
+        TspApi.getSaleModelList(completion: completion)
     }
 }
 
@@ -175,8 +180,10 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
                         state: po.subState,
                         createTime: nil,
                         modifyTime: nil,
-                        saleCode: nil,
+                        saleModelCode: nil,
                         buildConfigCode: nil,
+                        saleModelConfigType: nil,
+                        saleModelConfigName: nil,
                         saleModelImages: nil,
                         totalPrice: nil,
                         isValid: nil
@@ -207,7 +214,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
         mockDelayedSuccess(data: mockDeliveryCenter(), completion: completion)
     }
 
-    func getSelectedSaleModel(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
+    func getSelectedSaleModel(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
         mockDelayedSuccess(data: mockSelectedSaleModel(), completion: completion)
     }
 
@@ -230,7 +237,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
         mockDelayedSuccess(data: nil, completion: completion)
     }
 
-    func earnestMoneyOrder(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         let mockResult = EarnestMoneyOrderResult(
             smallOrderNo: "MOCK_SMALL_ORDER_001",
             earnestMoneyAmount: 5000,
@@ -239,7 +246,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
                 PaymentChannelInfo(channelCode: "ALIPAY", channelName: "支付宝", isDefault: false),
                 PaymentChannelInfo(channelCode: "UNION_PAY", channelName: "银联支付", isDefault: false)
             ],
-            expireTime: "2026-05-13T12:00:00"
+            expireTime: Date().addingTimeInterval(900)
         )
         mockDelayedSuccess(data: mockResult, completion: completion)
     }
@@ -255,11 +262,11 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
         mockDelayedSuccess(data: mockResult, completion: completion)
     }
 
-    func paymentCallback(paymentNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+    func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         mockDelayedSuccess(data: nil, completion: completion)
     }
 
-    func downPaymentOrder(saleCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
         mockDelayedSuccess(data: "MOCK_ORDER_NUM", completion: completion)
     }
 
@@ -277,5 +284,9 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
 
     func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         mockDelayedSuccess(data: nil, completion: completion)
+    }
+
+    func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void) {
+        mockDelayedSuccess(data: mockSaleModelList(), completion: completion)
     }
 }
