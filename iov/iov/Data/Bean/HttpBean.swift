@@ -609,3 +609,37 @@ struct MobileLoginRequest: Codable {
     var code: String
     var deviceInfo: DeviceInfo?
 }
+
+/// 意向金下单结果
+struct EarnestMoneyOrderResult: Codable {
+    var smallOrderNo: String
+    var earnestMoneyAmount: Decimal
+    var paymentChannels: [PaymentChannelInfo]
+    var expireTime: String
+    
+    enum CodingKeys: String, CodingKey {
+        case smallOrderNo, earnestMoneyAmount, paymentChannels, expireTime
+    }
+}
+
+/// 支付渠道信息
+struct PaymentChannelInfo: Codable, Identifiable {
+    var channelCode: String
+    var channelName: String
+    var isDefault: Bool
+    
+    var id: String { channelCode }
+    
+    enum CodingKeys: String, CodingKey {
+        case channelCode, channelName, isDefault
+    }
+}
+
+/// 发起支付结果
+struct InitiatePaymentResult: Codable {
+    var paymentNo: String
+    var paymentChannel: String
+    var paymentAmount: Decimal
+    var paymentMerchant: String
+    var paymentReference: String
+}

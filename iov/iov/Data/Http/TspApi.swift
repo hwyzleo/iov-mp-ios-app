@@ -126,23 +126,22 @@ class TspApi {
     }
     
     /// 获取已选择的销售车型及配置
-    static func getSelectedSaleModel(saleCode: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/saleModel/selectedSaleModel", parameters: [
-            "saleCode":saleCode,
-            "modelCode":modelCode,
-            "exteriorCode":exteriorCode,
-            "interiorCode":interiorCode,
-            "wheelCode":wheelCode,
-            "spareTireCode":spareTireCode,
-            "adasCode":adasCode
-        ]) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
+    static func getSelectedSaleModel(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
+        var parameters: [String: Any] = [
+            "saleCode": saleCode,
+            "saleModelConfigType": saleModelConfigType
+        ]
+        if let orderNo = orderNo {
+            parameters["orderNo"] = orderNo
+        }
+        TspManager.requestPost(path: "/api/mobile/saleModel/v1/selectedSaleModel", parameters: parameters) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
             completion(result)
         }
     }
     
     /// 获取上牌区域
     static func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/saleModel/licenseArea", parameters: [:]) { (result: Result<TspResponse<[LicenseArea]>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/saleModel/v1/licenseArea", parameters: [:]) { (result: Result<TspResponse<[LicenseArea]>, Error>) in
             completion(result)
         }
     }
@@ -162,38 +161,44 @@ class TspApi {
     }
     
     /// 意向金下订单
-    static func earnestMoneyOrder(saleCode: String, orderNum: String?, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, licenseCityCode: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        let saleModelConfigType: [String:String] = [
-            "MODEL": modelCode,
-            "SPARE_TIRE": spareTireCode,
-            "EXTERIOR": exteriorCode,
-            "WHEEL": wheelCode,
-            "INTERIOR": interiorCode,
-            "ADAS": adasCode
-        ]
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/earnestMoneyOrder", parameters: [
+    static func earnestMoneyOrder(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+        var parameters: [String: Any] = [
             "saleCode": saleCode,
-            "orderNum": orderNum as Any,
             "saleModelConfigType": saleModelConfigType,
-            "licenseCityCode": licenseCityCode
-        ]) { (result: Result<TspResponse<String>, Error>) in
+            "regionCode": licenseCityCode
+        ]
+        if let orderNo = orderNo {
+            parameters["orderNo"] = orderNo
+        }
+        TspManager.requestPost(path: "/api/mobile/order/v1/action/earnestMoneyOrder", parameters: parameters) { (result: Result<TspResponse<EarnestMoneyOrderResult>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 发起支付
+    static func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/action/initiatePayment", parameters: [
+            "smallOrderNo": smallOrderNo,
+            "paymentChannel": paymentChannel
+        ]) { (result: Result<TspResponse<InitiatePaymentResult>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 支付回调（模拟）
+    static func paymentCallback(paymentNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/open/callback/v1/payment", parameters: [
+            "paymentNo": paymentNo
+        ]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 定金下订单
-    static func downPaymentOrder(saleCode: String, orderNum: String, modelCode: String, exteriorCode: String, interiorCode: String, wheelCode: String, spareTireCode: String, adasCode: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        let saleModelConfigType: [String:String] = [
-            "MODEL": modelCode,
-            "SPARE_TIRE": spareTireCode,
-            "EXTERIOR": exteriorCode,
-            "WHEEL": wheelCode,
-            "INTERIOR": interiorCode,
-            "ADAS": adasCode
-        ]
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/action/downPaymentOrder", parameters: [
+    static func downPaymentOrder(saleCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/action/downPaymentOrder", parameters: [
             "saleCode": saleCode,
-            "orderNum": orderNum,
+            "orderNo": orderNo,
             "saleModelConfigType": saleModelConfigType,
             "orderPersonType": orderPersonType,
             "purchasePlan": purchasePlan,
@@ -209,23 +214,23 @@ class TspApi {
     }
     
     /// 获取订单详情
-    static func getOrder(orderNum: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/vehicleSaleOrder/order/" + orderNum, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
+    static func getOrder(orderNo: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/order/v1/order/" + orderNo, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
             completion(result)
         }
     }
     
     /// 取消订单
-    static func cancelOrder(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/cancel", parameters: ["orderNum":orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func cancelOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/cancel", parameters: ["orderNo":orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 支付订单
-    static func payOrder(orderNum: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/pay", parameters: [
-            "orderNum": orderNum,
+    static func payOrder(orderNo: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/pay", parameters: [
+            "orderNo": orderNo,
             "orderPaymentPhase": orderPaymentPhase,
             "paymentAmount": paymentAmount,
             "paymentChannel": paymentChannel
@@ -235,15 +240,15 @@ class TspApi {
     }
     
     /// 意向金转定金
-    static func earnestMoneyToDownPayment(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/earnestMoneyToDownPayment", parameters: ["orderNum": orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func earnestMoneyToDownPayment(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/earnestMoneyToDownPayment", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 锁定订单
-    static func lockOrder(orderNum: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/vehicleSaleOrder/order/action/lock", parameters: ["orderNum": orderNum]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/lock", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
