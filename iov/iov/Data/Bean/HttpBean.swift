@@ -206,8 +206,8 @@ struct FeatureCodeRangeVo: Codable, Hashable {
 
 /// 已选择的销售车型
 struct SelectedSaleModel: Codable {
-    /// 销售代码
-    var saleCode: String
+    /// 销售车型代码
+    var saleModelCode: String
     /// 销售车型名称
     var modelName: String
     /// 是否允许意向金
@@ -218,8 +218,10 @@ struct SelectedSaleModel: Codable {
     var downPayment: Bool
     /// 定金价格
     var downPaymentPrice: Decimal
-    /// 车型配置代码
-    var modelConfigCode: String
+    /// 生产配置代码
+    var buildConfigCode: String
+    /// 销售车型配置类型
+    var saleModelConfigType: [String:String]
     /// 销售车型图片集
     var saleModelImages: [String]
     /// 销售车型描述
@@ -232,11 +234,6 @@ struct SelectedSaleModel: Codable {
     var totalPrice: Decimal
     /// 购车权益简介
     var purchaseBenefitsIntro: String
-    
-    enum CodingKeys: String, CodingKey {
-        case saleCode, modelName, earnestMoney, earnestMoneyPrice, downPayment, downPaymentPrice, saleModelImages, saleModelDesc, saleModelConfigName, saleModelConfigPrice, totalPrice, purchaseBenefitsIntro
-        case modelConfigCode = "buildConfigCode"
-    }
 }
 
 /// 我的车辆（合并心愿单和订单）
@@ -248,8 +245,10 @@ struct MyVehicleVo: Codable {
     var createTime: Date?
     var modifyTime: Date?
     
-    var saleCode: String?
+    var saleModelCode: String?
     var buildConfigCode: String?
+    var saleModelConfigType: [String:String]?
+    var saleModelConfigName: [String:String]?
     var saleModelImages: [String]?
     var totalPrice: Decimal?
     var isValid: Bool?
@@ -258,7 +257,7 @@ struct MyVehicleVo: Codable {
 /// 心愿单详情
 struct Wishlist: Codable {
     var wishlistId: String
-    var saleCode: String
+    var saleModelCode: String
     var buildConfigCode: String
     var createTime: Date?
     var modifyTime: Date?
@@ -615,10 +614,33 @@ struct EarnestMoneyOrderResult: Codable {
     var smallOrderNo: String
     var earnestMoneyAmount: Decimal
     var paymentChannels: [PaymentChannelInfo]
-    var expireTime: String
+    var expireTime: Date
     
     enum CodingKeys: String, CodingKey {
         case smallOrderNo, earnestMoneyAmount, paymentChannels, expireTime
+    }
+    
+    init(smallOrderNo: String, earnestMoneyAmount: Decimal, paymentChannels: [PaymentChannelInfo], expireTime: Date) {
+        self.smallOrderNo = smallOrderNo
+        self.earnestMoneyAmount = earnestMoneyAmount
+        self.paymentChannels = paymentChannels
+        self.expireTime = expireTime
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        smallOrderNo = try container.decode(String.self, forKey: .smallOrderNo)
+        earnestMoneyAmount = try container.decode(Decimal.self, forKey: .earnestMoneyAmount)
+        paymentChannels = try container.decode([PaymentChannelInfo].self, forKey: .paymentChannels)
+        
+        if let timestamp = try? container.decode(Int64.self, forKey: .expireTime) {
+            expireTime = Date(timeIntervalSince1970: Double(timestamp) / 1000.0)
+        } else if let dateString = try? container.decode(String.self, forKey: .expireTime) {
+            let formatter = ISO8601DateFormatter()
+            expireTime = formatter.date(from: dateString) ?? Date()
+        } else {
+            expireTime = Date()
+        }
     }
 }
 
@@ -640,6 +662,26 @@ struct InitiatePaymentResult: Codable {
     var paymentNo: String
     var paymentChannel: String
     var paymentAmount: Decimal
-    var paymentMerchant: String
-    var paymentReference: String
+    var paymentMerchant: String?
+    var paymentReference: String?
+}
+
+/// 销售车型（手机端）
+struct SaleModelMp: Codable, Identifiable {
+    /// 销售车型代码
+    var saleModelCode: String
+    /// 销售车型名称
+    var modelName: String
+    /// 销售车型图片集
+    var images: [String]
+    /// 是否允许意向金
+    var earnestMoney: Bool
+    /// 意向金价格
+    var earnestMoneyPrice: Decimal
+    /// 是否允许定金
+    var downPayment: Bool
+    /// 定金价格
+    var downPaymentPrice: Decimal
+    
+    var id: String { saleModelCode }
 }
