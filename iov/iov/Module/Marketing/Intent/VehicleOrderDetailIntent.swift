@@ -119,14 +119,12 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     
     private func handleOrder() {
+        let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
+        
         ServiceContainer.marketingService.getSelectedSaleModel(
             saleCode: AppGlobalState.shared.parameters["saleCode"] as? String ?? "",
-            modelCode: AppGlobalState.shared.parameters["modelCode"] as? String ?? "",
-            exteriorCode: AppGlobalState.shared.parameters["exteriorCode"] as? String ?? "",
-            interiorCode: AppGlobalState.shared.parameters["interiorCode"] as? String ?? "",
-            wheelCode: AppGlobalState.shared.parameters["wheelCode"] as? String ?? "",
-            spareTireCode: AppGlobalState.shared.parameters["spareTireCode"] as? String ?? "",
-            adasCode: AppGlobalState.shared.parameters["adasCode"] as? String ?? ""
+            orderNo: nil,
+            saleModelConfigType: saleModelConfigType
         ) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
             switch result {
             case .success(let res):
@@ -137,7 +135,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: selectedSaleModel.saleModelImages)
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
+                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
                         saleModelDesc: selectedSaleModel.saleModelDesc
                     )
                     self.modelAction?.updateBookMethod(
@@ -148,18 +146,18 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         purchaseDenefitsIntro: selectedSaleModel.purchaseBenefitsIntro
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: selectedSaleModel.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: selectedSaleModel.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: selectedSaleModel.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: selectedSaleModel.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: selectedSaleModel.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: selectedSaleModel.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: selectedSaleModel.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: selectedSaleModel.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: selectedSaleModel.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: selectedSaleModel.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: selectedSaleModel.saleModelConfigPrice["ADAS"] ?? 0,
+                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
+                        saleModelPrice: selectedSaleModel.saleModelConfigPrice["BASE_MODEL"] ?? selectedSaleModel.saleModelConfigPrice["MODEL"] ?? 0,
+                        saleSpareTireName: selectedSaleModel.saleModelConfigName["RZ"] ?? selectedSaleModel.saleModelConfigName["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: selectedSaleModel.saleModelConfigPrice["RZ"] ?? selectedSaleModel.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: selectedSaleModel.saleModelConfigName["QA"] ?? selectedSaleModel.saleModelConfigName["EXTERIOR"] ?? "",
+                        saleExteriorPrice: selectedSaleModel.saleModelConfigPrice["QA"] ?? selectedSaleModel.saleModelConfigPrice["EXTERIOR"] ?? 0,
+                        saleWheelName: selectedSaleModel.saleModelConfigName["FA"] ?? selectedSaleModel.saleModelConfigName["WHEEL"] ?? "",
+                        saleWheelPrice: selectedSaleModel.saleModelConfigPrice["FA"] ?? selectedSaleModel.saleModelConfigPrice["WHEEL"] ?? 0,
+                        saleInteriorName: selectedSaleModel.saleModelConfigName["NA"] ?? selectedSaleModel.saleModelConfigName["INTERIOR"] ?? "",
+                        saleInteriorPrice: selectedSaleModel.saleModelConfigPrice["NA"] ?? selectedSaleModel.saleModelConfigPrice["INTERIOR"] ?? 0,
+                        saleAdasName: selectedSaleModel.saleModelConfigName["HA"] ?? selectedSaleModel.saleModelConfigName["ADAS"] ?? "",
+                        saleAdasPrice: selectedSaleModel.saleModelConfigPrice["HA"] ?? selectedSaleModel.saleModelConfigPrice["ADAS"] ?? 0,
                         totalPrice: selectedSaleModel.totalPrice
                     )
                     self.modelAction?.displayOrder()
@@ -173,7 +171,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleEarnestMoneyUnpaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -213,7 +211,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleEarnestMoneyPaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -253,7 +251,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleDownPaymentUnpaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -300,7 +298,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleDownPaymentPaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -340,7 +338,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleArrangeProduction() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -380,7 +378,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleAllocationVehicle() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -420,7 +418,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handlePrepareTransport() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -460,7 +458,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handlePrepareDeliver() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -500,7 +498,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleFinalPaymentPaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -540,7 +538,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleInvoiced() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -580,7 +578,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     private func handleDelivered() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
-            ServiceContainer.marketingService.getOrder(orderNum: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
                 switch result {
                 case .success(let res):
                     guard let orderResponse = res.data else {
@@ -663,12 +661,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
                     
                     AppGlobalState.shared.parameters["saleCode"] = wishlist.saleCode
-                    AppGlobalState.shared.parameters["modelCode"] = featureCodes["BASE_MODEL"]
-                    AppGlobalState.shared.parameters["exteriorCode"] = featureCodes["QA"]
-                    AppGlobalState.shared.parameters["interiorCode"] = featureCodes["NA"]
-                    AppGlobalState.shared.parameters["wheelCode"] = featureCodes["FA"]
-                    AppGlobalState.shared.parameters["spareTireCode"] = featureCodes["RZ"]
-                    AppGlobalState.shared.parameters["adasCode"] = featureCodes["HA"]
+                    AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
                     AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
                     AppGlobalState.shared.parameters["lastView"] = "ORDER_DETAIL"
                     self.viewOnAppear()
@@ -710,61 +703,49 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     }
     func onTapEarnestMoneyOrder(saleModelName: String, licenseCityCode: String) {
         modelAction?.displayLoading()
-        var orderNum: String? = nil
+        var orderNo: String? = nil
         if let id = VehicleManager.shared.getCurrentVehicleId() {
-            orderNum = id
+            orderNo = id
         }
+        let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         ServiceContainer.marketingService.earnestMoneyOrder(
             saleCode: AppGlobalState.shared.parameters["saleCode"] as? String ?? "",
-            orderNum: orderNum,
-            modelCode: AppGlobalState.shared.parameters["modelCode"] as? String ?? "",
-            exteriorCode: AppGlobalState.shared.parameters["exteriorCode"] as? String ?? "",
-            interiorCode: AppGlobalState.shared.parameters["interiorCode"] as? String ?? "",
-            wheelCode: AppGlobalState.shared.parameters["wheelCode"] as? String ?? "",
-            spareTireCode: AppGlobalState.shared.parameters["spareTireCode"] as? String ?? "",
-            adasCode: AppGlobalState.shared.parameters["adasCode"] as? String ?? "",
+            orderNo: orderNo,
+            saleModelConfigType: saleModelConfigType,
             licenseCityCode: licenseCityCode
-        ) { (result: Result<TspResponse<String>, Error>) in
+        ) { [weak self] (result: Result<TspResponse<EarnestMoneyOrderResult>, Error>) in
             switch result {
             case .success(let res):
                 guard let resData = res.data else {
-                    self.modelAction?.displayError(text: "请求异常")
+                    self?.modelAction?.displayError(text: "请求异常")
                     return
                 }
-                if let orderNum = orderNum {
-                    // 心愿单转换的意向金订单
-                    VehicleManager.shared.delete(orderNum: orderNum)
+                if let orderNo = orderNo {
+                    VehicleManager.shared.delete(orderNum: orderNo)
                 }
-                VehicleManager.shared.add(orderNum: resData, type: .ORDER, displayName: saleModelName)
-                VehicleManager.shared.setCurrentVehicleId(id: resData)
-                AppGlobalState.shared.needRefresh = true
-                let lastView = AppGlobalState.shared.parameters["lastView"] as? String ?? ""
-                if lastView == "MODEL_CONFIG" {
-                    AppGlobalState.shared.parameters["backCount"] = 1
-                }
-                AppGlobalState.shared.parameters["licenseCityCode"] = nil
-                AppGlobalState.shared.parameters["licenseCityName"] = nil
-                self.modelRouter?.closeScreen()
+                VehicleManager.shared.add(orderNum: resData.smallOrderNo, type: .ORDER, displayName: saleModelName)
+                VehicleManager.shared.setCurrentVehicleId(id: resData.smallOrderNo)
+                
+                let payInfo = EarnestMoneyPayInfo(from: resData)
+                AppGlobalState.shared.parameters["earnestMoneyPayInfo"] = payInfo
+                
+                self?.modelRouter?.routeToEarnestMoneyPay()
             case .failure(_):
-                self.modelAction?.displayError(text: "请求异常")
+                self?.modelAction?.displayError(text: "请求异常")
             }
         }
     }
     func onTapDownPaymentOrder(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, saleModelName: String, licenseCityCode: String, dealership: String, deliveryCenter: String) {
         modelAction?.displayLoading()
-        var orderNum: String = ""
+        var orderNo: String = ""
         if let id = VehicleManager.shared.getCurrentVehicleId() {
-            orderNum = id
+            orderNo = id
         }
+        let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         ServiceContainer.marketingService.downPaymentOrder(
             saleCode: AppGlobalState.shared.parameters["saleCode"] as? String ?? "",
-            orderNum: orderNum,
-            modelCode: AppGlobalState.shared.parameters["modelCode"] as? String ?? "",
-            exteriorCode: AppGlobalState.shared.parameters["exteriorCode"] as? String ?? "",
-            interiorCode: AppGlobalState.shared.parameters["interiorCode"] as? String ?? "",
-            wheelCode: AppGlobalState.shared.parameters["wheelCode"] as? String ?? "",
-            spareTireCode: AppGlobalState.shared.parameters["spareTireCode"] as? String ?? "",
-            adasCode: AppGlobalState.shared.parameters["adasCode"] as? String ?? "",
+            orderNo: orderNo,
+            saleModelConfigType: saleModelConfigType,
             orderPersonType: orderPersonType,
             purchasePlan: purchasePlan,
             orderPersonName: orderPersonName,
@@ -781,9 +762,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    if !orderNum.isEmpty {
+                    if !orderNo.isEmpty {
                         // 心愿单转换的定金订单
-                        VehicleManager.shared.delete(orderNum: orderNum)
+                        VehicleManager.shared.delete(orderNum: orderNo)
                     }
                     VehicleManager.shared.add(orderNum: resData, type: .ORDER, displayName: saleModelName)
                     VehicleManager.shared.setCurrentVehicleId(id: resData)
@@ -822,12 +803,12 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         modelRouter?.routeToDeliveryCenter()
     }
     func onTapCancelOrder() {
-        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.cancelOrder(orderNum: orderNum) { (result: Result<TspResponse<NoReply>, Error>) in
+            ServiceContainer.marketingService.cancelOrder(orderNo: orderNo) { (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(_):
-                    VehicleManager.shared.delete(orderNum: orderNum)
+                    VehicleManager.shared.delete(orderNum: orderNo)
                     self.modelRouter?.closeScreen()
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
@@ -836,9 +817,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
     }
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String) {
-        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.payOrder(orderNum: orderNum, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { [weak self] (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
+            ServiceContainer.marketingService.payOrder(orderNo: orderNo, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { [weak self] (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
@@ -853,11 +834,11 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                         }
                         
                         // 更新本地存储
-                        VehicleManager.shared.updateSubState(id: orderNum, subState: nextSubState)
+                        VehicleManager.shared.updateSubState(id: orderNo, subState: nextSubState)
                         
                         // 如果原来是心愿单，支付后应变为订单类型
                         if let vehicle = VehicleManager.shared.getCurrentVehicle(), vehicle.type == .WISHLIST {
-                            VehicleManager.shared.add(orderNum: orderNum, type: .ORDER, subState: nextSubState, displayName: vehicle.displayName)
+                            VehicleManager.shared.add(orderNum: orderNo, type: .ORDER, subState: nextSubState, displayName: vehicle.displayName)
                         }
                         
                         AppGlobalState.shared.needRefresh = true
@@ -873,13 +854,13 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
     }
     func onTapEarnestMoneyToDownPayment() {
-        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.earnestMoneyToDownPayment(orderNum: orderNum) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
+            ServiceContainer.marketingService.earnestMoneyToDownPayment(orderNo: orderNo) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(_):
                     // 更新为定金待支付状态
-                    VehicleManager.shared.updateSubState(id: orderNum, subState: 300)
+                    VehicleManager.shared.updateSubState(id: orderNo, subState: 300)
                     AppGlobalState.shared.needRefresh = true
                     self?.viewOnAppear()
                 case .failure(_):
@@ -889,14 +870,14 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
     }
     func onTapLockOrder() {
-        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.lockOrder(orderNum: orderNum) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
+            ServiceContainer.marketingService.lockOrder(orderNo: orderNo) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
                         // 更新本地状态为：安排生产
-                        VehicleManager.shared.updateSubState(id: orderNum, subState: 400)
+                        VehicleManager.shared.updateSubState(id: orderNo, subState: 400)
                         AppGlobalState.shared.needRefresh = true
                         // 原地刷新视图
                         self?.viewOnAppear()

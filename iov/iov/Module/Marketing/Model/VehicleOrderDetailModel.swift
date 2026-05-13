@@ -220,6 +220,9 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelRouterProtocol {
     func routeToDeliveryCenter() {
         routerSubject.screen.send(.deliveryCenter)
     }
+    func routeToEarnestMoneyPay() {
+        routerSubject.screen.send(.earnestMoneyPay)
+    }
 }
 
 extension MarketingTypes.Model {

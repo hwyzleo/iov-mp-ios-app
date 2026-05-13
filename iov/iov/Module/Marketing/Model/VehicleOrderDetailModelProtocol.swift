@@ -113,14 +113,10 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
 // MARK: - Route
 
 protocol VehicleOrderDetailModelRouterProtocol: MviModelRouterProtocol {
-    /// 跳转至首页
     func routeToMarketingIndex()
-    /// 跳转至车型配置页
     func routeToModelConfig()
-    /// 跳转至上牌区域页
     func routeToLicenseArea()
-    /// 跳转至销售门店页
     func routeToDealership()
-    /// 跳转至交付中心页
     func routeToDeliveryCenter()
+    func routeToEarnestMoneyPay()
 }
