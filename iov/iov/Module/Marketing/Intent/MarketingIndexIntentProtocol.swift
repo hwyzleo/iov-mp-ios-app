@@ -24,4 +24,6 @@ protocol MarketingIndexIntentProtocol : MviIntentProtocol {
     func onTapEarnestMoneyToDownPayment()
     /// 点击锁定订单
     func onTapLockOrder()
+    /// 点击选择车型
+    func onTapSelectSaleModel(index: Int)
 }
