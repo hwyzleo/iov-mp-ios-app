@@ -17,6 +17,8 @@ final class MarketingIndexModel: ObservableObject, MarketingIndexModelStateProto
     @Published var saleModelImages: [String] = []
     @Published var totalPrice: Decimal = 0
     @Published var saleModelDesc: String = ""
+    @Published var saleModelList: [SaleModelMp] = []
+    @Published var selectedSaleModelIndex: Int = 0
 }
 
 // MARK: - Action Protocol
@@ -59,6 +61,21 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
         self.currentVehicleType = .ACTIVATED
         self.orderState = .ACTIVATED
         contentState = .content
+    }
+    func displaySaleModelList(saleModelList: [SaleModelMp]) {
+        self.saleModelList = saleModelList
+        if !saleModelList.isEmpty {
+            self.selectedSaleModelIndex = 0
+        }
+        contentState = .content
+    }
+    func selectSaleModel(index: Int) {
+        guard index >= 0 && index < saleModelList.count else { return }
+        self.selectedSaleModelIndex = index
+    }
+    func getCurrentSaleModel() -> SaleModelMp? {
+        guard selectedSaleModelIndex >= 0 && selectedSaleModelIndex < saleModelList.count else { return nil }
+        return saleModelList[selectedSaleModelIndex]
     }
 }
 
