@@ -18,6 +18,8 @@ protocol MarketingIndexModelStateProtocol {
     var saleModelImages: [String] { get }
     var totalPrice: Decimal { get }
     var saleModelDesc: String { get }
+    var saleModelList: [SaleModelMp] { get }
+    var selectedSaleModelIndex: Int { get }
 }
 
 // MARK: - Intent Action
@@ -31,6 +33,9 @@ protocol MarketingIndexModelActionProtocol: MviModelActionProtocol {
     func displayOrder(order: Order)
     /// 显示车辆页
     func displayVehicle();
+    func displaySaleModelList(saleModelList: [SaleModelMp])
+    func selectSaleModel(index: Int)
+    func getCurrentSaleModel() -> SaleModelMp?
 }
 
 // MARK: - Route
