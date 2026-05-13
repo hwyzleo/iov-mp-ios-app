@@ -134,7 +134,7 @@ func mockFeatureCodeRanges() -> [FeatureCodeRangeVo] {
 func mockWishlist() -> Wishlist {
     return Wishlist.init(
         wishlistId: "WL123456789",
-        saleCode: "H01",
+        saleModelCode: "H01",
         buildConfigCode: "BC001",
         createTime: Date(),
         modifyTime: Date(),
@@ -299,13 +299,21 @@ func mockOrderPaymentResponse() -> OrderPaymentResponse {
 /// 已选择的销售车型
 func mockSelectedSaleModel() -> SelectedSaleModel {
     return SelectedSaleModel.init(
-        saleCode: "H01",
+        saleModelCode: "H01",
         modelName: "寒01六座版",
         earnestMoney: true,
         earnestMoneyPrice: 5000,
         downPayment: true,
         downPaymentPrice: 5000,
-        modelConfigCode: "H01060103030102",
+        buildConfigCode: "H01060103030102",
+        saleModelConfigType: [
+            "MODEL": "H0106",
+            "SPARE_TIRE": "X01",
+            "EXTERIOR": "WS01",
+            "WHEEL": "CL01",
+            "INTERIOR": "NS01",
+            "ADAS": "X02"
+        ],
         saleModelImages: [
             "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",
             "https://i.ibb.co/7xcNTdX2/image-topic-640-3.png"
@@ -474,4 +482,34 @@ func mockProductOrder() -> ProductOrder {
         freight: 5,
         remainingPoints: 230
     )
+}
+
+/// 销售车型列表
+func mockSaleModelList() -> [SaleModelMp] {
+    return [
+        SaleModelMp(
+            saleModelCode: "HS5",
+            modelName: "寒01",
+            images: [
+                "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png",
+                "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+            ],
+            earnestMoney: true,
+            earnestMoneyPrice: 5000,
+            downPayment: true,
+            downPaymentPrice: 10000
+        ),
+        SaleModelMp(
+            saleModelCode: "HS7",
+            modelName: "寒03",
+            images: [
+                "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png",
+                "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
+            ],
+            earnestMoney: true,
+            earnestMoneyPrice: 5000,
+            downPayment: true,
+            downPaymentPrice: 15000
+        )
+    ]
 }
