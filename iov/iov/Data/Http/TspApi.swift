@@ -78,14 +78,20 @@ class TspApi {
     /// 获取有效车辆销售订单列表
     /// 获取我的车辆列表（合并心愿单和订单）
     static func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/api/mobile/order/v1/myVehicleList", parameters: [:]) { (result: Result<TspResponse<[MyVehicleVo]>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/vso/v1/myVehicleList", parameters: [:]) { (result: Result<TspResponse<[MyVehicleVo]>, Error>) in
+            completion(result)
+        }
+    }
+    
+    static func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/saleModel/v1", parameters: [:]) { (result: Result<TspResponse<[SaleModelMp]>, Error>) in
             completion(result)
         }
     }
     
     /// 获取订单列表
     static func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/api/mobile/order/v1/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/vso/v1/order", parameters: ["type":"valid"]) { (result: Result<TspResponse<[VehicleSaleOrder]>, Error>) in
             completion(result)
         }
     }
@@ -99,36 +105,36 @@ class TspApi {
     
     /// 创建心愿单（动态配置模式）
     static func createWishlist(saleCode: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/wishlist/action/create", parameters: ["saleCode":saleCode,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/create", parameters: ["saleCode":saleCode,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
     
     /// 修改心愿单（动态配置模式）
     static func modifyWishlist(wishlistId: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/wishlist/action/modify", parameters: ["wishlistId": wishlistId,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/modify", parameters: ["wishlistId": wishlistId,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
     
     /// 获取心愿单详情
     static func getWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
-        TspManager.requestGet(path: "/api/mobile/order/v1/wishlist/" + wishlistId, parameters: [:]) { (result: Result<TspResponse<Wishlist>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/vso/v1/wishlist/" + wishlistId, parameters: [:]) { (result: Result<TspResponse<Wishlist>, Error>) in
             completion(result)
         }
     }
     
     /// 删除心愿单
     static func deleteWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/wishlist/action/delete", parameters: ["wishlistId":wishlistId]) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/delete", parameters: ["wishlistId":wishlistId]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 获取已选择的销售车型及配置
-    static func getSelectedSaleModel(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
+    static func getSelectedSaleModel(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void) {
         var parameters: [String: Any] = [
-            "saleCode": saleCode,
+            "saleModelCode": saleModelCode,
             "saleModelConfigType": saleModelConfigType
         ]
         if let orderNo = orderNo {
@@ -161,23 +167,24 @@ class TspApi {
     }
     
     /// 意向金下订单
-    static func earnestMoneyOrder(saleCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    static func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         var parameters: [String: Any] = [
-            "saleCode": saleCode,
+            "saleModelCode": saleModelCode,
             "saleModelConfigType": saleModelConfigType,
-            "regionCode": licenseCityCode
+            "regionCode": licenseCityCode,
+            "licenseCityCode": licenseCityCode
         ]
         if let orderNo = orderNo {
             parameters["orderNo"] = orderNo
         }
-        TspManager.requestPost(path: "/api/mobile/order/v1/action/earnestMoneyOrder", parameters: parameters) { (result: Result<TspResponse<EarnestMoneyOrderResult>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/action/earnestMoneyOrder", parameters: parameters) { (result: Result<TspResponse<EarnestMoneyOrderResult>, Error>) in
             completion(result)
         }
     }
     
     /// 发起支付
     static func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/action/initiatePayment", parameters: [
+        TspManager.requestPost(path: "/api/mobile/vso/v1/action/initiatePayment", parameters: [
             "smallOrderNo": smallOrderNo,
             "paymentChannel": paymentChannel
         ]) { (result: Result<TspResponse<InitiatePaymentResult>, Error>) in
@@ -186,18 +193,27 @@ class TspApi {
     }
     
     /// 支付回调（模拟）
-    static func paymentCallback(paymentNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/open/callback/v1/payment", parameters: [
-            "paymentNo": paymentNo
-        ]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String? = nil, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        var parameters: [String: Any] = [
+            "paymentNo": paymentNo,
+            "externalTradeNo": externalTradeNo,
+            "paymentStage": paymentStage,
+            "paymentAmount": paymentAmount,
+            "paymentStatus": paymentStatus,
+            "payTime": ISO8601DateFormatter().string(from: payTime)
+        ]
+        if let idempotentKey = idempotentKey {
+            parameters["idempotentKey"] = idempotentKey
+        }
+        TspManager.requestPost(path: "/api/open/vsoCallback/v1/payment", parameters: parameters) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 定金下订单
-    static func downPaymentOrder(saleCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/action/downPaymentOrder", parameters: [
-            "saleCode": saleCode,
+    static func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/action/downPaymentOrder", parameters: [
+            "saleModelCode": saleModelCode,
             "orderNo": orderNo,
             "saleModelConfigType": saleModelConfigType,
             "orderPersonType": orderPersonType,
@@ -215,21 +231,21 @@ class TspApi {
     
     /// 获取订单详情
     static func getOrder(orderNo: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void) {
-        TspManager.requestGet(path: "/api/mobile/order/v1/order/" + orderNo, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/vso/v1/order/" + orderNo, parameters: [:]) { (result: Result<TspResponse<Order>, Error>) in
             completion(result)
         }
     }
     
     /// 取消订单
     static func cancelOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/cancel", parameters: ["orderNo":orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/cancel", parameters: ["orderNo":orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 支付订单
     static func payOrder(orderNo: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/pay", parameters: [
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/pay", parameters: [
             "orderNo": orderNo,
             "orderPaymentPhase": orderPaymentPhase,
             "paymentAmount": paymentAmount,
@@ -241,14 +257,14 @@ class TspApi {
     
     /// 意向金转定金
     static func earnestMoneyToDownPayment(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/earnestMoneyToDownPayment", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/earnestMoneyToDownPayment", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 锁定订单
     static func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/order/v1/order/action/lock", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/lock", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
