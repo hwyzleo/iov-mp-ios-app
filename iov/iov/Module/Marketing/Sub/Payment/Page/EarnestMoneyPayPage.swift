@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct EarnestMoneyPayPage: View {
-    @StateObject var container: MviContainer<EarnestMoneyPayIntentProtocol, EarnestMoneyPayModelStateProtocol>
+    @StateObject var container: MviContainer<EarnestMoneyPayIntentProtocol, any EarnestMoneyPayModelStateProtocol>
     private var intent: EarnestMoneyPayIntentProtocol { container.intent }
-    private var state: EarnestMoneyPayModelStateProtocol { container.model }
+    private var state: any EarnestMoneyPayModelStateProtocol { container.model }
     
     var body: some View {
         ZStack {
@@ -30,6 +30,7 @@ struct EarnestMoneyPayPage: View {
                 bottomButton
             }
         }
+        .modifier(MarketingRouter(subjects: state.routerSubject))
         .onAppear {
             intent.viewOnAppear()
         }

@@ -50,9 +50,9 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
         } else {
             self.orderState = .EARNEST_MONEY_UNPAID
         }
-        self.saleModelImages = order.saleModelImages
-        self.totalPrice = order.totalPrice
-        self.saleModelDesc = order.saleModelDesc
+        self.saleModelImages = order.saleModelImages ?? []
+        self.totalPrice = order.totalPrice ?? 0
+        self.saleModelDesc = order.saleModelDesc ?? ""
         contentState = .content
     }
     func displayVehicle() {

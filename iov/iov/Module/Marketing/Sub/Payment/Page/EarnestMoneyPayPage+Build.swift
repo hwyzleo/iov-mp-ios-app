@@ -14,7 +14,7 @@ extension EarnestMoneyPayPage {
         let intent = EarnestMoneyPayIntent(model: model)
         let container = MviContainer(
             intent: intent as EarnestMoneyPayIntentProtocol,
-            model: model as EarnestMoneyPayModelStateProtocol,
+            model: model as any EarnestMoneyPayModelStateProtocol,
             modelChangePublisher: model.objectWillChange
         )
         return container

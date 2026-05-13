@@ -248,7 +248,7 @@ func mockDeliveryCenter() -> [Dealership] {
 /// 订单
 func mockOrder() -> Order {
     return Order.init(
-        orderNum: "ORDERNUM001",
+        orderNo: "ORDERNUM001",
         orderState: 200,
         saleModelConfigType: [
             "OPTIONAL": "X02",

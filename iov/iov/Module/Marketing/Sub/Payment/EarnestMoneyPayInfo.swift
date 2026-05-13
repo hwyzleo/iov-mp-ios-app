@@ -8,19 +8,16 @@
 import Foundation
 
 struct EarnestMoneyPayInfo {
-    let smallOrderNo: String
+    let orderNo: String
     let earnestMoneyAmount: Decimal
     let paymentChannels: [PaymentChannelInfo]
     let expireTime: Date
     
     init(from result: EarnestMoneyOrderResult) {
-        self.smallOrderNo = result.smallOrderNo
+        self.orderNo = result.orderNo
         self.earnestMoneyAmount = result.earnestMoneyAmount
         self.paymentChannels = result.paymentChannels
-        
-        let dateFormatter = ISO8601DateFormatter()
-        dateFormatter.formatOptions = [.withFullDate, .withFullTime]
-        self.expireTime = dateFormatter.date(from: result.expireTime) ?? Date().addingTimeInterval(900)
+        self.expireTime = result.expireTime
     }
     
     var remainingSeconds: Int {

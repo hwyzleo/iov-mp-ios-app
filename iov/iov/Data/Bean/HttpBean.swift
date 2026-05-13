@@ -307,23 +307,23 @@ struct Order: Codable {
     /// 销售代码
     var saleCode: String?
     /// 订单号
-    var orderNum: String
+    var orderNo: String
     /// 订单状态
     var orderState: Int
     /// 销售车型配置类型
-    var saleModelConfigType: [String:String]
+    var saleModelConfigType: [String:String]?
     /// 销售车型配置名称
-    var saleModelConfigName: [String:String]
+    var saleModelConfigName: [String:String]?
     /// 销售车型配置价格
-    var saleModelConfigPrice: [String:Decimal]
+    var saleModelConfigPrice: [String:Decimal]?
     /// 销售车型图片集
-    var saleModelImages: [String]
+    var saleModelImages: [String]?
     /// 销售车型描述
-    var saleModelDesc: String
+    var saleModelDesc: String?
     /// 总价格
-    var totalPrice: Decimal
+    var totalPrice: Decimal?
     /// 下单时间
-    var orderTime: Int64
+    var orderTime: Int64?
     /// 下单人类型
     var orderPersonType: Int?
     /// 购车方案
@@ -611,17 +611,17 @@ struct MobileLoginRequest: Codable {
 
 /// 意向金下单结果
 struct EarnestMoneyOrderResult: Codable {
-    var smallOrderNo: String
+    var orderNo: String
     var earnestMoneyAmount: Decimal
     var paymentChannels: [PaymentChannelInfo]
     var expireTime: Date
     
     enum CodingKeys: String, CodingKey {
-        case smallOrderNo, earnestMoneyAmount, paymentChannels, expireTime
+        case orderNo, earnestMoneyAmount, paymentChannels, expireTime
     }
     
-    init(smallOrderNo: String, earnestMoneyAmount: Decimal, paymentChannels: [PaymentChannelInfo], expireTime: Date) {
-        self.smallOrderNo = smallOrderNo
+    init(orderNo: String, earnestMoneyAmount: Decimal, paymentChannels: [PaymentChannelInfo], expireTime: Date) {
+        self.orderNo = orderNo
         self.earnestMoneyAmount = earnestMoneyAmount
         self.paymentChannels = paymentChannels
         self.expireTime = expireTime
@@ -629,7 +629,7 @@ struct EarnestMoneyOrderResult: Codable {
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        smallOrderNo = try container.decode(String.self, forKey: .smallOrderNo)
+        orderNo = try container.decode(String.self, forKey: .orderNo)
         earnestMoneyAmount = try container.decode(Decimal.self, forKey: .earnestMoneyAmount)
         paymentChannels = try container.decode([PaymentChannelInfo].self, forKey: .paymentChannels)
         

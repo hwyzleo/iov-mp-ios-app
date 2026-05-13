@@ -54,18 +54,21 @@ class EarnestMoneyPayIntent: EarnestMoneyPayIntentProtocol {
         modelAction?.displayPaying()
         
         ServiceContainer.marketingService.initiatePayment(
-            smallOrderNo: info.smallOrderNo,
+            orderNo: info.orderNo,
             paymentChannel: channel.channelCode
         ) { [weak self] result in
             switch result {
             case .success(let res):
+                print("initiatePayment result: code=\(res.code), isSuccess=\(res.isSuccess), data=\(res.data != nil)")
                 if res.isSuccess, let paymentResult = res.data {
                     self?.modelAction?.updatePaymentResult(result: paymentResult)
-                    self?.simulatePayment(paymentNo: paymentResult.paymentNo)
+                    print("simulatePayment called: paymentNo=\(paymentResult.paymentNo), amount=\(paymentResult.paymentAmount)")
+                    self?.simulatePayment(paymentNo: paymentResult.paymentNo, paymentAmount: paymentResult.paymentAmount)
                 } else {
                     self?.modelAction?.displayFailed(text: res.message ?? "发起支付失败")
                 }
-            case .failure:
+            case .failure(let error):
+                print("initiatePayment failure: \(error)")
                 self?.modelAction?.displayFailed(text: "网络请求失败")
             }
         }
@@ -75,15 +78,31 @@ class EarnestMoneyPayIntent: EarnestMoneyPayIntentProtocol {
         return (modelAction as? EarnestMoneyPayModel)?.selectedChannel
     }
     
-    private func simulatePayment(paymentNo: String) {
+    private func simulatePayment(paymentNo: String, paymentAmount: Decimal) {
+        print("simulatePayment entering: paymentNo=\(paymentNo), amount=\(paymentAmount)")
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            ServiceContainer.marketingService.paymentCallback(paymentNo: paymentNo) { result in
+            print("simulatePayment asyncAfter triggered")
+            ServiceContainer.marketingService.paymentCallback(
+                paymentNo: paymentNo,
+                externalTradeNo: "MOCK_TRADE_" + UUID().uuidString,
+                paymentStage: "EARNEST_MONEY",
+                paymentAmount: paymentAmount,
+                paymentStatus: "SUCCESS",
+                payTime: Date(),
+                idempotentKey: nil
+            ) { result in
+                print("paymentCallback result: \(result)")
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
                         self?.modelAction?.displaySuccess()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             AppGlobalState.shared.needRefresh = true
+                            let lastView = AppGlobalState.shared.parameters["lastView"] as? String ?? ""
+                            if lastView == "MODEL_CONFIG" {
+                                AppGlobalState.shared.parameters["backCount"] = 1
+                            }
+                            AppGlobalState.shared.needCloseOrderDetail = true
                             self?.modelRouter?.closeScreen()
                         }
                     } else {

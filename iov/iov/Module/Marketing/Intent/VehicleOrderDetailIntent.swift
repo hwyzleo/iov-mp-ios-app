@@ -122,7 +122,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         
         ServiceContainer.marketingService.getSelectedSaleModel(
-            saleCode: AppGlobalState.shared.parameters["saleCode"] as? String ?? "",
+            saleModelCode: AppGlobalState.shared.parameters["saleModelCode"] as? String ?? "",
             orderNo: nil,
             saleModelConfigType: saleModelConfigType
         ) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
@@ -178,29 +178,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayEarnestMoneyUnpaid()
                 case .failure(_):
@@ -218,29 +218,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayEarnestMoneyPaid()
                 case .failure(_):
@@ -258,29 +258,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.updateOrderPerson(
                         orderPersonType: orderResponse.orderPersonType ?? 0,
@@ -305,29 +305,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayDownPaymentPaid()
                 case .failure(_):
@@ -345,29 +345,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayArrangeProduction()
                 case .failure(_):
@@ -385,29 +385,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayAllocationVehicle()
                 case .failure(_):
@@ -425,29 +425,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayPrepareTransport()
                 case .failure(_):
@@ -465,29 +465,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayPrepareDeliver()
                 case .failure(_):
@@ -505,29 +505,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayFinalPaymentPaid()
                 case .failure(_):
@@ -545,29 +545,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayInvoiced()
                 case .failure(_):
@@ -585,29 +585,29 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages)
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelDesc: orderResponse.saleModelDesc
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice["ADAS"] ?? 0,
-                        totalPrice: orderResponse.totalPrice
+                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
+                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
+                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
+                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
+                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
+                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
+                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
+                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
+                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
+                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
+                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
                     )
                     self.modelAction?.updateOrder(
-                        orderNum: orderResponse.orderNum,
-                        orderTime: orderResponse.orderTime
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.displayDelivered()
                 case .failure(_):
@@ -644,7 +644,24 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         
     }
     func onTapModifySaleModel() {
-        self.modelRouter?.routeToModelConfig()
+        if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
+            modelAction?.displayLoading()
+            ServiceContainer.marketingService.getWishlist(wishlistId: vehiclePo.id) { (result: Result<TspResponse<Wishlist>, Error>) in
+                switch result {
+                case .success(let res):
+                    guard let wishlist = res.data else {
+                        self.modelAction?.displayError(text: "请求异常")
+                        return
+                    }
+                    AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
+                    self.modelRouter?.routeToModelConfig()
+                case .failure(_):
+                    self.modelAction?.displayError(text: "请求异常")
+                }
+            }
+        } else {
+            self.modelAction?.displayError(text: "未找到当前车辆")
+        }
     }
     func onTapOrder() {
         if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
@@ -660,7 +677,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     // 将配置项列表转换为特征代码字典
                     let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
                     
-                    AppGlobalState.shared.parameters["saleCode"] = wishlist.saleCode
+                    AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
                     AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
                     AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
                     AppGlobalState.shared.parameters["lastView"] = "ORDER_DETAIL"
@@ -709,7 +726,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         ServiceContainer.marketingService.earnestMoneyOrder(
-            saleCode: AppGlobalState.shared.parameters["saleCode"] as? String ?? "",
+            saleModelCode: AppGlobalState.shared.parameters["saleModelCode"] as? String ?? "",
             orderNo: orderNo,
             saleModelConfigType: saleModelConfigType,
             licenseCityCode: licenseCityCode
@@ -723,8 +740,8 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 if let orderNo = orderNo {
                     VehicleManager.shared.delete(orderNum: orderNo)
                 }
-                VehicleManager.shared.add(orderNum: resData.smallOrderNo, type: .ORDER, displayName: saleModelName)
-                VehicleManager.shared.setCurrentVehicleId(id: resData.smallOrderNo)
+                VehicleManager.shared.add(orderNum: resData.orderNo, type: .ORDER, displayName: saleModelName)
+                VehicleManager.shared.setCurrentVehicleId(id: resData.orderNo)
                 
                 let payInfo = EarnestMoneyPayInfo(from: resData)
                 AppGlobalState.shared.parameters["earnestMoneyPayInfo"] = payInfo
@@ -743,7 +760,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         ServiceContainer.marketingService.downPaymentOrder(
-            saleCode: AppGlobalState.shared.parameters["saleCode"] as? String ?? "",
+            saleModelCode: AppGlobalState.shared.parameters["saleModelCode"] as? String ?? "",
             orderNo: orderNo,
             saleModelConfigType: saleModelConfigType,
             orderPersonType: orderPersonType,

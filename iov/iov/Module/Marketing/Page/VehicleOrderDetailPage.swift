@@ -320,6 +320,12 @@ struct VehicleOrderDetailPage: View {
         .onAppear {
             intent.viewOnAppear()
         }
+        .onChange(of: globalState.needCloseOrderDetail) { _ in
+            if globalState.needCloseOrderDetail {
+                globalState.needCloseOrderDetail = false
+                state.routerSubject.close.send()
+            }
+        }
         .modifier(MarketingRouter(subjects: state.routerSubject))
     }
 }

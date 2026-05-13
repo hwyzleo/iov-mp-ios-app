@@ -104,8 +104,8 @@ class TspApi {
     }
     
     /// 创建心愿单（动态配置模式）
-    static func createWishlist(saleCode: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/create", parameters: ["saleCode":saleCode,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
+    static func createWishlist(saleModelCode: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/create", parameters: ["saleModelCode":saleModelCode,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
@@ -183,9 +183,9 @@ class TspApi {
     }
     
     /// 发起支付
-    static func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
+    static func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
         TspManager.requestPost(path: "/api/mobile/vso/v1/action/initiatePayment", parameters: [
-            "smallOrderNo": smallOrderNo,
+            "orderNo": orderNo,
             "paymentChannel": paymentChannel
         ]) { (result: Result<TspResponse<InitiatePaymentResult>, Error>) in
             completion(result)

@@ -23,6 +23,7 @@ class AppGlobalState: ObservableObject {
     @Published var parameters: [String: Any] = [:]
     @Published var needRefresh: Bool = false
     @Published var backRefresh: Bool = false
+    @Published var needCloseOrderDetail: Bool = false
     @Published var needShowLoginPage: Bool = false
     @Published var appLocale: Locale = {
         if let language = UserDefaults.standard.string(forKey: "AppLanguage") {

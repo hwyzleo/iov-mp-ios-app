@@ -19,7 +19,7 @@ protocol MarketingServiceProtocol {
     func getOrder(orderNo: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void)
     func deleteWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
-    func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void)
+    func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void)
     func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void)
     func cancelOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
@@ -77,8 +77,8 @@ class RealMarketingService: MarketingServiceProtocol {
         )
     }
 
-    func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
-        TspApi.initiatePayment(smallOrderNo: smallOrderNo, paymentChannel: paymentChannel, completion: completion)
+    func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
+        TspApi.initiatePayment(orderNo: orderNo, paymentChannel: paymentChannel, completion: completion)
     }
 
     func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
@@ -223,7 +223,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
             var orderData = mockOrder()
             // 同步本地存储的状态
             if let vehicle = VehicleManager.shared.getVehiclesForMock()[orderNo] {
-                orderData.orderNum = orderNo
+                orderData.orderNo = orderNo
                 orderData.orderState = vehicle.subState
             }
             let response = self.createMockResponse(data: orderData)
@@ -239,7 +239,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
 
     func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         let mockResult = EarnestMoneyOrderResult(
-            smallOrderNo: "MOCK_SMALL_ORDER_001",
+            orderNo: "MOCK_ORDER_001",
             earnestMoneyAmount: 5000,
             paymentChannels: [
                 PaymentChannelInfo(channelCode: "WECHAT", channelName: "微信支付", isDefault: true),
@@ -251,7 +251,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
         mockDelayedSuccess(data: mockResult, completion: completion)
     }
 
-    func initiatePayment(smallOrderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
+    func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
         let mockResult = InitiatePaymentResult(
             paymentNo: "MOCK_PAYMENT_001",
             paymentChannel: paymentChannel,

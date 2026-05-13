@@ -26,11 +26,15 @@ class VehicleModelConfigIntent: MviIntentProtocol {
             AppGlobalState.shared.parameters["backCount"] = backCount - 1
             self.modelRouter?.closeScreen()
         } else {
-            TspApi.getFeatureCodeRanges(saleCode: "HS5") { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
+            guard let saleCode = AppGlobalState.shared.parameters["saleModelCode"] as? String, !saleCode.isEmpty else {
+                self.modelAction?.displayError(text: "销售车型代码不能为空")
+                return
+            }
+            TspApi.getFeatureCodeRanges(saleCode: saleCode) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
                 switch result {
                 case .success(let res):
                     if let featureRanges = res.data {
-                        self.modelAction?.updateFeatureRanges(saleCode: "HS5", featureRanges: featureRanges)
+                        self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges)
                         
                         if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
                             TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
@@ -78,7 +82,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
     func onTapSaveWishlist() {
         guard let modelState = modelAction as? VehicleModelConfigModelStateProtocol else { return }
         
-        let saleCode = modelState.saleCode
+        let saleModelCode = modelState.saleCode
         let selections = modelState.selections
         
         var featureConfig: [String: String] = [:]
@@ -109,7 +113,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
             }
         } else {
             print("🆕 onTapSaveWishlist() - CREATING new wishlist")
-            TspApi.createWishlist(saleCode: saleCode, featureConfig: featureConfig) { (result: Result<TspResponse<String>, Error>) in
+            TspApi.createWishlist(saleModelCode: saleModelCode, featureConfig: featureConfig) { (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
@@ -137,7 +141,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         
         AppGlobalState.shared.parameters["lastView"] = "MODEL_CONFIG"
         AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
-        AppGlobalState.shared.parameters["saleCode"] = saleCode
+        AppGlobalState.shared.parameters["saleModelCode"] = saleCode
         AppGlobalState.shared.parameters["featureSelections"] = selections
         
         self.modelRouter?.routeToOrderDetail()
