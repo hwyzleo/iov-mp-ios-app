@@ -20,6 +20,13 @@ struct EarnestMoneyPayInfo {
         self.expireTime = result.expireTime
     }
     
+    init(orderNo: String, earnestMoneyAmount: Decimal, paymentChannels: [PaymentChannelInfo], expireTime: Date) {
+        self.orderNo = orderNo
+        self.earnestMoneyAmount = earnestMoneyAmount
+        self.paymentChannels = paymentChannels
+        self.expireTime = expireTime
+    }
+    
     var remainingSeconds: Int {
         let now = Date()
         let diff = expireTime.timeIntervalSince(now)

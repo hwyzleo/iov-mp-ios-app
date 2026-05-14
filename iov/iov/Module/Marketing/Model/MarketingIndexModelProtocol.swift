@@ -27,10 +27,8 @@ protocol MarketingIndexModelStateProtocol {
 protocol MarketingIndexModelActionProtocol: MviModelActionProtocol {
     /// 显示没有订单的页面
     func displayNoOrder()
-    /// 有订单的情况下显示心愿单
-    func displayWishlist(wishlist: Wishlist)
-    /// 有订单的情况下显示订单
-    func displayOrder(order: Order)
+    /// 使用 myVehicleList 数据直接显示车辆信息
+    func displayMyVehicle(vehicle: MyVehicleVo)
     /// 显示车辆页
     func displayVehicle();
     func displaySaleModelList(saleModelList: [SaleModelMp])

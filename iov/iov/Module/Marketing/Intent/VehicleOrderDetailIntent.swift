@@ -16,21 +16,18 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
         self.modelRouter = model
     }
     
-    func viewOnAppear() {
-        // 如果已经是在下单页（ORDER），且是从子页面返回（没有新的 orderDetailView 参数），则不重新加载，避免跳回心愿单
+func viewOnAppear() {
         if modelAction?.getContentState() == .order && AppGlobalState.shared.parameters["orderDetailView"] == nil {
             return
         }
         
         var viewName: String? = AppGlobalState.shared.parameters["orderDetailView"] as? String
         
-        // 尝试获取当前操作的订单号
         let orderNum = AppGlobalState.shared.parameters["orderNum"] as? String ?? VehicleManager.shared.getCurrentVehicleId()
         
         if viewName != nil {
             AppGlobalState.shared.parameters["orderDetailView"] = nil
         } else {
-            // 如果是页面内原地刷新，根据本地最新的 subState 推断视图
             if let id = orderNum, let vehicle = VehicleManager.shared.getVehiclesForMock()[id] {
                 switch vehicle.subState {
                 case 100: viewName = "WISHLIST"
@@ -50,11 +47,9 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
             }
         }
         
-        // 最终兜底：如果还是找不到视图名，尝试从状态推断（兼容各种刷新场景）
         if viewName == nil, let vehicle = VehicleManager.shared.getCurrentVehicle() {
             if vehicle.type == .WISHLIST { viewName = "WISHLIST" }
             else {
-                // 根据 subState 兜底
                 if vehicle.subState == 200 { viewName = "EARNEST_MONEY_UNPAID" }
                 else if vehicle.subState == 210 { viewName = "EARNEST_MONEY_PAID" }
             }
@@ -75,9 +70,22 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
             case "FINAL_PAYMENT_PAID": handleFinalPaymentPaid()
             case "INVOICED": handleInvoiced()
             case "DELIVERED": handleDelivered()
-            default: handleOrder() // 默认走下单流程
+            default: handleOrder()
             }
         }
+    }
+    
+private func convertToDynamicConfigs(configName: [String: String]?, configPrice: [String: Decimal]?) -> [(String, String, Decimal)] {
+        var configs: [(String, String, Decimal)] = []
+        guard let names = configName, let prices = configPrice else { return configs }
+        
+        for (key, name) in names {
+            if key != "BASE_MODEL" {
+                let price = prices[key] ?? 0
+                configs.append((key, name, price))
+            }
+        }
+        return configs
     }
     
     private func handleWishlist() {
@@ -135,7 +143,7 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: selectedSaleModel.saleModelImages)
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
+                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? "",
                         saleModelDesc: selectedSaleModel.saleModelDesc
                     )
                     self.modelAction?.updateBookMethod(
@@ -146,20 +154,15 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                         purchaseDenefitsIntro: selectedSaleModel.purchaseBenefitsIntro
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? selectedSaleModel.saleModelConfigName["MODEL"] ?? "",
-                        saleModelPrice: selectedSaleModel.saleModelConfigPrice["BASE_MODEL"] ?? selectedSaleModel.saleModelConfigPrice["MODEL"] ?? 0,
-                        saleSpareTireName: selectedSaleModel.saleModelConfigName["RZ"] ?? selectedSaleModel.saleModelConfigName["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: selectedSaleModel.saleModelConfigPrice["RZ"] ?? selectedSaleModel.saleModelConfigPrice["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: selectedSaleModel.saleModelConfigName["QA"] ?? selectedSaleModel.saleModelConfigName["EXTERIOR"] ?? "",
-                        saleExteriorPrice: selectedSaleModel.saleModelConfigPrice["QA"] ?? selectedSaleModel.saleModelConfigPrice["EXTERIOR"] ?? 0,
-                        saleWheelName: selectedSaleModel.saleModelConfigName["FA"] ?? selectedSaleModel.saleModelConfigName["WHEEL"] ?? "",
-                        saleWheelPrice: selectedSaleModel.saleModelConfigPrice["FA"] ?? selectedSaleModel.saleModelConfigPrice["WHEEL"] ?? 0,
-                        saleInteriorName: selectedSaleModel.saleModelConfigName["NA"] ?? selectedSaleModel.saleModelConfigName["INTERIOR"] ?? "",
-                        saleInteriorPrice: selectedSaleModel.saleModelConfigPrice["NA"] ?? selectedSaleModel.saleModelConfigPrice["INTERIOR"] ?? 0,
-                        saleAdasName: selectedSaleModel.saleModelConfigName["HA"] ?? selectedSaleModel.saleModelConfigName["ADAS"] ?? "",
-                        saleAdasPrice: selectedSaleModel.saleModelConfigPrice["HA"] ?? selectedSaleModel.saleModelConfigPrice["ADAS"] ?? 0,
+                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? "",
+                        saleModelPrice: selectedSaleModel.saleModelConfigPrice["BASE_MODEL"] ?? 0,
                         totalPrice: selectedSaleModel.totalPrice
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: selectedSaleModel.saleModelConfigName,
+                        configPrice: selectedSaleModel.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.displayOrder()
                 } else {
                     self.modelAction?.displayError(text: res.message ?? "请求异常")
@@ -180,24 +183,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -220,27 +218,26 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
+                    )
+                    self.modelAction?.updateLicenseCity(
+                        code: orderResponse.licenseCityCode ?? "",
+                        name: orderResponse.licenseCityName ?? ""
                     )
                     self.modelAction?.displayEarnestMoneyPaid()
                 case .failure(_):
@@ -260,24 +257,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -307,24 +299,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -347,24 +334,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -387,24 +369,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -427,24 +404,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -467,24 +439,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -507,24 +474,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -547,24 +509,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -587,24 +544,19 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["MODEL"] ?? 0,
-                        saleSpareTireName: orderResponse.saleModelConfigName?["SPARE_TIRE"] ?? "",
-                        saleSpareTirePrice: orderResponse.saleModelConfigPrice?["SPARE_TIRE"] ?? 0,
-                        saleExteriorName: orderResponse.saleModelConfigName?["EXTERIOR"] ?? "",
-                        saleExteriorPrice: orderResponse.saleModelConfigPrice?["EXTERIOR"] ?? 0,
-                        saleWheelName: orderResponse.saleModelConfigName?["WHEEL"] ?? "",
-                        saleWheelPrice: orderResponse.saleModelConfigPrice?["WHEEL"] ?? 0,
-                        saleInteriorName: orderResponse.saleModelConfigName?["INTERIOR"] ?? "",
-                        saleInteriorPrice: orderResponse.saleModelConfigPrice?["INTERIOR"] ?? 0,
-                        saleAdasName: orderResponse.saleModelConfigName?["ADAS"] ?? "",
-                        saleAdasPrice: orderResponse.saleModelConfigPrice?["ADAS"] ?? 0,
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
@@ -870,6 +822,40 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             }
         }
     }
+    
+    func onTapPayEarnestMoney() {
+        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
+            modelAction?.displayLoading()
+            
+            ServiceContainer.marketingService.getOrder(orderNo: orderNo) { [weak self] (result: Result<TspResponse<Order>, Error>) in
+                switch result {
+                case .success(let res):
+                    guard let orderResponse = res.data else {
+                        self?.modelAction?.displayError(text: "请求异常")
+                        return
+                    }
+                    
+                    let payInfo = EarnestMoneyPayInfo(
+                        orderNo: orderNo,
+                        earnestMoneyAmount: 5000,
+                        paymentChannels: [
+                            PaymentChannelInfo(channelCode: "WECHAT", channelName: "微信支付", isDefault: true),
+                            PaymentChannelInfo(channelCode: "ALIPAY", channelName: "支付宝", isDefault: false),
+                            PaymentChannelInfo(channelCode: "UNION_PAY", channelName: "银联支付", isDefault: false)
+                        ],
+                        expireTime: Date().addingTimeInterval(900)
+                    )
+                    
+                    AppGlobalState.shared.parameters["earnestMoneyPayInfo"] = payInfo
+                    self?.modelRouter?.routeToEarnestMoneyPay()
+                    
+                case .failure(_):
+                    self?.modelAction?.displayError(text: "请求异常")
+                }
+            }
+        }
+    }
+    
     func onTapEarnestMoneyToDownPayment() {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()

@@ -44,9 +44,21 @@ extension LicenseAreaIntent: LicenseAreaIntentProtocol {
             self.modelAction?.displayCity(provinceCode: provinceCode)
         } else {
             AppGlobalState.shared.parameters["licenseCityCode"] = cityCode
-            AppGlobalState.shared.parameters["licenseCityName"] = displayName
+            let fullDisplayName = buildFullDisplayName(provinceCode: provinceCode, cityCode: cityCode, displayName: displayName)
+            AppGlobalState.shared.parameters["licenseCityName"] = fullDisplayName
             AppGlobalState.shared.backRefresh = true
             self.modelRouter?.closeScreen()
         }
+    }
+    
+    private func buildFullDisplayName(provinceCode: String, cityCode: String, displayName: String) -> String {
+        let provinceName = Provinces[provinceCode] ?? ""
+        let cityName = Cities[cityCode] ?? displayName
+        
+        if provinceName.isEmpty || provinceName == cityName {
+            return cityName
+        }
+        
+        return provinceName + cityName
     }
 }

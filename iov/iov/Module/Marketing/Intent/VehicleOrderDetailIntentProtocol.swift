@@ -45,6 +45,8 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapCancelOrder()
     /// 点击订单支付
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String)
+    /// 点击支付意向金（跳转到支付渠道选择页）
+    func onTapPayEarnestMoney()
     /// 点击意向金转定金
     func onTapEarnestMoneyToDownPayment()
     /// 点击锁定订单

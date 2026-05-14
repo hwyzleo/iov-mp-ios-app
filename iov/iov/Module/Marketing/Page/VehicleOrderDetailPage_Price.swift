@@ -12,26 +12,17 @@ import Kingfisher
 extension VehicleOrderDetailPage {
     struct Price: View {
         var saleModelPrice: Decimal
-        var saleSpareTireName: String
-        var saleSpareTirePrice: Decimal
-        var saleExteriorName: String
-        var saleExteriorPrice: Decimal
-        var saleWheelName: String
-        var saleWheelPrice: Decimal
-        var saleInteriorName: String
-        var saleInteriorPrice: Decimal
-        var saleAdasName: String
-        var saleAdasPrice: Decimal
+        var dynamicConfigs: [(String, String, Decimal)]
         var totalPrice: Decimal
         
         var body: some View {
             VStack(spacing: 12) {
                 PriceRow(label: "官方指导价", price: saleModelPrice)
-                PriceRow(label: saleSpareTireName, price: saleSpareTirePrice)
-                PriceRow(label: saleExteriorName, price: saleExteriorPrice)
-                PriceRow(label: saleWheelName, price: saleWheelPrice)
-                PriceRow(label: saleInteriorName, price: saleInteriorPrice)
-                PriceRow(label: saleAdasName, price: saleAdasPrice)
+                
+                ForEach(dynamicConfigs.indices, id: \.self) { index in
+                    let config = dynamicConfigs[index]
+                    PriceRow(label: config.1, price: config.2)
+                }
                 
                 Divider().background(Color.white.opacity(0.1)).padding(.vertical, 4)
                 

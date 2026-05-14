@@ -18,16 +18,7 @@ extension VehicleOrderDetailPage {
         var saleModelImages: [String]
         var saleModelName: String
         var saleModelPrice: Decimal
-        var saleSpareTireName: String
-        var saleSpareTirePrice: Decimal
-        var saleExteriorName: String
-        var saleExteriorPrice: Decimal
-        var saleWheelName: String
-        var saleWheelPrice: Decimal
-        var saleInteriorName: String
-        var saleInteriorPrice: Decimal
-        var saleAdasName: String
-        var saleAdasPrice: Decimal
+        var dynamicConfigs: [(String, String, Decimal)]
         var totalPrice: Decimal
         
         @State private var currentIndex = 0
@@ -101,11 +92,10 @@ extension VehicleOrderDetailPage {
                             
                             Group {
                                 PriceRow(label: Text(LocalizedStringKey("retail_price")), price: saleModelPrice)
-                                PriceRow(label: Text(saleSpareTireName), price: saleSpareTirePrice)
-                                PriceRow(label: Text(saleExteriorName), price: saleExteriorPrice)
-                                PriceRow(label: Text(saleWheelName), price: saleWheelPrice)
-                                PriceRow(label: Text(saleInteriorName), price: saleInteriorPrice)
-                                PriceRow(label: Text(saleAdasName), price: saleAdasPrice)
+                                ForEach(dynamicConfigs.indices, id: \.self) { index in
+                                    let config = dynamicConfigs[index]
+                                    PriceRow(label: Text(config.1), price: config.2)
+                                }
                             }
                             
                             Divider().background(Color.white.opacity(0.1))
@@ -242,17 +232,14 @@ struct VehicleOrderDetailPage_Wishlist_Previews: PreviewProvider {
             ],
             saleModelName: "寒01七座版",
             saleModelPrice: 188888,
-            saleSpareTireName: "有备胎",
-            saleSpareTirePrice: 6000,
-            saleExteriorName: "翡翠绿车漆",
-            saleExteriorPrice: 0,
-            saleWheelName: "21寸轮毂（四季胎）高亮黑",
-            saleWheelPrice: 0,
-            saleInteriorName: "乌木黑内饰",
-            saleInteriorPrice: 0,
-            saleAdasName: "高价智驾",
-            saleAdasPrice: 10000,
-            totalPrice: 205888
+            dynamicConfigs: [
+                ("RZ", "全尺寸备胎", 5000),
+                ("QA", "星夜黑", 0),
+                ("FA", "21英寸单色轮毂", 0),
+                ("NA", "墨玉黑", 0),
+                ("HA", "高阶智驾", 10000)
+            ],
+            totalPrice: 235000
         )
         .environmentObject(appGlobalState)
         .environment(\.locale, .init(identifier: "zh-Hans"))

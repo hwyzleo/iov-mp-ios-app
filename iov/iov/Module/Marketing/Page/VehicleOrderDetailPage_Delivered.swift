@@ -19,16 +19,7 @@ extension VehicleOrderDetailPage {
         var saleModelName: String
         var saleModelDesc: String
         var saleModelPrice: Decimal
-        var saleSpareTireName: String
-        var saleSpareTirePrice: Decimal
-        var saleExteriorName: String
-        var saleExteriorPrice: Decimal
-        var saleWheelName: String
-        var saleWheelPrice: Decimal
-        var saleInteriorName: String
-        var saleInteriorPrice: Decimal
-        var saleAdasName: String
-        var saleAdasPrice: Decimal
+        var dynamicConfigs: [(String, String, Decimal)]
         var totalPrice: Decimal
         var orderNum: String
         var orderTime: Int64
@@ -41,21 +32,8 @@ extension VehicleOrderDetailPage {
                 
                 VStack(spacing: 0) {
                     // 顶部导航
-                    ZStack {
-                        TopBackTitleBar(titleLocal: L10n.order_detail, color: .white)
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                intent.onTapDelete()
-                            }) {
-                                Image(systemName: "trash")
-                                    .font(.system(size: 18))
-                                    .foregroundColor(.white)
-                            }
-                        }
-                        .padding(.horizontal, AppTheme.layout.margin)
-                    }
-                    .frame(height: 54)
+                    TopBackTitleBar(titleLocal: L10n.order_detail, color: .white)
+                        .frame(height: 54)
                     
                     ScrollView {
                         VStack(spacing: AppTheme.layout.spacing) {
@@ -94,20 +72,11 @@ extension VehicleOrderDetailPage {
                                     .font(AppTheme.fonts.title1)
                                     .foregroundColor(AppTheme.colors.fontPrimary)
                                 
-                                VehicleOrderDetailPage.Price(
-                                    saleModelPrice: saleModelPrice,
-                                    saleSpareTireName: saleSpareTireName,
-                                    saleSpareTirePrice: saleSpareTirePrice,
-                                    saleExteriorName: saleExteriorName,
-                                    saleExteriorPrice: saleExteriorPrice,
-                                    saleWheelName: saleWheelName,
-                                    saleWheelPrice: saleWheelPrice,
-                                    saleInteriorName: saleInteriorName,
-                                    saleInteriorPrice: saleInteriorPrice,
-                                    saleAdasName: saleAdasName,
-                                    saleAdasPrice: saleAdasPrice,
-                                    totalPrice: totalPrice
-                                )
+VehicleOrderDetailPage.Price(
+                                saleModelPrice: saleModelPrice,
+                                dynamicConfigs: dynamicConfigs,
+                                totalPrice: totalPrice
+                            )
                                 .appCardStyle()
                             }
                             
@@ -234,16 +203,13 @@ struct VehicleOrderDetailPage_Delivered_Previews: PreviewProvider {
             saleModelName: "寒01七座版",
             saleModelDesc: "寒01七座版 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
             saleModelPrice: 188888,
-            saleSpareTireName: "有备胎",
-            saleSpareTirePrice: 6000,
-            saleExteriorName: "翡翠绿车漆",
-            saleExteriorPrice: 0,
-            saleWheelName: "21寸轮毂（四季胎）高亮黑",
-            saleWheelPrice: 0,
-            saleInteriorName: "乌木黑内饰",
-            saleInteriorPrice: 0,
-            saleAdasName: "高价智驾",
-            saleAdasPrice: 10000,
+            dynamicConfigs: [
+                ("RZ", "全尺寸备胎", 5000),
+                ("QA", "星夜黑", 0),
+                ("FA", "21英寸单色轮毂", 0),
+                ("NA", "墨玉黑", 0),
+                ("HA", "高阶智驾", 10000)
+            ],
             totalPrice: 205888,
             orderNum: "ORDERNUM001",
             orderTime: 1729403155

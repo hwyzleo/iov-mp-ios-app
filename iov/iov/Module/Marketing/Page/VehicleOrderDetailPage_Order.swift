@@ -26,16 +26,7 @@ extension VehicleOrderDetailPage {
         var orderPersonType: Int
         var purchasePlan: Int
         var saleModelPrice: Decimal
-        var saleSpareTireName: String
-        var saleSpareTirePrice: Decimal
-        var saleExteriorName: String
-        var saleExteriorPrice: Decimal
-        var saleWheelName: String
-        var saleWheelPrice: Decimal
-        var saleInteriorName: String
-        var saleInteriorPrice: Decimal
-        var saleAdasName: String
-        var saleAdasPrice: Decimal
+        var dynamicConfigs: [(String, String, Decimal)]
         var totalPrice: Decimal
         @State private var orderPersonName = ""
         @State private var orderPersonIdType = ""
@@ -161,11 +152,10 @@ extension VehicleOrderDetailPage {
                                 
                                 VStack(spacing: 12) {
                                     PriceDetailRow(label: "官方指导价", price: saleModelPrice)
-                                    PriceDetailRow(label: saleSpareTireName, price: saleSpareTirePrice)
-                                    PriceDetailRow(label: saleExteriorName, price: saleExteriorPrice)
-                                    PriceDetailRow(label: saleWheelName, price: saleWheelPrice)
-                                    PriceDetailRow(label: saleInteriorName, price: saleInteriorPrice)
-                                    PriceDetailRow(label: saleAdasName, price: saleAdasPrice)
+                                    ForEach(dynamicConfigs.indices, id: \.self) { index in
+                                        let config = dynamicConfigs[index]
+                                        PriceDetailRow(label: config.1, price: config.2)
+                                    }
                                     Divider().background(Color.white.opacity(0.1)).padding(.vertical, 4)
                                     HStack {
                                         Text(L10n.total_price_label)
@@ -217,6 +207,10 @@ extension VehicleOrderDetailPage {
                             if state.selectBookMethod == "downPayment" {
                                 validateAndSubmit()
                             } else {
+                                if selectLicenseCityName.isEmpty {
+                                    showLicenseCityError = true
+                                    return
+                                }
                                 intent.onTapEarnestMoneyOrder(saleModelName: saleModelName, licenseCityCode: selectLicenseCityCode)
                             }
                         }

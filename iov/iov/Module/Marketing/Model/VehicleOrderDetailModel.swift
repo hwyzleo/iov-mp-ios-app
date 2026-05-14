@@ -13,16 +13,7 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     var saleModelImages: [String] = []
     @Published var saleModelName: String = ""
     @Published var saleModelPrice: Decimal = 0
-    @Published var saleSpareTireName: String = ""
-    @Published var saleSpareTirePrice: Decimal = 0
-    @Published var saleExteriorName: String = ""
-    @Published var saleExteriorPrice: Decimal = 0
-    @Published var saleWheelName: String = ""
-    @Published var saleWheelPrice: Decimal = 0
-    @Published var saleInteriorName: String = ""
-    @Published var saleInteriorPrice: Decimal = 0
-    @Published var saleAdasName: String = ""
-    @Published var saleAdasPrice: Decimal = 0
+    @Published var dynamicConfigs: [(String, String, Decimal)] = []
     @Published var totalPrice: Decimal = 0
     var saleModelDesc: String = ""
     var purchaseBenefitsIntro: String = ""
@@ -72,58 +63,23 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
             self.selectBookMethod = "earnestMoney"
         }
     }
-    func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, saleSpareTireName: String, saleSpareTirePrice: Decimal, saleExteriorName: String, saleExteriorPrice: Decimal, saleWheelName: String, saleWheelPrice: Decimal, saleInteriorName: String, saleInteriorPrice: Decimal, saleAdasName: String, saleAdasPrice: Decimal, totalPrice: Decimal) {
+    func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, totalPrice: Decimal) {
         self.saleModelName = saleModelName
         self.saleModelPrice = saleModelPrice
-        self.saleSpareTireName = saleSpareTireName
-        self.saleSpareTirePrice = saleSpareTirePrice
-        self.saleExteriorName = saleExteriorName
-        self.saleExteriorPrice = saleExteriorPrice
-        self.saleWheelName = saleWheelName
-        self.saleWheelPrice = saleWheelPrice
-        self.saleInteriorName = saleInteriorName
-        self.saleInteriorPrice = saleInteriorPrice
-        self.saleAdasName = saleAdasName
-        self.saleAdasPrice = saleAdasPrice
         self.totalPrice = totalPrice
     }
     
     func updateDynamicConfigs(_ configs: [(String, String, Decimal)]) {
-        // 将动态配置项转换为固定字段（兼容现有UI）
-        for (familyName, featureName, featurePrice) in configs {
-            switch familyName {
-            case "车型", "BASE_MODEL":
-                self.saleModelName = featureName
-                self.saleModelPrice = featurePrice
-            case "备胎", "RZ", "SPARE_TIRE":
-                self.saleSpareTireName = featureName
-                self.saleSpareTirePrice = featurePrice
-            case "外饰颜色", "QA", "EXTERIOR":
-                self.saleExteriorName = featureName
-                self.saleExteriorPrice = featurePrice
-            case "车轮", "FA", "WHEEL":
-                self.saleWheelName = featureName
-                self.saleWheelPrice = featurePrice
-            case "内饰风格", "NA", "INTERIOR":
-                self.saleInteriorName = featureName
-                self.saleInteriorPrice = featurePrice
-            case "智能驾驶平台", "智驾", "HA", "ADAS":
-                self.saleAdasName = featureName
-                self.saleAdasPrice = featurePrice
-            default:
-                break
-            }
-        }
-        
-        // 计算总价（如果没有总价，从配置项累加）
-        if totalPrice == 0 {
-            self.totalPrice = configs.reduce(0) { sum, config in sum + config.2 }
-        }
+        self.dynamicConfigs = configs
     }
     
     func updateOrder(orderNum: String, orderTime: Int64) {
         self.orderNum = orderNum
         self.orderTime = orderTime
+    }
+    func updateLicenseCity(code: String, name: String) {
+        self.selectLicenseCityCode = code
+        self.selectLicenseCityName = name
     }
     func updateSelectBookMethod(bookMethod: String) {
         self.selectBookMethod = bookMethod

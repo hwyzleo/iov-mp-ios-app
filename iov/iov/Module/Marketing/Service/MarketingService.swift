@@ -178,15 +178,9 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
                         type: typeStr,
                         displayName: po.displayName,
                         state: po.subState,
-                        createTime: nil,
-                        modifyTime: nil,
-                        saleModelCode: nil,
-                        buildConfigCode: nil,
-                        saleModelConfigType: nil,
-                        saleModelConfigName: nil,
                         saleModelImages: nil,
                         totalPrice: nil,
-                        isValid: nil
+                        saleModelDesc: nil
                     ))
                 }
             }

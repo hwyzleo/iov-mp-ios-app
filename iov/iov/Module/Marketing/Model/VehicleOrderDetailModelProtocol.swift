@@ -15,16 +15,7 @@ protocol VehicleOrderDetailModelStateProtocol {
     var saleModelImages: [String] { get }
     var saleModelName: String { get }
     var saleModelPrice: Decimal { get }
-    var saleSpareTireName: String { get }
-    var saleSpareTirePrice: Decimal { get }
-    var saleExteriorName: String { get }
-    var saleExteriorPrice: Decimal { get }
-    var saleWheelName: String { get }
-    var saleWheelPrice: Decimal { get }
-    var saleInteriorName: String { get }
-    var saleInteriorPrice: Decimal { get }
-    var saleAdasName: String { get }
-    var saleAdasPrice: Decimal { get }
+    var dynamicConfigs: [(String, String, Decimal)] { get }
     var totalPrice: Decimal { get }
     var saleModelDesc: String { get }
     var selectBookMethod: String { get }
@@ -61,7 +52,7 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     /// 更新预定方式
     func updateBookMethod(downPayment: Bool, downPaymentPrice: Decimal, earnestMoney: Bool, earnestMoneyPrice: Decimal, purchaseDenefitsIntro: String)
     /// 更新销售车型价格
-    func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, saleSpareTireName: String, saleSpareTirePrice: Decimal, saleExteriorName: String, saleExteriorPrice: Decimal, saleWheelName: String, saleWheelPrice: Decimal, saleInteriorName: String, saleInteriorPrice: Decimal, saleAdasName: String, saleAdasPrice: Decimal, totalPrice: Decimal)
+    func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, totalPrice: Decimal)
     /// 更新销售车型配置（动态配置项）
     func updateDynamicConfigs(_ configs: [(String, String, Decimal)])
     /// 更新选择预定方式
@@ -80,6 +71,8 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updatePurchasePlan(purchasePlan: Int)
     /// 更新订单
     func updateOrder(orderNum: String, orderTime: Int64)
+    /// 更新上牌城市
+    func updateLicenseCity(code: String, name: String)
     /// 切换订购协议
     func toggleAgreement()
     /// 显示心愿单

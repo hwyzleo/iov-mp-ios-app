@@ -18,24 +18,14 @@ class MarketingIndexIntent: MviIntentProtocol {
     
     func viewOnAppear() {
         modelAction?.displayLoading()
-        ServiceContainer.marketingService.getSaleModelList { [weak self] result in
-            switch result {
-            case .success(let res):
-                if res.isSuccess, let saleModelList = res.data, !saleModelList.isEmpty {
-                    self?.modelAction?.displaySaleModelList(saleModelList: saleModelList)
-                    if UserManager.isLogin() {
-                        self?.fetchMyVehicleList()
-                    }
-                } else {
-                    self?.modelAction?.displayError(text: "获取车型列表失败")
-                }
-            case .failure(_):
-                self?.modelAction?.displayError(text: "请求异常")
-            }
+        if UserManager.isLogin() {
+            fetchMyVehicleListFirst()
+        } else {
+            fetchSaleModelList()
         }
     }
     
-    private func fetchMyVehicleList() {
+    private func fetchMyVehicleListFirst() {
         ServiceContainer.marketingService.getMyVehicleList { [weak self] (result: Result<TspResponse<[MyVehicleVo]>, Error>) in
             switch result {
             case .success(let res):
@@ -47,46 +37,33 @@ class MarketingIndexIntent: MviIntentProtocol {
                     VehicleManager.shared.update(myVehicleList: resData)
                     
                     if resData.isEmpty {
-                        self?.modelAction?.displayNoOrder()
+                        self?.fetchSaleModelList()
                         return
                     }
                     
-                    if let vehiclePo = VehicleManager.shared.getCurrentVehicle(), let vehicleId = VehicleManager.shared.getCurrentVehicleId() {
-                        switch vehiclePo.type {
-                        case .WISHLIST:
-                            ServiceContainer.marketingService.getWishlist(wishlistId: vehicleId) { (result: Result<TspResponse<Wishlist>, Error>) in
-                                switch result {
-                                case .success(let res):
-                                    guard let wishlist = res.data else {
-                                        self?.modelAction?.displayError(text: "数据异常")
-                                        return
-                                    }
-                                    self?.modelAction?.displayWishlist(wishlist: wishlist)
-                                case .failure(_):
-                                    self?.modelAction?.displayError(text: "请求异常")
-                                }
-                            }
-                        case .ORDER:
-                            ServiceContainer.marketingService.getOrder(orderNo: vehicleId) { (result: Result<TspResponse<Order>, Error>) in
-                                switch result {
-                                case .success(let res):
-                                    guard let order = res.data else {
-                                        self?.modelAction?.displayError(text: "数据异常")
-                                        return
-                                    }
-                                    self?.modelAction?.displayOrder(order: order)
-                                case .failure(_):
-                                    self?.modelAction?.displayError(text: "请求异常")
-                                }
-                            }
-                        case .ACTIVATED:
-                            self?.modelAction?.displayVehicle()
-                        }
+                    if let vehicle = resData.first {
+                        self?.modelAction?.displayMyVehicle(vehicle: vehicle)
                     } else {
-                        self?.modelAction?.displayNoOrder()
+                        self?.fetchSaleModelList()
                     }
                 } else {
                     self?.modelAction?.displayError(text: res.message ?? "请求异常")
+                }
+            case .failure(_):
+                self?.modelAction?.displayError(text: "请求异常")
+            }
+        }
+    }
+    
+    private func fetchSaleModelList() {
+        ServiceContainer.marketingService.getSaleModelList { [weak self] result in
+            switch result {
+            case .success(let res):
+                if res.isSuccess, let saleModelList = res.data, !saleModelList.isEmpty {
+                    self?.modelAction?.displaySaleModelList(saleModelList: saleModelList)
+                    self?.modelAction?.displayNoOrder()
+                } else {
+                    self?.modelAction?.displayError(text: "获取车型列表失败")
                 }
             case .failure(_):
                 self?.modelAction?.displayError(text: "请求异常")

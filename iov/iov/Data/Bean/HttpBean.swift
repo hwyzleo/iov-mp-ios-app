@@ -237,21 +237,15 @@ struct SelectedSaleModel: Codable {
 }
 
 /// 我的车辆（合并心愿单和订单）
+/// 用于首页列表展示，包含缩略信息
 struct MyVehicleVo: Codable {
     var id: String
     var type: String
     var displayName: String?
     var state: Int
-    var createTime: Date?
-    var modifyTime: Date?
-    
-    var saleModelCode: String?
-    var buildConfigCode: String?
-    var saleModelConfigType: [String:String]?
-    var saleModelConfigName: [String:String]?
     var saleModelImages: [String]?
     var totalPrice: Decimal?
-    var isValid: Bool?
+    var saleModelDesc: String?
 }
 
 /// 心愿单详情
@@ -336,6 +330,8 @@ struct Order: Codable {
     var orderPersonIdNum: String?
     /// 上牌城市代码
     var licenseCityCode: String?
+    /// 上牌城市名称
+    var licenseCityName: String?
     /// 销售门店代码
     var dealershipCode: String?
     /// 交付中心代码

@@ -92,7 +92,6 @@ struct ContentView: View {
         }
         .preferredColorScheme(.dark)
         .background(AppTheme.colors.background.ignoresSafeArea())
-        .showMockIndicator()
         .onChange(of: globalState.needRefresh) { _ in
             if globalState.needRefresh {
                 globalState.needRefresh = false

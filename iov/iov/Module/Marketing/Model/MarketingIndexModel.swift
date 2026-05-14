@@ -34,25 +34,29 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
         self.hasOrder = false
         contentState = .content
     }
-    func displayWishlist(wishlist: Wishlist) {
+    func displayMyVehicle(vehicle: MyVehicleVo) {
         self.hasOrder = true
-        self.currentVehicleType = .WISHLIST
-        self.saleModelImages = wishlist.saleModelImages
-        self.totalPrice = wishlist.totalPrice
-        self.saleModelDesc = wishlist.saleModelDesc
-        contentState = .content
-    }
-    func displayOrder(order: Order) {
-        self.hasOrder = true
-        self.currentVehicleType = .ORDER
-        if let orderState = OrderState(rawValue: order.orderState) {
-            self.orderState = orderState
-        } else {
+        switch vehicle.type {
+        case "WISHLIST":
+            self.currentVehicleType = .WISHLIST
+            self.orderState = .WISHLIST
+        case "ORDER":
+            self.currentVehicleType = .ORDER
+            if let orderState = OrderState(rawValue: vehicle.state) {
+                self.orderState = orderState
+            } else {
+                self.orderState = .EARNEST_MONEY_UNPAID
+            }
+        case "ACTIVATED":
+            self.currentVehicleType = .ACTIVATED
+            self.orderState = .ACTIVATED
+        default:
+            self.currentVehicleType = .ORDER
             self.orderState = .EARNEST_MONEY_UNPAID
         }
-        self.saleModelImages = order.saleModelImages ?? []
-        self.totalPrice = order.totalPrice ?? 0
-        self.saleModelDesc = order.saleModelDesc ?? ""
+        self.saleModelImages = vehicle.saleModelImages ?? []
+        self.totalPrice = vehicle.totalPrice ?? 0
+        self.saleModelDesc = vehicle.saleModelDesc ?? ""
         contentState = .content
     }
     func displayVehicle() {
