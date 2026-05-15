@@ -77,14 +77,29 @@ extension VehicleOrderDetailPage {
                                 }
                             }
                             
-                            // 4. 交付信息
+                            // 4. 车主信息（只读）
+                            FormSection(title: L10n.owner_info) {
+                                VStack(spacing: 0) {
+                                    InfoField(
+                                        label: state.orderPersonType == 2 ? L10n.enterprise_name : L10n.owner_name,
+                                        value: state.orderPersonName
+                                    )
+                                    Divider().background(Color.white.opacity(0.05)).padding(.vertical, 12)
+                                    InfoField(
+                                        label: state.orderPersonType == 2 ? L10n.enterprise_code : L10n.certificate_number,
+                                        value: state.orderPersonIdNum
+                                    )
+                                }
+                            }
+                            
+                            // 5. 交付信息
                             FormSection(title: L10n.delivery_info) {
                                 SelectField(label: L10n.license_city, placeholder: "请选择", value: licenseCity) {
                                     intent.onTapLicenseCity()
                                 }
                             }
                             
-                            // 5. 价格明细
+                            // 6. 价格明细
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(L10n.price_detail)
                                     .font(AppTheme.fonts.title1)
@@ -98,7 +113,7 @@ VehicleOrderDetailPage.Price(
                                 .appCardStyle()
                             }
                             
-                            // 6. 订单信息
+                            // 7. 订单信息
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(L10n.order_info)
                                     .font(AppTheme.fonts.title1)
