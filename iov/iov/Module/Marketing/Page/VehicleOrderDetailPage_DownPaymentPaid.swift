@@ -58,14 +58,33 @@ extension VehicleOrderDetailPage {
                             )
                             .appCardStyle()
                             
-                            // 3. 交付信息
+                            // 3. 购车方案（只读）
+                            FormSection(title: L10n.purchase_plan) {
+                                VStack(spacing: 20) {
+                                    OptionSelector(
+                                        title: L10n.purchase_type,
+                                        options: ["个人", "企业"],
+                                        selectedIndex: state.orderPersonType - 1,
+                                        isReadOnly: true
+                                    )
+                                    
+                                    OptionSelector(
+                                        title: L10n.payment_method,
+                                        options: ["全款", "分期"],
+                                        selectedIndex: state.purchasePlan - 1,
+                                        isReadOnly: true
+                                    )
+                                }
+                            }
+                            
+                            // 4. 交付信息
                             FormSection(title: L10n.delivery_info) {
                                 SelectField(label: L10n.license_city, placeholder: "请选择", value: licenseCity) {
                                     intent.onTapLicenseCity()
                                 }
                             }
                             
-                            // 4. 价格明细
+                            // 5. 价格明细
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(L10n.price_detail)
                                     .font(AppTheme.fonts.title1)
@@ -79,7 +98,7 @@ VehicleOrderDetailPage.Price(
                                 .appCardStyle()
                             }
                             
-                            // 5. 订单信息
+                            // 6. 订单信息
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(L10n.order_info)
                                     .font(AppTheme.fonts.title1)
