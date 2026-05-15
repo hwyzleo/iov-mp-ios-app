@@ -92,10 +92,29 @@ extension VehicleOrderDetailPage {
                                 }
                             }
                             
-                            // 5. 交付信息
+                            // 5. 交付信息（只读）
                             FormSection(title: L10n.delivery_info) {
-                                SelectField(label: L10n.license_city, placeholder: "请选择", value: licenseCity) {
-                                    intent.onTapLicenseCity()
+                                VStack(spacing: 16) {
+                                    SelectField(
+                                        label: L10n.license_city,
+                                        placeholder: "请选择",
+                                        value: state.selectLicenseCityName,
+                                        isReadOnly: true
+                                    )
+                                    Divider().background(Color.white.opacity(0.05))
+                                    SelectField(
+                                        label: L10n.dealership,
+                                        placeholder: "请选择",
+                                        value: state.selectDealershipName,
+                                        isReadOnly: true
+                                    )
+                                    Divider().background(Color.white.opacity(0.05))
+                                    SelectField(
+                                        label: L10n.delivery_center,
+                                        placeholder: "请选择",
+                                        value: state.selectDeliveryCenterName,
+                                        isReadOnly: true
+                                    )
                                 }
                             }
                             
