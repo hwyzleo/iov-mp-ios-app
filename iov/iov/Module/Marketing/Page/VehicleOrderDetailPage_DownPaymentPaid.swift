@@ -23,7 +23,6 @@ extension VehicleOrderDetailPage {
         var totalPrice: Decimal
         var orderNum: String
         var orderTime: Int64
-        @State private var licenseCity = ""
         
         var body: some View {
             ZStack(alignment: .top) {
@@ -169,9 +168,6 @@ VehicleOrderDetailPage.Price(
                 .ignoresSafeArea()
             }
             .preferredColorScheme(.dark)
-            .onAppear {
-                licenseCity = "上海"
-            }
         }
     }
 }
