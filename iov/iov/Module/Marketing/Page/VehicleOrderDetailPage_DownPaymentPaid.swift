@@ -216,6 +216,24 @@ private struct OptionSelector: View {
     }
 }
 
+private struct InfoField: View {
+    var label: LocalizedStringKey
+    var value: String
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(AppTheme.fonts.body)
+                .foregroundColor(AppTheme.colors.fontPrimary)
+                .frame(width: 100, alignment: .leading)
+            Text(value)
+                .font(AppTheme.fonts.body)
+                .foregroundColor(AppTheme.colors.fontPrimary)
+            Spacer()
+        }
+    }
+}
+
 struct VehicleOrderDetailPage_DownPaymentPaid_Previews: PreviewProvider {
     @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
