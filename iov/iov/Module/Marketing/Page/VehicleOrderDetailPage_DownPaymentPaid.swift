@@ -63,14 +63,14 @@ extension VehicleOrderDetailPage {
                                     OptionSelector(
                                         title: L10n.purchase_type,
                                         options: ["个人", "企业"],
-                                        selectedIndex: state.orderPersonType - 1,
+                                        selectedIndex: max(0, min(state.orderPersonType - 1, 1)),
                                         isReadOnly: true
                                     )
                                     
                                     OptionSelector(
                                         title: L10n.payment_method,
                                         options: ["全款", "分期"],
-                                        selectedIndex: state.purchasePlan - 1,
+                                        selectedIndex: max(0, min(state.purchasePlan - 1, 1)),
                                         isReadOnly: true
                                     )
                                 }
@@ -275,9 +275,9 @@ private struct InfoField: View {
                 .font(AppTheme.fonts.body)
                 .foregroundColor(AppTheme.colors.fontPrimary)
                 .frame(width: 100, alignment: .leading)
-            Text(value)
+            Text(value.isEmpty ? "-" : value)
                 .font(AppTheme.fonts.body)
-                .foregroundColor(AppTheme.colors.fontPrimary)
+                .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
             Spacer()
         }
     }
