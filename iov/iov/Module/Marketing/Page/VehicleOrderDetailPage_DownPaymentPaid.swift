@@ -147,9 +147,11 @@ private struct SelectField: View {
     var label: LocalizedStringKey
     var placeholder: String
     var value: String
-    var action: () -> Void
+    var isReadOnly: Bool = false
+    var action: () -> Void = {}
+    
     var body: some View {
-        Button(action: action) {
+        if isReadOnly {
             HStack {
                 Text(label)
                     .font(AppTheme.fonts.body)
@@ -159,12 +161,25 @@ private struct SelectField: View {
                     .font(AppTheme.fonts.body)
                     .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12))
-                    .foregroundColor(AppTheme.colors.fontTertiary)
             }
+        } else {
+            Button(action: action) {
+                HStack {
+                    Text(label)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
+                        .frame(width: 100, alignment: .leading)
+                    Text(value.isEmpty ? placeholder : value)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12))
+                        .foregroundColor(AppTheme.colors.fontTertiary)
+                }
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
     }
 }
 
