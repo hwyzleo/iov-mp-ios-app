@@ -183,6 +183,39 @@ private struct SelectField: View {
     }
 }
 
+private struct OptionSelector: View {
+    var title: LocalizedStringKey
+    var options: [String]
+    var selectedIndex: Int
+    var isReadOnly: Bool = false
+    var onSelect: (Int) -> Void = { _ in }
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(AppTheme.fonts.body)
+                .foregroundColor(AppTheme.colors.fontPrimary)
+            Spacer()
+            HStack(spacing: 0) {
+                ForEach(0..<options.count, id: \.self) { index in
+                    Text(options[index])
+                        .font(.system(size: 13, weight: selectedIndex == index ? .bold : .regular))
+                        .foregroundColor(selectedIndex == index ? .black : AppTheme.colors.fontSecondary)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 16)
+                        .background(selectedIndex == index ? AppTheme.colors.brandMain : Color.clear)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            if !isReadOnly { onSelect(index) }
+                        }
+                }
+            }
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(20)
+        }
+    }
+}
+
 struct VehicleOrderDetailPage_DownPaymentPaid_Previews: PreviewProvider {
     @StateObject static var appGlobalState = AppGlobalState.shared
     static var previews: some View {
