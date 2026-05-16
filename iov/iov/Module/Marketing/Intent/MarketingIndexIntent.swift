@@ -212,7 +212,8 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
     func onTapEarnestMoneyToDownPayment() {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.earnestMoneyToDownPayment(orderNo: orderNo) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
+            let parameters: [String: Any] = ["orderNo": orderNo]
+            ServiceContainer.marketingService.earnestMoneyToDownPayment(parameters: parameters) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
                 case .success(_):
                     self?.viewOnAppear()

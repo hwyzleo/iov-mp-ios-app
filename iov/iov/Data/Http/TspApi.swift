@@ -154,14 +154,14 @@ class TspApi {
     
     /// 获取销售门店
     static func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/dealership/v1", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
             completion(result)
         }
     }
     
     /// 获取交付中心
     static func getDeliveryCenter(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/mp/dealership", parameters: ["serviceType":"D"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+        TspManager.requestGet(path: "/api/mobile/dealership/v1", parameters: ["serviceType":"D"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
             completion(result)
         }
     }
@@ -256,8 +256,8 @@ class TspApi {
     }
     
     /// 意向金转定金
-    static func earnestMoneyToDownPayment(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/earnestMoneyToDownPayment", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func earnestMoneyToDownPayment(parameters: [String: Any], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/earnestMoneyToDownPayment", parameters: parameters) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }

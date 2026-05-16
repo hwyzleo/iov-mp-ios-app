@@ -25,12 +25,13 @@ extension VehicleOrderDetailPage {
         var orderTime: Int64
         var orderPersonType: Int
         var purchasePlan: Int
-        var orderPersonName: String
         var orderPersonIdType: Int
-        var orderPersonIdNum: String
-        var licenseCity: String
-        var dealershipName: String
-        var deliveryCenterName: String
+        
+        @State private var showNameError = false
+        @State private var showIdNumError = false
+        @State private var showLicenseCityError = false
+        @State private var showDealershipError = false
+        @State private var showDeliveryCenterError = false
         
         var body: some View {
             ZStack(alignment: .top) {
@@ -86,13 +87,15 @@ extension VehicleOrderDetailPage {
                                     InputField(
                                         label: orderPersonType == 2 ? L10n.enterprise_name : L10n.owner_name,
                                         placeholder: "请输入",
-                                        text: Binding(get: { orderPersonName }, set: { intent.onUpdateOrderPersonName(name: $0) })
+                                        text: Binding(get: { state.orderPersonName }, set: { intent.onUpdateOrderPersonName(name: $0) }),
+                                        hasError: showNameError
                                     )
                                     Divider().background(Color.white.opacity(0.05)).padding(.vertical, 12)
                                     InputField(
                                         label: orderPersonType == 2 ? L10n.enterprise_code : L10n.certificate_number,
                                         placeholder: "请输入",
-                                        text: Binding(get: { orderPersonIdNum }, set: { intent.onUpdateOrderPersonIdNum(idNum: $0) })
+                                        text: Binding(get: { state.orderPersonIdNum }, set: { intent.onUpdateOrderPersonIdNum(idNum: $0) }),
+                                        hasError: showIdNumError
                                     )
                                 }
                             }
@@ -100,15 +103,15 @@ extension VehicleOrderDetailPage {
                             // 5. 交付信息
                             FormSection(title: L10n.delivery_info) {
                                 VStack(spacing: 16) {
-                                    SelectField(label: L10n.license_city, placeholder: "请选择", value: licenseCity) {
+                                    SelectField(label: L10n.license_city, placeholder: "请选择", value: state.selectLicenseCityName, hasError: showLicenseCityError) {
                                         intent.onTapLicenseCity()
                                     }
                                     Divider().background(Color.white.opacity(0.05))
-                                    SelectField(label: L10n.dealership, placeholder: "请选择", value: dealershipName) {
+                                    SelectField(label: L10n.dealership, placeholder: "请选择", value: state.selectDealershipName, hasError: showDealershipError) {
                                         intent.onTapDealership()
                                     }
                                     Divider().background(Color.white.opacity(0.05))
-                                    SelectField(label: L10n.delivery_center, placeholder: "请选择", value: deliveryCenterName) {
+                                    SelectField(label: L10n.delivery_center, placeholder: "请选择", value: state.selectDeliveryCenterName, hasError: showDeliveryCenterError) {
                                         intent.onTapDeliveryCenter()
                                     }
                                 }
@@ -160,11 +163,11 @@ extension VehicleOrderDetailPage {
                         }
                         
                         RoundedCornerButton(
-                            nameLocal: L10n.pay_down_payment,
+                            nameLocal: state.isFromEarnestMoneyConversion ? L10n.convert_to_down_payment : L10n.pay_down_payment,
                             color: .black,
                             bgColor: AppTheme.colors.brandMain
                         ) {
-                            intent.onTapPayOrder(orderPaymentPhase: 2, paymentAmount: 5000, paymentChannel: "ALIPAY")
+                            validateAndPay()
                         }
                     }
                     .padding(.horizontal, AppTheme.layout.margin)
@@ -175,6 +178,54 @@ extension VehicleOrderDetailPage {
                 .ignoresSafeArea()
             }
             .preferredColorScheme(.dark)
+            .onChange(of: globalState.backRefresh) { _ in
+                if globalState.backRefresh {
+                    globalState.backRefresh = false
+                    if let dealershipName = AppGlobalState.shared.parameters["dealershipName"] {
+                        intent.onUpdateDealership(code: AppGlobalState.shared.parameters["dealershipCode"] as! String, name: dealershipName as! String)
+                    }
+                    if let deliveryCenterName = AppGlobalState.shared.parameters["deliveryCenterName"] {
+                        intent.onUpdateDeliveryCenter(code: AppGlobalState.shared.parameters["deliveryCenterCode"] as! String, name: deliveryCenterName as! String)
+                    }
+                }
+            }
+        }
+        
+        private func validateAndPay() {
+            showNameError = state.orderPersonName.isEmpty
+            showIdNumError = state.orderPersonIdNum.isEmpty
+            showLicenseCityError = state.selectLicenseCityName.isEmpty
+            showDealershipError = state.selectDealershipName.isEmpty
+            showDeliveryCenterError = state.selectDeliveryCenterName.isEmpty
+            
+            if showNameError || showIdNumError || showLicenseCityError || showDealershipError || showDeliveryCenterError {
+                return
+            }
+            
+            if state.isFromEarnestMoneyConversion {
+                intent.onTapConvertToDownPayment(
+                    orderPersonType: orderPersonType,
+                    purchasePlan: purchasePlan,
+                    orderPersonName: state.orderPersonName,
+                    orderPersonIdType: orderPersonIdType,
+                    orderPersonIdNum: state.orderPersonIdNum,
+                    licenseCityCode: state.selectLicenseCityCode,
+                    dealership: state.selectDealershipCode,
+                    deliveryCenter: state.selectDeliveryCenterCode
+                )
+            } else {
+                intent.onTapDownPaymentOrder(
+                    orderPersonType: orderPersonType,
+                    purchasePlan: purchasePlan,
+                    orderPersonName: state.orderPersonName,
+                    orderPersonIdType: orderPersonIdType,
+                    orderPersonIdNum: state.orderPersonIdNum,
+                    saleModelName: saleModelName,
+                    licenseCityCode: state.selectLicenseCityCode,
+                    dealership: state.selectDealershipCode,
+                    deliveryCenter: state.selectDeliveryCenterCode
+                )
+            }
         }
     }
 }
@@ -203,6 +254,7 @@ private struct InputField: View {
     var label: LocalizedStringKey
     var placeholder: String
     @Binding var text: String
+    var hasError: Bool
     var body: some View {
         HStack {
             Text(label)
@@ -218,6 +270,11 @@ private struct InputField: View {
                 .multilineTextAlignment(.trailing)
                 .disableAutocorrection(true)
                 .autocapitalization(.none)
+            if hasError {
+                Image(systemName: "exclamationmark.circle.fill")
+                    .foregroundColor(.red)
+                    .font(.system(size: 14))
+            }
         }
     }
 }
@@ -255,6 +312,7 @@ private struct SelectField: View {
     var label: LocalizedStringKey
     var placeholder: String
     var value: String
+    var hasError: Bool
     var action: () -> Void
     var body: some View {
         Button(action: action) {
@@ -267,6 +325,12 @@ private struct SelectField: View {
                     .font(AppTheme.fonts.body)
                     .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
                 Spacer()
+                if hasError {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .foregroundColor(.red)
+                        .font(.system(size: 14))
+                        .padding(.trailing, 4)
+                }
                 Image(systemName: "chevron.right")
                     .font(.system(size: 12))
                     .foregroundColor(AppTheme.colors.fontTertiary)
@@ -300,12 +364,7 @@ struct VehicleOrderDetailPage_DownPaymentUnpaid_Previews: PreviewProvider {
             orderTime: 1729403155,
             orderPersonType: 1,
             purchasePlan: 1,
-            orderPersonName: "hwyz_leo",
-            orderPersonIdType: 1,
-            orderPersonIdNum: "310105199910100010",
-            licenseCity: "上海",
-            dealershipName: "上海服务中心",
-            deliveryCenterName: "上海交付中心"
+            orderPersonIdType: 1
         )
         .environmentObject(appGlobalState)
         .environment(\.locale, .init(identifier: "zh-Hans"))

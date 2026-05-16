@@ -28,6 +28,7 @@ struct L10n {
     static let earnest_money_paid = LocalizedStringKey("earnest_money_paid")
     static let earnest_money_to_be_paid = LocalizedStringKey("earnest_money_to_be_paid")
     static let earnest_money_to_down_payment = LocalizedStringKey("earnest_money_to_down_payment")
+    static let convert_to_down_payment = LocalizedStringKey("convert_to_down_payment")
     static let exterior = LocalizedStringKey("exterior")
     static let final_payment_paid = LocalizedStringKey("final_payment_paid")
     static let invoiced = LocalizedStringKey("invoiced")

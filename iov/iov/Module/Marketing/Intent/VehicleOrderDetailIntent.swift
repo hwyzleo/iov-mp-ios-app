@@ -17,7 +17,11 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     }
     
 func viewOnAppear() {
+        let currentState = modelAction?.getContentState()
         if modelAction?.getContentState() == .order && AppGlobalState.shared.parameters["orderDetailView"] == nil {
+            return
+        }
+        if currentState != .loading && currentState != .wishlist {
             return
         }
         
@@ -246,6 +250,62 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
             }
         }
     }
+    private func handleDownPaymentUnpaidFromEarnestMoneyPaid() {
+        if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
+            modelAction?.displayLoading()
+            ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
+                switch result {
+                case .success(let res):
+                    guard let orderResponse = res.data else {
+                        self.modelAction?.displayError(text: "请求异常")
+                        return
+                    }
+                    self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    self.modelAction?.updateSaleModelIntro(
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelDesc: orderResponse.saleModelDesc ?? ""
+                    )
+                    self.modelAction?.updateSaleModelPrice(
+                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        totalPrice: orderResponse.totalPrice ?? 0
+                    )
+                    let dynamicConfigs = self.convertToDynamicConfigs(
+                        configName: orderResponse.saleModelConfigName,
+                        configPrice: orderResponse.saleModelConfigPrice
+                    )
+                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
+                    self.modelAction?.updateOrder(
+                        orderNum: orderResponse.orderNo,
+                        orderTime: orderResponse.orderTime ?? 0
+                    )
+                    self.modelAction?.updateOrderPerson(
+                        orderPersonType: 1,
+                        orderPersonName: "",
+                        orderPersonIdType: 1,
+                        orderPersonIdNum: ""
+                    )
+                    self.modelAction?.updatePurchasePlan(purchasePlan: 1)
+                    self.modelAction?.updateLicenseCity(
+                        code: orderResponse.licenseCityCode ?? "",
+                        name: orderResponse.licenseCityName ?? ""
+                    )
+                    self.modelAction?.updateDealership(
+                        code: "",
+                        name: ""
+                    )
+                    self.modelAction?.updateDeliveryCenter(
+                        code: "",
+                        name: ""
+                    )
+                    self.modelAction?.setIsFromEarnestMoneyConversion(isFrom: true)
+                    self.modelAction?.displayDownPaymentUnpaid()
+                case .failure(_):
+                    self.modelAction?.displayError(text: "请求异常")
+                }
+            }
+        }
+    }
     private func handleDownPaymentUnpaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {
             ServiceContainer.marketingService.getOrder(orderNo: orderNum) { (result: Result<TspResponse<Order>, Error>) in
@@ -275,12 +335,25 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         orderTime: orderResponse.orderTime ?? 0
                     )
                     self.modelAction?.updateOrderPerson(
-                        orderPersonType: orderResponse.orderPersonType ?? 0,
+                        orderPersonType: orderResponse.orderPersonType ?? 1,
                         orderPersonName: orderResponse.orderPersonName ?? "",
                         orderPersonIdType: orderResponse.orderPersonIdType ?? 0,
                         orderPersonIdNum: orderResponse.orderPersonIdNum ?? ""
                     )
-                    self.modelAction?.updatePurchasePlan(purchasePlan: orderResponse.purchasePlan ?? 0)
+                    self.modelAction?.updatePurchasePlan(purchasePlan: orderResponse.purchasePlan ?? 1)
+                    self.modelAction?.updateLicenseCity(
+                        code: orderResponse.licenseCityCode ?? "",
+                        name: orderResponse.licenseCityName ?? ""
+                    )
+                    self.modelAction?.updateDealership(
+                        code: orderResponse.dealershipCode ?? "",
+                        name: orderResponse.dealershipName ?? ""
+                    )
+                    self.modelAction?.updateDeliveryCenter(
+                        code: orderResponse.deliveryCenterCode ?? "",
+                        name: orderResponse.deliveryCenterName ?? ""
+                    )
+                    self.modelAction?.setIsFromEarnestMoneyConversion(isFrom: false)
                     self.modelAction?.displayDownPaymentUnpaid()
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
@@ -762,6 +835,12 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onUpdateOrderPersonIdNum(idNum: String) {
         modelAction?.updateOrderPersonIdNum(idNum: idNum)
     }
+    func onUpdateDealership(code: String, name: String) {
+        modelAction?.updateDealership(code: code, name: name)
+    }
+    func onUpdateDeliveryCenter(code: String, name: String) {
+        modelAction?.updateDeliveryCenter(code: code, name: name)
+    }
     func onTapLicenseCity() {
         modelRouter?.routeToLicenseArea()
     }
@@ -857,15 +936,36 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     }
     
     func onTapEarnestMoneyToDownPayment() {
+        handleDownPaymentUnpaidFromEarnestMoneyPaid()
+    }
+    func onTapConvertToDownPayment(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String) {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
-            ServiceContainer.marketingService.earnestMoneyToDownPayment(orderNo: orderNo) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
+            let customerType = "personal"
+            let paymentMethod = purchasePlan == 1 ? "full_payment" : "loan"
+            let parameters: [String: Any] = [
+                "orderNo": orderNo,
+                "customerType": customerType,
+                "paymentMethod": paymentMethod,
+                "orderPersonType": orderPersonType,
+                "purchasePlan": purchasePlan,
+                "orderPersonName": orderPersonName,
+                "orderPersonIdType": orderPersonIdType,
+                "orderPersonIdNum": orderPersonIdNum,
+                "licenseCityCode": licenseCityCode,
+                "dealership": dealership,
+                "deliveryCenter": deliveryCenter
+            ]
+            ServiceContainer.marketingService.earnestMoneyToDownPayment(parameters: parameters) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
                 switch result {
-                case .success(_):
-                    // 更新为定金待支付状态
-                    VehicleManager.shared.updateSubState(id: orderNo, subState: 300)
-                    AppGlobalState.shared.needRefresh = true
-                    self?.viewOnAppear()
+                case .success(let res):
+                    if res.isSuccess {
+                        VehicleManager.shared.updateSubState(id: orderNo, subState: 310)
+                        AppGlobalState.shared.needRefresh = true
+                        self?.handleDownPaymentPaid()
+                    } else {
+                        self?.modelAction?.displayError(text: res.message ?? "请求异常")
+                    }
                 case .failure(_):
                     self?.modelAction?.displayError(text: "请求异常")
                 }

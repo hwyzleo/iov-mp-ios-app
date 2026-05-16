@@ -334,8 +334,12 @@ struct Order: Codable {
     var licenseCityName: String?
     /// 销售门店代码
     var dealershipCode: String?
+    /// 销售门店名称
+    var dealershipName: String?
     /// 交付中心代码
     var deliveryCenterCode: String?
+    /// 交付中心名称
+    var deliveryCenterName: String?
 }
 
 /// 订单支付响应

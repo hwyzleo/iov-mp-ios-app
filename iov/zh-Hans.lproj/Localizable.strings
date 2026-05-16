@@ -25,6 +25,7 @@
 "earnest_money_paid" = "已支付意向金";
 "earnest_money_to_be_paid" = "待支付意向金";
 "earnest_money_to_down_payment" = "意向金转定金";
+"convert_to_down_payment" = "转定金";
 "final_payment_paid" = "已支付尾款";
 "invoiced" = "已开票";
 "exterior" = "外观";

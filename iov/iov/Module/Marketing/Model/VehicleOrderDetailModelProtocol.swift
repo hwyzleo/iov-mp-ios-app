@@ -38,6 +38,7 @@ protocol VehicleOrderDetailModelStateProtocol {
     var orderPersonName: String { get }
     var orderPersonIdType: Int { get }
     var orderPersonIdNum: String { get }
+    var isFromEarnestMoneyConversion: Bool { get }
 }
 
 // MARK: - Intent Action
@@ -73,8 +74,13 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updateOrder(orderNum: String, orderTime: Int64)
     /// 更新上牌城市
     func updateLicenseCity(code: String, name: String)
+    /// 更新销售门店
+    func updateDealership(code: String, name: String)
+    /// 更新交付中心
+    func updateDeliveryCenter(code: String, name: String)
     /// 切换订购协议
     func toggleAgreement()
+    func setIsFromEarnestMoneyConversion(isFrom: Bool)
     /// 显示心愿单
     func displayWishlist()
     /// 显示订购页

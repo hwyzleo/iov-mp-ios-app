@@ -25,6 +25,7 @@
 "earnest_money_paid" = "earnest money paid";
 "earnest_money_to_be_paid" = "earnest money to be paid";
 "earnest_money_to_down_payment" = "earnest money to down payment";
+"convert_to_down_payment" = "convert to down payment";
 "final_payment_paid" = "final payment paid";
 "invoiced" = "invoiced";
 "exterior" = "exterior";

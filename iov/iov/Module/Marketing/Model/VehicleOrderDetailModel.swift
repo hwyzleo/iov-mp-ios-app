@@ -36,6 +36,7 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     @Published var orderPersonName: String  = ""
     @Published var orderPersonIdType: Int = 0
     @Published var orderPersonIdNum: String = ""
+    @Published var isFromEarnestMoneyConversion: Bool = false
 }
 
 // MARK: - Action Protocol
@@ -81,6 +82,14 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
         self.selectLicenseCityCode = code
         self.selectLicenseCityName = name
     }
+    func updateDealership(code: String, name: String) {
+        self.selectDealershipCode = code
+        self.selectDealershipName = name
+    }
+    func updateDeliveryCenter(code: String, name: String) {
+        self.selectDeliveryCenterCode = code
+        self.selectDeliveryCenterName = name
+    }
     func updateSelectBookMethod(bookMethod: String) {
         self.selectBookMethod = bookMethod
     }
@@ -107,6 +116,9 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     }
     func toggleAgreement() {
         self.agreementIsChecked.toggle()
+    }
+    func setIsFromEarnestMoneyConversion(isFrom: Bool) {
+        self.isFromEarnestMoneyConversion = isFrom
     }
     func displayWishlist() {
         contentState = .wishlist

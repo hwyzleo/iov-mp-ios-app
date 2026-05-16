@@ -93,12 +93,7 @@ struct VehicleOrderDetailPage: View {
                     orderTime: state.orderTime,
                     orderPersonType: state.orderPersonType,
                     purchasePlan: state.purchasePlan,
-                    orderPersonName: state.orderPersonName,
-                    orderPersonIdType: state.orderPersonIdType,
-                    orderPersonIdNum: state.orderPersonIdNum,
-                    licenseCity: state.selectLicenseCityName,
-                    dealershipName: state.selectDealershipName,
-                    deliveryCenterName: state.selectDeliveryCenterName
+                    orderPersonIdType: state.orderPersonIdType
                 )
             case .downPaymentPaid:
                 DownPaymentPaid(
