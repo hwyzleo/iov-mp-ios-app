@@ -298,47 +298,33 @@ struct Dealership: Codable {
 
 /// 订单
 struct Order: Codable {
-    /// 销售代码
     var saleCode: String?
-    /// 订单号
     var orderNo: String
-    /// 订单状态
     var orderState: Int
-    /// 销售车型配置类型
+    var saleModelCode: String?
     var saleModelConfigType: [String:String]?
-    /// 销售车型配置名称
     var saleModelConfigName: [String:String]?
-    /// 销售车型配置价格
     var saleModelConfigPrice: [String:Decimal]?
-    /// 销售车型图片集
     var saleModelImages: [String]?
-    /// 销售车型描述
     var saleModelDesc: String?
-    /// 总价格
     var totalPrice: Decimal?
-    /// 下单时间
     var orderTime: Int64?
-    /// 下单人类型
+    var customerType: String?
+    var paymentMethod: String?
     var orderPersonType: Int?
-    /// 购车方案
     var purchasePlan: Int?
-    /// 下单人名称
     var orderPersonName: String?
-    /// 下单人证件类型
     var orderPersonIdType: Int?
-    /// 下单人证件号
     var orderPersonIdNum: String?
-    /// 上牌城市代码
     var licenseCityCode: String?
-    /// 上牌城市名称
     var licenseCityName: String?
-    /// 销售门店代码
+    var orderStoreCode: String?
+    var orderStoreName: String?
+    var deliveryStoreCode: String?
+    var deliveryStoreName: String?
     var dealershipCode: String?
-    /// 销售门店名称
     var dealershipName: String?
-    /// 交付中心代码
     var deliveryCenterCode: String?
-    /// 交付中心名称
     var deliveryCenterName: String?
 }
 
@@ -631,6 +617,41 @@ struct EarnestMoneyOrderResult: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         orderNo = try container.decode(String.self, forKey: .orderNo)
         earnestMoneyAmount = try container.decode(Decimal.self, forKey: .earnestMoneyAmount)
+        paymentChannels = try container.decode([PaymentChannelInfo].self, forKey: .paymentChannels)
+        
+        if let timestamp = try? container.decode(Int64.self, forKey: .expireTime) {
+            expireTime = Date(timeIntervalSince1970: Double(timestamp) / 1000.0)
+        } else if let dateString = try? container.decode(String.self, forKey: .expireTime) {
+            let formatter = ISO8601DateFormatter()
+            expireTime = formatter.date(from: dateString) ?? Date()
+        } else {
+            expireTime = Date()
+        }
+    }
+}
+
+/// 定金下单结果
+struct DownPaymentOrderResult: Codable {
+    var orderNo: String?
+    var downPaymentAmount: Decimal
+    var paymentChannels: [PaymentChannelInfo]
+    var expireTime: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case orderNo, downPaymentAmount, paymentChannels, expireTime
+    }
+    
+    init(orderNo: String?, downPaymentAmount: Decimal, paymentChannels: [PaymentChannelInfo], expireTime: Date) {
+        self.orderNo = orderNo
+        self.downPaymentAmount = downPaymentAmount
+        self.paymentChannels = paymentChannels
+        self.expireTime = expireTime
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        orderNo = try? container.decode(String.self, forKey: .orderNo)
+        downPaymentAmount = try container.decode(Decimal.self, forKey: .downPaymentAmount)
         paymentChannels = try container.decode([PaymentChannelInfo].self, forKey: .paymentChannels)
         
         if let timestamp = try? container.decode(Int64.self, forKey: .expireTime) {

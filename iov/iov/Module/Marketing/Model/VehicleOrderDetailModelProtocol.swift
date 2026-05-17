@@ -54,6 +54,8 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updateBookMethod(downPayment: Bool, downPaymentPrice: Decimal, earnestMoney: Bool, earnestMoneyPrice: Decimal, purchaseDenefitsIntro: String)
     /// 更新销售车型价格
     func updateSaleModelPrice(saleModelName: String, saleModelPrice: Decimal, totalPrice: Decimal)
+    /// 更新总价
+    func updateTotalPrice(totalPrice: Decimal)
     /// 更新销售车型配置（动态配置项）
     func updateDynamicConfigs(_ configs: [(String, String, Decimal)])
     /// 更新选择预定方式
@@ -118,4 +120,5 @@ protocol VehicleOrderDetailModelRouterProtocol: MviModelRouterProtocol {
     func routeToDealership()
     func routeToDeliveryCenter()
     func routeToEarnestMoneyPay()
+    func routeToDownPaymentPay()
 }

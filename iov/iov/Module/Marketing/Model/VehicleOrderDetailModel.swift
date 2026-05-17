@@ -70,6 +70,10 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
         self.totalPrice = totalPrice
     }
     
+    func updateTotalPrice(totalPrice: Decimal) {
+        self.totalPrice = totalPrice
+    }
+    
     func updateDynamicConfigs(_ configs: [(String, String, Decimal)]) {
         self.dynamicConfigs = configs
     }
@@ -190,6 +194,9 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelRouterProtocol {
     }
     func routeToEarnestMoneyPay() {
         routerSubject.screen.send(.earnestMoneyPay)
+    }
+    func routeToDownPaymentPay() {
+        routerSubject.screen.send(.downPaymentPay)
     }
 }
 

@@ -17,7 +17,6 @@ extension VehicleOrderDetailPage {
         private var intent: VehicleOrderDetailIntentProtocol { container.intent }
         var saleModelImages: [String]
         var saleModelName: String
-        var saleModelPrice: Decimal
         var dynamicConfigs: [(String, String, Decimal)]
         var totalPrice: Decimal
         
@@ -91,10 +90,9 @@ extension VehicleOrderDetailPage {
                             Divider().background(Color.white.opacity(0.1))
                             
                             Group {
-                                PriceRow(label: Text(LocalizedStringKey("retail_price")), price: saleModelPrice)
                                 ForEach(dynamicConfigs.indices, id: \.self) { index in
                                     let config = dynamicConfigs[index]
-                                    PriceRow(label: Text(config.1), price: config.2)
+                                    PriceRow(label: Text(config.0), price: config.2)
                                 }
                             }
                             
@@ -231,13 +229,13 @@ struct VehicleOrderDetailPage_Wishlist_Previews: PreviewProvider {
                 "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
             ],
             saleModelName: "寒01七座版",
-            saleModelPrice: 188888,
             dynamicConfigs: [
-                ("RZ", "全尺寸备胎", 5000),
-                ("QA", "星夜黑", 0),
-                ("FA", "21英寸单色轮毂", 0),
-                ("NA", "墨玉黑", 0),
-                ("HA", "高阶智驾", 10000)
+                ("寒01七座版", "寒01七座版", 188888),
+                ("外饰颜色", "星夜黑", 0),
+                ("内饰风格", "墨玉黑", 0),
+                ("备胎", "全尺寸备胎", 5000),
+                ("智能驾驶平台", "高阶智驾", 10000),
+                ("车轮", "21英寸单色轮毂", 0)
             ],
             totalPrice: 235000
         )

@@ -28,6 +28,7 @@ extension MarketingRouter {
         case vehicle
         case login
         case earnestMoneyPay
+        case downPaymentPay
 
         var routeType: RouterScreenPresentationType {
             switch self {
@@ -48,6 +49,8 @@ extension MarketingRouter {
             case .login:
                 return .navigationLink
             case .earnestMoneyPay:
+                return .navigationLink
+            case .downPaymentPay:
                 return .navigationLink
             }
         }
@@ -83,6 +86,9 @@ extension MarketingRouter {
                 .navigationBarHidden(true)
         case .earnestMoneyPay:
             EarnestMoneyPayPage.build()
+                .navigationBarHidden(true)
+        case .downPaymentPay:
+            DownPaymentPayPage.build()
                 .navigationBarHidden(true)
         }
     }

@@ -171,7 +171,6 @@ class TspApi {
         var parameters: [String: Any] = [
             "saleModelCode": saleModelCode,
             "saleModelConfigType": saleModelConfigType,
-            "regionCode": licenseCityCode,
             "licenseCityCode": licenseCityCode
         ]
         if let orderNo = orderNo {
@@ -211,20 +210,22 @@ class TspApi {
     }
     
     /// 定金下订单
-    static func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    static func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void) {
         TspManager.requestPost(path: "/api/mobile/vso/v1/action/downPaymentOrder", parameters: [
             "saleModelCode": saleModelCode,
             "orderNo": orderNo,
             "saleModelConfigType": saleModelConfigType,
+            "customerType": customerType,
+            "paymentMethod": paymentMethod,
             "orderPersonType": orderPersonType,
             "purchasePlan": purchasePlan,
             "orderPersonName": orderPersonName,
             "orderPersonIdType": orderPersonIdType,
             "orderPersonIdNum": orderPersonIdNum,
             "licenseCityCode": licenseCityCode,
-            "dealership": dealership,
-            "deliveryCenter": deliveryCenter
-        ]) { (result: Result<TspResponse<String>, Error>) in
+            "orderStoreCode": orderStoreCode,
+            "deliveryStoreCode": deliveryStoreCode
+        ]) { (result: Result<TspResponse<DownPaymentOrderResult>, Error>) in
             completion(result)
         }
     }

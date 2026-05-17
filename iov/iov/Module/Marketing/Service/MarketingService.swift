@@ -21,7 +21,7 @@ protocol MarketingServiceProtocol {
     func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
     func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void)
     func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
-    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void)
+    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void)
     func cancelOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func payOrder(orderNo: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void)
     func earnestMoneyToDownPayment(parameters: [String: Any], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
@@ -85,19 +85,21 @@ class RealMarketingService: MarketingServiceProtocol {
         TspApi.paymentCallback(paymentNo: paymentNo, externalTradeNo: externalTradeNo, paymentStage: paymentStage, paymentAmount: paymentAmount, paymentStatus: paymentStatus, payTime: payTime, idempotentKey: idempotentKey, completion: completion)
     }
     
-    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void) {
         TspApi.downPaymentOrder(
             saleModelCode: saleModelCode,
             orderNo: orderNo,
             saleModelConfigType: saleModelConfigType,
+            customerType: customerType,
+            paymentMethod: paymentMethod,
             orderPersonType: orderPersonType,
             purchasePlan: purchasePlan,
             orderPersonName: orderPersonName,
             orderPersonIdType: orderPersonIdType,
             orderPersonIdNum: orderPersonIdNum,
             licenseCityCode: licenseCityCode,
-            dealership: dealership,
-            deliveryCenter: deliveryCenter,
+            orderStoreCode: orderStoreCode,
+            deliveryStoreCode: deliveryStoreCode,
             completion: completion
         )
     }
@@ -260,8 +262,17 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
         mockDelayedSuccess(data: nil, completion: completion)
     }
 
-    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String, completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        mockDelayedSuccess(data: "MOCK_ORDER_NUM", completion: completion)
+    func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void) {
+        let mockResult = DownPaymentOrderResult(
+            orderNo: "MOCK_ORDER_NUM",
+            downPaymentAmount: 5000,
+            paymentChannels: [
+                PaymentChannelInfo(channelCode: "WECHAT", channelName: "微信支付", isDefault: true),
+                PaymentChannelInfo(channelCode: "ALIPAY", channelName: "支付宝", isDefault: false)
+            ],
+            expireTime: Date().addingTimeInterval(900)
+        )
+        mockDelayedSuccess(data: mockResult, completion: completion)
     }
 
     func cancelOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {

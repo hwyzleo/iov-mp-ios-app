@@ -27,7 +27,6 @@ struct VehicleOrderDetailPage: View {
                     container: container,
                     saleModelImages: state.saleModelImages,
                     saleModelName: state.saleModelName,
-                    saleModelPrice: state.saleModelPrice,
                     dynamicConfigs: state.dynamicConfigs,
                     totalPrice: state.totalPrice
                 )
