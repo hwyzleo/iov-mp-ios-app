@@ -17,6 +17,7 @@ class DeliveryCenterIntent: MviIntentProtocol {
     }
     
     func viewOnAppear() {
+        AppGlobalState.shared.backRefresh = false
         modelAction?.displayLoading()
         ServiceContainer.marketingService.getDeliveryCenter { [weak self] (result: Result<TspResponse<[Dealership]>, Error>) in
             switch result {

@@ -117,12 +117,12 @@ extension VehicleModelConfigPage {
             .onAppear {
                 if selectedFeature == nil {
                     selectedFeature = state.selections[featureRange.familyCode]
-                    syncSelectedIndex()
                 }
                 if selectedFeature == nil, let firstFeature = featureRange.featureDetails.first {
                     selectedFeature = firstFeature
                     intent.onTapFeature(familyCode: featureRange.familyCode, feature: firstFeature)
                 }
+                syncSelectedIndex()
             }
             .onChange(of: state.selections[featureRange.familyCode]) { newFeature in
                 selectedFeature = newFeature
