@@ -1060,26 +1060,5 @@ func onTapModifyOrderConfig() {
             }
         }
     }
-        modelAction?.displayLoading()
-        
-        ServiceContainer.marketingService.getOrder(orderNo: orderNo) { [weak self] (result: Result<TspResponse<Order>, Error>) in
-            switch result {
-            case .success(let res):
-                guard let order = res.data else {
-                    self?.modelAction?.displayError(text: "请求异常")
-                    return
-                }
-                
-                AppGlobalState.shared.parameters["saleModelCode"] = order.saleModelCode ?? ""
-                AppGlobalState.shared.parameters["saleModelConfigType"] = order.saleModelConfigType ?? [:]
-                AppGlobalState.shared.parameters["modifyConfigMode"] = "order"
-                AppGlobalState.shared.parameters["modifyConfigOrderNo"] = orderNo
-                
-                self?.modelRouter?.routeToModelConfig()
-            case .failure(_):
-                self?.modelAction?.displayError(text: "请求异常")
-            }
-        }
-    }
 }
 
