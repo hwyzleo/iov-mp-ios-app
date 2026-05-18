@@ -147,36 +147,53 @@ extension VehicleModelConfigPage {
                         
                         Spacer()
                         
-                        HStack(spacing: 12) {
-                            Button(action: {
-                                handleAction {
-                                    intent.onTapSaveWishlist()
-                                }
-                            }) {
-                                Text(LocalizedStringKey("save_wishlist"))
-                                    .font(AppTheme.fonts.body)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(AppTheme.colors.fontPrimary)
-                                    .frame(width: 100, height: 48)
-                                    .background(Color.white.opacity(0.1))
-                                    .cornerRadius(AppTheme.layout.radiusMedium)
-                            }
-                            
-                            Button(action: {
-                                handleAction {
-                                    intent.onTapOrder()
-                                }
-                            }) {
-                                Text(LocalizedStringKey("order_now"))
-                                    .font(AppTheme.fonts.body)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.black)
-                                    .frame(width: 100, height: 48)
-                                    .background(AppTheme.colors.brandMain)
-                                    .cornerRadius(AppTheme.layout.radiusMedium)
-                                    .shadow(color: AppTheme.colors.brandMain.opacity(0.3), radius: 10, x: 0, y: 5)
-                            }
-                        }
+HStack(spacing: 12) {
+                             if AppGlobalState.shared.parameters["modifyConfigMode"] as? String == "order" {
+                                 Button(action: {
+                                     handleAction {
+                                         intent.onTapSaveWishlist()
+                                     }
+                                 }) {
+                                     Text(LocalizedStringKey("save_config"))
+                                         .font(AppTheme.fonts.body)
+                                         .fontWeight(.bold)
+                                         .foregroundColor(.black)
+                                         .frame(width: 220, height: 48)
+                                         .background(AppTheme.colors.brandMain)
+                                         .cornerRadius(AppTheme.layout.radiusMedium)
+                                         .shadow(color: AppTheme.colors.brandMain.opacity(0.3), radius: 10, x: 0, y: 5)
+                                 }
+                             } else {
+                                 Button(action: {
+                                     handleAction {
+                                         intent.onTapSaveWishlist()
+                                     }
+                                 }) {
+                                     Text(LocalizedStringKey("save_wishlist"))
+                                         .font(AppTheme.fonts.body)
+                                         .fontWeight(.medium)
+                                         .foregroundColor(AppTheme.colors.fontPrimary)
+                                         .frame(width: 100, height: 48)
+                                         .background(Color.white.opacity(0.1))
+                                         .cornerRadius(AppTheme.layout.radiusMedium)
+                                 }
+                                 
+                                 Button(action: {
+                                     handleAction {
+                                         intent.onTapOrder()
+                                     }
+                                 }) {
+                                     Text(LocalizedStringKey("order_now"))
+                                         .font(AppTheme.fonts.body)
+                                         .fontWeight(.bold)
+                                         .foregroundColor(.black)
+                                         .frame(width: 100, height: 48)
+                                         .background(AppTheme.colors.brandMain)
+                                         .cornerRadius(AppTheme.layout.radiusMedium)
+                                         .shadow(color: AppTheme.colors.brandMain.opacity(0.3), radius: 10, x: 0, y: 5)
+                                 }
+                             }
+                         }
                     }
                     .padding(.horizontal, AppTheme.layout.margin)
                     .padding(.bottom, 34)

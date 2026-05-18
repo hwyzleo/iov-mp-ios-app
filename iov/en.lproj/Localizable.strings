@@ -141,6 +141,7 @@
 "request_refund" = "request refund";
 "retail_price" = "retail price";
 "save_wishlist" = "save wishlist";
+"save_config" = "save config";
 "selected_config" = "selected config";
 "service" = "Service";
 "setting" = "Setting";
