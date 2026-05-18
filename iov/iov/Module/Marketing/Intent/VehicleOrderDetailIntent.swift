@@ -1049,13 +1049,8 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     return
                 }
                 
-                let saleModelConfigType = self?.convertToFeatureCodes(
-                    order.saleModelConfigName ?? [:],
-                    order.saleModelConfigPrice ?? [:]
-                ) ?? [:]
-                
                 AppGlobalState.shared.parameters["saleModelCode"] = order.saleModelCode ?? ""
-                AppGlobalState.shared.parameters["saleModelConfigType"] = saleModelConfigType
+                AppGlobalState.shared.parameters["saleModelConfigType"] = order.saleModelConfigType ?? [:]
                 AppGlobalState.shared.parameters["modifyConfigMode"] = "order"
                 AppGlobalState.shared.parameters["modifyConfigOrderNo"] = orderNo
                 
@@ -1064,16 +1059,6 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 self?.modelAction?.displayError(text: "请求异常")
             }
         }
-    }
-    
-    private func convertToFeatureCodes(_ configName: [String: String], _ configPrice: [String: Decimal]) -> [String: String] {
-        var featureCodes: [String: String] = [:]
-        for (key, _) in configName {
-            if key != "BASE_MODEL" {
-                featureCodes[key] = configName[key] ?? ""
-            }
-        }
-        return featureCodes
     }
 }
 
