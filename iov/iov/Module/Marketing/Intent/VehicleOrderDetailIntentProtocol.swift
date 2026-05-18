@@ -56,4 +56,6 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapConvertToDownPayment(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String)
     /// 点击锁定订单
     func onTapLockOrder()
+    /// 点击修改订单配置
+    func onTapModifyOrderConfig()
 }

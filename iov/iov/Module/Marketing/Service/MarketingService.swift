@@ -27,6 +27,7 @@ protocol MarketingServiceProtocol {
     func earnestMoneyToDownPayment(parameters: [String: Any], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void)
+    func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
 }
 
 /// 真实的 TSP API 实现
@@ -122,6 +123,10 @@ class RealMarketingService: MarketingServiceProtocol {
     
     func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void) {
         TspApi.getSaleModelList(completion: completion)
+    }
+    
+    func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspApi.modifyConfig(orderNo: orderNo, saleModelConfigType: saleModelConfigType, completion: completion)
     }
 }
 
@@ -293,5 +298,9 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
 
     func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void) {
         mockDelayedSuccess(data: mockSaleModelList(), completion: completion)
+    }
+
+    func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        mockDelayedSuccess(data: nil, completion: completion)
     }
 }

@@ -270,6 +270,17 @@ class TspApi {
         }
     }
     
+    /// 修改订单配置
+    static func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        let parameters: [String: Any] = [
+            "orderNo": orderNo,
+            "saleModelConfigType": saleModelConfigType
+        ]
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/modifyConfig", parameters: parameters) { (result: Result<TspResponse<NoReply>, Error>) in
+            completion(result)
+        }
+    }
+    
     /// 获取账号信息
     static func getAccountInfo(completion: @escaping (Result<TspResponse<AccountInfo>, Error>) -> Void) {
         TspManager.requestGet(path: "/api/mobile/account/v1/profile", parameters: [:]) { (result: Result<TspResponse<AccountInfo>, Error>) in

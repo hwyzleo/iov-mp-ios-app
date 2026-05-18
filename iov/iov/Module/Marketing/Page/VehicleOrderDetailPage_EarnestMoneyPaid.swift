@@ -52,11 +52,33 @@ extension VehicleOrderDetailPage {
                             .padding(.vertical, 10)
                             
                             // 2. 车型简介卡片
-                            VehicleOrderDetailPage.Intro(
-                                saleModelImages: saleModelImages,
-                                saleModelName: saleModelName,
-                                saleModelDesc: saleModelDesc
-                            )
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    Text(saleModelName)
+                                        .font(AppTheme.fonts.title1)
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                    Spacer()
+                                    Button(action: { intent.onTapModifyOrderConfig() }) {
+                                        HStack(spacing: 4) {
+                                            Image("icon_modify")
+                                                .resizable()
+                                                .renderingMode(.template)
+                                                .foregroundColor(AppTheme.colors.brandMain)
+                                                .frame(width: 14, height: 14)
+                                            Text(LocalizedStringKey("modify_model_config"))
+                                                .font(AppTheme.fonts.subtext)
+                                                .foregroundColor(AppTheme.colors.brandMain)
+                                        }
+                                    }
+                                    .buttonStyle(.plain)
+                                }
+                                
+                                VehicleOrderDetailPage.Intro(
+                                    saleModelImages: saleModelImages,
+                                    saleModelName: saleModelName,
+                                    saleModelDesc: saleModelDesc
+                                )
+                            }
                             .appCardStyle()
                             
                             // 3. 交付信息

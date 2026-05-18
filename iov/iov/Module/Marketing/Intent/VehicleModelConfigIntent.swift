@@ -26,40 +26,72 @@ class VehicleModelConfigIntent: MviIntentProtocol {
             AppGlobalState.shared.parameters["backCount"] = backCount - 1
             self.modelRouter?.closeScreen()
         } else {
+            let mode = AppGlobalState.shared.parameters["modifyConfigMode"] as? String ?? "wishlist"
+            
             guard let saleCode = AppGlobalState.shared.parameters["saleModelCode"] as? String, !saleCode.isEmpty else {
                 self.modelAction?.displayError(text: "销售车型代码不能为空")
                 return
             }
-            TspApi.getFeatureCodeRanges(saleCode: saleCode) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
-                switch result {
-                case .success(let res):
-                    if let featureRanges = res.data {
-                        self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges)
-                        
-                        if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
-                            TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
-                                switch result {
-                                case .success(let res):
-                                    if let wishlist = res.data {
-                                        // 将配置项列表转换为特征代码字典
-                                        let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
-                                        
-                                        for range in featureRanges {
-                                            if let code = featureCodes[range.familyCode],
-                                               let feature = range.featureDetails.first(where: { $0.featureCode == code }) {
-                                                self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
-                                            }
-                                        }
-                                    }
-                                case .failure(_):
-                                    self.modelAction?.displayError(text: "请求异常")
-                                }
+            
+            if mode == "order" {
+                loadOrderConfig(saleCode: saleCode)
+            } else {
+                loadWishlistConfig(saleCode: saleCode)
+            }
+        }
+    }
+    
+    private func loadOrderConfig(saleCode: String) {
+        TspApi.getFeatureCodeRanges(saleCode: saleCode) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
+            switch result {
+            case .success(let res):
+                if let featureRanges = res.data {
+                    self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges)
+                    
+                    if let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] {
+                        for range in featureRanges {
+                            if let featureCode = saleModelConfigType[range.familyCode],
+                               let feature = range.featureDetails.first(where: { $0.featureCode == featureCode }) {
+                                self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
                             }
                         }
                     }
-                case .failure(_):
-                    self.modelAction?.displayError(text: "请求异常")
                 }
+            case .failure(_):
+                self.modelAction?.displayError(text: "请求异常")
+            }
+        }
+    }
+    
+    private func loadWishlistConfig(saleCode: String) {
+        TspApi.getFeatureCodeRanges(saleCode: saleCode) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
+            switch result {
+            case .success(let res):
+                if let featureRanges = res.data {
+                    self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges)
+                    
+                    if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
+                        TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
+                            switch result {
+                            case .success(let res):
+                                if let wishlist = res.data {
+                                    let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
+                                    
+                                    for range in featureRanges {
+                                        if let code = featureCodes[range.familyCode],
+                                           let feature = range.featureDetails.first(where: { $0.featureCode == code }) {
+                                            self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
+                                        }
+                                    }
+                                }
+                            case .failure(_):
+                                self.modelAction?.displayError(text: "请求异常")
+                            }
+                        }
+                    }
+                }
+            case .failure(_):
+                self.modelAction?.displayError(text: "请求异常")
             }
         }
     }
@@ -80,6 +112,48 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
     }
     
     func onTapSaveWishlist() {
+        let mode = AppGlobalState.shared.parameters["modifyConfigMode"] as? String ?? "wishlist"
+        
+        if mode == "order" {
+            saveOrderConfig()
+        } else {
+            saveWishlist()
+        }
+    }
+    
+    private func saveOrderConfig() {
+        guard let modelState = modelAction as? VehicleModelConfigModelStateProtocol else { return }
+        guard let orderNo = AppGlobalState.shared.parameters["modifyConfigOrderNo"] as? String else { return }
+        
+        let selections = modelState.selections
+        
+        var saleModelConfigType: [String: String] = [:]
+        for (familyCode, feature) in selections {
+            saleModelConfigType[familyCode] = feature.featureCode
+        }
+        
+        ServiceContainer.marketingService.modifyConfig(
+            orderNo: orderNo,
+            saleModelConfigType: saleModelConfigType
+        ) { [weak self] result in
+            switch result {
+            case .success(let res):
+                if res.isSuccess {
+                    AppGlobalState.shared.backRefresh = true
+                    AppGlobalState.shared.parameters["modifyConfigMode"] = nil
+                    AppGlobalState.shared.parameters["modifyConfigOrderNo"] = nil
+                    AppGlobalState.shared.parameters["saleModelConfigType"] = nil
+                    self?.modelRouter?.closeScreen()
+                } else {
+                    self?.modelAction?.displayError(text: res.message ?? "请求异常")
+                }
+            case .failure(_):
+                self?.modelAction?.displayError(text: "请求异常")
+            }
+        }
+    }
+    
+    private func saveWishlist() {
         guard let modelState = modelAction as? VehicleModelConfigModelStateProtocol else { return }
         
         let saleModelCode = modelState.saleCode
@@ -90,30 +164,25 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
             featureConfig[familyCode] = feature.featureCode
         }
         
-        // 打印当前状态
         let currentId = VehicleManager.shared.getCurrentVehicleId()
-        print("🚗 onTapSaveWishlist() - CurrentVehicleId: \(currentId ?? "nil")")
-        print("🚗 onTapSaveWishlist() - Vehicles count: \(VehicleManager.shared.getVehiclesForMock().count)")
         
         if let wishlistId = currentId {
-            print("📝 onTapSaveWishlist() - MODIFYING existing wishlist: \(wishlistId)")
-            TspApi.modifyWishlist(wishlistId: wishlistId, featureConfig: featureConfig) { (result: Result<TspResponse<String>, Error>) in
+            TspApi.modifyWishlist(wishlistId: wishlistId, featureConfig: featureConfig) { [weak self] (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-                        self.modelRouter?.closeScreen()
+                        self?.modelRouter?.closeScreen()
                     } else {
-                        self.modelAction?.displayError(text: res.message ?? "请求异常")
+                        self?.modelAction?.displayError(text: res.message ?? "请求异常")
                     }
                 case .failure(_):
-                    self.modelAction?.displayError(text: "请求异常")
+                    self?.modelAction?.displayError(text: "请求异常")
                 }
             }
         } else {
-            print("🆕 onTapSaveWishlist() - CREATING new wishlist")
-            TspApi.createWishlist(saleModelCode: saleModelCode, featureConfig: featureConfig) { (result: Result<TspResponse<String>, Error>) in
+            TspApi.createWishlist(saleModelCode: saleModelCode, featureConfig: featureConfig) { [weak self] (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
@@ -122,12 +191,12 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         VehicleManager.shared.setCurrentVehicleId(id: res.data!)
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-                        self.modelRouter?.closeScreen()
+                        self?.modelRouter?.closeScreen()
                     } else {
-                        self.modelAction?.displayError(text: res.message ?? "请求异常")
+                        self?.modelAction?.displayError(text: res.message ?? "请求异常")
                     }
                 case .failure(_):
-                    self.modelAction?.displayError(text: "请求异常")
+                    self?.modelAction?.displayError(text: "请求异常")
                 }
             }
         }

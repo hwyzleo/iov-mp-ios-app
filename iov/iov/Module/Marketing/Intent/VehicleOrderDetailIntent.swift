@@ -1021,10 +1021,8 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
-                        // 更新本地状态为：安排生产
                         VehicleManager.shared.updateSubState(id: orderNo, subState: 400)
                         AppGlobalState.shared.needRefresh = true
-                        // 原地刷新视图
                         self?.viewOnAppear()
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")
@@ -1034,6 +1032,48 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 }
             }
         }
+    }
+    
+    func onTapModifyOrderConfig() {
+        guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else {
+            modelAction?.displayError(text: "未找到当前订单")
+            return
+        }
+        modelAction?.displayLoading()
+        
+        ServiceContainer.marketingService.getOrder(orderNo: orderNo) { [weak self] (result: Result<TspResponse<Order>, Error>) in
+            switch result {
+            case .success(let res):
+                guard let order = res.data else {
+                    self?.modelAction?.displayError(text: "请求异常")
+                    return
+                }
+                
+                let saleModelConfigType = self?.convertToFeatureCodes(
+                    order.saleModelConfigName ?? [:],
+                    order.saleModelConfigPrice ?? [:]
+                ) ?? [:]
+                
+                AppGlobalState.shared.parameters["saleModelCode"] = order.saleModelCode ?? ""
+                AppGlobalState.shared.parameters["saleModelConfigType"] = saleModelConfigType
+                AppGlobalState.shared.parameters["modifyConfigMode"] = "order"
+                AppGlobalState.shared.parameters["modifyConfigOrderNo"] = orderNo
+                
+                self?.modelRouter?.routeToModelConfig()
+            case .failure(_):
+                self?.modelAction?.displayError(text: "请求异常")
+            }
+        }
+    }
+    
+    private func convertToFeatureCodes(_ configName: [String: String], _ configPrice: [String: Decimal]) -> [String: String] {
+        var featureCodes: [String: String] = [:]
+        for (key, _) in configName {
+            if key != "BASE_MODEL" {
+                featureCodes[key] = configName[key] ?? ""
+            }
+        }
+        return featureCodes
     }
 }
 
