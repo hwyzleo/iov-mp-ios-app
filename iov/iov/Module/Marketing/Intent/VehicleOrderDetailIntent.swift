@@ -459,6 +459,25 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
+                    let orderPersonType = orderResponse.orderPersonType ?? (orderResponse.customerType == "personal" ? 1 : 2)
+                    let purchasePlan = orderResponse.purchasePlan ?? (orderResponse.paymentMethod == "full_payment" ? 1 : 2)
+                    self.modelAction?.updateOrderPerson(
+                        orderPersonType: orderPersonType,
+                        orderPersonName: orderResponse.orderPersonName ?? "",
+                        orderPersonIdType: orderResponse.orderPersonIdType ?? 1,
+                        orderPersonIdNum: orderResponse.orderPersonIdNum ?? ""
+                    )
+                    self.modelAction?.updatePurchasePlan(purchasePlan: purchasePlan)
+                    self.modelAction?.updateLicenseCity(
+                        code: orderResponse.licenseCityCode ?? "",
+                        name: orderResponse.licenseCityName ?? ""
+                    )
+                    let dealershipCode = orderResponse.orderStoreCode ?? orderResponse.dealershipCode ?? ""
+                    let dealershipName = orderResponse.orderStoreName ?? orderResponse.dealershipName ?? ""
+                    self.modelAction?.updateDealership(code: dealershipCode, name: dealershipName)
+                    let deliveryCode = orderResponse.deliveryStoreCode ?? orderResponse.deliveryCenterCode ?? ""
+                    let deliveryName = orderResponse.deliveryStoreName ?? orderResponse.deliveryCenterName ?? ""
+                    self.modelAction?.updateDeliveryCenter(code: deliveryCode, name: deliveryName)
                     self.modelAction?.displayArrangeProduction()
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")

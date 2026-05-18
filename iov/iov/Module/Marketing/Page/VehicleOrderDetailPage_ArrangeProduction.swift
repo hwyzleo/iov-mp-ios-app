@@ -22,7 +22,6 @@ extension VehicleOrderDetailPage {
         var totalPrice: Decimal
         var orderNum: String
         var orderTime: Int64
-        @State private var licenseCity = ""
         
         var body: some View {
             ZStack(alignment: .top) {
@@ -50,21 +49,83 @@ extension VehicleOrderDetailPage {
                             .padding(.vertical, 10)
                             
                             // 2. 车型简介卡片
-                            VehicleOrderDetailPage.Intro(
-                                saleModelImages: saleModelImages,
-                                saleModelName: saleModelName,
-                                saleModelDesc: saleModelDesc
-                            )
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    Text(saleModelName)
+                                        .font(AppTheme.fonts.title1)
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                    Spacer()
+                                }
+                                
+                                VehicleOrderDetailPage.Intro(
+                                    saleModelImages: saleModelImages,
+                                    saleModelName: saleModelName,
+                                    saleModelDesc: saleModelDesc
+                                )
+                            }
                             .appCardStyle()
                             
-                            // 3. 交付信息
-                            FormSection(title: L10n.delivery_info) {
-                                SelectField(label: L10n.license_city, placeholder: "请选择", value: licenseCity) {
-                                    intent.onTapLicenseCity()
+                            // 3. 购车方案（只读）
+                            FormSection(title: L10n.purchase_plan) {
+                                VStack(spacing: 20) {
+                                    OptionSelector(
+                                        title: L10n.purchase_type,
+                                        options: ["个人", "企业"],
+                                        selectedIndex: max(0, min(state.orderPersonType - 1, 1)),
+                                        isReadOnly: true
+                                    )
+                                    
+                                    OptionSelector(
+                                        title: L10n.payment_method,
+                                        options: ["全款", "分期"],
+                                        selectedIndex: max(0, min(state.purchasePlan - 1, 1)),
+                                        isReadOnly: true
+                                    )
                                 }
                             }
                             
-                            // 4. 价格明细
+                            // 4. 车主信息（只读）
+                            FormSection(title: L10n.owner_info) {
+                                VStack(spacing: 0) {
+                                    InfoField(
+                                        label: state.orderPersonType == 2 ? L10n.enterprise_name : L10n.owner_name,
+                                        value: state.orderPersonName
+                                    )
+                                    Divider().background(Color.white.opacity(0.05)).padding(.vertical, 12)
+                                    InfoField(
+                                        label: state.orderPersonType == 2 ? L10n.enterprise_code : L10n.certificate_number,
+                                        value: state.orderPersonIdNum
+                                    )
+                                }
+                            }
+                            
+                            // 5. 交付信息（只读）
+                            FormSection(title: L10n.delivery_info) {
+                                VStack(spacing: 16) {
+                                    SelectField(
+                                        label: L10n.license_city,
+                                        placeholder: "请选择",
+                                        value: state.selectLicenseCityName,
+                                        isReadOnly: true
+                                    )
+                                    Divider().background(Color.white.opacity(0.05))
+                                    SelectField(
+                                        label: L10n.dealership,
+                                        placeholder: "请选择",
+                                        value: state.selectDealershipName,
+                                        isReadOnly: true
+                                    )
+                                    Divider().background(Color.white.opacity(0.05))
+                                    SelectField(
+                                        label: L10n.delivery_center,
+                                        placeholder: "请选择",
+                                        value: state.selectDeliveryCenterName,
+                                        isReadOnly: true
+                                    )
+                                }
+                            }
+                            
+                            // 6. 价格明细
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(L10n.price_detail)
                                     .font(AppTheme.fonts.title1)
@@ -78,7 +139,7 @@ VehicleOrderDetailPage.Price(
                                 .appCardStyle()
                             }
                             
-                            // 5. 订单信息
+                            // 7. 订单信息
                             VStack(alignment: .leading, spacing: 12) {
                                 Text(L10n.order_info)
                                     .font(AppTheme.fonts.title1)
@@ -125,9 +186,6 @@ VehicleOrderDetailPage.Price(
                 .ignoresSafeArea()
             }
             .preferredColorScheme(.dark)
-            .onAppear {
-                licenseCity = "上海"
-            }
         }
     }
 }
@@ -156,9 +214,11 @@ private struct SelectField: View {
     var label: LocalizedStringKey
     var placeholder: String
     var value: String
-    var action: () -> Void
+    var isReadOnly: Bool = false
+    var action: () -> Void = {}
+    
     var body: some View {
-        Button(action: action) {
+        if isReadOnly {
             HStack {
                 Text(label)
                     .font(AppTheme.fonts.body)
@@ -168,12 +228,76 @@ private struct SelectField: View {
                     .font(AppTheme.fonts.body)
                     .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 12))
-                    .foregroundColor(AppTheme.colors.fontTertiary)
             }
+        } else {
+            Button(action: action) {
+                HStack {
+                    Text(label)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(AppTheme.colors.fontPrimary)
+                        .frame(width: 100, alignment: .leading)
+                    Text(value.isEmpty ? placeholder : value)
+                        .font(AppTheme.fonts.body)
+                        .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12))
+                        .foregroundColor(AppTheme.colors.fontTertiary)
+                }
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
+    }
+}
+
+private struct OptionSelector: View {
+    var title: LocalizedStringKey
+    var options: [String]
+    var selectedIndex: Int
+    var isReadOnly: Bool = false
+    var onSelect: (Int) -> Void = { _ in }
+    
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(AppTheme.fonts.body)
+                .foregroundColor(AppTheme.colors.fontPrimary)
+            Spacer()
+            HStack(spacing: 0) {
+                ForEach(0..<options.count, id: \.self) { index in
+                    Text(options[index])
+                        .font(.system(size: 13, weight: selectedIndex == index ? .bold : .regular))
+                        .foregroundColor(selectedIndex == index ? .black : AppTheme.colors.fontSecondary)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 16)
+                        .background(selectedIndex == index ? AppTheme.colors.brandMain : Color.clear)
+                        .cornerRadius(20)
+                        .onTapGesture {
+                            if !isReadOnly { onSelect(index) }
+                        }
+                }
+            }
+            .background(Color.white.opacity(0.05))
+            .cornerRadius(20)
+        }
+    }
+}
+
+private struct InfoField: View {
+    var label: LocalizedStringKey
+    var value: String
+    
+    var body: some View {
+        HStack {
+            Text(label)
+                .font(AppTheme.fonts.body)
+                .foregroundColor(AppTheme.colors.fontPrimary)
+                .frame(width: 100, alignment: .leading)
+            Text(value.isEmpty ? "-" : value)
+                .font(AppTheme.fonts.body)
+                .foregroundColor(value.isEmpty ? AppTheme.colors.fontTertiary : AppTheme.colors.fontPrimary)
+            Spacer()
+        }
     }
 }
 
