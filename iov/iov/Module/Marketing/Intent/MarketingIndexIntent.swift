@@ -81,7 +81,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         if UserManager.isLogin() {
             guard let saleModel = modelAction?.getCurrentSaleModel() else { return }
             AppGlobalState.shared.parameters["saleModelCode"] = saleModel.saleModelCode
-            self.modelRouter?.routeToModelConfig()
+            self.modelRouter?.routeToModelVariantSelection()
         } else {
             self.modelRouter?.routeToLogin()
         }

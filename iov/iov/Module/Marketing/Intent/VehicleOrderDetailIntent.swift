@@ -143,54 +143,118 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
     }
     
     private func handleOrder() {
+        let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
+        let regionCode = AppGlobalState.shared.parameters["licenseCityCode"] as? String ?? ""
         
-        ServiceContainer.marketingService.getSelectedSaleModel(
-            saleModelCode: AppGlobalState.shared.parameters["saleModelCode"] as? String ?? "",
-            orderNo: nil,
-            saleModelConfigType: saleModelConfigType
-        ) { (result: Result<TspResponse<SelectedSaleModel>, Error>) in
+        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (result: Result<TspResponse<ConfiguratorResult>, Error>) in
             switch result {
             case .success(let res):
                 if res.isSuccess {
-                    guard let selectedSaleModel = res.data else {
-                        self.modelAction?.displayError(text: "请求异常")
+                    guard let configurator = res.data else {
+                        self?.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: selectedSaleModel.saleModelImages)
-                    self.modelAction?.updateSaleModelIntro(
-                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? "",
-                        saleModelDesc: selectedSaleModel.saleModelDesc
-                    )
-                    self.modelAction?.updateBookMethod(
-                        downPayment: selectedSaleModel.downPayment,
-                        downPaymentPrice: selectedSaleModel.downPaymentPrice,
-                        earnestMoney: selectedSaleModel.earnestMoney,
-                        earnestMoneyPrice: selectedSaleModel.earnestMoneyPrice,
-                        purchaseDenefitsIntro: selectedSaleModel.purchaseBenefitsIntro
-                    )
-                    if selectedSaleModel.downPayment {
-                        self.modelAction?.updateSelectOrderPersonType(orderPersonType: 1)
-                        self.modelAction?.updateSelectPurchasePlan(purchasePlan: 1)
+                    
+                    self?.updateUIFromConfigurator(configurator, saleModelConfigType: saleModelConfigType)
+                    
+                    if let firstModel = configurator.models.first,
+                       let firstVariant = firstModel.variants.first {
+                        let optionCodes = self?.extractSelectedOptionCodes(from: firstVariant, saleModelConfigType: saleModelConfigType) ?? []
+                        
+                        ServiceContainer.marketingService.getQuote(
+                            saleModelCode: saleModelCode,
+                            modelCode: firstModel.modelCode,
+                            variantCode: firstVariant.variantCode,
+                            optionCodes: optionCodes,
+                            regionCode: regionCode
+                        ) { [weak self] (quoteResult: Result<TspResponse<QuoteResult>, Error>) in
+                            switch quoteResult {
+                            case .success(let quoteRes):
+                                if quoteRes.isSuccess, let quote = quoteRes.data {
+                                    self?.modelAction?.updateSaleModelPrice(
+                                        saleModelName: firstModel.modelName,
+                                        saleModelPrice: firstVariant.variantPrice,
+                                        totalPrice: quote.totalPrice
+                                    )
+                                    self?.modelAction?.displayOrder()
+                                } else {
+                                    self?.modelAction?.displayError(text: quoteRes.message ?? "请求异常")
+                                }
+                            case .failure(_):
+                                self?.modelAction?.displayError(text: "请求异常")
+                            }
+                        }
                     }
-                    self.modelAction?.updateSaleModelPrice(
-                        saleModelName: selectedSaleModel.saleModelConfigName["BASE_MODEL"] ?? "",
-                        saleModelPrice: selectedSaleModel.saleModelConfigPrice["BASE_MODEL"] ?? 0,
-                        totalPrice: selectedSaleModel.totalPrice
-                    )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: selectedSaleModel.saleModelConfigName,
-                        configPrice: selectedSaleModel.saleModelConfigPrice
-                    )
-                    self.modelAction?.updateDynamicConfigs(dynamicConfigs)
-                    self.modelAction?.displayOrder()
                 } else {
-                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                    self?.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
             case .failure(_):
-                self.modelAction?.displayError(text: "请求异常")
+                self?.modelAction?.displayError(text: "请求异常")
             }
         }
+    }
+    
+    private func updateUIFromConfigurator(_ configurator: ConfiguratorResult, saleModelConfigType: [String: String]) {
+        guard let firstModel = configurator.models.first,
+              let firstVariant = firstModel.variants.first else {
+            return
+        }
+        
+        let saleModelImages: [String] = firstModel.marketingImage != nil ? [firstModel.marketingImage!] : []
+        self.modelAction?.updateSaleModelImages(saleModelImages: saleModelImages)
+        
+        self.modelAction?.updateSaleModelIntro(
+            saleModelName: firstModel.modelName,
+            saleModelDesc: firstModel.marketingCopy ?? ""
+        )
+        
+        let hasDownPayment = firstVariant.downPaymentPrice != nil && firstVariant.downPaymentPrice! > 0
+        let downPaymentPrice = firstVariant.downPaymentPrice ?? 0
+        let hasEarnestMoney = firstVariant.earnestMoneyPrice != nil && firstVariant.earnestMoneyPrice! > 0
+        let earnestMoneyPrice = firstVariant.earnestMoneyPrice ?? 0
+        
+        self.modelAction?.updateBookMethod(
+            downPayment: hasDownPayment,
+            downPaymentPrice: downPaymentPrice,
+            earnestMoney: hasEarnestMoney,
+            earnestMoneyPrice: earnestMoneyPrice,
+            purchaseDenefitsIntro: ""
+        )
+        
+        if hasDownPayment {
+            self.modelAction?.updateSelectOrderPersonType(orderPersonType: 1)
+            self.modelAction?.updateSelectPurchasePlan(purchasePlan: 1)
+        }
+        
+        var configName: [String: String] = [:]
+        var configPrice: [String: Decimal] = [:]
+        configName["BASE_MODEL"] = firstModel.modelName
+        configPrice["BASE_MODEL"] = firstVariant.variantPrice
+        
+        for family in firstVariant.selectableFamilies {
+            if let selectedCode = saleModelConfigType[family.optionFamilyCode],
+               let selectedOption = family.options.first(where: { $0.optionCode == selectedCode }) {
+                configName[family.optionFamilyCode] = selectedOption.optionName
+                configPrice[family.optionFamilyCode] = selectedOption.price
+            }
+        }
+        
+        let dynamicConfigs = self.convertToDynamicConfigs(
+            configName: configName,
+            configPrice: configPrice
+        )
+        self.modelAction?.updateDynamicConfigs(dynamicConfigs)
+    }
+    
+    private func extractSelectedOptionCodes(from variant: ConfiguratorResult.VariantItem, saleModelConfigType: [String: String]) -> [String] {
+        var optionCodes: [String] = []
+        for family in variant.selectableFamilies {
+            if let selectedCode = saleModelConfigType[family.optionFamilyCode] {
+                optionCodes.append(selectedCode)
+            }
+        }
+        return optionCodes
     }
     private func handleEarnestMoneyUnpaid() {
         if let orderNum = VehicleManager.shared.getCurrentVehicleId() {

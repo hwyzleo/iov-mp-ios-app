@@ -39,6 +39,8 @@ protocol MarketingIndexModelActionProtocol: MviModelActionProtocol {
 // MARK: - Route
 
 protocol MarketingIndexModelRouterProtocol: MviModelRouterProtocol {
+    /// 跳转至车型版本选择页
+    func routeToModelVariantSelection()
     /// 跳转至车型配置页
     func routeToModelConfig()
     /// 跳转至订单详情页

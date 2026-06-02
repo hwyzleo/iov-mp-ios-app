@@ -86,6 +86,9 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
 // MARK: - Route
 
 extension MarketingIndexModel: MarketingIndexModelRouterProtocol {
+    func routeToModelVariantSelection() {
+        routerSubject.screen.send(.modelVariantSelection)
+    }
     func routeToModelConfig() {
         routerSubject.screen.send(.modelConfig)
     }

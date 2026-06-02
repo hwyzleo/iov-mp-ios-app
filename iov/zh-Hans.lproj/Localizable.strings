@@ -142,6 +142,7 @@
 "retail_price" = "统一零售价";
 "save_wishlist" = "保存心愿单";
 "save_config" = "保存配置";
+"select_variant" = "选择版本";
 "selected_config" = "已选配置";
 "service" = "服务";
 "setting" = "设置";

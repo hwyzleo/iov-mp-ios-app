@@ -33,7 +33,10 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                 return
             }
             
-            if mode == "order" {
+            // Check if variant data is pre-fetched from ModelVariantSelectionPage
+            if let selectableFamilies = AppGlobalState.shared.parameters["selectedVariantSelectableFamilies"] as? [ConfiguratorResult.SelectableFamily] {
+                loadFromPreselectedVariant(saleCode: saleCode, selectableFamilies: selectableFamilies, mode: mode)
+            } else if mode == "order" {
                 loadOrderConfig(saleCode: saleCode)
             } else {
                 loadWishlistConfig(saleCode: saleCode)
@@ -41,12 +44,81 @@ class VehicleModelConfigIntent: MviIntentProtocol {
         }
     }
     
+    private func loadFromPreselectedVariant(saleCode: String, selectableFamilies: [ConfiguratorResult.SelectableFamily], mode: String) {
+        let featureRanges = convertSelectableFamiliesToFeatureCodeRanges(selectableFamilies)
+        let basePrice = AppGlobalState.shared.parameters["selectedVariantPrice"] as? Decimal ?? 0
+        modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges, basePrice: basePrice)
+        
+        if mode == "order" {
+            if let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] {
+                for range in featureRanges {
+                    if let featureCode = saleModelConfigType[range.familyCode],
+                       let feature = range.featureDetails.first(where: { $0.featureCode == featureCode }) {
+                        self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
+                    }
+                }
+            }
+        } else {
+            if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
+                TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
+                    switch result {
+                    case .success(let res):
+                        if let wishlist = res.data {
+                            let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
+                            
+                            for range in featureRanges {
+                                if let code = featureCodes[range.familyCode],
+                                   let feature = range.featureDetails.first(where: { $0.featureCode == code }) {
+                                    self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
+                                }
+                            }
+                        }
+                    case .failure(_):
+                        self.modelAction?.displayError(text: "请求异常")
+                    }
+                }
+            }
+        }
+    }
+    
+    private func convertSelectableFamiliesToFeatureCodeRanges(_ families: [ConfiguratorResult.SelectableFamily]) -> [FeatureCodeRangeVo] {
+        return families.map { family in
+            let featureDetails = family.options.map { option in
+                FeatureCodeDetailVo(
+                    featureCode: option.optionCode,
+                    featureName: option.optionName,
+                    featurePrice: option.price,
+                    featureImage: option.image != nil ? [option.image!] : [],
+                    featureDesc: option.marketingCopy,
+                    featureParam: nil,
+                    enable: option.saleStatus == "active",
+                    sort: 0
+                )
+            }
+            
+            return FeatureCodeRangeVo(
+                familyCode: family.optionFamilyCode,
+                familyName: family.optionFamilyName,
+                familyPrice: 0,
+                familyImage: family.marketingImage != nil ? [family.marketingImage!] : [],
+                familyDesc: family.marketingDesc,
+                familyParam: nil,
+                enable: true,
+                sort: family.sortWeight ?? 0,
+                featureDetails: featureDetails
+            )
+        }
+    }
+    
     private func loadOrderConfig(saleCode: String) {
-        TspApi.getFeatureCodeRanges(saleCode: saleCode) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
+        let regionCode = AppGlobalState.shared.parameters["licenseCityCode"] as? String ?? ""
+        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleCode, regionCode: regionCode) { (result: Result<TspResponse<ConfiguratorResult>, Error>) in
             switch result {
             case .success(let res):
-                if let featureRanges = res.data {
-                    self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges)
+                if let configurator = res.data {
+                    let featureRanges = self.convertToFeatureCodeRanges(configurator)
+                    let basePrice = AppGlobalState.shared.parameters["selectedVariantPrice"] as? Decimal ?? 0
+                    self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges, basePrice: basePrice)
                     
                     if let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] {
                         for range in featureRanges {
@@ -64,11 +136,14 @@ class VehicleModelConfigIntent: MviIntentProtocol {
     }
     
     private func loadWishlistConfig(saleCode: String) {
-        TspApi.getFeatureCodeRanges(saleCode: saleCode) { (result: Result<TspResponse<[FeatureCodeRangeVo]>, Error>) in
+        let regionCode = AppGlobalState.shared.parameters["licenseCityCode"] as? String ?? ""
+        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleCode, regionCode: regionCode) { (result: Result<TspResponse<ConfiguratorResult>, Error>) in
             switch result {
             case .success(let res):
-                if let featureRanges = res.data {
-                    self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges)
+                if let configurator = res.data {
+                    let featureRanges = self.convertToFeatureCodeRanges(configurator)
+                    let basePrice = AppGlobalState.shared.parameters["selectedVariantPrice"] as? Decimal ?? 0
+                    self.modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges, basePrice: basePrice)
                     
                     if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
                         TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
@@ -103,6 +178,41 @@ class VehicleModelConfigIntent: MviIntentProtocol {
             featureCodes[item.familyCode] = item.featureCode
         }
         return featureCodes
+    }
+    
+    /// 将ConfiguratorResult转换为[FeatureCodeRangeVo]
+    private func convertToFeatureCodeRanges(_ configurator: ConfiguratorResult) -> [FeatureCodeRangeVo] {
+        guard let firstModel = configurator.models.first,
+              let firstVariant = firstModel.variants.first else {
+            return []
+        }
+        
+        return firstVariant.selectableFamilies.map { family in
+            let featureDetails = family.options.map { option in
+                FeatureCodeDetailVo(
+                    featureCode: option.optionCode,
+                    featureName: option.optionName,
+                    featurePrice: option.price,
+                    featureImage: option.image != nil ? [option.image!] : [],
+                    featureDesc: option.marketingCopy,
+                    featureParam: nil,
+                    enable: option.saleStatus == "ON_SALE",
+                    sort: 0
+                )
+            }
+            
+            return FeatureCodeRangeVo(
+                familyCode: family.optionFamilyCode,
+                familyName: family.optionFamilyName,
+                familyPrice: 0,
+                familyImage: family.marketingImage != nil ? [family.marketingImage!] : [],
+                familyDesc: family.marketingDesc,
+                familyParam: nil,
+                enable: true,
+                sort: family.sortWeight ?? 0,
+                featureDetails: featureDetails
+            )
+        }
     }
 }
 

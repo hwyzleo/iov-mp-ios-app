@@ -21,7 +21,7 @@ protocol VehicleModelConfigModelStateProtocol {
 // MARK: - Intent Action
 
 protocol VehicleModelConfigModelActionProtocol: MviModelActionProtocol {
-    func updateFeatureRanges(saleCode: String, featureRanges: [FeatureCodeRangeVo])
+    func updateFeatureRanges(saleCode: String, featureRanges: [FeatureCodeRangeVo], basePrice: Decimal)
     func selectFeature(familyCode: String, feature: FeatureCodeDetailVo)
     func saveOrder(orderNum: String)
 }

@@ -28,6 +28,8 @@ protocol MarketingServiceProtocol {
     func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void)
     func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
+    func getConfigurator(saleModelCode: String, regionCode: String, completion: @escaping (Result<TspResponse<ConfiguratorResult>, Error>) -> Void)
+    func getQuote(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], regionCode: String, completion: @escaping (Result<TspResponse<QuoteResult>, Error>) -> Void)
 }
 
 /// 真实的 TSP API 实现
@@ -127,6 +129,14 @@ class RealMarketingService: MarketingServiceProtocol {
     
     func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         TspApi.modifyConfig(orderNo: orderNo, saleModelConfigType: saleModelConfigType, completion: completion)
+    }
+    
+    func getConfigurator(saleModelCode: String, regionCode: String, completion: @escaping (Result<TspResponse<ConfiguratorResult>, Error>) -> Void) {
+        TspApi.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode, completion: completion)
+    }
+    
+    func getQuote(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], regionCode: String, completion: @escaping (Result<TspResponse<QuoteResult>, Error>) -> Void) {
+        TspApi.getQuote(saleModelCode: saleModelCode, modelCode: modelCode, variantCode: variantCode, optionCodes: optionCodes, regionCode: regionCode, completion: completion)
     }
 }
 
@@ -302,5 +312,46 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
 
     func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         mockDelayedSuccess(data: nil, completion: completion)
+    }
+    
+    func getConfigurator(saleModelCode: String, regionCode: String, completion: @escaping (Result<TspResponse<ConfiguratorResult>, Error>) -> Void) {
+        let mockResult = ConfiguratorResult(
+            saleModelCode: saleModelCode,
+            modelName: "Mock Model",
+            models: [
+                ConfiguratorResult.ModelItem(
+                    modelCode: "MOCK_MODEL_001",
+                    modelName: "Mock Model 1",
+                    marketingImage: nil,
+                    marketingCopy: nil,
+                    sortWeight: 1,
+                    variants: [
+                        ConfiguratorResult.VariantItem(
+                            variantCode: "MOCK_VARIANT_001",
+                            variantName: "Mock Variant 1",
+                            marketingImage: nil,
+                            marketingCopy: nil,
+                            sortWeight: 1,
+                            variantPrice: 100000,
+                            earnestMoneyPrice: 5000,
+                            downPaymentPrice: 10000,
+                            selectableFamilies: []
+                        )
+                    ]
+                )
+            ]
+        )
+        mockDelayedSuccess(data: mockResult, completion: completion)
+    }
+    
+    func getQuote(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], regionCode: String, completion: @escaping (Result<TspResponse<QuoteResult>, Error>) -> Void) {
+        let mockResult = QuoteResult(
+            configurationCode: "MOCK_CONFIG_001",
+            variantPrice: 100000,
+            optionTotalPrice: 0,
+            totalPrice: 100000,
+            optionPriceBreakdown: []
+        )
+        mockDelayedSuccess(data: mockResult, completion: completion)
     }
 }

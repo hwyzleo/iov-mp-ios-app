@@ -152,6 +152,22 @@ class TspApi {
         }
     }
     
+    /// 获取选配器数据
+    static func getConfigurator(saleModelCode: String, regionCode: String, completion: @escaping (Result<TspResponse<ConfiguratorResult>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/saleModel/v1/" + saleModelCode + "/configurator", parameters: ["regionCode": regionCode]) { (result: Result<TspResponse<ConfiguratorResult>, Error>) in
+            completion(result)
+        }
+    }
+    
+    /// 获取实时报价
+    static func getQuote(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], regionCode: String, completion: @escaping (Result<TspResponse<QuoteResult>, Error>) -> Void) {
+        let cmd = GetQuoteCmd(saleModelCode: saleModelCode, modelCode: modelCode, variantCode: variantCode, optionCodes: optionCodes, regionCode: regionCode)
+        let parameters = TspManager.model2Dic(cmd) ?? [:]
+        TspManager.requestPost(path: "/api/mobile/saleModel/v1/quote", parameters: parameters) { (result: Result<TspResponse<QuoteResult>, Error>) in
+            completion(result)
+        }
+    }
+    
     /// 获取销售门店
     static func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
         TspManager.requestGet(path: "/api/mobile/dealership/v1", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in

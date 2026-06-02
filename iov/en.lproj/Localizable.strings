@@ -142,6 +142,7 @@
 "retail_price" = "retail price";
 "save_wishlist" = "save wishlist";
 "save_config" = "save config";
+"select_variant" = "Select Version";
 "selected_config" = "selected config";
 "service" = "Service";
 "setting" = "Setting";

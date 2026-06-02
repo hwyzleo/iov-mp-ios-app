@@ -59,21 +59,19 @@
 		BF8914A52F65479000A3F0FE /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A32F65479000A3F0FE /* LoginService.swift */; };
 		BF8914A82F6549F600A3F0FE /* MarketingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A62F6549F600A3F0FE /* MarketingService.swift */; };
 		BF95DD0D2FB420410008EF8C /* EarnestMoneyPayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD092FB420410008EF8C /* EarnestMoneyPayInfo.swift */; };
-		D1464FA2BCAA4463984A902 /* DownPaymentPayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78263D08916F466C9A56D6 /* DownPaymentPayInfo.swift */; };
 		BF95DD0E2FB420410008EF8C /* EarnestMoneyPayModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD022FB420410008EF8C /* EarnestMoneyPayModelProtocol.swift */; };
-		D2EB72AD706684DF1B59D43 /* DownPaymentPayModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */; };
 		BF95DD0F2FB420410008EF8C /* EarnestMoneyPayPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD042FB420410008EF8C /* EarnestMoneyPayPage.swift */; };
-		DCAFB1A3DDB8B4463B4F812 /* DownPaymentPayPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */; };
 		BF95DD102FB420410008EF8C /* EarnestMoneyPayIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DCFE2FB420410008EF8C /* EarnestMoneyPayIntent.swift */; };
-		D7576BE2161D14A67AE2D5F /* DownPaymentPayIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DE07727AFFC4AD5AF8817 /* DownPaymentPayIntent.swift */; };
 		BF95DD112FB420410008EF8C /* EarnestMoneyPayPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD052FB420410008EF8C /* EarnestMoneyPayPage+Build.swift */; };
-		D9572CB27914A428CB6A6B5 /* DownPaymentPayPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */; };
 		BF95DD132FB420410008EF8C /* EarnestMoneyPayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD012FB420410008EF8C /* EarnestMoneyPayModel.swift */; };
-		DAE18D69527B146C0A8C0CD /* DownPaymentPayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */; };
 		BF95DD142FB420410008EF8C /* EarnestMoneyPayIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DCFF2FB420410008EF8C /* EarnestMoneyPayIntentProtocol.swift */; };
-		D871CBABA28A54E86BC9A80 /* DownPaymentPayIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D036D3C8B99F149B29570DD /* DownPaymentPayIntentProtocol.swift */; };
 		BF95DD152FB420410008EF8C /* EarnestMoneyPayTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD0A2FB420410008EF8C /* EarnestMoneyPayTypes.swift */; };
-		D040541A640424EFFB4F89D /* DownPaymentPayTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BBA82D75BF746C199F250 /* DownPaymentPayTypes.swift */; };
+		BF95DD182FCF1E6F0008EF8C /* ModelVariantSelectionModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD172FCF1E6F0008EF8C /* ModelVariantSelectionModelProtocol.swift */; };
+		BF95DD192FCF1E6F0008EF8C /* ModelVariantSelectionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD162FCF1E6F0008EF8C /* ModelVariantSelectionModel.swift */; };
+		BF95DD1C2FCF1E7D0008EF8C /* ModelVariantSelectionIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD1B2FCF1E7D0008EF8C /* ModelVariantSelectionIntentProtocol.swift */; };
+		BF95DD1D2FCF1E7D0008EF8C /* ModelVariantSelectionIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD1A2FCF1E7D0008EF8C /* ModelVariantSelectionIntent.swift */; };
+		BF95DD202FCF1E8B0008EF8C /* ModelVariantSelectionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD1E2FCF1E8B0008EF8C /* ModelVariantSelectionPage.swift */; };
+		BF95DD212FCF1E8B0008EF8C /* ModelVariantSelectionPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD1F2FCF1E8B0008EF8C /* ModelVariantSelectionPage+Build.swift */; };
 		BFA1876E2C83111E004D625D /* IovApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876D2C83111E004D625D /* IovApp.swift */; };
 		BFA187702C83111E004D625D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA1876F2C83111E004D625D /* ContentView.swift */; };
 		BFA187742C83111F004D625D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFA187732C83111F004D625D /* Assets.xcassets */; };
@@ -411,6 +409,14 @@
 		BFD4AE4C2F6C3AA5009CA7E6 /* QRCodeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */; };
 		BFD4AE4E2F6D0F65009CA7E6 /* MySettingProfileBioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */; };
 		BFE89D372FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */; };
+		D040541A640424EFFB4F89D /* DownPaymentPayTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BBA82D75BF746C199F250 /* DownPaymentPayTypes.swift */; };
+		D1464FA2BCAA4463984A902 /* DownPaymentPayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78263D08916F466C9A56D6 /* DownPaymentPayInfo.swift */; };
+		D2EB72AD706684DF1B59D43 /* DownPaymentPayModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */; };
+		D7576BE2161D14A67AE2D5F /* DownPaymentPayIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DE07727AFFC4AD5AF8817 /* DownPaymentPayIntent.swift */; };
+		D871CBABA28A54E86BC9A80 /* DownPaymentPayIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D036D3C8B99F149B29570DD /* DownPaymentPayIntentProtocol.swift */; };
+		D9572CB27914A428CB6A6B5 /* DownPaymentPayPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */; };
+		DAE18D69527B146C0A8C0CD /* DownPaymentPayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */; };
+		DCAFB1A3DDB8B4463B4F812 /* DownPaymentPayPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -467,21 +473,19 @@
 		BF8914A32F65479000A3F0FE /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		BF8914A62F6549F600A3F0FE /* MarketingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingService.swift; sourceTree = "<group>"; };
 		BF95DCFE2FB420410008EF8C /* EarnestMoneyPayIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayIntent.swift; sourceTree = "<group>"; };
-		D0DE07727AFFC4AD5AF8817 /* DownPaymentPayIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayIntent.swift; sourceTree = "<group>"; };
 		BF95DCFF2FB420410008EF8C /* EarnestMoneyPayIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayIntentProtocol.swift; sourceTree = "<group>"; };
-		D036D3C8B99F149B29570DD /* DownPaymentPayIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayIntentProtocol.swift; sourceTree = "<group>"; };
 		BF95DD012FB420410008EF8C /* EarnestMoneyPayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayModel.swift; sourceTree = "<group>"; };
-		D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModel.swift; sourceTree = "<group>"; };
 		BF95DD022FB420410008EF8C /* EarnestMoneyPayModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayModelProtocol.swift; sourceTree = "<group>"; };
-		DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModelProtocol.swift; sourceTree = "<group>"; };
 		BF95DD042FB420410008EF8C /* EarnestMoneyPayPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayPage.swift; sourceTree = "<group>"; };
-		D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayPage.swift; sourceTree = "<group>"; };
 		BF95DD052FB420410008EF8C /* EarnestMoneyPayPage+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EarnestMoneyPayPage+Build.swift"; sourceTree = "<group>"; };
-		D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownPaymentPayPage+Build.swift"; sourceTree = "<group>"; };
 		BF95DD092FB420410008EF8C /* EarnestMoneyPayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayInfo.swift; sourceTree = "<group>"; };
-		D78263D08916F466C9A56D6 /* DownPaymentPayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayInfo.swift; sourceTree = "<group>"; };
 		BF95DD0A2FB420410008EF8C /* EarnestMoneyPayTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayTypes.swift; sourceTree = "<group>"; };
-		D9BBA82D75BF746C199F250 /* DownPaymentPayTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayTypes.swift; sourceTree = "<group>"; };
+		BF95DD162FCF1E6F0008EF8C /* ModelVariantSelectionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionModel.swift; sourceTree = "<group>"; };
+		BF95DD172FCF1E6F0008EF8C /* ModelVariantSelectionModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionModelProtocol.swift; sourceTree = "<group>"; };
+		BF95DD1A2FCF1E7D0008EF8C /* ModelVariantSelectionIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionIntent.swift; sourceTree = "<group>"; };
+		BF95DD1B2FCF1E7D0008EF8C /* ModelVariantSelectionIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionIntentProtocol.swift; sourceTree = "<group>"; };
+		BF95DD1E2FCF1E8B0008EF8C /* ModelVariantSelectionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionPage.swift; sourceTree = "<group>"; };
+		BF95DD1F2FCF1E8B0008EF8C /* ModelVariantSelectionPage+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelVariantSelectionPage+Build.swift"; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
 		BFA1876F2C83111E004D625D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -823,6 +827,14 @@
 		BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySettingProfileBioView.swift; sourceTree = "<group>"; };
 		BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_FeatureConfig.swift; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
+		D036D3C8B99F149B29570DD /* DownPaymentPayIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayIntentProtocol.swift; sourceTree = "<group>"; };
+		D0DE07727AFFC4AD5AF8817 /* DownPaymentPayIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayIntent.swift; sourceTree = "<group>"; };
+		D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownPaymentPayPage+Build.swift"; sourceTree = "<group>"; };
+		D78263D08916F466C9A56D6 /* DownPaymentPayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayInfo.swift; sourceTree = "<group>"; };
+		D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModel.swift; sourceTree = "<group>"; };
+		D9BBA82D75BF746C199F250 /* DownPaymentPayTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayTypes.swift; sourceTree = "<group>"; };
+		D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayPage.swift; sourceTree = "<group>"; };
+		DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModelProtocol.swift; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -2550,6 +2562,8 @@
 		BFADC2D52CB2C85300834608 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				BF95DD162FCF1E6F0008EF8C /* ModelVariantSelectionModel.swift */,
+				BF95DD172FCF1E6F0008EF8C /* ModelVariantSelectionModelProtocol.swift */,
 				BFADC2EB2CB387A800834608 /* MarketingIndexModelProtocol.swift */,
 				BFADC2EF2CB3893500834608 /* MarketingIndexModel.swift */,
 				BFADC2F52CB3922400834608 /* VehicleModelConfigModelProtocol.swift */,
@@ -2569,6 +2583,8 @@
 		BFADC2D62CB2C87000834608 /* Page */ = {
 			isa = PBXGroup;
 			children = (
+				BF95DD1E2FCF1E8B0008EF8C /* ModelVariantSelectionPage.swift */,
+				BF95DD1F2FCF1E8B0008EF8C /* ModelVariantSelectionPage+Build.swift */,
 				BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */,
 				BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */,
 				BF3CA30B2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift */,
@@ -2608,6 +2624,8 @@
 		BFADC2D72CB2C88100834608 /* Intent */ = {
 			isa = PBXGroup;
 			children = (
+				BF95DD1A2FCF1E7D0008EF8C /* ModelVariantSelectionIntent.swift */,
+				BF95DD1B2FCF1E7D0008EF8C /* ModelVariantSelectionIntentProtocol.swift */,
 				BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */,
 				BFADC2E92CB3873700834608 /* MarketingIndexIntent.swift */,
 				BFADC2F12CB391C600834608 /* VehicleModelConfigIntentProtocol.swift */,
@@ -3112,6 +3130,8 @@
 				BFA189892C842ECB004D625D /* MyArticleIntent.swift in Sources */,
 				BFA189C92C8431AD004D625D /* MyOrderView+Build.swift in Sources */,
 				BFA18A822C8446A2004D625D /* CommunityPage_Carousel.swift in Sources */,
+				BF95DD182FCF1E6F0008EF8C /* ModelVariantSelectionModelProtocol.swift in Sources */,
+				BF95DD192FCF1E6F0008EF8C /* ModelVariantSelectionModel.swift in Sources */,
 				BFA189D52C84323F004D625D /* MyInviteModelProtocol.swift in Sources */,
 				BF3CA30C2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift in Sources */,
 				BFA188B02C842188004D625D /* CommunityTopicView+Build.swift in Sources */,
@@ -3130,6 +3150,8 @@
 				BFA18A5C2C8439A3004D625D /* MallRouter.swift in Sources */,
 				BFA188F72C842673004D625D /* MySettingProfileAreaView.swift in Sources */,
 				BFA1877E2C8316DB004D625D /* AppGlobalState.swift in Sources */,
+				BF95DD202FCF1E8B0008EF8C /* ModelVariantSelectionPage.swift in Sources */,
+				BF95DD212FCF1E8B0008EF8C /* ModelVariantSelectionPage+Build.swift in Sources */,
 				BF3CA30E2CBB7EB9006CD801 /* VehicleOrderDetailPage.swift in Sources */,
 				BFA188A32C8420B6004D625D /* CommunityTopicModel.swift in Sources */,
 				BFA188212C8414F3004D625D /* Theme.swift in Sources */,
@@ -3147,6 +3169,8 @@
 				BFA18A1A2C8435D7004D625D /* ServiceModel.swift in Sources */,
 				BFA188452C841793004D625D /* AddressIntent.swift in Sources */,
 				BF3CA3362CC69417006CD801 /* VehicleOrderDetailPage_DownPaymentUnpaid.swift in Sources */,
+				BF95DD1C2FCF1E7D0008EF8C /* ModelVariantSelectionIntentProtocol.swift in Sources */,
+				BF95DD1D2FCF1E7D0008EF8C /* ModelVariantSelectionIntent.swift in Sources */,
 				BFA189432C842ABC004D625D /* MySettingAccountBindingIntent.swift in Sources */,
 				BFA189782C842E10004D625D /* MyArticleView.swift in Sources */,
 				BFA189BE2C843124004D625D /* MyOrderModelProtocol.swift in Sources */,

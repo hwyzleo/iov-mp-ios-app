@@ -14,16 +14,18 @@ final class VehicleModelConfigModel: ObservableObject, VehicleModelConfigModelSt
     var featureRanges: [FeatureCodeRangeVo] = []
     @Published var selections: [String: FeatureCodeDetailVo] = [:]
     @Published var totalPrice: Decimal = 0
+    var basePrice: Decimal = 0
 }
 
 // MARK: - Action Protocol
 
 extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
-    func updateFeatureRanges(saleCode: String, featureRanges: [FeatureCodeRangeVo]) {
+    func updateFeatureRanges(saleCode: String, featureRanges: [FeatureCodeRangeVo], basePrice: Decimal) {
         self.saleCode = saleCode
         self.featureRanges = featureRanges
         self.selections.removeAll()
-        self.totalPrice = 0
+        self.basePrice = basePrice
+        self.totalPrice = basePrice
         
         for range in featureRanges {
             if let firstFeature = range.featureDetails.first {

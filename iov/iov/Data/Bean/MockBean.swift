@@ -490,26 +490,20 @@ func mockSaleModelList() -> [SaleModelMp] {
         SaleModelMp(
             saleModelCode: "HS5",
             modelName: "寒01",
+            earnestMoneyPrice: 5000,
             images: [
                 "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png",
                 "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
-            ],
-            earnestMoney: true,
-            earnestMoneyPrice: 5000,
-            downPayment: true,
-            downPaymentPrice: 10000
+            ]
         ),
         SaleModelMp(
             saleModelCode: "HS7",
             modelName: "寒03",
+            earnestMoneyPrice: 5000,
             images: [
                 "https://pic.imgdb.cn/item/67065b68d29ded1a8c999b62.png",
                 "https://pic.imgdb.cn/item/670685e4d29ded1a8cb9c55f.png"
-            ],
-            earnestMoney: true,
-            earnestMoneyPrice: 5000,
-            downPayment: true,
-            downPaymentPrice: 15000
+            ]
         )
     ]
 }

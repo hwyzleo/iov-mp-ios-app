@@ -80,8 +80,8 @@ struct SaleModelImageSlider: View {
             ForEach(0..<saleModelList.count, id: \.self) { modelIndex in
                 let model = saleModelList[modelIndex]
                 Group {
-                    if !model.images.isEmpty {
-                        KFImage(URL(string: model.images.first ?? ""))
+                    if let images = model.images, !images.isEmpty {
+                        KFImage(URL(string: images.first ?? ""))
                             .resizable()
                             .scaledToFill()
                     } else {

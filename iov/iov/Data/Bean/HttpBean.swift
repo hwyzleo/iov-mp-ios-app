@@ -691,18 +691,116 @@ struct InitiatePaymentResult: Codable {
 struct SaleModelMp: Codable, Identifiable {
     /// 销售车型代码
     var saleModelCode: String
+    /// Carline 编码
+    var carlineCode: String?
+    /// Carline 名称
+    var carlineName: String?
     /// 销售车型名称
     var modelName: String
-    /// 销售车型图片集
-    var images: [String]
-    /// 是否允许意向金
-    var earnestMoney: Bool
+    /// 起售价
+    var startingPrice: Decimal?
     /// 意向金价格
-    var earnestMoneyPrice: Decimal
-    /// 是否允许定金
-    var downPayment: Bool
-    /// 定金价格
-    var downPaymentPrice: Decimal
+    var earnestMoneyPrice: Decimal?
+    /// 销售车型图片集
+    var images: [String]?
+    /// 卖点文案
+    var marketingCopy: String?
+    /// 车型图标
+    var icon: String?
+    /// 排序权重
+    var sortWeight: Int?
     
     var id: String { saleModelCode }
+    
+    /// 兼容旧逻辑：是否允许意向金
+    var earnestMoney: Bool { earnestMoneyPrice != nil && earnestMoneyPrice! > 0 }
+    /// 兼容旧逻辑：是否允许定金（新接口暂无此字段，默认false）
+    var downPayment: Bool { false }
+    /// 兼容旧逻辑：定金价格（新接口暂无此字段，默认0）
+    var downPaymentPrice: Decimal { 0 }
+}
+
+/// 选配器数据结果
+struct ConfiguratorResult: Codable {
+    /// 销售车型编码
+    var saleModelCode: String
+    /// 销售车型名称
+    var modelName: String
+    /// 三段式结构：Model → Variant → Option
+    var models: [ModelItem]
+    
+    struct ModelItem: Codable {
+        var modelCode: String
+        var modelName: String
+        var marketingImage: String?
+        var marketingCopy: String?
+        var sortWeight: Int?
+        var variants: [VariantItem]
+    }
+    
+    struct VariantItem: Codable {
+        var variantCode: String
+        var variantName: String
+        var marketingImage: String?
+        var marketingCopy: String?
+        var sortWeight: Int?
+        var variantPrice: Decimal
+        var earnestMoneyPrice: Decimal?
+        var downPaymentPrice: Decimal?
+        var selectableFamilies: [SelectableFamily]
+    }
+    
+    struct SelectableFamily: Codable {
+        var optionFamilyCode: String
+        var optionFamilyName: String
+        var marketingImage: String?
+        var marketingDesc: String?
+        var sortWeight: Int?
+        var options: [OptionItem]
+    }
+    
+    struct OptionItem: Codable {
+        var optionCode: String
+        var optionName: String
+        var saleStatus: String
+        var price: Decimal
+        var image: String?
+        var marketingCopy: String?
+        var bundleWith: [String]?
+        var mutexWith: [String]?
+    }
+}
+
+/// 实时报价结果
+struct QuoteResult: Codable {
+    /// Configuration 编码
+    var configurationCode: String
+    /// Variant 价格
+    var variantPrice: Decimal
+    /// Option 总价
+    var optionTotalPrice: Decimal
+    /// 总价 = variantPrice + optionTotalPrice
+    var totalPrice: Decimal
+    /// Option 价格明细
+    var optionPriceBreakdown: [OptionPriceItem]
+    
+    struct OptionPriceItem: Codable {
+        var optionFamilyCode: String
+        var optionCode: String
+        var optionPrice: Decimal
+    }
+}
+
+/// 获取实时报价请求参数
+struct GetQuoteCmd: Codable {
+    /// 销售车型编码
+    var saleModelCode: String
+    /// Model 编码
+    var modelCode: String
+    /// Variant 编码
+    var variantCode: String
+    /// OptionCode 列表
+    var optionCodes: [String]
+    /// 区域编码
+    var regionCode: String
 }
