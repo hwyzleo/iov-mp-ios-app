@@ -252,27 +252,16 @@ struct MyVehicleVo: Codable {
 struct Wishlist: Codable {
     var wishlistId: String
     var saleModelCode: String
-    var buildConfigCode: String
+    var modelCode: String
+    var variantCode: String
+    var configurationCode: String
+    var optionCodes: [String]
     var createTime: Date?
     var modifyTime: Date?
-    
-    var displayName: String?
-    var saleModelConfigs: [SaleModelConfigItem]
-    var saleModelImages: [String]
-    var saleModelDesc: String
-    var totalPrice: Decimal
-    var isValid: Bool
+    var invalidReason: String?
 }
 
-/// 销售车型配置项
-struct SaleModelConfigItem: Codable {
-    var familyCode: String
-    var familyName: String
-    var featureCode: String
-    var featureName: String
-    var featurePrice: Decimal
-    var featureImages: [String]?
-}
+
 
 /// 上牌区域
 struct LicenseArea: Codable {

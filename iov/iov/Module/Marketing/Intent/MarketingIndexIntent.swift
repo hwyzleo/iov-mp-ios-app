@@ -96,8 +96,9 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
                     return
                 }
                 
-                // 将配置项列表转换为特征代码字典
-                let featureCodes = self?.extractFeatureCodes(wishlist.saleModelConfigs) ?? [:]
+                // 由于新结构不再有saleModelConfigs，需要根据optionCodes来处理
+                // 这里暂时使用空字典，因为新结构没有familyCode到featureCode的映射
+                let featureCodes: [String: String] = [:]
                 
                 AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
                 AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
@@ -110,14 +111,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         }
     }
     
-    /// 从配置项列表提取特征代码字典
-    private func extractFeatureCodes(_ configItems: [SaleModelConfigItem]) -> [String: String] {
-        var featureCodes: [String: String] = [:]
-        for item in configItems {
-            featureCodes[item.familyCode] = item.featureCode
-        }
-        return featureCodes
-    }
+
     func onTapWishlistDetail() {
         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
         self.modelRouter?.routeToOrderDetail()

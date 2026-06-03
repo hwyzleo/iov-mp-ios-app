@@ -134,26 +134,14 @@ func mockFeatureCodeRanges() -> [FeatureCodeRangeVo] {
 func mockWishlist() -> Wishlist {
     return Wishlist.init(
         wishlistId: "WL123456789",
-        saleModelCode: "H01",
-        buildConfigCode: "BC001",
+        saleModelCode: "SM001",
+        modelCode: "MD001",
+        variantCode: "VR001",
+        configurationCode: "CFG001",
+        optionCodes: ["OPT001", "OPT002", "OPT003"],
         createTime: Date(),
         modifyTime: Date(),
-        displayName: "寒01七座版",
-        saleModelConfigs: [
-            SaleModelConfigItem(familyCode: "BASE_MODEL", familyName: "车型", featureCode: "H0107", featureName: "寒01七座版", featurePrice: 188888.00, featureImages: nil),
-            SaleModelConfigItem(familyCode: "QA", familyName: "外观颜色", featureCode: "WS02", featureName: "翡翠绿车漆", featurePrice: 0.00, featureImages: nil),
-            SaleModelConfigItem(familyCode: "NA", familyName: "内饰颜色", featureCode: "NS01", featureName: "乌木黑内饰", featurePrice: 0.00, featureImages: nil),
-            SaleModelConfigItem(familyCode: "FA", familyName: "轮毂", featureCode: "CL03", featureName: "21寸轮毂(四季胎)高亮黑", featurePrice: 0.00, featureImages: nil),
-            SaleModelConfigItem(familyCode: "RZ", familyName: "备胎", featureCode: "X00", featureName: "无备胎", featurePrice: 0.00, featureImages: nil),
-            SaleModelConfigItem(familyCode: "HA", familyName: "智驾", featureCode: "X02", featureName: "高阶智驾", featurePrice: 10000.00, featureImages: nil)
-        ],
-        saleModelImages: [
-            "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",
-            "https://i.ibb.co/7xcNTdX2/image-topic-640-3.png"
-        ],
-        saleModelDesc: "七座 | 有备胎 | 翡翠绿车漆 | 21寸轮毂(四季胎)高亮黑 | 乌木黑内饰 | 高阶智驾",
-        totalPrice: 198888.00,
-        isValid: true
+        invalidReason: nil
     )
 }
 

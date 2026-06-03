@@ -584,31 +584,33 @@ extension MarketingIndexPage {
         private var state: MarketingIndexModelStateProtocol { container.model }
         
         var body: some View {
-            VStack(spacing: 0) {
-                Spacer().frame(height: kStatusBarHeight)
-                
-                if state.saleModelList.count > 1 {
-                    SaleModelTabBar(
-                        saleModelList: state.saleModelList,
-                        selectedIndex: state.selectedSaleModelIndex,
-                        onTap: { index in intent.onTapSelectSaleModel(index: index) }
-                    )
-                }
-                
+            ZStack(alignment: .bottom) {
                 SaleModelImageSlider(
                     saleModelList: state.saleModelList,
                     selectedIndex: state.selectedSaleModelIndex,
                     onIndexChange: { index in intent.onTapSelectSaleModel(index: index) }
                 )
+                .edgesIgnoringSafeArea(.all)
                 
-                Spacer().frame(height: 650)
-                
-                RoundedCornerButton(nameLocal: LocalizedStringKey("order_now")) {
-                    intent.onTapModelConfig()
+                VStack(spacing: 0) {
+                    if state.saleModelList.count > 1 {
+                        SaleModelTabBar(
+                            saleModelList: state.saleModelList,
+                            selectedIndex: state.selectedSaleModelIndex,
+                            onTap: { index in intent.onTapSelectSaleModel(index: index) }
+                        )
+                        .padding(.top, kStatusBarHeight)
+                    }
+                    
+                    Spacer()
+                    
+                    RoundedCornerButton(nameLocal: LocalizedStringKey("order_now")) {
+                        intent.onTapModelConfig()
+                    }
+                    .frame(width: 300)
+                    .padding(.bottom, 50)
                 }
-                .frame(width: 300)
             }
-            .edgesIgnoringSafeArea(.top)
         }
     }
 }
@@ -646,19 +648,16 @@ struct SaleModelImageSlider: View {
         )) {
             ForEach(0..<saleModelList.count, id: \.self) { modelIndex in
                 let model = saleModelList[modelIndex]
-                VStack {
-                    if !model.images.isEmpty {
-                        KFImage(URL(string: model.images.first ?? ""))
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 300)
-                    }
+                if !model.images.isEmpty {
+                    KFImage(URL(string: model.images.first ?? ""))
+                        .resizable()
+                        .scaledToFill()
+                        .ignoresSafeArea()
                 }
                 .tag(modelIndex)
             }
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .frame(height: 300)
     }
 }
 
