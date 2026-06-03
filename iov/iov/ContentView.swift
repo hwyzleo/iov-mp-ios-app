@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @EnvironmentObject var globalState: AppGlobalState
-    @State private var marketingNavigationPath = NavigationPath()
+    @StateObject private var appRouter = AppRouter.shared
     
     init() {
         // 设置 TabBar 的外观以适配深色主题
@@ -31,7 +31,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationStack(path: $marketingNavigationPath) {
+        NavigationStack(path: $appRouter.path) {
             if globalState.needShowLoginPage {
                 LoginPage.buildMobileLogin()
                     .onAppear {
@@ -91,6 +91,15 @@ struct ContentView: View {
                 .accentColor(AppTheme.colors.brandMain)
             }
         }
+        .navigationDestination(for: AppRoute.self) { route in
+            destinationView(for: route)
+        }
+        .sheet(item: $appRouter.presentedItem) { route in
+            destinationView(for: route)
+        }
+        .fullScreenCover(item: $appRouter.fullScreenItem) { route in
+            destinationView(for: route)
+        }
         .preferredColorScheme(.dark)
         .background(AppTheme.colors.background.ignoresSafeArea())
         .onChange(of: globalState.needRefresh) { _ in
@@ -98,9 +107,75 @@ struct ContentView: View {
                 globalState.needRefresh = false
             }
         }
-        .onReceive(NotificationCenter.default.publisher(for: .init("switchToMarketingIndex"))) { _ in
-            // 清空导航路径以返回到根页面
-            marketingNavigationPath = NavigationPath()
+    }
+    
+    @ViewBuilder
+    func destinationView(for route: AppRoute) -> some View {
+        switch route {
+        case .marketing(let marketingRoute):
+            marketingDestination(for: marketingRoute)
+        case .community(let communityRoute):
+            communityDestination(for: communityRoute)
+        case .service(let serviceRoute):
+            serviceDestination(for: serviceRoute)
+        case .mall(let mallRoute):
+            mallDestination(for: mallRoute)
+        case .my(let myRoute):
+            myDestination(for: myRoute)
+        case .login:
+            LoginPage.buildMobileLogin()
+        }
+    }
+    
+    @ViewBuilder
+    func marketingDestination(for route: MarketingRoute) -> some View {
+        switch route {
+        case .index:
+            MarketingIndexPage.build()
+        case .modelVariantSelection(let saleModelCode):
+            ModelVariantSelectionPage.build()
+        case .modelConfig(let saleModelCode):
+            VehicleModelConfigPage.build()
+        case .orderDetail(let orderNo):
+            VehicleOrderDetailPage.build()
+        case .licenseArea:
+            LicenseAreaPage.build()
+        case .dealership:
+            DealershipPage.build()
+        case .deliveryCenter:
+            DeliveryCenterPage.build()
+        }
+    }
+    
+    @ViewBuilder
+    func communityDestination(for route: CommunityRoute) -> some View {
+        switch route {
+        case .index:
+            CommunityPage.build()
+        }
+    }
+    
+    @ViewBuilder
+    func serviceDestination(for route: ServiceRoute) -> some View {
+        switch route {
+        case .index:
+            ServicePage.build()
+        }
+    }
+    
+    @ViewBuilder
+    func mallDestination(for route: MallRoute) -> some View {
+        switch route {
+        case .index:
+            MallPage.build()
+        }
+    }
+    
+    @ViewBuilder
+    func myDestination(for route: MyRoute) -> some View {
+        switch route {
+        case .index:
+            MyPage.build()
         }
     }
 }
