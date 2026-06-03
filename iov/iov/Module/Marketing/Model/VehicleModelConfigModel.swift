@@ -83,6 +83,8 @@ extension VehicleModelConfigModel: VehicleModelConfigModelRouterProtocol {
     
     func routeToMarketingIndex() {
         routerSubject.closeToRoot.send()
+        // 同时发送通知，确保可靠跳转
+        NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
     }
 }
 

@@ -307,11 +307,9 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         DispatchQueue.main.async {
-                            if let router = self?.modelRouter {
-                                router.routeToMarketingIndex()
-                            } else {
-                                NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
-                            }
+                            // 同时调用路由方法和发送通知，确保可靠跳转
+                            self?.modelRouter?.routeToMarketingIndex()
+                            NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
                         }
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")
@@ -331,11 +329,9 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         DispatchQueue.main.async {
-                            if let router = self?.modelRouter {
-                                router.routeToMarketingIndex()
-                            } else {
-                                NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
-                            }
+                            // 同时调用路由方法和发送通知，确保可靠跳转
+                            self?.modelRouter?.routeToMarketingIndex()
+                            NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
                         }
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")

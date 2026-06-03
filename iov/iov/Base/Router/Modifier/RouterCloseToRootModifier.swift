@@ -24,15 +24,8 @@ struct RouterCloseToRootModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onReceive(publisher) { _ in
-                // 触发多次dismiss以返回到根页面
+                // 触发dismiss返回到根页面
                 dismiss()
-                // 延迟后再次dismiss，以确保返回到根页面
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    dismiss()
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    dismiss()
-                }
             }
     }
 }
