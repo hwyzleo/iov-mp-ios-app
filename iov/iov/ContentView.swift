@@ -97,6 +97,9 @@ struct ContentView: View {
                 globalState.needRefresh = false
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .init("switchToMarketingIndex"))) { _ in
+            globalState.selectedTab = 2
+        }
     }
 }
 
