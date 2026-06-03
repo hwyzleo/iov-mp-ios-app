@@ -141,7 +141,21 @@ func mockWishlist() -> Wishlist {
         optionCodes: ["OPT001", "OPT002", "OPT003"],
         createTime: Date(),
         modifyTime: Date(),
-        invalidReason: nil
+        invalidReason: nil,
+        saleModelName: "寒01",
+        modelMarketingName: "标准续航版",
+        variantMarketingName: "后驱长续航",
+        variantPrice: 188888.00,
+        saleModelImages: [
+            "https://i.ibb.co/0pZDDFmz/image-vehicle-side-640.png",
+            "https://i.ibb.co/7xcNTdX2/image-topic-640-3.png"
+        ],
+        totalPrice: 198888.00,
+        optionDetails: [
+            OptionDetail(optionFamilyCode: "EXTERIOR_COLOR", optionCode: "OPT001", marketingTitle: "翡翠绿车漆", optionPrice: 0, marketingImage: nil),
+            OptionDetail(optionFamilyCode: "INTERIOR_COLOR", optionCode: "OPT002", marketingTitle: "乌木黑内饰", optionPrice: 0, marketingImage: nil),
+            OptionDetail(optionFamilyCode: "WHEEL", optionCode: "OPT003", marketingTitle: "21寸轮毂", optionPrice: 10000, marketingImage: nil)
+        ]
     )
 }
 

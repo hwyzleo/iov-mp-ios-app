@@ -259,6 +259,22 @@ struct Wishlist: Codable {
     var createTime: Date?
     var modifyTime: Date?
     var invalidReason: String?
+    var saleModelName: String?
+    var modelMarketingName: String?
+    var variantMarketingName: String?
+    var variantPrice: Decimal?
+    var saleModelImages: [String]?
+    var totalPrice: Decimal?
+    var optionDetails: [OptionDetail]?
+}
+
+/// 心愿单选项详情
+struct OptionDetail: Codable {
+    var optionFamilyCode: String
+    var optionCode: String
+    var marketingTitle: String?
+    var optionPrice: Decimal?
+    var marketingImage: String?
 }
 
 

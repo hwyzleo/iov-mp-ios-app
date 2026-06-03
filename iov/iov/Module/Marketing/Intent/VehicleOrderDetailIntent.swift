@@ -102,21 +102,41 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     
-                    // 由于新结构不再有saleModelImages、displayName、saleModelDesc、totalPrice等字段
-                    // 需要根据新的数据结构更新显示逻辑
-                    // 这里暂时显示基本的配置信息
-                    self.modelAction?.updateSaleModelImages(saleModelImages: [])
+                    // 更新车型图片
+                    self.modelAction?.updateSaleModelImages(saleModelImages: wishlist.saleModelImages ?? [])
+                    
+                    // 更新车型简介
+                    let saleModelName = wishlist.saleModelName ?? ""
+                    let modelMarketingName = wishlist.modelMarketingName ?? ""
+                    let variantMarketingName = wishlist.variantMarketingName ?? ""
+                    let displayName = [saleModelName, modelMarketingName, variantMarketingName]
+                        .filter { !$0.isEmpty }
+                        .joined(separator: " ")
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: "心愿单配置",
-                        saleModelDesc: "Model: \(wishlist.modelCode), Variant: \(wishlist.variantCode)"
+                        saleModelName: displayName.isEmpty ? "心愿单配置" : displayName,
+                        saleModelDesc: "\(modelMarketingName) | \(variantMarketingName)"
                     )
-                    self.modelAction?.updateTotalPrice(totalPrice: 0)
+                    
+                    // 更新总价
+                    self.modelAction?.updateTotalPrice(totalPrice: wishlist.totalPrice ?? 0)
                     
                     // 显示配置项
                     var displayConfigs: [(String, String, Decimal)] = []
-                    for optionCode in wishlist.optionCodes {
-                        displayConfigs.append((optionCode, optionCode, 0))
+                    
+                    // 先添加车型基础价格
+                    if let variantPrice = wishlist.variantPrice {
+                        displayConfigs.append((wishlist.variantMarketingName ?? "车型", wishlist.variantMarketingName ?? "车型", variantPrice))
                     }
+                    
+                    // 添加选项配置
+                    if let optionDetails = wishlist.optionDetails {
+                        for option in optionDetails {
+                            let title = option.marketingTitle ?? option.optionCode
+                            let familyTitle = option.marketingTitle ?? option.optionFamilyCode
+                            displayConfigs.append((familyTitle, title, option.optionPrice ?? 0))
+                        }
+                    }
+                    
                     self.modelAction?.updateDynamicConfigs(displayConfigs)
                     
                     self.modelAction?.displayWishlist()
