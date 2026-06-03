@@ -200,9 +200,8 @@ struct VehicleOrderDetailPage: View {
         .onChange(of: globalState.needCloseOrderDetail) { _ in
             if globalState.needCloseOrderDetail {
                 globalState.needCloseOrderDetail = false
-                state.routerSubject.close.send()
+                AppRouter.shared.pop()
             }
         }
-        .modifier(MarketingRouter(subjects: state.routerSubject))
     }
 }

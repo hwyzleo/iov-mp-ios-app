@@ -30,7 +30,6 @@ struct EarnestMoneyPayPage: View {
                 bottomButton
             }
         }
-        .modifier(MarketingRouter(subjects: state.routerSubject))
         .onAppear {
             intent.viewOnAppear()
         }

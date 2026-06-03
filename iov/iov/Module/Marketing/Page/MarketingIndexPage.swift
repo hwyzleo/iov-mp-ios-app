@@ -29,7 +29,6 @@ struct MarketingIndexPage: View {
         .onAppear {
             intent.viewOnAppear()
         }
-        .modifier(MarketingRouter(subjects: state.routerSubject))
     }
 }
 

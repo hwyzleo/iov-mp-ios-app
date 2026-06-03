@@ -53,7 +53,6 @@ struct ModelVariantSelectionPage: View {
         .onAppear {
             intent.viewOnAppear()
         }
-        .modifier(MarketingRouter(subjects: state.routerSubject))
     }
 }
 

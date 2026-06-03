@@ -13,7 +13,6 @@ protocol EarnestMoneyPayModelStateProtocol: ObservableObject {
     var selectedChannel: PaymentChannelInfo? { get }
     var remainingSeconds: Int { get }
     var paymentResult: InitiatePaymentResult? { get }
-    var routerSubject: MarketingRouter.Subjects { get }
 }
 
 protocol EarnestMoneyPayModelActionProtocol: AnyObject {

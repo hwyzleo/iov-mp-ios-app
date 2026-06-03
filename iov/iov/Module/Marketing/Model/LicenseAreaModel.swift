@@ -9,7 +9,6 @@ import SwiftUI
 
 final class LicenseAreaModel: ObservableObject, LicenseAreaModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.LicenseAreaContentState = .loading
-    let routerSubject = MarketingRouter.Subjects()
     var licenseAreaList: [LicenseArea] = []
     @Published var displayLicenseAreaList: [LicenseArea] = []
 }
@@ -47,7 +46,7 @@ extension LicenseAreaModel: LicenseAreaModelActionProtocol {
 
 extension LicenseAreaModel: LicenseAreaModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
 }
 

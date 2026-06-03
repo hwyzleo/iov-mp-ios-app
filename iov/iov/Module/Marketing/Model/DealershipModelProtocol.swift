@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol DealershipModelStateProtocol {
     var contentState: MarketingTypes.Model.DealershipContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var dealershipList: [Dealership] { get }
 }
 

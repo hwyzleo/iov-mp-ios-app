@@ -9,7 +9,6 @@ import SwiftUI
 
 final class ModelVariantSelectionModel: ObservableObject, ModelVariantSelectionModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.ModelVariantSelectionContentState = .loading
-    let routerSubject = MarketingRouter.Subjects()
     @Published var saleModelCode: String = ""
     @Published var saleModelName: String = ""
     @Published var models: [ConfiguratorResult.ModelItem] = []
@@ -36,10 +35,8 @@ extension ModelVariantSelectionModel: ModelVariantSelectionModelActionProtocol {
 
 extension ModelVariantSelectionModel: ModelVariantSelectionModelRouterProtocol {
     func routeToModelConfig() {
-        routerSubject.screen.send(.modelConfig)
     }
     func closeScreen() {
-        
     }
 }
 

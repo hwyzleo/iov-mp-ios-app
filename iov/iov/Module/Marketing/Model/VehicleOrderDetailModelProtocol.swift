@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol VehicleOrderDetailModelStateProtocol {
     var contentState: MarketingTypes.Model.VehicleOrderDetailContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var saleModelImages: [String] { get }
     var saleModelName: String { get }
     var saleModelPrice: Decimal { get }

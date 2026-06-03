@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol DeliveryCenterModelStateProtocol {
     var contentState: MarketingTypes.Model.DeliveryCenterContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var deliveryCenterList: [Dealership] { get }
 }
 

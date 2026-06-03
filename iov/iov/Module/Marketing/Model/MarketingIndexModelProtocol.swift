@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol MarketingIndexModelStateProtocol {
     var contentState: MarketingTypes.Model.MarketingIndexContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var hasOrder: Bool { get }
     var currentVehicleType: VehicleType { get }
     var orderState: OrderState { get }

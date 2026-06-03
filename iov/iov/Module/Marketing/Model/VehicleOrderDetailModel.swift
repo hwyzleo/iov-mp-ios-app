@@ -9,7 +9,6 @@ import SwiftUI
 
 final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.VehicleOrderDetailContentState = .wishlist
-    let routerSubject = MarketingRouter.Subjects()
     var saleModelImages: [String] = []
     @Published var saleModelName: String = ""
     @Published var saleModelPrice: Decimal = 0
@@ -175,28 +174,22 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
 
 extension VehicleOrderDetailModel: VehicleOrderDetailModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
     func routeToMarketingIndex() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
     func routeToModelConfig() {
-        routerSubject.screen.send(.modelConfig)
     }
     func routeToLicenseArea() {
-        routerSubject.screen.send(.licenseArea)
     }
     func routeToDealership() {
-        routerSubject.screen.send(.dealership)
     }
     func routeToDeliveryCenter() {
-        routerSubject.screen.send(.deliveryCenter)
     }
     func routeToEarnestMoneyPay() {
-        routerSubject.screen.send(.earnestMoneyPay)
     }
     func routeToDownPaymentPay() {
-        routerSubject.screen.send(.downPaymentPay)
     }
 }
 

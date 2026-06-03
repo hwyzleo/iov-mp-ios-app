@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol VehicleModelConfigModelStateProtocol {
     var contentState: MarketingTypes.Model.VehicleModelConfigContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var saleCode: String { get }
     var featureRanges: [FeatureCodeRangeVo] { get }
     var selections: [String: FeatureCodeDetailVo] { get }

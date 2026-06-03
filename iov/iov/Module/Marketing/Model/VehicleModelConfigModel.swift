@@ -9,7 +9,6 @@ import SwiftUI
 
 final class VehicleModelConfigModel: ObservableObject, VehicleModelConfigModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.VehicleModelConfigContentState = .loading
-    let routerSubject = MarketingRouter.Subjects()
     var saleCode: String = ""
     var featureRanges: [FeatureCodeRangeVo] = []
     @Published var selections: [String: FeatureCodeDetailVo] = [:]
@@ -49,7 +48,7 @@ extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
     func saveOrder(orderNum: String) {
         VehicleManager.order(orderNum: orderNum)
         AppGlobalState.shared.needRefresh = true
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
     
     func updateModelInfo(modelMarketingName: String, variantMarketingName: String) {
@@ -70,20 +69,17 @@ extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
 
 extension VehicleModelConfigModel: VehicleModelConfigModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
     
     func routeToOrderDetail() {
-        routerSubject.screen.send(.orderDetail)
     }
     
     func routeToModelVariantSelection() {
-        routerSubject.screen.send(.modelVariantSelection)
     }
     
     func routeToMarketingIndex() {
-        // 只发送通知，由ContentView清空导航路径
-        NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
+        AppRouter.shared.popToRoot()
     }
 }
 

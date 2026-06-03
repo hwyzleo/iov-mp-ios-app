@@ -30,7 +30,6 @@ struct DownPaymentPayPage: View {
                 bottomButton
             }
         }
-        .modifier(MarketingRouter(subjects: state.routerSubject))
         .onAppear {
             intent.viewOnAppear()
         }

@@ -9,7 +9,6 @@ import SwiftUI
 
 final class MarketingIndexModel: ObservableObject, MarketingIndexModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.MarketingIndexContentState = .content
-    let routerSubject = MarketingRouter.Subjects()
     @Published var hasOrder: Bool = false
     /// 当前选择车辆的类型
     @Published var currentVehicleType: VehicleType = .ACTIVATED
@@ -87,19 +86,14 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
 
 extension MarketingIndexModel: MarketingIndexModelRouterProtocol {
     func routeToModelVariantSelection() {
-        routerSubject.screen.send(.modelVariantSelection)
     }
     func routeToModelConfig() {
-        routerSubject.screen.send(.modelConfig)
     }
     func routeToOrderDetail() {
-        routerSubject.screen.send(.orderDetail)
     }
     func routeToLogin() {
-        routerSubject.screen.send(.login)
     }
     func closeScreen() {
-        
     }
 }
 

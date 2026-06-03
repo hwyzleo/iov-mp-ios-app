@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol ModelVariantSelectionModelStateProtocol {
     var contentState: MarketingTypes.Model.ModelVariantSelectionContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var saleModelCode: String { get }
     var saleModelName: String { get }
     var models: [ConfiguratorResult.ModelItem] { get }

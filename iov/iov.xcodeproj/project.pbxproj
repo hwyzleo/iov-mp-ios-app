@@ -387,6 +387,7 @@
 		BFADC2C22CB28A2E00834608 /* VehicleModelConfigPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2C12CB28A2E00834608 /* VehicleModelConfigPage.swift */; };
 		BFADC2DA2CB2CD6900834608 /* MarketingIndexIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */; };
 		BFADC2E62CB385A000834608 /* MarketingRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2E52CB385A000834608 /* MarketingRouter.swift */; };
+		AABB00110000000000000001 /* MarketingRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00100000000000000001 /* MarketingRoute.swift */; };
 		BFADC2E82CB3869000834608 /* MarketingIndexPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2E72CB3869000834608 /* MarketingIndexPage+Build.swift */; };
 		BFADC2EA2CB3873700834608 /* MarketingIndexIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2E92CB3873700834608 /* MarketingIndexIntent.swift */; };
 		BFADC2EC2CB387A800834608 /* MarketingIndexModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2EB2CB387A800834608 /* MarketingIndexModelProtocol.swift */; };
@@ -805,6 +806,7 @@
 		BFADC2C12CB28A2E00834608 /* VehicleModelConfigPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage.swift; sourceTree = "<group>"; };
 		BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexIntentProtocol.swift; sourceTree = "<group>"; };
 		BFADC2E52CB385A000834608 /* MarketingRouter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingRouter.swift; sourceTree = "<group>"; };
+		AABB00100000000000000001 /* MarketingRoute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingRoute.swift; sourceTree = "<group>"; };
 		BFADC2E72CB3869000834608 /* MarketingIndexPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MarketingIndexPage+Build.swift"; sourceTree = "<group>"; };
 		BFADC2E92CB3873700834608 /* MarketingIndexIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingIndexIntent.swift; sourceTree = "<group>"; };
 		BFADC2EB2CB387A800834608 /* MarketingIndexModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingIndexModelProtocol.swift; sourceTree = "<group>"; };
@@ -2562,6 +2564,7 @@
 				BF8914A72F6549F600A3F0FE /* Service */,
 				BFADC2D72CB2C88100834608 /* Intent */,
 				BFADC2E52CB385A000834608 /* MarketingRouter.swift */,
+				AABB00100000000000000001 /* MarketingRoute.swift */,
 				BFADC2ED2CB388EE00834608 /* MarketingTypes.swift */,
 				BF95DD0C2FB420410008EF8C /* Sub */,
 			);
@@ -3118,6 +3121,7 @@
 				BFA188A12C84209D004D625D /* CommunityTopicTypes.swift in Sources */,
 				BFA188562C841A1B004D625D /* RealmManager.swift in Sources */,
 				BFADC2E62CB385A000834608 /* MarketingRouter.swift in Sources */,
+				AABB00110000000000000001 /* MarketingRoute.swift in Sources */,
 				BFADC2EC2CB387A800834608 /* MarketingIndexModelProtocol.swift in Sources */,
 				BF3CA3162CBB8018006CD801 /* VehicleOrderDetailModel.swift in Sources */,
 				BF6D81522D204048003F1756 /* VehicleOrderDetailPage_AllocationVehicle.swift in Sources */,

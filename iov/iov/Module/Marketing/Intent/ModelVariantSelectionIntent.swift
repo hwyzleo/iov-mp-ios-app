@@ -52,6 +52,7 @@ extension ModelVariantSelectionIntent: ModelVariantSelectionIntentProtocol {
         AppGlobalState.shared.parameters["selectedVariantEarnestMoneyPrice"] = variant.earnestMoneyPrice
         AppGlobalState.shared.parameters["selectedVariantDownPaymentPrice"] = variant.downPaymentPrice
         AppGlobalState.shared.parameters["selectedVariantSelectableFamilies"] = variant.selectableFamilies
-        AppRouter.shared.push(.marketing(.modelConfig(saleModelCode: model.saleModelCode)))
+        let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
+        AppRouter.shared.push(.marketing(.modelConfig(saleModelCode: saleModelCode)))
     }
 }

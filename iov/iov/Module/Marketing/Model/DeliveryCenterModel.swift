@@ -9,7 +9,6 @@ import SwiftUI
 
 final class DeliveryCenterModel: ObservableObject, DeliveryCenterModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.DeliveryCenterContentState = .loading
-    let routerSubject = MarketingRouter.Subjects()
     @Published var deliveryCenterList: [Dealership] = []
 }
 
@@ -31,7 +30,7 @@ extension DeliveryCenterModel: DeliveryCenterModelActionProtocol {
 
 extension DeliveryCenterModel: DeliveryCenterModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
 }
 

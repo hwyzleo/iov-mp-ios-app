@@ -13,8 +13,6 @@ final class EarnestMoneyPayModel: ObservableObject, EarnestMoneyPayModelStatePro
     @Published var selectedChannel: PaymentChannelInfo?
     @Published var remainingSeconds: Int = 0
     @Published var paymentResult: InitiatePaymentResult?
-    
-    let routerSubject = MarketingRouter.Subjects()
 }
 
 extension EarnestMoneyPayModel: EarnestMoneyPayModelActionProtocol {
@@ -63,6 +61,6 @@ extension EarnestMoneyPayModel: EarnestMoneyPayModelActionProtocol {
 
 extension EarnestMoneyPayModel: EarnestMoneyPayModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
 }

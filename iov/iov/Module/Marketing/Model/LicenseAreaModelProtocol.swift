@@ -11,7 +11,6 @@ import SwiftUI
 
 protocol LicenseAreaModelStateProtocol {
     var contentState: MarketingTypes.Model.LicenseAreaContentState { get }
-    var routerSubject: MarketingRouter.Subjects { get }
     var displayLicenseAreaList: [LicenseArea] { get }
 }
 

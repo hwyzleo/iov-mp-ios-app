@@ -9,7 +9,6 @@ import SwiftUI
 
 final class DealershipModel: ObservableObject, DealershipModelStateProtocol {
     @Published var contentState: MarketingTypes.Model.DealershipContentState = .loading
-    let routerSubject = MarketingRouter.Subjects()
     @Published var dealershipList: [Dealership] = []
 }
 
@@ -31,7 +30,7 @@ extension DealershipModel: DealershipModelActionProtocol {
 
 extension DealershipModel: DealershipModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
 }
 

@@ -13,8 +13,6 @@ final class DownPaymentPayModel: ObservableObject, DownPaymentPayModelStateProto
     @Published var selectedChannel: PaymentChannelInfo?
     @Published var remainingSeconds: Int = 0
     @Published var paymentResult: InitiatePaymentResult?
-    
-    let routerSubject = MarketingRouter.Subjects()
 }
 
 extension DownPaymentPayModel: DownPaymentPayModelActionProtocol {
@@ -63,6 +61,6 @@ extension DownPaymentPayModel: DownPaymentPayModelActionProtocol {
 
 extension DownPaymentPayModel: DownPaymentPayModelRouterProtocol {
     func closeScreen() {
-        routerSubject.close.send()
+        AppRouter.shared.pop()
     }
 }
