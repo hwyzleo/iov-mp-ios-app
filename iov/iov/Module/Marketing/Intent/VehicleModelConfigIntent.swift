@@ -306,8 +306,10 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                     if res.isSuccess {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-                        // 返回到购车首页
-                        self?.modelRouter?.routeToMarketingIndex()
+                        // 切换到购车首页Tab，强制返回到根页面
+                        DispatchQueue.main.async {
+                            AppGlobalState.shared.selectedTab = 2
+                        }
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")
                     }
@@ -325,8 +327,10 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         VehicleManager.shared.setCurrentVehicleId(id: res.data!)
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-                        // 返回到购车首页
-                        self?.modelRouter?.routeToMarketingIndex()
+                        // 切换到购车首页Tab，强制返回到根页面
+                        DispatchQueue.main.async {
+                            AppGlobalState.shared.selectedTab = 2
+                        }
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")
                     }
