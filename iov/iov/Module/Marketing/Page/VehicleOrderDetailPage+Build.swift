@@ -20,7 +20,10 @@ extension VehicleOrderDetailPage {
         return container
     }
     
-    static func build() -> some View {
+    static func build(orderNum: String? = nil) -> some View {
+        if let orderNum = orderNum {
+            AppGlobalState.shared.parameters["orderNum"] = orderNum
+        }
         return VehicleOrderDetailPage(container: buildContainer())
     }
     
