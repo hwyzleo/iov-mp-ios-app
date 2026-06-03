@@ -307,8 +307,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         DispatchQueue.main.async {
-                            // 发送通知，由ContentView清空导航路径
-                            NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
+                            AppRouter.shared.popToRoot()
                         }
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")
@@ -328,8 +327,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         DispatchQueue.main.async {
-                            // 发送通知，由ContentView清空导航路径
-                            NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
+                            AppRouter.shared.popToRoot()
                         }
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")

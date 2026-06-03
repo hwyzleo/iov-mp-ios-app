@@ -81,9 +81,9 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         if UserManager.isLogin() {
             guard let saleModel = modelAction?.getCurrentSaleModel() else { return }
             AppGlobalState.shared.parameters["saleModelCode"] = saleModel.saleModelCode
-            self.modelRouter?.routeToModelVariantSelection()
+            AppRouter.shared.push(.marketing(.modelVariantSelection(saleModelCode: saleModel.saleModelCode)))
         } else {
-            self.modelRouter?.routeToLogin()
+            AppRouter.shared.push(.login)
         }
     }
     func onTapOrder() {
