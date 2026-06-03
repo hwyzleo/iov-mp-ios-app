@@ -15,6 +15,8 @@ final class VehicleModelConfigModel: ObservableObject, VehicleModelConfigModelSt
     @Published var selections: [String: FeatureCodeDetailVo] = [:]
     @Published var totalPrice: Decimal = 0
     var basePrice: Decimal = 0
+    var modelMarketingName: String = ""
+    var variantMarketingName: String = ""
 }
 
 // MARK: - Action Protocol
@@ -48,6 +50,11 @@ extension VehicleModelConfigModel: VehicleModelConfigModelActionProtocol {
         VehicleManager.order(orderNum: orderNum)
         AppGlobalState.shared.needRefresh = true
         routerSubject.close.send()
+    }
+    
+    func updateModelInfo(modelMarketingName: String, variantMarketingName: String) {
+        self.modelMarketingName = modelMarketingName
+        self.variantMarketingName = variantMarketingName
     }
     
     func displayError(text: String) {

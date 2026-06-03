@@ -16,6 +16,8 @@ protocol VehicleModelConfigModelStateProtocol {
     var featureRanges: [FeatureCodeRangeVo] { get }
     var selections: [String: FeatureCodeDetailVo] { get }
     var totalPrice: Decimal { get }
+    var modelMarketingName: String { get }
+    var variantMarketingName: String { get }
 }
 
 // MARK: - Intent Action
@@ -24,6 +26,7 @@ protocol VehicleModelConfigModelActionProtocol: MviModelActionProtocol {
     func updateFeatureRanges(saleCode: String, featureRanges: [FeatureCodeRangeVo], basePrice: Decimal)
     func selectFeature(familyCode: String, feature: FeatureCodeDetailVo)
     func saveOrder(orderNum: String)
+    func updateModelInfo(modelMarketingName: String, variantMarketingName: String)
 }
 
 // MARK: - Route

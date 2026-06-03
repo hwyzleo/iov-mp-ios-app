@@ -150,16 +150,26 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                         TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
                             switch result {
                             case .success(let res):
-                        if let wishlist = res.data {
-                            // 根据新的Wishlist结构选择配置
-                            for range in featureRanges {
-                                for option in range.featureDetails {
-                                    if wishlist.optionCodes.contains(option.featureCode) {
-                                        self.modelAction?.selectFeature(familyCode: range.familyCode, feature: option)
+                                if let wishlist = res.data {
+                                    // 保存心愿单的modelCode和variantCode到AppGlobalState
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = wishlist.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = wishlist.variantCode
+                                    
+                                    // 更新车型和版本信息
+                                    self.modelAction?.updateModelInfo(
+                                        modelMarketingName: wishlist.modelMarketingName ?? "",
+                                        variantMarketingName: wishlist.variantMarketingName ?? ""
+                                    )
+                                    
+                                    // 根据新的Wishlist结构选择配置
+                                    for range in featureRanges {
+                                        for option in range.featureDetails {
+                                            if wishlist.optionCodes.contains(option.featureCode) {
+                                                self.modelAction?.selectFeature(familyCode: range.familyCode, feature: option)
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
                             case .failure(_):
                                 self.modelAction?.displayError(text: "请求异常")
                             }

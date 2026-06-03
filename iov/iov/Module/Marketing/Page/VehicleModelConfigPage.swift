@@ -69,6 +69,42 @@ extension VehicleModelConfigPage {
                 Spacer().frame(height: kStatusBarHeight)
                 TopBackTitleBar(titleLocal: LocalizedStringKey("choose_vehicle"))
                 
+                // 显示当前选择的车型和版本信息
+                if !state.modelMarketingName.isEmpty || !state.variantMarketingName.isEmpty {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            if !state.modelMarketingName.isEmpty {
+                                Text(state.modelMarketingName)
+                                    .font(AppTheme.fonts.body)
+                                    .foregroundColor(AppTheme.colors.fontPrimary)
+                            }
+                            if !state.variantMarketingName.isEmpty {
+                                Text(state.variantMarketingName)
+                                    .font(AppTheme.fonts.subtext)
+                                    .foregroundColor(AppTheme.colors.fontSecondary)
+                            }
+                        }
+                        Spacer()
+                        Button(action: {
+                            // 返回重新选择车型
+                            AppGlobalState.shared.parameters["selectedModelCode"] = nil
+                            AppGlobalState.shared.parameters["selectedVariantCode"] = nil
+                            state.routerSubject.close.send()
+                        }) {
+                            Text("重新选择")
+                                .font(AppTheme.fonts.subtext)
+                                .foregroundColor(AppTheme.colors.brandMain)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 6)
+                                .background(AppTheme.colors.brandMain.opacity(0.1))
+                                .cornerRadius(16)
+                        }
+                    }
+                    .padding(.horizontal, AppTheme.layout.margin)
+                    .padding(.vertical, 12)
+                    .background(AppTheme.colors.background)
+                }
+                
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
