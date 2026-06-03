@@ -327,7 +327,9 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         VehicleManager.shared.setCurrentVehicleId(id: res.data!)
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-                        // 发送通知，切换到购车首页
+                        // 调用路由方法返回根页面
+                        self?.modelRouter?.routeToMarketingIndex()
+                        // 发送通知作为备用机制
                         NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
                     } else {
                         self?.modelAction?.displayError(text: res.message ?? "请求异常")
