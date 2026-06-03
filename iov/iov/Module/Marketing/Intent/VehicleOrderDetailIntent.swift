@@ -101,20 +101,21 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         self.modelAction?.displayError(text: "请求异常")
                         return
                     }
-                    self.modelAction?.updateSaleModelImages(saleModelImages: wishlist.saleModelImages)
-                    self.modelAction?.updateSaleModelIntro(
-                        saleModelName: wishlist.displayName ?? wishlist.saleModelDesc,
-                        saleModelDesc: wishlist.saleModelDesc
-                    )
-                    self.modelAction?.updateTotalPrice(totalPrice: wishlist.totalPrice)
                     
+                    // 由于新结构不再有saleModelImages、displayName、saleModelDesc、totalPrice等字段
+                    // 需要根据新的数据结构更新显示逻辑
+                    // 这里暂时显示基本的配置信息
+                    self.modelAction?.updateSaleModelImages(saleModelImages: [])
+                    self.modelAction?.updateSaleModelIntro(
+                        saleModelName: "心愿单配置",
+                        saleModelDesc: "Model: \(wishlist.modelCode), Variant: \(wishlist.variantCode)"
+                    )
+                    self.modelAction?.updateTotalPrice(totalPrice: 0)
+                    
+                    // 显示配置项
                     var displayConfigs: [(String, String, Decimal)] = []
-                    for item in wishlist.saleModelConfigs {
-                        if item.familyCode == "BASE_MODEL" {
-                            displayConfigs.insert((item.featureName, item.featureName, item.featurePrice), at: 0)
-                        } else {
-                            displayConfigs.append((item.featureName, item.familyName, item.featurePrice))
-                        }
+                    for optionCode in wishlist.optionCodes {
+                        displayConfigs.append((optionCode, optionCode, 0))
                     }
                     self.modelAction?.updateDynamicConfigs(displayConfigs)
                     
@@ -126,21 +127,7 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
         }
     }
     
-    /// 动态处理配置项列表
-    private func processConfigItems(_ configItems: [SaleModelConfigItem], totalPrice: Decimal) {
-        // 将配置项转换为显示用的数据结构
-        var displayConfigs: [(String, String, Decimal)] = []  // (familyName, featureName, featurePrice)
-        
-        for item in configItems {
-            displayConfigs.append((item.familyName, item.featureName, item.featurePrice))
-        }
-        
-        // 更新显示（这里需要Model层提供新的方法）
-        self.modelAction?.updateDynamicConfigs(displayConfigs)
-        
-        // 更新总价
-        // Model层会在 updateDynamicConfigs 中处理总价计算
-    }
+
     
     private func handleOrder() {
         let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
@@ -817,8 +804,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                         return
                     }
                     
-                    // 将配置项列表转换为特征代码字典
-                    let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
+                    // 由于新结构不再有saleModelConfigs，需要根据optionCodes来处理
+                    // 这里暂时使用空字典，因为新结构没有familyCode到featureCode的映射
+                    let featureCodes: [String: String] = [:]
                     
                     AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
                     AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
@@ -832,14 +820,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
     }
     
-    /// 从配置项列表提取特征代码字典
-    private func extractFeatureCodes(_ configItems: [SaleModelConfigItem]) -> [String: String] {
-        var featureCodes: [String: String] = [:]
-        for item in configItems {
-            featureCodes[item.familyCode] = item.featureCode
-        }
-        return featureCodes
-    }
+
     func onTapDownPaymentBookMethod() {
         self.modelAction?.updateSelectBookMethod(bookMethod: "downPayment")
         self.modelAction?.updateSelectOrderPersonType(orderPersonType: 1)
