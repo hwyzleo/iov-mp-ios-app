@@ -16,4 +16,6 @@ enum MarketingRoute: Hashable {
     case licenseArea
     case dealership
     case deliveryCenter
+    case earnestMoneyPay
+    case downPaymentPay
 }

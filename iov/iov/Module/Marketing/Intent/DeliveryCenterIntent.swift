@@ -43,6 +43,6 @@ extension DeliveryCenterIntent: DeliveryCenterIntentProtocol {
         AppGlobalState.shared.parameters["deliveryCenterCode"] = code
         AppGlobalState.shared.parameters["deliveryCenterName"] = name
         AppGlobalState.shared.backRefresh = true
-        self.modelRouter?.closeScreen()
+        AppRouter.shared.pop()
     }
 }

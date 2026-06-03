@@ -153,6 +153,10 @@ struct ContentView: View {
             DealershipPage.build()
         case .deliveryCenter:
             DeliveryCenterPage.build()
+        case .earnestMoneyPay:
+            EarnestMoneyPayPage.build()
+        case .downPaymentPay:
+            DownPaymentPayPage.build()
         }
     }
     

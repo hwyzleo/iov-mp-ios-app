@@ -777,7 +777,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     case .success(let res):
                         if res.isSuccess {
                             VehicleManager.shared.delete(orderNum: vehiclePo.id)
-                            self.modelRouter?.closeScreen()
+                            DispatchQueue.main.async {
+                                AppRouter.shared.pop()
+                            }
                         } else {
                             self.modelAction?.displayError(text: res.message ?? "请求异常")
                         }
@@ -788,7 +790,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             }
             if vehiclePo.type == .ORDER {
                 VehicleManager.shared.clear()
-                self.modelRouter?.closeScreen()
+                AppRouter.shared.pop()
             }
         }
         
@@ -804,7 +806,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                         return
                     }
                     AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
-                    self.modelRouter?.routeToModelConfig()
+                    AppRouter.shared.push(.marketing(.modelConfig(saleModelCode: wishlist.saleModelCode ?? "")))
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -885,7 +887,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 let payInfo = EarnestMoneyPayInfo(from: resData)
                 AppGlobalState.shared.parameters["earnestMoneyPayInfo"] = payInfo
                 
-                self?.modelRouter?.routeToEarnestMoneyPay()
+                DispatchQueue.main.async {
+                    AppRouter.shared.push(.marketing(.earnestMoneyPay))
+                }
             case .failure(_):
                 self?.modelAction?.displayError(text: "请求异常")
             }
@@ -949,7 +953,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 )
                 AppGlobalState.shared.parameters["downPaymentPayInfo"] = payInfo
                 
-                self?.modelRouter?.routeToDownPaymentPay()
+                DispatchQueue.main.async {
+                    AppRouter.shared.push(.marketing(.downPaymentPay))
+                }
             case .failure(_):
                 self?.modelAction?.displayError(text: "请求异常")
             }
@@ -968,13 +974,13 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         modelAction?.updateDeliveryCenter(code: code, name: name)
     }
     func onTapLicenseCity() {
-        modelRouter?.routeToLicenseArea()
+        AppRouter.shared.push(.marketing(.licenseArea))
     }
     func onTapDealership() {
-        modelRouter?.routeToDealership()
+        AppRouter.shared.push(.marketing(.dealership))
     }
     func onTapDeliveryCenter() {
-        modelRouter?.routeToDeliveryCenter()
+        AppRouter.shared.push(.marketing(.deliveryCenter))
     }
     func onTapCancelOrder() {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
@@ -983,7 +989,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 switch result {
                 case .success(_):
                     VehicleManager.shared.delete(orderNum: orderNo)
-                    self.modelRouter?.closeScreen()
+                    DispatchQueue.main.async {
+                        AppRouter.shared.pop()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -1052,7 +1060,9 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                     )
                     
                     AppGlobalState.shared.parameters["earnestMoneyPayInfo"] = payInfo
-                    self?.modelRouter?.routeToEarnestMoneyPay()
+                    DispatchQueue.main.async {
+                        AppRouter.shared.push(.marketing(.earnestMoneyPay))
+                    }
                     
                 case .failure(_):
                     self?.modelAction?.displayError(text: "请求异常")
@@ -1138,7 +1148,9 @@ func onTapModifyOrderConfig() {
                 AppGlobalState.shared.parameters["modifyConfigMode"] = "order"
                 AppGlobalState.shared.parameters["modifyConfigOrderNo"] = orderNo
                 
-                self?.modelRouter?.routeToModelConfig()
+                DispatchQueue.main.async {
+                    AppRouter.shared.push(.marketing(.modelConfig(saleModelCode: order.saleModelCode ?? "")))
+                }
             case .failure(_):
                 self?.modelAction?.displayError(text: "请求异常")
             }

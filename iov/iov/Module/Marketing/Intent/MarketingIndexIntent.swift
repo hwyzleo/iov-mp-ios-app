@@ -104,7 +104,9 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
                 AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
                 AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
                 AppGlobalState.shared.parameters["lastView"] = "MARKETING_INDEX"
-                self?.modelRouter?.routeToOrderDetail()
+                DispatchQueue.main.async {
+                    AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
+                }
             case .failure(_):
                 self?.modelAction?.displayError(text: "请求异常")
             }
@@ -114,7 +116,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
 
     func onTapWishlistDetail() {
         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-        self.modelRouter?.routeToOrderDetail()
+        AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
     }
     func onTapOrderDetail(orderState: OrderState) {
         switch orderState {
@@ -145,7 +147,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         case .ACTIVATED:
             break
         }
-        self.modelRouter?.routeToOrderDetail()
+        AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
     }
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String) {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {

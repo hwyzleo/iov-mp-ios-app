@@ -24,7 +24,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
         }
         if backCount > 0 {
             AppGlobalState.shared.parameters["backCount"] = backCount - 1
-            self.modelRouter?.closeScreen()
+            AppRouter.shared.pop()
         } else {
             let mode = AppGlobalState.shared.parameters["modifyConfigMode"] as? String ?? "wishlist"
             
@@ -262,7 +262,9 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                     AppGlobalState.shared.parameters["modifyConfigMode"] = nil
                     AppGlobalState.shared.parameters["modifyConfigOrderNo"] = nil
                     AppGlobalState.shared.parameters["saleModelConfigType"] = nil
-                    self?.modelRouter?.closeScreen()
+                    DispatchQueue.main.async {
+                        AppRouter.shared.pop()
+                    }
                 } else {
                     self?.modelAction?.displayError(text: res.message ?? "请求异常")
                 }
@@ -355,7 +357,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         AppGlobalState.shared.parameters["saleModelCode"] = saleCode
         AppGlobalState.shared.parameters["saleModelConfigType"] = saleModelConfigType
         
-        self.modelRouter?.routeToOrderDetail()
+        AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
     }
     
     func onTapReselectModel() {
@@ -366,6 +368,6 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         AppGlobalState.shared.parameters["selectedVariantPrice"] = nil
         
         // 导航到车型版本选择页面
-        self.modelRouter?.routeToModelVariantSelection()
+        AppRouter.shared.push(.marketing(.modelVariantSelection(saleModelCode: "")))
     }
 }

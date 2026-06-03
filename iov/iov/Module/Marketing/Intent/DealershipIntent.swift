@@ -43,6 +43,6 @@ extension DealershipIntent: DealershipIntentProtocol {
         AppGlobalState.shared.parameters["dealershipCode"] = code
         AppGlobalState.shared.parameters["dealershipName"] = name
         AppGlobalState.shared.backRefresh = true
-        self.modelRouter?.closeScreen()
+        AppRouter.shared.pop()
     }
 }

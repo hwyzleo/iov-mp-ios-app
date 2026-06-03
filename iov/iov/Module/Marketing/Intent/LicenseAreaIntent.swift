@@ -47,7 +47,7 @@ extension LicenseAreaIntent: LicenseAreaIntentProtocol {
             let fullDisplayName = buildFullDisplayName(provinceCode: provinceCode, cityCode: cityCode, displayName: displayName)
             AppGlobalState.shared.parameters["licenseCityName"] = fullDisplayName
             AppGlobalState.shared.backRefresh = true
-            self.modelRouter?.closeScreen()
+            AppRouter.shared.pop()
         }
     }
     

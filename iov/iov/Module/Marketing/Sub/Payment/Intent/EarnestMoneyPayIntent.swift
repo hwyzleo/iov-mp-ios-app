@@ -103,7 +103,9 @@ class EarnestMoneyPayIntent: EarnestMoneyPayIntentProtocol {
                                 AppGlobalState.shared.parameters["backCount"] = 1
                             }
                             AppGlobalState.shared.needCloseOrderDetail = true
-                            self?.modelRouter?.closeScreen()
+                            DispatchQueue.main.async {
+                                AppRouter.shared.pop()
+                            }
                         }
                     } else {
                         self?.modelAction?.displayFailed(text: res.message ?? "支付失败")
