@@ -115,8 +115,10 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
     
 
     func onTapWishlistDetail() {
+        let wishlistId = VehicleManager.shared.getCurrentVehicleId()
+        print("🔍 onTapWishlistDetail() - wishlistId: \(wishlistId ?? "nil")")
         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
-        AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
+        AppRouter.shared.push(.marketing(.orderDetail(orderNo: wishlistId ?? "")))
     }
     func onTapOrderDetail(orderState: OrderState) {
         switch orderState {

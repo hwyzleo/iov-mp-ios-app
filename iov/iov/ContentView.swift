@@ -145,7 +145,9 @@ struct ContentView: View {
         case .orderDetail(let orderNo):
             VehicleOrderDetailPage.build()
                 .onAppear {
-                    AppGlobalState.shared.parameters["orderNum"] = orderNo
+                    if !orderNo.isEmpty {
+                        AppGlobalState.shared.parameters["orderNum"] = orderNo
+                    }
                 }
         case .licenseArea:
             LicenseAreaPage.build()
