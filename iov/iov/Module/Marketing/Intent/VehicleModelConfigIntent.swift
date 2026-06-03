@@ -49,6 +49,11 @@ class VehicleModelConfigIntent: MviIntentProtocol {
         let basePrice = AppGlobalState.shared.parameters["selectedVariantPrice"] as? Decimal ?? 0
         modelAction?.updateFeatureRanges(saleCode: saleCode, featureRanges: featureRanges, basePrice: basePrice)
         
+        // 从AppGlobalState获取并显示车型和版本信息
+        let modelName = AppGlobalState.shared.parameters["selectedModelName"] as? String ?? ""
+        let variantName = AppGlobalState.shared.parameters["selectedVariantName"] as? String ?? ""
+        modelAction?.updateModelInfo(modelMarketingName: modelName, variantMarketingName: variantName)
+        
         if mode == "order" {
             if let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] {
                 for range in featureRanges {
