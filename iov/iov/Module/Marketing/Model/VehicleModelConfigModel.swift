@@ -80,6 +80,10 @@ extension VehicleModelConfigModel: VehicleModelConfigModelRouterProtocol {
     func routeToModelVariantSelection() {
         routerSubject.screen.send(.modelVariantSelection)
     }
+    
+    func routeToMarketingIndex() {
+        routerSubject.closeToRoot.send()
+    }
 }
 
 extension MarketingTypes.Model {

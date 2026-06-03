@@ -92,6 +92,7 @@
 		BFA187A42C84095B004D625D /* RouterSheetModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187A32C84095B004D625D /* RouterSheetModifier.swift */; };
 		BFA187A62C840993004D625D /* RouterAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187A52C840993004D625D /* RouterAlertModifier.swift */; };
 		BFA187A82C8409AE004D625D /* RouterCloseModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187A72C8409AE004D625D /* RouterCloseModifier.swift */; };
+		BFA187A92C8409AE004D625D /* RouterCloseToRootModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187AA2C8409AE004D625D /* RouterCloseToRootModifier.swift */; };
 		BFA187AD2C840B15004D625D /* CommunityArticleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187AC2C840B15004D625D /* CommunityArticleView.swift */; };
 		BFA187B02C840D53004D625D /* CommunityArticleIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187AF2C840D53004D625D /* CommunityArticleIntentProtocol.swift */; };
 		BFA187B32C840D85004D625D /* CommunityArticleModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA187B22C840D85004D625D /* CommunityArticleModelProtocol.swift */; };
@@ -507,6 +508,7 @@
 		BFA187A32C84095B004D625D /* RouterSheetModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterSheetModifier.swift; sourceTree = "<group>"; };
 		BFA187A52C840993004D625D /* RouterAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterAlertModifier.swift; sourceTree = "<group>"; };
 		BFA187A72C8409AE004D625D /* RouterCloseModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterCloseModifier.swift; sourceTree = "<group>"; };
+		BFA187AA2C8409AE004D625D /* RouterCloseToRootModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterCloseToRootModifier.swift; sourceTree = "<group>"; };
 		BFA187AC2C840B15004D625D /* CommunityArticleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityArticleView.swift; sourceTree = "<group>"; };
 		BFA187AF2C840D53004D625D /* CommunityArticleIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityArticleIntentProtocol.swift; sourceTree = "<group>"; };
 		BFA187B22C840D85004D625D /* CommunityArticleModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityArticleModelProtocol.swift; sourceTree = "<group>"; };
@@ -1108,6 +1110,7 @@
 				BFA187A32C84095B004D625D /* RouterSheetModifier.swift */,
 				BFA187A52C840993004D625D /* RouterAlertModifier.swift */,
 				BFA187A72C8409AE004D625D /* RouterCloseModifier.swift */,
+				BFA187AA2C8409AE004D625D /* RouterCloseToRootModifier.swift */,
 			);
 			path = Modifier;
 			sourceTree = "<group>";
@@ -3197,6 +3200,7 @@
 				BFA18A522C843938004D625D /* MallIntentProtocol.swift in Sources */,
 				BFA187932C832DA3004D625D /* CommunityTypes.swift in Sources */,
 				BFA187A82C8409AE004D625D /* RouterCloseModifier.swift in Sources */,
+				BFA187A92C8409AE004D625D /* RouterCloseToRootModifier.swift in Sources */,
 				BFA187A02C84090B004D625D /* RouterNavigationViewModifier.swift in Sources */,
 				BFADC2E82CB3869000834608 /* MarketingIndexPage+Build.swift in Sources */,
 				BFA189382C842A35004D625D /* MySettingAccountBindingModelProtocol.swift in Sources */,

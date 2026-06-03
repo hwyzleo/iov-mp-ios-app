@@ -34,4 +34,5 @@ protocol VehicleModelConfigModelActionProtocol: MviModelActionProtocol {
 protocol VehicleModelConfigModelRouterProtocol: MviModelRouterProtocol {
     func routeToOrderDetail()
     func routeToModelVariantSelection()
+    func routeToMarketingIndex()
 }

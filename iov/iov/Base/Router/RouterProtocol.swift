@@ -38,6 +38,8 @@ extension RouterProtocol {
                 alert: makeAlert))
             .modifier(RouterCloseModifier(
                 publisher: subjects.close.eraseToAnyPublisher()))
+            .modifier(RouterCloseToRootModifier(
+                publisher: subjects.closeToRoot.eraseToAnyPublisher()))
             .modifier(RouterSheetModifier(
                 isFullScreenCover: false,
                 publisher: subjects.screen.filter { $0.routeType == .sheet }.eraseToAnyPublisher(),
@@ -58,4 +60,5 @@ struct RouterSubjects<ScreenType, AlertType> where ScreenType: RouterScreenProto
     let screen = PassthroughSubject<ScreenType, Never>()
     let alert = PassthroughSubject<AlertType, Never>()
     let close = PassthroughSubject<Void, Never>()
+    let closeToRoot = PassthroughSubject<Void, Never>()
 }
