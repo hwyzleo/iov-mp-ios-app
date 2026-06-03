@@ -28,11 +28,6 @@ enum AppRoute: Hashable, Identifiable {
     }
 }
 
-/// Marketing模块路由枚举
-enum MarketingRoute: Hashable {
-    case index
-}
-
 /// Community模块路由枚举
 enum CommunityRoute: Hashable {
     case index
