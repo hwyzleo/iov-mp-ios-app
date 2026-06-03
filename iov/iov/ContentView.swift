@@ -133,19 +133,22 @@ struct ContentView: View {
         switch route {
         case .index:
             MarketingIndexPage.build()
+                .navigationBarHidden(true)
         case .modelVariantSelection(let saleModelCode):
             ModelVariantSelectionPage.build()
+                .navigationBarHidden(true)
                 .onAppear {
                     AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
                 }
         case .modelConfig(let saleModelCode):
             VehicleModelConfigPage.build()
+                .navigationBarHidden(true)
                 .onAppear {
                     AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
                 }
         case .orderDetail(let orderNo):
-            let _ = print("🔍 ContentView - marketingDestination: .orderDetail(orderNo: \(orderNo))")
             VehicleOrderDetailPage.build()
+                .navigationBarHidden(true)
                 .onAppear {
                     if !orderNo.isEmpty {
                         AppGlobalState.shared.parameters["orderNum"] = orderNo
@@ -153,14 +156,19 @@ struct ContentView: View {
                 }
         case .licenseArea:
             LicenseAreaPage.build()
+                .navigationBarHidden(true)
         case .dealership:
             DealershipPage.build()
+                .navigationBarHidden(true)
         case .deliveryCenter:
             DeliveryCenterPage.build()
+                .navigationBarHidden(true)
         case .earnestMoneyPay:
             EarnestMoneyPayPage.build()
+                .navigationBarHidden(true)
         case .downPaymentPay:
             DownPaymentPayPage.build()
+                .navigationBarHidden(true)
         }
     }
     
