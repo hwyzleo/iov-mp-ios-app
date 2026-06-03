@@ -64,12 +64,13 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                     switch result {
                     case .success(let res):
                         if let wishlist = res.data {
-                            let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
-                            
+                            // 根据新的Wishlist结构选择配置
+                            // 需要根据optionCodes来选择对应的配置项
                             for range in featureRanges {
-                                if let code = featureCodes[range.familyCode],
-                                   let feature = range.featureDetails.first(where: { $0.featureCode == code }) {
-                                    self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
+                                for option in range.featureDetails {
+                                    if wishlist.optionCodes.contains(option.featureCode) {
+                                        self.modelAction?.selectFeature(familyCode: range.familyCode, feature: option)
+                                    }
                                 }
                             }
                         }
@@ -149,16 +150,16 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                         TspApi.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
                             switch result {
                             case .success(let res):
-                                if let wishlist = res.data {
-                                    let featureCodes = self.extractFeatureCodes(wishlist.saleModelConfigs)
-                                    
-                                    for range in featureRanges {
-                                        if let code = featureCodes[range.familyCode],
-                                           let feature = range.featureDetails.first(where: { $0.featureCode == code }) {
-                                            self.modelAction?.selectFeature(familyCode: range.familyCode, feature: feature)
-                                        }
+                        if let wishlist = res.data {
+                            // 根据新的Wishlist结构选择配置
+                            for range in featureRanges {
+                                for option in range.featureDetails {
+                                    if wishlist.optionCodes.contains(option.featureCode) {
+                                        self.modelAction?.selectFeature(familyCode: range.familyCode, feature: option)
                                     }
                                 }
+                            }
+                        }
                             case .failure(_):
                                 self.modelAction?.displayError(text: "请求异常")
                             }
@@ -171,14 +172,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
         }
     }
     
-    /// 从配置项列表提取特征代码字典
-    private func extractFeatureCodes(_ configItems: [SaleModelConfigItem]) -> [String: String] {
-        var featureCodes: [String: String] = [:]
-        for item in configItems {
-            featureCodes[item.familyCode] = item.featureCode
-        }
-        return featureCodes
-    }
+
     
     /// 将ConfiguratorResult转换为[FeatureCodeRangeVo]
     private func convertToFeatureCodeRanges(_ configurator: ConfiguratorResult) -> [FeatureCodeRangeVo] {
@@ -269,15 +263,25 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         let saleModelCode = modelState.saleCode
         let selections = modelState.selections
         
-        var featureConfig: [String: String] = [:]
+        // 提取modelCode、variantCode和optionCodes
+        var modelCode = ""
+        var variantCode = ""
+        var optionCodes: [String] = []
+        
         for (familyCode, feature) in selections {
-            featureConfig[familyCode] = feature.featureCode
+            if familyCode == "MODEL" {
+                modelCode = feature.featureCode
+            } else if familyCode == "VARIANT" {
+                variantCode = feature.featureCode
+            } else {
+                optionCodes.append(feature.featureCode)
+            }
         }
         
         let currentId = VehicleManager.shared.getCurrentVehicleId()
         
         if let wishlistId = currentId {
-            TspApi.modifyWishlist(wishlistId: wishlistId, featureConfig: featureConfig) { [weak self] (result: Result<TspResponse<String>, Error>) in
+            TspApi.modifyWishlist(wishlistId: wishlistId, modelCode: modelCode, variantCode: variantCode, optionCodes: optionCodes) { [weak self] (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
@@ -292,7 +296,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                 }
             }
         } else {
-            TspApi.createWishlist(saleModelCode: saleModelCode, featureConfig: featureConfig) { [weak self] (result: Result<TspResponse<String>, Error>) in
+            TspApi.createWishlist(saleModelCode: saleModelCode, modelCode: modelCode, variantCode: variantCode, optionCodes: optionCodes) { [weak self] (result: Result<TspResponse<String>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
