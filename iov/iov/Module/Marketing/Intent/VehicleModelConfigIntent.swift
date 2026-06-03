@@ -348,4 +348,15 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         
         self.modelRouter?.routeToOrderDetail()
     }
+    
+    func onTapReselectModel() {
+        // 清除已选择的车型和版本信息
+        AppGlobalState.shared.parameters["selectedModelCode"] = nil
+        AppGlobalState.shared.parameters["selectedVariantCode"] = nil
+        AppGlobalState.shared.parameters["selectedVariantSelectableFamilies"] = nil
+        AppGlobalState.shared.parameters["selectedVariantPrice"] = nil
+        
+        // 导航到车型版本选择页面
+        self.modelRouter?.routeToModelVariantSelection()
+    }
 }

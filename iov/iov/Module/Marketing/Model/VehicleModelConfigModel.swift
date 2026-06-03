@@ -76,6 +76,10 @@ extension VehicleModelConfigModel: VehicleModelConfigModelRouterProtocol {
     func routeToOrderDetail() {
         routerSubject.screen.send(.orderDetail)
     }
+    
+    func routeToModelVariantSelection() {
+        routerSubject.screen.send(.modelVariantSelection)
+    }
 }
 
 extension MarketingTypes.Model {

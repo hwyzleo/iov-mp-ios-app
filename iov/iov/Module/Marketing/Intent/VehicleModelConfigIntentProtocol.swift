@@ -11,4 +11,5 @@ protocol VehicleModelConfigIntentProtocol: MviIntentProtocol {
     func onTapFeature(familyCode: String, feature: FeatureCodeDetailVo)
     func onTapSaveWishlist()
     func onTapOrder()
+    func onTapReselectModel()
 }

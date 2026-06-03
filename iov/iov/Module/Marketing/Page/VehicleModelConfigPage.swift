@@ -86,10 +86,7 @@ extension VehicleModelConfigPage {
                         }
                         Spacer()
                         Button(action: {
-                            // 返回重新选择车型
-                            AppGlobalState.shared.parameters["selectedModelCode"] = nil
-                            AppGlobalState.shared.parameters["selectedVariantCode"] = nil
-                            state.routerSubject.close.send()
+                            intent.onTapReselectModel()
                         }) {
                             Text("重新选择")
                                 .font(AppTheme.fonts.subtext)
