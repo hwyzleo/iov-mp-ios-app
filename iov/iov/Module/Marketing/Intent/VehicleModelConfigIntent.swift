@@ -263,17 +263,21 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         let saleModelCode = modelState.saleCode
         let selections = modelState.selections
         
-        // 提取modelCode、variantCode和optionCodes
-        var modelCode = ""
-        var variantCode = ""
-        var optionCodes: [String] = []
+        // 从AppGlobalState中获取modelCode和variantCode（在ModelVariantSelectionPage选择时已保存）
+        guard let modelCode = AppGlobalState.shared.parameters["selectedModelCode"] as? String, !modelCode.isEmpty else {
+            self.modelAction?.displayError(text: "请先选择车型")
+            return
+        }
+        guard let variantCode = AppGlobalState.shared.parameters["selectedVariantCode"] as? String, !variantCode.isEmpty else {
+            self.modelAction?.displayError(text: "请先选择变体")
+            return
+        }
         
+        // 提取optionCodes（排除MODEL和VARIANT相关的配置）
+        var optionCodes: [String] = []
         for (familyCode, feature) in selections {
-            if familyCode == "MODEL" {
-                modelCode = feature.featureCode
-            } else if familyCode == "VARIANT" {
-                variantCode = feature.featureCode
-            } else {
+            // 只收集选项配置，不包含车型和变体
+            if familyCode != "MODEL" && familyCode != "VARIANT" {
                 optionCodes.append(feature.featureCode)
             }
         }
