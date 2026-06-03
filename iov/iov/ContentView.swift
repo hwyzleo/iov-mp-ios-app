@@ -144,6 +144,9 @@ struct ContentView: View {
                 }
         case .orderDetail(let orderNo):
             VehicleOrderDetailPage.build(orderNum: orderNo.isEmpty ? nil : orderNo)
+                .onAppear {
+                    print("🔍 ContentView - VehicleOrderDetailPage.onAppear")
+                }
         case .licenseArea:
             LicenseAreaPage.build()
         case .dealership:
