@@ -111,6 +111,7 @@ struct ContentView: View {
     
     @ViewBuilder
     func destinationView(for route: AppRoute) -> some View {
+        let _ = print("🔍 ContentView - destinationView: \(route)")
         switch route {
         case .marketing(let marketingRoute):
             marketingDestination(for: marketingRoute)
@@ -143,10 +144,8 @@ struct ContentView: View {
                     AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
                 }
         case .orderDetail(let orderNo):
+            let _ = print("🔍 ContentView - marketingDestination: .orderDetail(orderNo: \(orderNo))")
             VehicleOrderDetailPage.build(orderNum: orderNo.isEmpty ? nil : orderNo)
-                .onAppear {
-                    print("🔍 ContentView - VehicleOrderDetailPage.onAppear")
-                }
         case .licenseArea:
             LicenseAreaPage.build()
         case .dealership:
