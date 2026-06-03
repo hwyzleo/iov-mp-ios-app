@@ -103,16 +103,16 @@ class TspApi {
         }
     }
     
-    /// 创建心愿单（动态配置模式）
-    static func createWishlist(saleModelCode: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/create", parameters: ["saleModelCode":saleModelCode,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
+    /// 创建心愿单（新配置模式）
+    static func createWishlist(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/create", parameters: ["saleModelCode":saleModelCode,"modelCode":modelCode,"variantCode":variantCode,"optionCodes":optionCodes]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
     
-    /// 修改心愿单（动态配置模式）
-    static func modifyWishlist(wishlistId: String, featureConfig: [String:String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/modify", parameters: ["wishlistId": wishlistId,"featureConfig":featureConfig]) { (result: Result<TspResponse<String>, Error>) in
+    /// 修改心愿单（新配置模式）
+    static func modifyWishlist(wishlistId: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/wishlist/action/modify", parameters: ["wishlistId": wishlistId,"modelCode":modelCode,"variantCode":variantCode,"optionCodes":optionCodes]) { (result: Result<TspResponse<String>, Error>) in
             completion(result)
         }
     }
