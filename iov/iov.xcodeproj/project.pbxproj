@@ -418,6 +418,8 @@
 		D9572CB27914A428CB6A6B5 /* DownPaymentPayPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */; };
 		DAE18D69527B146C0A8C0CD /* DownPaymentPayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */; };
 		DCAFB1A3DDB8B4463B4F812 /* DownPaymentPayPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */; };
+		AABB00020000000000000001 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00010000000000000001 /* AppRoute.swift */; };
+		AABB00040000000000000001 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00030000000000000001 /* AppRouter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -838,6 +840,8 @@
 		D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayPage.swift; sourceTree = "<group>"; };
 		DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModelProtocol.swift; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AABB00010000000000000001 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
+		AABB00030000000000000001 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1096,6 +1100,8 @@
 			isa = PBXGroup;
 			children = (
 				BFA1879E2C8408F0004D625D /* Modifier */,
+				AABB00010000000000000001 /* AppRoute.swift */,
+				AABB00030000000000000001 /* AppRouter.swift */,
 				BFA1879A2C8408BF004D625D /* RouterProtocol.swift */,
 				BFA1879C2C8408D7004D625D /* RouterScreenProtocol.swift */,
 			);
@@ -3237,6 +3243,8 @@
 				BFA189F32C843397004D625D /* TestDriveReportView+Build.swift in Sources */,
 				BFA189E72C843313004D625D /* TestDriveReportIntentProtocol.swift in Sources */,
 				BFA18A642C843A12004D625D /* MallIntent.swift in Sources */,
+				AABB00020000000000000001 /* AppRoute.swift in Sources */,
+				AABB00040000000000000001 /* AppRouter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
