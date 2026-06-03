@@ -367,7 +367,10 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         AppGlobalState.shared.parameters["selectedVariantSelectableFamilies"] = nil
         AppGlobalState.shared.parameters["selectedVariantPrice"] = nil
         
+        // 获取当前的saleModelCode
+        let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
+        
         // 导航到车型版本选择页面
-        AppRouter.shared.push(.marketing(.modelVariantSelection(saleModelCode: "")))
+        AppRouter.shared.push(.marketing(.modelVariantSelection(saleModelCode: saleModelCode)))
     }
 }
