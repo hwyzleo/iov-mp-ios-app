@@ -18,10 +18,15 @@ class VehicleOrderDetailIntent: MviIntentProtocol {
     
 func viewOnAppear() {
         let currentState = modelAction?.getContentState()
+        print("🔍 VehicleOrderDetailIntent.viewOnAppear() - currentState: \(String(describing: currentState))")
+        print("🔍 VehicleOrderDetailIntent.viewOnAppear() - orderDetailView: \(String(describing: AppGlobalState.shared.parameters["orderDetailView"]))")
+        
         if modelAction?.getContentState() == .order && AppGlobalState.shared.parameters["orderDetailView"] == nil {
+            print("🔍 VehicleOrderDetailIntent.viewOnAppear() - Early return: state is .order and no orderDetailView")
             return
         }
         if currentState != .loading && currentState != .wishlist {
+            print("🔍 VehicleOrderDetailIntent.viewOnAppear() - Early return: state is not .loading or .wishlist")
             return
         }
         
