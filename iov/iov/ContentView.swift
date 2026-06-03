@@ -89,10 +89,10 @@ struct ContentView: View {
                         .tag(4)
                 }
                 .accentColor(AppTheme.colors.brandMain)
+                .navigationDestination(for: AppRoute.self) { route in
+                    destinationView(for: route)
+                }
             }
-        }
-        .navigationDestination(for: AppRoute.self) { route in
-            destinationView(for: route)
         }
         .sheet(item: $appRouter.presentedItem) { route in
             destinationView(for: route)
