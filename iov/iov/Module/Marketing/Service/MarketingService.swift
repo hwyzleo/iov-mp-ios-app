@@ -12,6 +12,8 @@ protocol MarketingServiceProtocol {
     func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, Error>) -> Void)
     func getValidVehicleSaleOrderList(completion: @escaping (Result<TspResponse<[VehicleSaleOrder]>, Error>) -> Void)
     func getWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void)
+    func createWishlist(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void)
+    func modifyWishlist(wishlistId: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void)
     func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void)
     func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void)
     func getDeliveryCenter(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void)
@@ -44,6 +46,14 @@ class RealMarketingService: MarketingServiceProtocol {
     
     func getWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
         TspApi.getWishlist(wishlistId: wishlistId, completion: completion)
+    }
+    
+    func createWishlist(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspApi.createWishlist(saleModelCode: saleModelCode, modelCode: modelCode, variantCode: variantCode, optionCodes: optionCodes, completion: completion)
+    }
+    
+    func modifyWishlist(wishlistId: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        TspApi.modifyWishlist(wishlistId: wishlistId, modelCode: modelCode, variantCode: variantCode, optionCodes: optionCodes, completion: completion)
     }
     
     func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void) {
@@ -211,6 +221,14 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
     
     func getWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<Wishlist>, Error>) -> Void) {
         mockDelayedSuccess(data: mockWishlist(), completion: completion)
+    }
+    
+    func createWishlist(saleModelCode: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        mockDelayedSuccess(data: "WL123456789", completion: completion)
+    }
+    
+    func modifyWishlist(wishlistId: String, modelCode: String, variantCode: String, optionCodes: [String], completion: @escaping (Result<TspResponse<String>, Error>) -> Void) {
+        mockDelayedSuccess(data: "WL123456789", completion: completion)
     }
 
     func getLicenseArea(completion: @escaping (Result<TspResponse<[LicenseArea]>, Error>) -> Void) {
