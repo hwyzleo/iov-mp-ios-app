@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     
     @EnvironmentObject var globalState: AppGlobalState
+    @State private var marketingNavigationPath = NavigationPath()
     
     init() {
         // 设置 TabBar 的外观以适配深色主题
@@ -30,7 +31,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $marketingNavigationPath) {
             if globalState.needShowLoginPage {
                 LoginPage.buildMobileLogin()
                     .onAppear {
@@ -98,7 +99,8 @@ struct ContentView: View {
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .init("switchToMarketingIndex"))) { _ in
-            globalState.selectedTab = 2
+            // 清空导航路径以返回到根页面
+            marketingNavigationPath = NavigationPath()
         }
     }
 }
