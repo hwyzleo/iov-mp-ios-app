@@ -307,8 +307,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         DispatchQueue.main.async {
-                            // 同时调用路由方法和发送通知，确保可靠跳转
-                            self?.modelRouter?.routeToMarketingIndex()
+                            // 发送通知，由ContentView清空导航路径
                             NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
                         }
                     } else {
@@ -329,8 +328,7 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
                         AppGlobalState.shared.backRefresh = true
                         AppGlobalState.shared.parameters["orderDetailView"] = "WISHLIST"
                         DispatchQueue.main.async {
-                            // 同时调用路由方法和发送通知，确保可靠跳转
-                            self?.modelRouter?.routeToMarketingIndex()
+                            // 发送通知，由ContentView清空导航路径
                             NotificationCenter.default.post(name: .init("switchToMarketingIndex"), object: nil)
                         }
                     } else {
