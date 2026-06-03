@@ -133,10 +133,13 @@ struct ContentView: View {
         case .index:
             MarketingIndexPage.build()
         case .modelVariantSelection(let saleModelCode):
+            AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
             ModelVariantSelectionPage.build()
         case .modelConfig(let saleModelCode):
+            AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
             VehicleModelConfigPage.build()
         case .orderDetail(let orderNo):
+            AppGlobalState.shared.parameters["orderNum"] = orderNo
             VehicleOrderDetailPage.build()
         case .licenseArea:
             LicenseAreaPage.build()
