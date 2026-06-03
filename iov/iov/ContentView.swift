@@ -145,7 +145,12 @@ struct ContentView: View {
                 }
         case .orderDetail(let orderNo):
             let _ = print("🔍 ContentView - marketingDestination: .orderDetail(orderNo: \(orderNo))")
-            VehicleOrderDetailPage.build(orderNum: orderNo.isEmpty ? nil : orderNo)
+            VehicleOrderDetailPage.build()
+                .onAppear {
+                    if !orderNo.isEmpty {
+                        AppGlobalState.shared.parameters["orderNum"] = orderNo
+                    }
+                }
         case .licenseArea:
             LicenseAreaPage.build()
         case .dealership:
