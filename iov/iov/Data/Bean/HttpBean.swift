@@ -331,6 +331,22 @@ struct Order: Codable {
     var dealershipName: String?
     var deliveryCenterCode: String?
     var deliveryCenterName: String?
+    var modelCode: String?
+    var modelName: String?
+    var variantCode: String?
+    var variantName: String?
+    var configurationCode: String?
+    var optionCodes: [String]?
+    var optionBreakdown: [OptionBreakdownItem]?
+}
+
+/// 选项明细项
+struct OptionBreakdownItem: Codable {
+    var optionCode: String
+    var optionFamilyCode: String?
+    var optionFamilyName: String?
+    var optionName: String?
+    var optionPrice: Decimal?
 }
 
 /// 订单支付响应
@@ -787,10 +803,10 @@ struct QuoteResult: Codable {
     /// 总价 = variantPrice + optionTotalPrice
     var totalPrice: Decimal
     /// Option 价格明细
-    var optionPriceBreakdown: [OptionPriceItem]
+    var optionBreakdown: [OptionPriceItem]
     
     struct OptionPriceItem: Codable {
-        var optionFamilyCode: String
+        var optionFamilyCode: String?
         var optionCode: String
         var optionPrice: Decimal
     }

@@ -97,6 +97,15 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
         return configs
     }
     
+    private func convertOptionBreakdownToDynamicConfigs(_ optionBreakdown: [OptionBreakdownItem]?) -> [(String, String, Decimal)] {
+        guard let options = optionBreakdown else { return [] }
+        return options.map { option in
+            let displayName = option.optionFamilyName ?? option.optionName ?? option.optionCode
+            let title = option.optionName ?? option.optionCode
+            return (displayName, title, option.optionPrice ?? 0)
+        }
+    }
+    
     private func handleWishlist() {
         if let wishlistId = VehicleManager.shared.getCurrentVehicleId() {
             ServiceContainer.marketingService.getWishlist(wishlistId: wishlistId) { (result: Result<TspResponse<Wishlist>, Error>) in
@@ -158,6 +167,7 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
         let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         let regionCode = AppGlobalState.shared.parameters["licenseCityCode"] as? String ?? ""
+        let savedOptionCodes = AppGlobalState.shared.parameters["optionCodes"] as? [String] ?? []
         
         ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (result: Result<TspResponse<ConfiguratorResult>, Error>) in
             switch result {
@@ -172,7 +182,10 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                     
                     if let firstModel = configurator.models.first,
                        let firstVariant = firstModel.variants.first {
-                        let optionCodes = self?.extractSelectedOptionCodes(from: firstVariant, saleModelConfigType: saleModelConfigType) ?? []
+                        let optionCodes = savedOptionCodes.isEmpty ? (self?.extractSelectedOptionCodes(from: firstVariant, saleModelConfigType: saleModelConfigType) ?? []) : savedOptionCodes
+                        
+                        AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
                         
                         ServiceContainer.marketingService.getQuote(
                             saleModelCode: saleModelCode,
@@ -197,6 +210,8 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                                 self?.modelAction?.displayError(text: "请求异常")
                             }
                         }
+                    } else {
+                        self?.modelAction?.displayError(text: "车型配置数据异常")
                     }
                 } else {
                     self?.modelAction?.displayError(text: res.message ?? "请求异常")
@@ -259,11 +274,18 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
         self.modelAction?.updateDynamicConfigs(dynamicConfigs)
     }
     
-    private func extractSelectedOptionCodes(from variant: ConfiguratorResult.VariantItem, saleModelConfigType: [String: String]) -> [String] {
+    private func extractSelectedOptionCodes(from variant: ConfiguratorResult.VariantItem?, saleModelConfigType: [String: String]) -> [String] {
         var optionCodes: [String] = []
-        for family in variant.selectableFamilies {
-            if let selectedCode = saleModelConfigType[family.optionFamilyCode] {
-                optionCodes.append(selectedCode)
+        if let variant = variant {
+            for family in variant.selectableFamilies {
+                if let selectedCode = saleModelConfigType[family.optionFamilyCode] {
+                    optionCodes.append(selectedCode)
+                }
+            }
+        } else {
+            // 如果没有variant，直接从saleModelConfigType中提取所有值作为optionCodes
+            for (_, value) in saleModelConfigType {
+                optionCodes.append(value)
             }
         }
         return optionCodes
@@ -278,25 +300,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayEarnestMoneyUnpaid()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayEarnestMoneyUnpaid()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayEarnestMoneyUnpaid()
+                        }
+                    } else {
+                        self.modelAction?.displayEarnestMoneyUnpaid()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -313,19 +358,19 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
@@ -335,7 +380,30 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         code: orderResponse.licenseCityCode ?? "",
                         name: orderResponse.licenseCityName ?? ""
                     )
-                    self.modelAction?.displayEarnestMoneyPaid()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayEarnestMoneyPaid()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayEarnestMoneyPaid()
+                        }
+                    } else {
+                        self.modelAction?.displayEarnestMoneyPaid()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -353,19 +421,19 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
@@ -391,7 +459,30 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         name: ""
                     )
                     self.modelAction?.setIsFromEarnestMoneyConversion(isFrom: true)
-                    self.modelAction?.displayDownPaymentUnpaid()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayDownPaymentUnpaid()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayDownPaymentUnpaid()
+                        }
+                    } else {
+                        self.modelAction?.displayDownPaymentUnpaid()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -408,19 +499,19 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
@@ -446,7 +537,30 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         name: orderResponse.deliveryCenterName ?? ""
                     )
                     self.modelAction?.setIsFromEarnestMoneyConversion(isFrom: false)
-                    self.modelAction?.displayDownPaymentUnpaid()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayDownPaymentUnpaid()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayDownPaymentUnpaid()
+                        }
+                    } else {
+                        self.modelAction?.displayDownPaymentUnpaid()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -463,19 +577,19 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
@@ -500,7 +614,30 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                     let deliveryCode = orderResponse.deliveryStoreCode ?? orderResponse.deliveryCenterCode ?? ""
                     let deliveryName = orderResponse.deliveryStoreName ?? orderResponse.deliveryCenterName ?? ""
                     self.modelAction?.updateDeliveryCenter(code: deliveryCode, name: deliveryName)
-                    self.modelAction?.displayDownPaymentPaid()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayDownPaymentPaid()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayDownPaymentPaid()
+                        }
+                    } else {
+                        self.modelAction?.displayDownPaymentPaid()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -517,19 +654,19 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
@@ -554,7 +691,30 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                     let deliveryCode = orderResponse.deliveryStoreCode ?? orderResponse.deliveryCenterCode ?? ""
                     let deliveryName = orderResponse.deliveryStoreName ?? orderResponse.deliveryCenterName ?? ""
                     self.modelAction?.updateDeliveryCenter(code: deliveryCode, name: deliveryName)
-                    self.modelAction?.displayArrangeProduction()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayArrangeProduction()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayArrangeProduction()
+                        }
+                    } else {
+                        self.modelAction?.displayArrangeProduction()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -571,25 +731,49 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayAllocationVehicle()
+                    
+                    // 从configurator获取modelCode和variantCode
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayAllocationVehicle()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayAllocationVehicle()
+                        }
+                    } else {
+                        self.modelAction?.displayAllocationVehicle()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -606,25 +790,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayPrepareTransport()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayPrepareTransport()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayPrepareTransport()
+                        }
+                    } else {
+                        self.modelAction?.displayPrepareTransport()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -641,25 +848,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayPrepareDeliver()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayPrepareDeliver()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayPrepareDeliver()
+                        }
+                    } else {
+                        self.modelAction?.displayPrepareDeliver()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -676,25 +906,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayFinalPaymentPaid()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayFinalPaymentPaid()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayFinalPaymentPaid()
+                        }
+                    } else {
+                        self.modelAction?.displayFinalPaymentPaid()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -711,25 +964,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayInvoiced()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayInvoiced()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayInvoiced()
+                        }
+                    } else {
+                        self.modelAction?.displayInvoiced()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -746,25 +1022,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         return
                     }
                     self.modelAction?.updateSaleModelImages(saleModelImages: orderResponse.saleModelImages ?? [])
+                    let displayName = orderResponse.variantName ?? orderResponse.modelName ?? ""
                     self.modelAction?.updateSaleModelIntro(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
+                        saleModelName: displayName,
                         saleModelDesc: orderResponse.saleModelDesc ?? ""
                     )
+                    let optionTotalPrice = orderResponse.optionBreakdown?.compactMap({ $0.optionPrice }).reduce(0, +) ?? 0
+                    let basePrice = (orderResponse.totalPrice ?? 0) - optionTotalPrice
                     self.modelAction?.updateSaleModelPrice(
-                        saleModelName: orderResponse.saleModelConfigName?["BASE_MODEL"] ?? "",
-                        saleModelPrice: orderResponse.saleModelConfigPrice?["BASE_MODEL"] ?? 0,
+                        saleModelName: displayName,
+                        saleModelPrice: basePrice,
                         totalPrice: orderResponse.totalPrice ?? 0
                     )
-                    let dynamicConfigs = self.convertToDynamicConfigs(
-                        configName: orderResponse.saleModelConfigName,
-                        configPrice: orderResponse.saleModelConfigPrice
-                    )
+                    let dynamicConfigs = self.convertOptionBreakdownToDynamicConfigs(orderResponse.optionBreakdown)
                     self.modelAction?.updateDynamicConfigs(dynamicConfigs)
                     self.modelAction?.updateOrder(
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
-                    self.modelAction?.displayDelivered()
+                    
+                    if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
+                        AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
+                        AppGlobalState.shared.parameters["selectedVariantCode"] = variantCode
+                        self.modelAction?.displayDelivered()
+                    } else if let saleModelCode = orderResponse.saleModelCode {
+                        let regionCode = orderResponse.licenseCityCode ?? ""
+                        ServiceContainer.marketingService.getConfigurator(saleModelCode: saleModelCode, regionCode: regionCode) { [weak self] (configuratorResult: Result<TspResponse<ConfiguratorResult>, Error>) in
+                            switch configuratorResult {
+                            case .success(let configuratorRes):
+                                if let configurator = configuratorRes.data,
+                                   let firstModel = configurator.models.first,
+                                   let firstVariant = firstModel.variants.first {
+                                    AppGlobalState.shared.parameters["selectedModelCode"] = firstModel.modelCode
+                                    AppGlobalState.shared.parameters["selectedVariantCode"] = firstVariant.variantCode
+                                }
+                            case .failure(_):
+                                break
+                            }
+                            self?.modelAction?.displayDelivered()
+                        }
+                    } else {
+                        self.modelAction?.displayDelivered()
+                    }
                 case .failure(_):
                     self.modelAction?.displayError(text: "请求异常")
                 }
@@ -831,9 +1130,13 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                         return
                     }
                     
-                    // 由于新结构不再有saleModelConfigs，需要根据optionCodes来处理
-                    // 这里暂时使用空字典，因为新结构没有familyCode到featureCode的映射
-                    let featureCodes: [String: String] = [:]
+                    // 从 optionDetails 重建 saleModelConfigType 字典
+                    var featureCodes: [String: String] = [:]
+                    if let optionDetails = wishlist.optionDetails {
+                        for option in optionDetails {
+                            featureCodes[option.optionFamilyCode] = option.optionCode
+                        }
+                    }
                     
                     AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
                     AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
@@ -874,10 +1177,16 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onTapEarnestMoneyOrder(saleModelName: String, licenseCityCode: String) {
         modelAction?.displayLoading()
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
+        let modelCode = AppGlobalState.shared.parameters["selectedModelCode"] as? String ?? ""
+        let variantCode = AppGlobalState.shared.parameters["selectedVariantCode"] as? String ?? ""
+        let savedOptionCodes = AppGlobalState.shared.parameters["optionCodes"] as? [String] ?? []
+        let optionCodes = savedOptionCodes.isEmpty ? self.extractSelectedOptionCodes(from: nil, saleModelConfigType: saleModelConfigType) : savedOptionCodes
         ServiceContainer.marketingService.earnestMoneyOrder(
             saleModelCode: AppGlobalState.shared.parameters["saleModelCode"] as? String ?? "",
+            modelCode: modelCode,
+            variantCode: variantCode,
             orderNo: nil,
-            saleModelConfigType: saleModelConfigType,
+            optionCodes: optionCodes,
             licenseCityCode: licenseCityCode
         ) { [weak self] (result: Result<TspResponse<EarnestMoneyOrderResult>, Error>) in
             switch result {
@@ -1149,7 +1458,15 @@ func onTapModifyOrderConfig() {
                 }
                 
                 AppGlobalState.shared.parameters["saleModelCode"] = order.saleModelCode ?? ""
-                AppGlobalState.shared.parameters["saleModelConfigType"] = order.saleModelConfigType ?? [:]
+                if let optionCodes = order.optionCodes {
+                    var featureCodes: [String: String] = [:]
+                    for code in optionCodes {
+                        featureCodes[code] = code
+                    }
+                    AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes
+                } else {
+                    AppGlobalState.shared.parameters["saleModelConfigType"] = order.saleModelConfigType ?? [:]
+                }
                 AppGlobalState.shared.parameters["modifyConfigMode"] = "order"
                 AppGlobalState.shared.parameters["modifyConfigOrderNo"] = orderNo
                 

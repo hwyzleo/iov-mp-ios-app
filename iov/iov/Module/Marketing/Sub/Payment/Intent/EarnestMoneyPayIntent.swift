@@ -98,13 +98,9 @@ class EarnestMoneyPayIntent: EarnestMoneyPayIntentProtocol {
                         self?.modelAction?.displaySuccess()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                             AppGlobalState.shared.needRefresh = true
-                            let lastView = AppGlobalState.shared.parameters["lastView"] as? String ?? ""
-                            if lastView == "MODEL_CONFIG" {
-                                AppGlobalState.shared.parameters["backCount"] = 1
-                            }
                             AppGlobalState.shared.needCloseOrderDetail = true
                             DispatchQueue.main.async {
-                                AppRouter.shared.pop()
+                                AppRouter.shared.popToRoot()
                             }
                         }
                     } else {

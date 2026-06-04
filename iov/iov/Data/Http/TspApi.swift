@@ -183,10 +183,12 @@ class TspApi {
     }
     
     /// 意向金下订单
-    static func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    static func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         var parameters: [String: Any] = [
             "saleModelCode": saleModelCode,
-            "saleModelConfigType": saleModelConfigType,
+            "modelCode": modelCode,
+            "variantCode": variantCode,
+            "optionCodes": optionCodes,
             "licenseCityCode": licenseCityCode
         ]
         if let orderNo = orderNo {
@@ -215,7 +217,7 @@ class TspApi {
             "paymentStage": paymentStage,
             "paymentAmount": paymentAmount,
             "paymentStatus": paymentStatus,
-            "payTime": ISO8601DateFormatter().string(from: payTime)
+            "payTime": Int(payTime.timeIntervalSince1970)
         ]
         if let idempotentKey = idempotentKey {
             parameters["idempotentKey"] = idempotentKey

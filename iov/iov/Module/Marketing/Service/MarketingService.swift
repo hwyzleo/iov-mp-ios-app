@@ -20,7 +20,7 @@ protocol MarketingServiceProtocol {
     func getSelectedSaleModel(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<SelectedSaleModel>, Error>) -> Void)
     func getOrder(orderNo: String, completion: @escaping (Result<TspResponse<Order>, Error>) -> Void)
     func deleteWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
-    func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
+    func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
     func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void)
     func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void)
@@ -80,11 +80,13 @@ class RealMarketingService: MarketingServiceProtocol {
         TspApi.deleteWishlist(wishlistId: wishlistId, completion: completion)
     }
     
-    func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         TspApi.earnestMoneyOrder(
             saleModelCode: saleModelCode,
+            modelCode: modelCode,
+            variantCode: variantCode,
             orderNo: orderNo,
-            saleModelConfigType: saleModelConfigType,
+            optionCodes: optionCodes,
             licenseCityCode: licenseCityCode,
             completion: completion
         )
@@ -266,7 +268,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
         mockDelayedSuccess(data: nil, completion: completion)
     }
 
-    func earnestMoneyOrder(saleModelCode: String, orderNo: String?, saleModelConfigType: [String: String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         let mockResult = EarnestMoneyOrderResult(
             orderNo: "MOCK_ORDER_001",
             earnestMoneyAmount: 5000,
@@ -368,7 +370,7 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
             variantPrice: 100000,
             optionTotalPrice: 0,
             totalPrice: 100000,
-            optionPriceBreakdown: []
+            optionBreakdown: []
         )
         mockDelayedSuccess(data: mockResult, completion: completion)
     }

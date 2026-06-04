@@ -96,9 +96,13 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
                     return
                 }
                 
-                // 由于新结构不再有saleModelConfigs，需要根据optionCodes来处理
-                // 这里暂时使用空字典，因为新结构没有familyCode到featureCode的映射
-                let featureCodes: [String: String] = [:]
+                // 从 optionDetails 重建 saleModelConfigType 字典
+                var featureCodes: [String: String] = [:]
+                if let optionDetails = wishlist.optionDetails {
+                    for option in optionDetails {
+                        featureCodes[option.optionFamilyCode] = option.optionCode
+                    }
+                }
                 
                 AppGlobalState.shared.parameters["saleModelCode"] = wishlist.saleModelCode
                 AppGlobalState.shared.parameters["saleModelConfigType"] = featureCodes

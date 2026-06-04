@@ -348,14 +348,19 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         let selections = modelState.selections
         
         var saleModelConfigType: [String: String] = [:]
+        var optionCodes: [String] = []
         for (familyCode, feature) in selections {
             saleModelConfigType[familyCode] = feature.featureCode
+            if familyCode != "MODEL" && familyCode != "VARIANT" {
+                optionCodes.append(feature.featureCode)
+            }
         }
         
         AppGlobalState.shared.parameters["lastView"] = "MODEL_CONFIG"
         AppGlobalState.shared.parameters["orderDetailView"] = "ORDER"
         AppGlobalState.shared.parameters["saleModelCode"] = saleCode
         AppGlobalState.shared.parameters["saleModelConfigType"] = saleModelConfigType
+        AppGlobalState.shared.parameters["optionCodes"] = optionCodes
         
         AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
     }
