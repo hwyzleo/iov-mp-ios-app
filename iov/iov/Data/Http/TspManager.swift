@@ -9,20 +9,25 @@ import Foundation
 import Alamofire
 import UIKit
 
-// TSP 请求头
-var tspHeaders: HTTPHeaders {
-    let token = UserManager.getToken()
+// TSP 公共请求头（不含凭证）
+var tspBaseHeaders: HTTPHeaders {
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
 
-    var headers: HTTPHeaders = [
+    return [
         "X-Device-Id": getDeviceId(),
         "X-Platform": "ios",
         "X-Os-Version": UIDevice.current.systemVersion,
         "X-App-Version": appVersion,
-        "X-Client-Id": "iphone-capp",
+        "X-Client-Id": AppConfig.tspClientId,
         "X-Client-Type": "MOBILE"
     ]
+}
 
+// TSP 请求头（凭证仅从 Keychain 会话读取）
+var tspHeaders: HTTPHeaders {
+    let token = AuthEnvironment.shared.sessionRepository.currentAccessToken()
+
+    var headers = tspBaseHeaders
     if !token.isEmpty {
         headers["Authorization"] = "Bearer \(token)"
     }
@@ -32,10 +37,6 @@ var tspHeaders: HTTPHeaders {
 
 /// TSP 管理
 class TspManager {
-    
-    // 刷新锁，防止并发刷新
-    private static var isRefreshing = false
-    private static var refreshCompletionHandlers: [(String) -> Void] = []
     
     // POST 请求
     static func requestPost<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
@@ -71,78 +72,27 @@ class TspManager {
         }
     }
     
-    // 确保 token 有效
+    // 确保 token 有效（单飞刷新由 TokenRefreshCoordinator 负责）
     private static func ensureTokenValid(completion: @escaping (Result<Void, Error>) -> Void) {
-        if !UserManager.isLogin() {
+        let repository = AuthEnvironment.shared.sessionRepository
+        guard repository.hasSession() else {
             completion(.success(()))
             return
         }
-        
-        if UserManager.isTokenExpiringSoon(threshold: 300) {
-            performTokenRefresh { result in
-                completion(result)
-            }
-        } else {
+
+        guard repository.isAccessTokenExpiring(within: 300) else {
             completion(.success(()))
-        }
-    }
-    
-    // 执行 token 刷新
-    private static func performTokenRefresh(completion: @escaping (Result<Void, Error>) -> Void) {
-        if isRefreshing {
-            refreshCompletionHandlers.append { newToken in
-                if newToken.isEmpty {
-                    completion(.failure(NSError(domain: "TokenRefreshError", code: -1, userInfo: [NSLocalizedDescriptionKey: "刷新 token 失败"])))
-                } else {
-                    completion(.success(()))
-                }
-            }
             return
         }
-        
-        isRefreshing = true
-        
-        let refreshToken = UserManager.getRefreshToken()
-        if refreshToken.isEmpty {
-            isRefreshing = false
-            completion(.failure(NSError(domain: "TokenRefreshError", code: -1, userInfo: [NSLocalizedDescriptionKey: "refreshToken 不存在"])))
-            return
-        }
-        
-        print("access_token 即将过期，开始刷新...")
-        
-        TspApi.refreshToken(refreshToken: refreshToken) { result in
-            isRefreshing = false
-            let handlers = refreshCompletionHandlers
-            refreshCompletionHandlers.removeAll()
-            
+
+        SafeLog.log("access_token 即将过期，开始刷新")
+        AuthEnvironment.shared.refreshCoordinator.refresh { result in
             switch result {
-            case let .success(response):
-                if response.isSuccess, let data = response.data {
-                    let newExpiresAt = Date(timeIntervalSince1970: Double(data.tokenExpires ?? 0) / 1000.0)
-                    UserManager.updateTokens(
-                        token: data.token ?? "",
-                        refreshToken: data.refreshToken ?? refreshToken,
-                        expiresAt: newExpiresAt
-                    )
-                    print("access_token 刷新成功")
-                    
-                    for handler in handlers {
-                        handler(data.token ?? "")
-                    }
-                    completion(.success(()))
-                } else {
-                    print("access_token 刷新失败：\(response.message ?? "")")
-                    for handler in handlers {
-                        handler("")
-                    }
-                    completion(.failure(NSError(domain: "TokenRefreshError", code: -1, userInfo: [NSLocalizedDescriptionKey: response.message ?? "刷新失败"])))
-                }
+            case .success:
+                completion(.success(()))
             case let .failure(error):
-                print("access_token 刷新请求失败：\(error)")
-                for handler in handlers {
-                    handler("")
-                }
+                // 会话失效由 TokenRefreshCoordinator 统一发布 sessionExpired 事件
+                SafeLog.log("access_token 刷新失败:", error.logCategory)
                 completion(.failure(error))
             }
         }
@@ -150,7 +100,7 @@ class TspManager {
     
     // 实际执行 POST 请求
     private static func performRequestPost<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        print("request post tsp:", path, parameters, tspHeaders)
+        SafeLog.log("request post tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspHeaders))
         NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
@@ -164,7 +114,7 @@ class TspManager {
     
     // 实际执行 GET 请求
     private static func performRequestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        print("request get tsp:", path, parameters, tspHeaders)
+        SafeLog.log("request get tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspHeaders))
         NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
@@ -178,7 +128,7 @@ class TspManager {
     
     // 实际执行 PUT 请求
     private static func performRequestPut<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
-        print("request put tsp:", path, parameters, tspHeaders)
+        SafeLog.log("request put tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspHeaders))
         NetworkManager.shared.requestPut(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
@@ -204,15 +154,14 @@ class TspManager {
     // json -> model
     static func parseData<T: Decodable>(_ data: Data) -> Result<T, Error> {
         let decoder = JSONDecoder()
-        
-        let dataStr = String(data: data, encoding: .utf8)!
-        print("response tsp:", dataStr)
-        
-        if let rawResponse = try? decoder.decode(TspResponse<AnyCodable>.self, from: data) {
-            if rawResponse.code == "701304" {
-                DispatchQueue.main.async {
-                    AppGlobalState.shared.handleTokenExpired()
-                }
+
+        let dataStr = String(data: data, encoding: .utf8) ?? "<unreadable response>"
+        SafeLog.log("response tsp:", SafeLog.redacted(responseBody: dataStr))
+
+        if let rawResponse = try? decoder.decode(TspResponse<AnyCodable>.self, from: data),
+           rawResponse.code == AuthServerCode.sessionExpired {
+            DispatchQueue.main.async {
+                AuthEnvironment.shared.handleSessionExpired()
             }
         }
         

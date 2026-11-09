@@ -27,6 +27,16 @@ class RealmManager {
             cachedRealm = newRealm
             return newRealm
         } catch {
+            // 无法完成迁移时按安全策略删除本地库后重建（凭证丢失则要求重新登录）
+            if let url = configuration.fileURL {
+                try? FileManager.default.removeItem(at: url)
+                try? FileManager.default.removeItem(at: URL(fileURLWithPath: url.path + ".lock"))
+                try? FileManager.default.removeItem(at: URL(fileURLWithPath: url.path + ".management"))
+            }
+            if let recovered = try? Realm(configuration: configuration) {
+                cachedRealm = recovered
+                return recovered
+            }
             fatalError("初始化 Realm 失败 (配置: \(configuration.fileURL?.lastPathComponent ?? "未知")): \(error)")
         }
     }
@@ -60,9 +70,11 @@ class RealmManager {
         let config = Realm.Configuration(
             fileURL: url,
             encryptionKey: encryptionKey,
-            schemaVersion: 2, // 统一提升到 2
-            migrationBlock: { migration, oldSchemaVersion in },
-            deleteRealmIfMigrationNeeded: true,
+            schemaVersion: 3, // 3：新增 userId / sessionId，旧 Token 字段仅供迁移
+            migrationBlock: { migration, oldSchemaVersion in
+                // 仅新增带默认值的字段，Realm 自动补齐
+            },
+            deleteRealmIfMigrationNeeded: false,
             objectTypes: [UserManager.self])
         return config
     }()

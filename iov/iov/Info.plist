@@ -15,5 +15,7 @@
 	<string>需要您的同意，才能访问相册以识别二维码</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>需要您的同意，才能在使用期间获取您的位置以自动填写用车城市</string>
+	<key>TSPServerClientId</key>
+	<string>$(TSP_CLIENT_ID)</string>
 </dict>
 </plist>

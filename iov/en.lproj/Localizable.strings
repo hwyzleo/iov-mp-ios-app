@@ -5,6 +5,16 @@
   Created by hwyz_leo on 2024/9/30.
   
 */
+"auth_error_invalid_input" = "Please enter a valid mobile number and accept the agreement";
+"auth_error_network_unavailable" = "Network unavailable, please try again later";
+"auth_error_verification_code_invalid" = "The verification code is invalid or expired, please re-enter";
+"auth_error_authentication_rejected" = "Sign-in failed, please try again later";
+"auth_error_challenge_unsupported" = "Additional verification is required. Please update the app and try again";
+"auth_error_invalid_server_response" = "Unexpected sign-in response, please try again later";
+"auth_error_credential_persistence_failed" = "Failed to save sign-in credentials, please retry";
+"auth_error_token_refresh_failed" = "Failed to refresh the session, please try again later";
+"auth_error_session_expired" = "Your session has expired, please sign in again";
+"auth_error_unknown" = "Operation failed, please try again later";
 "adas" = "adas";
 "agree_user_agreement" = "Please check the box to agree to the User Agreement";
 "allocation_vehicle" = "allocation vehicle";

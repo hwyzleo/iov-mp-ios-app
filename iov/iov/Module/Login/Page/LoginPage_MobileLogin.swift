@@ -12,18 +12,18 @@ extension LoginPage {
     
     struct MobileLogin: View {
         
-        let state: LoginModelStateProtocol
+        let mobile: String
+        let agree: Bool
+        let countryRegionCode: String
+        let operation: LoginTypes.Model.LoginOperation
         let intent: LoginIntentProtocol
-        @State var mobile: String
-        @State var agree = false
-        @State var showAgreeAlert = false
-        @State var showMobileAlert = false
         
-        init(state: LoginModelStateProtocol, intent: LoginIntentProtocol) {
-            self.state = state
-            self.intent = intent
-            self._mobile = State(initialValue: state.mobile)
-            self._agree = State(initialValue: state.agree)
+        private var isSendingCode: Bool {
+            return operation == .sendingCode
+        }
+        
+        private var isMobileValid: Bool {
+            return MobileNumber.isValidMainlandMobile(mobile)
         }
         
         var body: some View {
@@ -50,7 +50,7 @@ extension LoginPage {
                     // 输入区
                     VStack(spacing: 0) {
                         HStack(spacing: 16) {
-                            Text("+86")
+                            Text(countryRegionCode)
                                 .font(.system(size: 18, weight: .medium))
                                 .foregroundColor(AppTheme.colors.fontPrimary)
                             
@@ -58,7 +58,13 @@ extension LoginPage {
                                 .fill(AppTheme.colors.fontTertiary.opacity(0.3))
                                 .frame(width: 1, height: 24)
                             
-                            MobileTextField(mobile: $mobile)
+                            MobileTextField(
+                                mobile: Binding(
+                                    get: { mobile },
+                                    set: { intent.onChangeMobile($0) }
+                                )
+                            )
+                            .disabled(isSendingCode)
                         }
                         .padding(.vertical, 16)
                         
@@ -72,28 +78,29 @@ extension LoginPage {
                         RoundedCornerButton(
                             nameLocal: LocalizedStringKey("get_verify_code"),
                             color: .black,
-                            bgColor: (mobile.count == 13 && agree) ? AppTheme.colors.brandMain : AppTheme.colors.brandMain.opacity(0.3)
+                            bgColor: isMobileValid && agree
+                                ? AppTheme.colors.brandMain
+                                : AppTheme.colors.brandMain.opacity(0.3)
                         ) {
-                            if !agree {
-                                self.showAgreeAlert = true
-                                return
-                            }
-                            if mobile.isEmpty {
-                                self.showMobileAlert = true
-                                return
-                            }
+                            // 校验与重复提交拦截由 LoginIntent 统一负责
                             intent.onTapSendVerifyCodeButton(
-                                countryRegionCode: "+86",
+                                countryRegionCode: countryRegionCode,
                                 mobile: mobile
                             )
                         }
-                        .disabled(mobile.count != 13)
+                        .disabled(operation != .idle)
+                        
+                        if isSendingCode {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(AppTheme.colors.brandMain)
+                        }
                         
                         // 协议勾选
                         HStack(alignment: .top, spacing: 8) {
                             Button(action: {
                                 withAnimation(.spring()) {
-                                    self.agree.toggle()
+                                    intent.onToggleAgree()
                                 }
                             }) {
                                 Image(systemName: agree ? "checkmark.circle.fill" : "circle")
@@ -102,6 +109,7 @@ extension LoginPage {
                                     .foregroundColor(agree ? AppTheme.colors.brandMain : AppTheme.colors.fontTertiary)
                             }
                             .buttonStyle(.plain)
+                            .disabled(isSendingCode)
                             
                             Text(L10n.login_confirm_tip)
                                 .font(AppTheme.fonts.subtext)
@@ -116,16 +124,6 @@ extension LoginPage {
                 Spacer()
             }
             .background(AppTheme.colors.background.ignoresSafeArea())
-            .alert(Text(L10n.tip), isPresented: $showAgreeAlert) {
-                Button(L10n.confirm) {}
-            } message: {
-                Text(L10n.agree_user_agreement)
-            }
-            .alert(Text(L10n.tip), isPresented: $showMobileAlert) {
-                Button(L10n.confirm) {}
-            } message: {
-                Text(L10n.input_mobile)
-            }
         }
         
     }

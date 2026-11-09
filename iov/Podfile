@@ -15,6 +15,13 @@ target 'iov' do
   pod 'SwiftyJSON' #JSON数据解析
   pod 'KeychainAccess' #安全存储密钥
 
+  # 认证相关单元测试与集成测试（IOS-APP-DSN-CR-001 RD-001-9）
+  target 'iovTests' do
+    inherit! :search_paths
+    pod 'RealmSwift'
+    pod 'KeychainAccess'
+  end
+
 end
 
 post_install do |installer|

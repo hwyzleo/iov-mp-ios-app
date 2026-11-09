@@ -29,10 +29,11 @@ extension Int {
 /// 验证码文本框
 struct CaptchaTextField: View {
     var maxDigits: Int = 6
-        @Binding var pin: String
-        @State var showPin = true
-        @State var isSubmit = false
-        var handler: () -> Void
+    @Binding var pin: String
+    @State var showPin = true
+    /// 是否允许提交（请求处理中禁止重复提交）
+    var isEnabled: Bool = true
+    var handler: () -> Void
         
         var body: some View {
             VStack {
@@ -80,20 +81,25 @@ struct CaptchaTextField: View {
                 .accentColor(.clear)
                 .foregroundColor(.clear)
                 .keyboardType(.numberPad)
+                .disabled(!isEnabled)
         }
+        /// 过滤非数字、限制长度并避免重复提交
         private func submitPin() {
-            if pin.count > maxDigits {
-                // 如果超出长度就忽略本次输入
-                pin = String(pin.prefix(maxDigits))
-            } else if pin.count == maxDigits && !isSubmit {
-                handler()
-                isSubmit = true
+            let digits = pin.filter { $0.isNumber }
+            if digits.count > maxDigits {
+                pin = String(digits.prefix(maxDigits))
+                return
             }
+            if pin != digits {
+                pin = digits
+            }
+            guard isEnabled, digits.count == maxDigits else { return }
+            handler()
         }
 }
 
 struct CaptchaTextField_Previews: PreviewProvider {
     static var previews: some View {
-        CaptchaTextField(maxDigits: 6, pin: .constant(""), showPin: true) {}
+        CaptchaTextField(maxDigits: 6, pin: .constant(""), showPin: true, isEnabled: true) {}
     }
 }

@@ -25,11 +25,13 @@ class NetworkManager {
                     headers: HTTPHeaders?,
                     // @escaping,逃逸闭包: 一个闭包被作为一个参数传递给一个函数，并且在函数return之后才被唤起执行
                     completion: @escaping NetworkRequestCompletion) -> DataRequest {
-        AF.request(path,
+        logRequest(method: "GET", url: path)
+        return AF.request(path,
                    parameters: parameters,
                    headers: headers,
                    requestModifier: { $0.timeoutInterval = 30 })
             .responseData { response in
+                self.logResponse(method: "GET", url: path, statusCode: response.response?.statusCode)
                 switch response.result {
                 case let .success(data): completion(.success(data))
                 case let .failure(error): completion(self.handleError(error))
@@ -42,7 +44,8 @@ class NetworkManager {
                      parameters: Parameters?,
                      headers: HTTPHeaders?,
                      completion: @escaping NetworkRequestCompletion) -> DataRequest {
-        AF.request(path,
+        logRequest(method: "POST", url: path)
+        return AF.request(path,
                    method: .post,
                    parameters: parameters,
                    encoding: JSONEncoding.prettyPrinted, // parameters的编码方式,默认为JSON
@@ -51,6 +54,7 @@ class NetworkManager {
                    requestModifier: { $0.timeoutInterval = 30 })
             .responseData { response in
                 // 请求发送成功与失败
+                self.logResponse(method: "POST", url: path, statusCode: response.response?.statusCode)
                 switch response.result {
                 case let .success(data): completion(.success(data))
                 case let .failure(error): completion(self.handleError(error))
@@ -63,18 +67,30 @@ class NetworkManager {
                     parameters: Parameters?,
                     headers: HTTPHeaders?,
                     completion: @escaping NetworkRequestCompletion) -> DataRequest {
-        AF.request(path,
+        logRequest(method: "PUT", url: path)
+        return AF.request(path,
                    method: .put,
                    parameters: parameters,
                    encoding: JSONEncoding.prettyPrinted,
                    headers: headers,
                    requestModifier: { $0.timeoutInterval = 30 })
             .responseData { response in
+                self.logResponse(method: "PUT", url: path, statusCode: response.response?.statusCode)
                 switch response.result {
                 case let .success(data): completion(.success(data))
                 case let .failure(error): completion(self.handleError(error))
                 }
             }
+    }
+
+    // MARK: - 诊断日志（不含敏感数据）
+
+    private func logRequest(method: String, url: String) {
+        SafeLog.log("HTTP", method, url)
+    }
+
+    private func logResponse(method: String, url: String, statusCode: Int?) {
+        SafeLog.log("HTTP", method, url, "status:", statusCode.map(String.init) ?? "nil")
     }
 
     // 图片上传

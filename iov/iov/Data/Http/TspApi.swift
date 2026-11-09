@@ -47,10 +47,11 @@ class TspApi {
     }
     
     /// 刷新访问令牌
+    /// 刷新请求只携带 Refresh Token 请求体与公共请求头，不携带 Authorization（IOS-APP-DSN-CR-001 §6.3）
     static func refreshToken(refreshToken: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
         let parameters: Parameters = ["refreshToken": refreshToken]
-        print("request refresh token:", parameters, tspHeaders)
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/token/refresh", parameters: parameters, headers: tspHeaders) { result in
+        SafeLog.log("request refresh token:", SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspBaseHeaders))
+        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/token/refresh", parameters: parameters, headers: tspBaseHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<TspResponse<LoginResponse>, Error> = TspManager.parseData(data)

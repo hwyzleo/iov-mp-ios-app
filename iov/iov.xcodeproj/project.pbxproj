@@ -7,7 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1145D8A30DEF29BEE7D1F662 /* TokenRefreshCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B698AF85C185208A5A24F6 /* TokenRefreshCoordinatorTests.swift */; };
+		1350E8D0F514DC2448B3752D /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FF8062F56FD007F58CF8D9 /* TestSupport.swift */; };
+		2A0CBFD5A356E8140C93C2F2 /* SafeLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE7C9CBA25F802F90CA16A9 /* SafeLog.swift */; };
+		3702F1D5212801DF1D606B6D /* LoginFlowIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4A13E5A9ED81B55A07DF61 /* LoginFlowIntegrationTests.swift */; };
+		3DDDCA06ECD333934AC77F84 /* LoginSessionIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7C0FE8412C60DC77609FDDE /* LoginSessionIntegrationTests.swift */; };
+		418EBF2F876FE836250E5F74 /* LoginResponseValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B081D0112FE20B150EA68B44 /* LoginResponseValidatorTests.swift */; };
+		464E49813D7850FE298923C9 /* KeychainCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDCEFD004B65881740B103F3 /* KeychainCredentialStore.swift */; };
+		48215F9D47BE81F267828C2E /* AuthSessionRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B60AA4B0E63C35BB7E58216 /* AuthSessionRepositoryProtocol.swift */; };
+		5498B35A5E3E8DD6EE893713 /* SafeLogTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F5C664A99F1F66159D99AC /* SafeLogTests.swift */; };
+		5CFE651D5DEE66F8D95B291F /* TokenRefreshCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BD4DFDE1FC1BC130A76E546 /* TokenRefreshCoordinator.swift */; };
+		6770462B3DD7A73BFAFC03DA /* AuthEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = C983EA0C2ACC91968A9218B4 /* AuthEnvironment.swift */; };
+		7360CB79A2B00D5C77CB3A94 /* MobileNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A66E109A647CD7C21BB9F230 /* MobileNumberTests.swift */; };
 		755FC02ABF529F44CB803BE3 /* Pods_iov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */; };
+		7C0A509948E9A57880DACDAF /* AuthSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02AA142E84740EA66A59B93 /* AuthSession.swift */; };
+		7E39B1999BFDAFEA1D9A72C4 /* AuthSessionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F54D6024A7EFFE799B333001 /* AuthSessionRepository.swift */; };
+		8600F9D78C00431F1967D6A1 /* MobileNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC8DB6DF7F9168D72EA8AA6E /* MobileNumber.swift */; };
+		8DEE15E41CD83C5717D7B37D /* Pods_iovTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAAD1CB23BD55083C90C4AFB /* Pods_iovTests.framework */; };
+		A025F35B1CCA39DF0E58332F /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F709BEF0EFC1E67142673C1 /* AuthError.swift */; };
+		AABB00020000000000000001 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00010000000000000001 /* AppRoute.swift */; };
+		AABB00040000000000000001 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00030000000000000001 /* AppRouter.swift */; };
+		AABB00110000000000000001 /* MarketingRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00100000000000000001 /* MarketingRoute.swift */; };
+		AFA15B0F0A4A316C8978FFC5 /* AuthErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292ACA224D2C92EF5D7DCBF5 /* AuthErrorTests.swift */; };
 		BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */; };
 		BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB712C9FC40C007519B4 /* AppDelegate.swift */; };
 		BF3CA30C2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3CA30B2CBB6009006CD801 /* MarketingIndexPage_NoOrder.swift */; };
@@ -386,7 +407,6 @@
 		BFADC2B32CB280F700834608 /* MarketingIndexPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */; };
 		BFADC2C22CB28A2E00834608 /* VehicleModelConfigPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2C12CB28A2E00834608 /* VehicleModelConfigPage.swift */; };
 		BFADC2DA2CB2CD6900834608 /* MarketingIndexIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */; };
-		AABB00110000000000000001 /* MarketingRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00100000000000000001 /* MarketingRoute.swift */; };
 		BFADC2E82CB3869000834608 /* MarketingIndexPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2E72CB3869000834608 /* MarketingIndexPage+Build.swift */; };
 		BFADC2EA2CB3873700834608 /* MarketingIndexIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2E92CB3873700834608 /* MarketingIndexIntent.swift */; };
 		BFADC2EC2CB387A800834608 /* MarketingIndexModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFADC2EB2CB387A800834608 /* MarketingIndexModelProtocol.swift */; };
@@ -410,20 +430,55 @@
 		BFD4AE4C2F6C3AA5009CA7E6 /* QRCodeUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */; };
 		BFD4AE4E2F6D0F65009CA7E6 /* MySettingProfileBioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */; };
 		BFE89D372FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */; };
+		CBD8C6E601110D152E3A73C4 /* RealmLegacyCredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B349746EDC586EBE274625 /* RealmLegacyCredentialStore.swift */; };
 		D040541A640424EFFB4F89D /* DownPaymentPayTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9BBA82D75BF746C199F250 /* DownPaymentPayTypes.swift */; };
 		D1464FA2BCAA4463984A902 /* DownPaymentPayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = D78263D08916F466C9A56D6 /* DownPaymentPayInfo.swift */; };
 		D2EB72AD706684DF1B59D43 /* DownPaymentPayModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */; };
+		D628AD1A6224238456CDFA75 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63436AC213A9E9005B2DF722 /* AppConfig.swift */; };
 		D7576BE2161D14A67AE2D5F /* DownPaymentPayIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0DE07727AFFC4AD5AF8817 /* DownPaymentPayIntent.swift */; };
+		D81529A8C0E62296910359B8 /* AuthSessionRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8026B3972FF9D0FFC67348 /* AuthSessionRepositoryTests.swift */; };
 		D871CBABA28A54E86BC9A80 /* DownPaymentPayIntentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D036D3C8B99F149B29570DD /* DownPaymentPayIntentProtocol.swift */; };
 		D9572CB27914A428CB6A6B5 /* DownPaymentPayPage+Build.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */; };
 		DAE18D69527B146C0A8C0CD /* DownPaymentPayModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */; };
 		DCAFB1A3DDB8B4463B4F812 /* DownPaymentPayPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */; };
-		AABB00020000000000000001 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00010000000000000001 /* AppRoute.swift */; };
-		AABB00040000000000000001 /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABB00030000000000000001 /* AppRouter.swift */; };
+		EC4B4B00F4753862C1FF1254 /* LoginModelStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1015E21B42DD1C2A70A661EC /* LoginModelStateTests.swift */; };
+		F3EC48AA18211989126E662E /* LoginResponseValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0394547327690BA3DED96BB /* LoginResponseValidator.swift */; };
+		F825F9595D2D58A9E18CC09C /* Fakes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AD372472350952DAB25C562 /* Fakes.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B5B57097AB5E32438B44C561 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFA187622C83111E004D625D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BFA187692C83111E004D625D;
+			remoteInfo = iov;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		0CE7C9CBA25F802F90CA16A9 /* SafeLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeLog.swift; sourceTree = "<group>"; };
+		1015E21B42DD1C2A70A661EC /* LoginModelStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModelStateTests.swift; sourceTree = "<group>"; };
+		12F5C664A99F1F66159D99AC /* SafeLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeLogTests.swift; sourceTree = "<group>"; };
+		194725E2C366FA30FBEDEDBB /* Pods-iovTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iovTests.debug.xcconfig"; path = "Target Support Files/Pods-iovTests/Pods-iovTests.debug.xcconfig"; sourceTree = "<group>"; };
+		292ACA224D2C92EF5D7DCBF5 /* AuthErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthErrorTests.swift; sourceTree = "<group>"; };
+		2AD372472350952DAB25C562 /* Fakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fakes.swift; sourceTree = "<group>"; };
+		3E8026B3972FF9D0FFC67348 /* AuthSessionRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionRepositoryTests.swift; sourceTree = "<group>"; };
 		54DD010BC41FE25B2673160D /* Pods-iov.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.debug.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.debug.xcconfig"; sourceTree = "<group>"; };
+		54FF8062F56FD007F58CF8D9 /* TestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSupport.swift; sourceTree = "<group>"; };
+		55B349746EDC586EBE274625 /* RealmLegacyCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmLegacyCredentialStore.swift; sourceTree = "<group>"; };
+		5F709BEF0EFC1E67142673C1 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
+		63436AC213A9E9005B2DF722 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		7BD4DFDE1FC1BC130A76E546 /* TokenRefreshCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefreshCoordinator.swift; sourceTree = "<group>"; };
+		9B60AA4B0E63C35BB7E58216 /* AuthSessionRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionRepositoryProtocol.swift; sourceTree = "<group>"; };
+		A66E109A647CD7C21BB9F230 /* MobileNumberTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileNumberTests.swift; sourceTree = "<group>"; };
+		AABB00010000000000000001 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
+		AABB00030000000000000001 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		AABB00100000000000000001 /* MarketingRoute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingRoute.swift; sourceTree = "<group>"; };
+		AF03BE102C3F92B8375CAC9A /* iovTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iovTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B081D0112FE20B150EA68B44 /* LoginResponseValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponseValidatorTests.swift; sourceTree = "<group>"; };
+		B8B698AF85C185208A5A24F6 /* TokenRefreshCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRefreshCoordinatorTests.swift; sourceTree = "<group>"; };
+		BDCEFD004B65881740B103F3 /* KeychainCredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialStore.swift; sourceTree = "<group>"; };
 		BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageButton.swift; sourceTree = "<group>"; };
 		BF24BB702C9FC1EE007519B4 /* Iov-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Iov-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF24BB712C9FC40C007519B4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -489,6 +544,7 @@
 		BF95DD1B2FCF1E7D0008EF8C /* ModelVariantSelectionIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionIntentProtocol.swift; sourceTree = "<group>"; };
 		BF95DD1E2FCF1E8B0008EF8C /* ModelVariantSelectionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelVariantSelectionPage.swift; sourceTree = "<group>"; };
 		BF95DD1F2FCF1E8B0008EF8C /* ModelVariantSelectionPage+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ModelVariantSelectionPage+Build.swift"; sourceTree = "<group>"; };
+		BF99273A935AA48A1077699A /* Pods-iovTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iovTests.release.xcconfig"; path = "Target Support Files/Pods-iovTests/Pods-iovTests.release.xcconfig"; sourceTree = "<group>"; };
 		BFA1876A2C83111E004D625D /* iov.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iov.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFA1876D2C83111E004D625D /* IovApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IovApp.swift; sourceTree = "<group>"; };
 		BFA1876F2C83111E004D625D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -804,7 +860,6 @@
 		BFADC2B22CB280F700834608 /* MarketingIndexPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexPage.swift; sourceTree = "<group>"; };
 		BFADC2C12CB28A2E00834608 /* VehicleModelConfigPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage.swift; sourceTree = "<group>"; };
 		BFADC2D92CB2CD6900834608 /* MarketingIndexIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingIndexIntentProtocol.swift; sourceTree = "<group>"; };
-		AABB00100000000000000001 /* MarketingRoute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingRoute.swift; sourceTree = "<group>"; };
 		BFADC2E72CB3869000834608 /* MarketingIndexPage+Build.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "MarketingIndexPage+Build.swift"; sourceTree = "<group>"; };
 		BFADC2E92CB3873700834608 /* MarketingIndexIntent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingIndexIntent.swift; sourceTree = "<group>"; };
 		BFADC2EB2CB387A800834608 /* MarketingIndexModelProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarketingIndexModelProtocol.swift; sourceTree = "<group>"; };
@@ -830,21 +885,35 @@
 		BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeUtil.swift; sourceTree = "<group>"; };
 		BFD4AE4D2F6D0F65009CA7E6 /* MySettingProfileBioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MySettingProfileBioView.swift; sourceTree = "<group>"; };
 		BFE89D362FAB17E0007DECBE /* VehicleModelConfigPage_FeatureConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleModelConfigPage_FeatureConfig.swift; sourceTree = "<group>"; };
+		C983EA0C2ACC91968A9218B4 /* AuthEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthEnvironment.swift; sourceTree = "<group>"; };
+		CAAD1CB23BD55083C90C4AFB /* Pods_iovTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iovTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC8DB6DF7F9168D72EA8AA6E /* MobileNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileNumber.swift; sourceTree = "<group>"; };
 		CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iov.release.xcconfig"; path = "Target Support Files/Pods-iov/Pods-iov.release.xcconfig"; sourceTree = "<group>"; };
+		D02AA142E84740EA66A59B93 /* AuthSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSession.swift; sourceTree = "<group>"; };
 		D036D3C8B99F149B29570DD /* DownPaymentPayIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayIntentProtocol.swift; sourceTree = "<group>"; };
 		D0DE07727AFFC4AD5AF8817 /* DownPaymentPayIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayIntent.swift; sourceTree = "<group>"; };
 		D1D344A38AC574F0EAC5915 /* DownPaymentPayPage+Build.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DownPaymentPayPage+Build.swift"; sourceTree = "<group>"; };
 		D78263D08916F466C9A56D6 /* DownPaymentPayInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayInfo.swift; sourceTree = "<group>"; };
+		D7C0FE8412C60DC77609FDDE /* LoginSessionIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSessionIntegrationTests.swift; sourceTree = "<group>"; };
 		D917A785E6EEB4ECCA39BF1 /* DownPaymentPayModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModel.swift; sourceTree = "<group>"; };
 		D9BBA82D75BF746C199F250 /* DownPaymentPayTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayTypes.swift; sourceTree = "<group>"; };
 		D9F710C108AC747F0BAF607 /* DownPaymentPayPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayPage.swift; sourceTree = "<group>"; };
+		DC4A13E5A9ED81B55A07DF61 /* LoginFlowIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginFlowIntegrationTests.swift; sourceTree = "<group>"; };
 		DDA4809623C1E425B88A462 /* DownPaymentPayModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownPaymentPayModelProtocol.swift; sourceTree = "<group>"; };
+		E0394547327690BA3DED96BB /* LoginResponseValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginResponseValidator.swift; sourceTree = "<group>"; };
+		F54D6024A7EFFE799B333001 /* AuthSessionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionRepository.swift; sourceTree = "<group>"; };
 		F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iov.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		AABB00010000000000000001 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
-		AABB00030000000000000001 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		184A3B87608D1682F84600C2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8DEE15E41CD83C5717D7B37D /* Pods_iovTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BFA187672C83111E004D625D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -856,13 +925,81 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		317E46C74D716ED83B52BEEE /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				D02AA142E84740EA66A59B93 /* AuthSession.swift */,
+				5F709BEF0EFC1E67142673C1 /* AuthError.swift */,
+				9B60AA4B0E63C35BB7E58216 /* AuthSessionRepositoryProtocol.swift */,
+				E0394547327690BA3DED96BB /* LoginResponseValidator.swift */,
+				CC8DB6DF7F9168D72EA8AA6E /* MobileNumber.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		32CBF75D62CFFFF80EF12855 /* iovTests */ = {
+			isa = PBXGroup;
+			children = (
+				CDD7838A5B3FD7A2E497C197 /* Support */,
+				F61F434E8B472A403A5BBA59 /* Unit */,
+				35FF51AC741932DC1AA8CB55 /* Integration */,
+			);
+			path = iovTests;
+			sourceTree = "<group>";
+		};
+		35FF51AC741932DC1AA8CB55 /* Integration */ = {
+			isa = PBXGroup;
+			children = (
+				D7C0FE8412C60DC77609FDDE /* LoginSessionIntegrationTests.swift */,
+				DC4A13E5A9ED81B55A07DF61 /* LoginFlowIntegrationTests.swift */,
+			);
+			path = Integration;
+			sourceTree = "<group>";
+		};
 		4C0A19BD08FDE94863EABD0E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
 				54DD010BC41FE25B2673160D /* Pods-iov.debug.xcconfig */,
 				CE7F377D7A9DBC98FD645FBD /* Pods-iov.release.xcconfig */,
+				194725E2C366FA30FBEDEDBB /* Pods-iovTests.debug.xcconfig */,
+				BF99273A935AA48A1077699A /* Pods-iovTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		77774BDDEBE30160BE11502D /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				317E46C74D716ED83B52BEEE /* Auth */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		7A4B3C9ECC82A60D875C310B /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				8130B53E82ADAC7A4C682309 /* Auth */,
+			);
+			path = Application;
+			sourceTree = "<group>";
+		};
+		8130B53E82ADAC7A4C682309 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				7BD4DFDE1FC1BC130A76E546 /* TokenRefreshCoordinator.swift */,
+				C983EA0C2ACC91968A9218B4 /* AuthEnvironment.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		A3799A99E9DBD0B7F50BBE51 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				BDCEFD004B65881740B103F3 /* KeychainCredentialStore.swift */,
+				F54D6024A7EFFE799B333001 /* AuthSessionRepository.swift */,
+				55B349746EDC586EBE274625 /* RealmLegacyCredentialStore.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 		BF8914A12F65451900A3F0FE /* Service */ = {
@@ -955,6 +1092,7 @@
 		BFA187612C83111E004D625D = {
 			isa = PBXGroup;
 			children = (
+				32CBF75D62CFFFF80EF12855 /* iovTests */,
 				BFA1876C2C83111E004D625D /* iov */,
 				BFA1876B2C83111E004D625D /* Products */,
 				4C0A19BD08FDE94863EABD0E /* Pods */,
@@ -966,6 +1104,7 @@
 			isa = PBXGroup;
 			children = (
 				BFA1876A2C83111E004D625D /* iov.app */,
+				AF03BE102C3F92B8375CAC9A /* iovTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -973,6 +1112,8 @@
 		BFA1876C2C83111E004D625D /* iov */ = {
 			isa = PBXGroup;
 			children = (
+				7A4B3C9ECC82A60D875C310B /* Application */,
+				77774BDDEBE30160BE11502D /* Domain */,
 				BFA187872C832CA2004D625D /* Base */,
 				BFA187822C831781004D625D /* Component */,
 				BFA188572C841A4C004D625D /* Constants */,
@@ -1577,6 +1718,8 @@
 				BFA189612C842CB9004D625D /* WebViewUtil.swift */,
 				BFD4AE4B2F6C3AA5009CA7E6 /* QRCodeUtil.swift */,
 				BFD12FEA2F711DBB00BF26C4 /* CacheManager.swift */,
+				0CE7C9CBA25F802F90CA16A9 /* SafeLog.swift */,
+				63436AC213A9E9005B2DF722 /* AppConfig.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1585,6 +1728,7 @@
 			isa = PBXGroup;
 			children = (
 				BFA188522C8419D1004D625D /* Bean */,
+				A3799A99E9DBD0B7F50BBE51 /* Auth */,
 				BFA189552C842BE2004D625D /* Bluetooth */,
 				BFA188622C841B5D004D625D /* Http */,
 			);
@@ -2712,10 +2856,34 @@
 			path = AccountQrcode;
 			sourceTree = "<group>";
 		};
+		CDD7838A5B3FD7A2E497C197 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				2AD372472350952DAB25C562 /* Fakes.swift */,
+				54FF8062F56FD007F58CF8D9 /* TestSupport.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		F61F434E8B472A403A5BBA59 /* Unit */ = {
+			isa = PBXGroup;
+			children = (
+				B081D0112FE20B150EA68B44 /* LoginResponseValidatorTests.swift */,
+				292ACA224D2C92EF5D7DCBF5 /* AuthErrorTests.swift */,
+				A66E109A647CD7C21BB9F230 /* MobileNumberTests.swift */,
+				12F5C664A99F1F66159D99AC /* SafeLogTests.swift */,
+				3E8026B3972FF9D0FFC67348 /* AuthSessionRepositoryTests.swift */,
+				B8B698AF85C185208A5A24F6 /* TokenRefreshCoordinatorTests.swift */,
+				1015E21B42DD1C2A70A661EC /* LoginModelStateTests.swift */,
+			);
+			path = Unit;
+			sourceTree = "<group>";
+		};
 		FC44DBB084FFE8C63EABD32C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				F5E5081447CFD92D18F7EB9D /* Pods_iov.framework */,
+				CAAD1CB23BD55083C90C4AFB /* Pods_iovTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2723,6 +2891,26 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		419DF920C49FA35531E3DB16 /* iovTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6526D1C4518C934E092128F6 /* Build configuration list for PBXNativeTarget "iovTests" */;
+			buildPhases = (
+				A4BBF63237C1BEEF5CDEA7EE /* [CP] Check Pods Manifest.lock */,
+				C428194BAF97F77311A9FF93 /* Sources */,
+				184A3B87608D1682F84600C2 /* Frameworks */,
+				2CA7347E40E789A6728F1439 /* Resources */,
+				4D222DF725B6ACDF632B3EE0 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F5FBF8531BEDD3F476FDC258 /* PBXTargetDependency */,
+			);
+			name = iovTests;
+			productName = iovTests;
+			productReference = AF03BE102C3F92B8375CAC9A /* iovTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		BFA187692C83111E004D625D /* iov */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = BFA1877A2C83111F004D625D /* Build configuration list for PBXNativeTarget "iov" */;
@@ -2752,6 +2940,10 @@
 				LastSwiftUpdateCheck = 1520;
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
+					419DF920C49FA35531E3DB16 = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = BFA187692C83111E004D625D;
+					};
 					BFA187692C83111E004D625D = {
 						CreatedOnToolsVersion = 15.2;
 					};
@@ -2772,11 +2964,19 @@
 			projectRoot = "";
 			targets = (
 				BFA187692C83111E004D625D /* iov */,
+				419DF920C49FA35531E3DB16 /* iovTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2CA7347E40E789A6728F1439 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		BFA187682C83111E004D625D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2790,6 +2990,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4D222DF725B6ACDF632B3EE0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iovTests/Pods-iovTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-iovTests/Pods-iovTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iovTests/Pods-iovTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		90D3FB0B917E515FACC844D7 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2805,6 +3022,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-iov/Pods-iov-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A4BBF63237C1BEEF5CDEA7EE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iovTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DB0A9580782CA3EBD580D47B /* [CP] Check Pods Manifest.lock */ = {
@@ -2836,6 +3075,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C0A509948E9A57880DACDAF /* AuthSession.swift in Sources */,
+				A025F35B1CCA39DF0E58332F /* AuthError.swift in Sources */,
+				48215F9D47BE81F267828C2E /* AuthSessionRepositoryProtocol.swift in Sources */,
+				F3EC48AA18211989126E662E /* LoginResponseValidator.swift in Sources */,
+				8600F9D78C00431F1967D6A1 /* MobileNumber.swift in Sources */,
+				464E49813D7850FE298923C9 /* KeychainCredentialStore.swift in Sources */,
+				7E39B1999BFDAFEA1D9A72C4 /* AuthSessionRepository.swift in Sources */,
+				CBD8C6E601110D152E3A73C4 /* RealmLegacyCredentialStore.swift in Sources */,
+				5CFE651D5DEE66F8D95B291F /* TokenRefreshCoordinator.swift in Sources */,
+				6770462B3DD7A73BFAFC03DA /* AuthEnvironment.swift in Sources */,
+				2A0CBFD5A356E8140C93C2F2 /* SafeLog.swift in Sources */,
+				D628AD1A6224238456CDFA75 /* AppConfig.swift in Sources */,
 				BFA18A102C843573004D625D /* ServicePage.swift in Sources */,
 				BFA188B82C842237004D625D /* CommunitySubjectView_Articles.swift in Sources */,
 				BF89149F2F65385300A3F0FE /* MockIndicatorModifier.swift in Sources */,
@@ -3248,7 +3499,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C428194BAF97F77311A9FF93 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F825F9595D2D58A9E18CC09C /* Fakes.swift in Sources */,
+				1350E8D0F514DC2448B3752D /* TestSupport.swift in Sources */,
+				418EBF2F876FE836250E5F74 /* LoginResponseValidatorTests.swift in Sources */,
+				AFA15B0F0A4A316C8978FFC5 /* AuthErrorTests.swift in Sources */,
+				7360CB79A2B00D5C77CB3A94 /* MobileNumberTests.swift in Sources */,
+				5498B35A5E3E8DD6EE893713 /* SafeLogTests.swift in Sources */,
+				D81529A8C0E62296910359B8 /* AuthSessionRepositoryTests.swift in Sources */,
+				1145D8A30DEF29BEE7D1F662 /* TokenRefreshCoordinatorTests.swift in Sources */,
+				EC4B4B00F4753862C1FF1254 /* LoginModelStateTests.swift in Sources */,
+				3DDDCA06ECD333934AC77F84 /* LoginSessionIntegrationTests.swift in Sources */,
+				3702F1D5212801DF1D606B6D /* LoginFlowIntegrationTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F5FBF8531BEDD3F476FDC258 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BFA187692C83111E004D625D /* iov */;
+			targetProxy = B5B57097AB5E32438B44C561 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		BFACD05A2CAAF73100EF69E4 /* Localizable.strings */ = {
@@ -3263,6 +3540,28 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		0F018896C270B530B6540554 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 194725E2C366FA30FBEDEDBB /* Pods-iovTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 59LC28836W;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 0.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.appTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iov.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iov";
+			};
+			name = Debug;
+		};
 		BFA187782C83111F004D625D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3419,6 +3718,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "iov/Iov-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TSP_CLIENT_ID = "iphone-capp";
 			};
 			name = Debug;
 		};
@@ -3457,12 +3757,43 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "iov/Iov-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TSP_CLIENT_ID = "iphone-capp";
+			};
+			name = Release;
+		};
+		F734905C4A6F26C939D962D6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = BF99273A935AA48A1077699A /* Pods-iovTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = 59LC28836W;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 0.0.4;
+				PRODUCT_BUNDLE_IDENTIFIER = net.hwyz.iov.mp.appTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iov.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iov";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6526D1C4518C934E092128F6 /* Build configuration list for PBXNativeTarget "iovTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F018896C270B530B6540554 /* Debug */,
+				F734905C4A6F26C939D962D6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		BFA187652C83111E004D625D /* Build configuration list for PBXProject "iov" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

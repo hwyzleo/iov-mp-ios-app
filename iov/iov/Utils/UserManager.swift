@@ -12,11 +12,15 @@ import RxSwift
 @objcMembers
 class UserManager: Object {
     
-    /// 用户令牌
+    /// 用户标识（与认证会话关联，资料用途）
+    dynamic var userId: String = ""
+    /// 会话标识（与认证会话关联，资料用途）
+    dynamic var sessionId: String = ""
+    /// 旧版本用户令牌（仅用于一次性迁移读取，不再作为 Token 事实存储）
     dynamic var token: String = ""
-    /// 刷新令牌
+    /// 旧版本刷新令牌（仅用于一次性迁移读取，不再作为 Token 事实存储）
     dynamic var refreshToken: String = ""
-    /// 令牌过期时间
+    /// 旧版本令牌过期时间（仅用于一次性迁移读取）
     dynamic var tokenExpiresAt: Date?
     /// 用户昵称
     dynamic var nickname: String = ""
@@ -35,9 +39,8 @@ class UserManager: Object {
         self.init()
         self.nickname = response.nickname ?? ""
         self.avatar = response.avatar ?? ""
-        self.token = response.token ?? ""
-        self.refreshToken = response.refreshToken ?? ""
-        self.tokenExpiresAt = response.tokenExpires.map { Date(timeIntervalSince1970: Double($0) / 1000.0) }
+        self.userId = response.userId
+        self.sessionId = response.sessionId ?? ""
         self.followingCount = response.followingCount ?? 0
         self.followerCount = response.followerCount ?? 0
         self.postCount = response.postCount ?? 0
@@ -57,64 +60,9 @@ class UserManager: Object {
         return user
     }
     
-    /// 是否登录
-    class func isLogin() -> Bool {
-        return getToken().isEmpty ? false : true
-    }
-    
     /// 是否有头像
     class func hasAvatar() -> Bool {
         return (getUser()?.avatar ?? "").isEmpty ? false : true
-    }
-    
-    /// 获取令牌
-    class func getToken() -> String {
-        guard let user = getUser(), !user.isInvalidated else {
-            return ""
-        }
-        return user.token
-    }
-    
-    /// 获取刷新令牌
-    class func getRefreshToken() -> String {
-        guard let user = getUser(), !user.isInvalidated else {
-            return ""
-        }
-        return user.refreshToken
-    }
-    
-    /// 检查 token 是否有效
-    class func isTokenValid() -> Bool {
-        guard let user = getUser(), !user.isInvalidated,
-              let expiresAt = user.tokenExpiresAt else {
-            return false
-        }
-        return expiresAt.timeIntervalSinceNow > 0
-    }
-    
-    /// 检查 token 是否即将过期（剩余时间小于指定秒数）
-    class func isTokenExpiringSoon(threshold: TimeInterval = 300) -> Bool {
-        guard let user = getUser(), !user.isInvalidated,
-              let expiresAt = user.tokenExpiresAt else {
-            return true
-        }
-        return expiresAt.timeIntervalSinceNow <= threshold
-    }
-    
-    /// 更新令牌
-    class func updateTokens(token: String, refreshToken: String, expiresAt: Date) {
-        let realm = RealmManager.user.realm
-        do {
-            try realm.write {
-                if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
-                    user.token = token
-                    user.refreshToken = refreshToken
-                    user.tokenExpiresAt = expiresAt
-                }
-            }
-        } catch {
-            print("更新令牌失败：\(error)")
-        }
     }
 
     /// 修改昵称（内部方法）
@@ -137,17 +85,20 @@ class UserManager: Object {
         }
     }
     
-    /// 登录
+    /// 更新登录用户资料（仅资料，不含凭证；凭证由 AuthSessionRepository 存入 Keychain）
     @discardableResult
-    class func login(response: LoginResponse) -> Observable<UserManager> {
+    class func updateProfile(response: LoginResponse) -> Observable<UserManager> {
         let realm = RealmManager.user.realm
         do {
             var userResult: UserManager?
             try realm.write {
                 if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
-                    user.token = response.token ?? ""
-                    user.refreshToken = response.refreshToken ?? ""
-                    user.tokenExpiresAt = response.tokenExpires.map { Date(timeIntervalSince1970: Double($0) / 1000.0) }
+                    // 旧版本 Realm 中的凭证字段在迁移后必须保持为空，不做双写
+                    user.token = ""
+                    user.refreshToken = ""
+                    user.tokenExpiresAt = nil
+                    user.userId = response.userId
+                    user.sessionId = response.sessionId ?? ""
                     user.nickname = response.nickname ?? ""
                     user.avatar = response.avatar ?? ""
                     user.followingCount = response.followingCount ?? 0
@@ -171,7 +122,7 @@ class UserManager: Object {
         }
         return Observable.error(IovError(message: "登录失败"))
     }
-    
+
     /// 修改昵称
     class func modifyNickname(nickname: String) -> Observable<UserManager> {
         return updateNickname(nickname: nickname)

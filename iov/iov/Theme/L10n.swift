@@ -8,6 +8,16 @@
 import SwiftUI
 
 struct L10n {
+    static let auth_error_invalid_input = LocalizedStringKey("auth_error_invalid_input")
+    static let auth_error_network_unavailable = LocalizedStringKey("auth_error_network_unavailable")
+    static let auth_error_verification_code_invalid = LocalizedStringKey("auth_error_verification_code_invalid")
+    static let auth_error_authentication_rejected = LocalizedStringKey("auth_error_authentication_rejected")
+    static let auth_error_challenge_unsupported = LocalizedStringKey("auth_error_challenge_unsupported")
+    static let auth_error_invalid_server_response = LocalizedStringKey("auth_error_invalid_server_response")
+    static let auth_error_credential_persistence_failed = LocalizedStringKey("auth_error_credential_persistence_failed")
+    static let auth_error_token_refresh_failed = LocalizedStringKey("auth_error_token_refresh_failed")
+    static let auth_error_session_expired = LocalizedStringKey("auth_error_session_expired")
+    static let auth_error_unknown = LocalizedStringKey("auth_error_unknown")
     static let adas = LocalizedStringKey("adas")
     static let agree_user_agreement = LocalizedStringKey("agree_user_agreement")
     static let allocation_vehicle = LocalizedStringKey("allocation_vehicle")

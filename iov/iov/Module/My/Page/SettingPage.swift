@@ -74,7 +74,7 @@ extension SettingPage {
                     VStack(spacing: AppTheme.layout.spacing) {
                         VStack(spacing: 0) {
                             SettingPage.List(titleLocal: LocalizedStringKey("profile")) {
-                                if UserManager.isLogin() {
+                                if AppGlobalState.shared.isLogin {
                                     tapProfile?()
                                 } else {
                                     loginAction?()
@@ -150,7 +150,7 @@ extension SettingPage {
                                 .cornerRadius(AppTheme.layout.radiusMedium)
                         }
                         
-                        if(UserManager.isLogin()) {
+                        if(AppGlobalState.shared.isLogin) {
                             RoundedCornerButton(nameLocal: LocalizedStringKey("logout"), color: .black, bgColor: AppTheme.colors.brandMain) {
                                 showAlert = true
                             }

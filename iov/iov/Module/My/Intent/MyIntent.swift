@@ -18,7 +18,7 @@ class MyIntent: MviIntentProtocol {
     
     func viewOnAppear() {
         modelAction?.displayLoading()
-        if UserManager.isLogin() {
+        if AppGlobalState.shared.isLogin {
             modelAction?.displayLogin()
         } else {
             modelAction?.displayNotLogin()
@@ -28,14 +28,14 @@ class MyIntent: MviIntentProtocol {
 
 extension MyIntent: MyIntentProtocol {
     func onTapScan() {
-        if UserManager.isLogin() {
+        if AppGlobalState.shared.isLogin {
             modelAction?.displayScan()
         } else {
             modelRouter?.routeToLogin()
         }
     }
     func onTapMyQrCode() {
-        if UserManager.isLogin() {
+        if AppGlobalState.shared.isLogin {
             modelRouter?.routeToMyQrCode()
         } else {
             modelRouter?.routeToLogin()

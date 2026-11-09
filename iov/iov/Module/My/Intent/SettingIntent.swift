@@ -64,20 +64,15 @@ extension SettingIntent: SettingIntentProtocol {
         TspApi.logout { result in
             switch result {
             case .success(let response):
-                if response.isSuccess {
-                    UserManager.logout()
-                    AppGlobalState.shared.isLogin = false
-                    self.modelAction?.logout()
-                } else {
-                    print("退出登录失败：\(response.message ?? "")")
-                    UserManager.logout()
-                    AppGlobalState.shared.isLogin = false
-                    self.modelAction?.logout()
+                if !response.isSuccess {
+                    SafeLog.log("退出登录失败:", response.code)
                 }
             case .failure(let error):
-                print("退出登录请求失败：\(error)")
-                UserManager.logout()
-                AppGlobalState.shared.isLogin = false
+                SafeLog.log("退出登录请求失败:", AuthError.mapNetworkError(error).logCategory)
+            }
+            // 无论服务端结果如何，本地会话都必须清理并发布未登录状态
+            DispatchQueue.main.async {
+                AuthEnvironment.shared.handleLogoutCompleted()
                 self.modelAction?.logout()
             }
         }

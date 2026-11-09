@@ -5,6 +5,16 @@
   Created by hwyz_leo on 2024/9/30.
   
 */
+"auth_error_invalid_input" = "请输入正确的手机号并确认已同意协议";
+"auth_error_network_unavailable" = "网络异常，请稍后重试";
+"auth_error_verification_code_invalid" = "验证码错误或已过期，请重新输入";
+"auth_error_authentication_rejected" = "登录失败，请稍后重试";
+"auth_error_challenge_unsupported" = "当前登录流程需要完成额外验证，请升级应用后重试";
+"auth_error_invalid_server_response" = "登录响应异常，请稍后重试";
+"auth_error_credential_persistence_failed" = "登录信息保存失败，请重试";
+"auth_error_token_refresh_failed" = "登录状态刷新失败，请稍后重试";
+"auth_error_session_expired" = "登录状态已失效，请重新登录";
+"auth_error_unknown" = "操作失败，请稍后重试";
 "adas" = "智驾";
 "agree_user_agreement" = "请勾选同意用户协议";
 "allocation_vehicle" = "已分配车辆";

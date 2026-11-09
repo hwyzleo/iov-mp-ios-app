@@ -18,7 +18,7 @@ class MarketingIndexIntent: MviIntentProtocol {
     
     func viewOnAppear() {
         modelAction?.displayLoading()
-        if UserManager.isLogin() {
+        if AppGlobalState.shared.isLogin {
             fetchMyVehicleListFirst()
         } else {
             fetchSaleModelList()
@@ -78,7 +78,7 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
     }
     
     func onTapModelConfig() {
-        if UserManager.isLogin() {
+        if AppGlobalState.shared.isLogin {
             guard let saleModel = modelAction?.getCurrentSaleModel() else { return }
             AppGlobalState.shared.parameters["saleModelCode"] = saleModel.saleModelCode
             AppRouter.shared.push(.marketing(.modelVariantSelection(saleModelCode: saleModel.saleModelCode)))

@@ -12,11 +12,20 @@ extension LoginPage {
     
     struct MobileVerifyCode: View {
         
-        let state: LoginModelStateProtocol
+        let mobile: String
+        let countryRegionCode: String
+        let operation: LoginTypes.Model.LoginOperation
+        let resendAvailableAt: Date?
         let intent: LoginIntentProtocol
         @State var verifyCode: String = ""
-        @State var countdown = 60
-        @State var isCountingDown = true
+        
+        private var isResending: Bool {
+            return operation == .resendingCode
+        }
+        
+        private var isLoggingIn: Bool {
+            return operation == .loggingIn
+        }
         
         var body: some View {
             VStack(alignment: .leading, spacing: 0) {
@@ -36,7 +45,7 @@ extension LoginPage {
                         
                         HStack(spacing: 4) {
                             Text(LocalizedStringKey("verify_code_has_sent"))
-                            Text(state.mobile)
+                            Text(mobile)
                         }
                         .font(AppTheme.fonts.body)
                         .foregroundColor(AppTheme.colors.fontSecondary)
@@ -44,39 +53,62 @@ extension LoginPage {
                     .padding(.top, 40)
                     
                     // 验证码输入
-                    CaptchaTextField(maxDigits: 6, pin: $verifyCode, showPin: true) {
+                    CaptchaTextField(
+                        maxDigits: 6,
+                        pin: $verifyCode,
+                        showPin: true,
+                        isEnabled: !isLoggingIn
+                    ) {
                         intent.onTapVerifyCodeLoginButton(
-                            countryRegionCode: state.countryRegionCode,
-                            mobile: state.mobile,
+                            countryRegionCode: countryRegionCode,
+                            mobile: mobile,
                             verifyCode: verifyCode
                         )
                     }
                     .padding(.vertical, 20)
                     
-                    // 倒计时/重发
+                    if isLoggingIn {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                            .tint(AppTheme.colors.brandMain)
+                    }
+                    
+                    // 倒计时/重发：由 resendAvailableAt 与时间轴计算，避免 Timer 失效
                     VStack(spacing: 24) {
-                        if isCountingDown {
-                            HStack(spacing: 4) {
-                                Text(LocalizedStringKey("reget_verigy_code"))
-                                Text("\(countdown)s")
-                                    .foregroundColor(AppTheme.colors.brandMain)
-                            }
-                            .font(AppTheme.fonts.body)
-                            .foregroundColor(AppTheme.colors.fontSecondary)
-                        } else {
-                            Button(action: {
-                                intent.onTapResendVerifyCodeText(countryRegionCode: state.countryRegionCode, mobile: state.mobile)
-                                countdown = 60
-                                isCountingDown = true
-                                // 这里不需要再次调用 startCountdown，因为 onAppear 里的 timer 还在跑或者需要重新触发
-                            }) {
-                                Text(LocalizedStringKey("reget_verigy_code"))
-                                    .font(AppTheme.fonts.body)
-                                    .foregroundColor(AppTheme.colors.brandMain)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(AppTheme.colors.brandMain.opacity(0.1))
-                                    .cornerRadius(AppTheme.layout.radiusSmall)
+                        TimelineView(.periodic(from: Date(), by: 1)) { context in
+                            let remaining = LoginModel.resendRemainingSeconds(availableAt: resendAvailableAt, now: context.date)
+                            if remaining > 0 {
+                                HStack(spacing: 4) {
+                                    Text(LocalizedStringKey("reget_verigy_code"))
+                                    Text("\(remaining)s")
+                                        .foregroundColor(AppTheme.colors.brandMain)
+                                }
+                                .font(AppTheme.fonts.body)
+                                .foregroundColor(AppTheme.colors.fontSecondary)
+                            } else {
+                                HStack(spacing: 8) {
+                                    Button(action: {
+                                        intent.onTapResendVerifyCodeText(
+                                            countryRegionCode: countryRegionCode,
+                                            mobile: mobile
+                                        )
+                                    }) {
+                                        Text(LocalizedStringKey("reget_verigy_code"))
+                                            .font(AppTheme.fonts.body)
+                                            .foregroundColor(AppTheme.colors.brandMain)
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 8)
+                                            .background(AppTheme.colors.brandMain.opacity(0.1))
+                                            .cornerRadius(AppTheme.layout.radiusSmall)
+                                    }
+                                    .disabled(operation != .idle)
+                                    
+                                    if isResending {
+                                        ProgressView()
+                                            .progressViewStyle(.circular)
+                                            .tint(AppTheme.colors.brandMain)
+                                    }
+                                }
                             }
                         }
                     }
@@ -87,20 +119,6 @@ extension LoginPage {
                 Spacer()
             }
             .background(AppTheme.colors.background.ignoresSafeArea())
-            .onAppear {
-                startCountdown()
-            }
-        }
-        
-        func startCountdown() {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
-                countdown -= 1
-                if countdown == 0 {
-                    timer.invalidate()
-                    isCountingDown = false
-                    countdown = 60
-                }
-            }
         }
     }
     
