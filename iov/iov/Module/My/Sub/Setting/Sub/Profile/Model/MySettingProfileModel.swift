@@ -17,6 +17,10 @@ final class MySettingProfileModel: ObservableObject, MySettingProfileModelStateP
     @Published var birthday: Date? = nil
     @Published var area: String = ""
     @Published var city: String = ""
+    /// 头像上传状态（IOS-APP-DSN-CR-003 §4.2）
+    @Published var avatarOperation: MySettingProfileTypes.Model.AvatarOperation = .idle
+    /// 头像上传错误文案（错误提示复用 displayError 通道）
+    @Published var avatarErrorMessage: String? = nil
     let routerSubject = MySettingProfileRouter.Subjects()
 }
 
@@ -62,7 +66,17 @@ extension MySettingProfileModel: MySettingProfileModelActionProtocol {
     }
     func updateAvatar(imageUrl: String) {
         self.avatar = imageUrl
+        self.avatarOperation = .idle
+        self.avatarErrorMessage = nil
         contentState = .content
+    }
+    func beginAvatarUpload() {
+        avatarOperation = .uploading
+        avatarErrorMessage = nil
+    }
+    func finishAvatarUpload(error: String?) {
+        avatarOperation = .idle
+        avatarErrorMessage = error
     }
     func displayError(text: String) {
         contentState = .error(text: text)
@@ -85,5 +99,11 @@ extension MySettingProfileTypes.Model {
         case loading
         case content
         case error(text: String)
+    }
+
+    /// 头像上传状态：上传期间保留表单，仅阻止重复触发
+    enum AvatarOperation {
+        case idle
+        case uploading
     }
 }

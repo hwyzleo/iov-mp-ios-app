@@ -48,20 +48,39 @@ private extension MySettingProfileView {
     private struct Content: View {
         let intent: MySettingProfileIntentProtocol
         let state: MySettingProfileModelStateProtocol
-        @State private var image: UIImage? = nil
         @State private var showBirthday = false
         @State private var selectedDate = Date()
-        @State var showImagePicker: Bool = false
+        @State var showAvatarFlow: Bool = false
+        @State var showPhotoPermissionAlert: Bool = false
         
         var body: some View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: AppTheme.layout.spacing) {
                         VStack(spacing: 20) {
-                            Button(action: { self.showImagePicker.toggle() }) {
-                                AvatarImage(avatar: state.avatar, width: 80)
+                            Button(action: {
+                                guard state.avatarOperation != .uploading else { return }
+                                AvatarPhotoPermission.requestIfNeeded { granted in
+                                    if granted {
+                                        self.showAvatarFlow = true
+                                    } else {
+                                        self.showPhotoPermissionAlert = true
+                                    }
+                                }
+                            }) {
+                                ZStack {
+                                    AvatarImage(avatar: state.avatar, width: 80)
+                                    if state.avatarOperation == .uploading {
+                                        Circle()
+                                            .fill(Color.black.opacity(0.45))
+                                            .frame(width: 80, height: 80)
+                                        ProgressView()
+                                            .progressViewStyle(.circular)
+                                    }
+                                }
                             }
                             .buttonStyle(.plain)
+                            .disabled(state.avatarOperation == .uploading)
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)
@@ -127,17 +146,59 @@ private extension MySettingProfileView {
                 .background(AppTheme.colors.background)
                 .presentationDetents([.height(380)])
             }
-            .sheet(isPresented: $showImagePicker) {
-                ImagePicker(sourceType: .photoLibrary) { image in
-                    self.image = image
-                    intent.onSelectAvatar(image: image)
+            .alert("无法访问相册", isPresented: $showPhotoPermissionAlert) {
+                Button("取消", role: .cancel) {}
+                Button("去设置") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
                 }
+            } message: {
+                Text("请在系统设置中允许访问相册")
+            }
+            .sheet(isPresented: $showAvatarFlow) {
+                AvatarFlowView(
+                    onCropConfirmed: { input in
+                        showAvatarFlow = false
+                        intent.onConfirmAvatarCrop(input)
+                    },
+                    onCancel: {
+                        showAvatarFlow = false
+                        intent.onCancelAvatarCrop()
+                    }
+                )
             }
         }
     }
     
 }
 
+
+// MARK: - 头像选择/裁剪流程
+
+/// 相册选择 → 裁剪确认（仅相册入口，IOS-APP-DSN-CR-003 US-003-1）
+private struct AvatarFlowView: View {
+    var onCropConfirmed: (AvatarCropInput) -> Void
+    var onCancel: () -> Void
+
+    @State private var pickedImage: UIImage?
+
+    var body: some View {
+        Group {
+            if let pickedImage = pickedImage {
+                AvatarCropView(
+                    image: pickedImage,
+                    onCancel: onCancel,
+                    onConfirm: onCropConfirmed
+                )
+            } else {
+                ImagePicker(sourceType: .photoLibrary, dismissOnPick: false) { image in
+                    pickedImage = image
+                }
+            }
+        }
+    }
+}
 
 struct MySettingProfileView_Previews: PreviewProvider {
     @StateObject static var appGlobalState = AppGlobalState.shared

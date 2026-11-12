@@ -13,8 +13,8 @@ struct AvatarImage: View {
     var width: CGFloat = 50.0
 
     var body: some View {
-        if let unwrappedAvatar = avatar, !unwrappedAvatar.isEmpty {
-            KFImage(URL(string: unwrappedAvatar)!)
+        if let url = AvatarImage.validURL(avatar) {
+            KFImage(url)
                 .resizable()
                 .scaledToFill()
                 .frame(width: width, height: width)
@@ -26,6 +26,15 @@ struct AvatarImage: View {
                 .resizable()
                 .frame(width: width, height: width)
         }
+    }
+
+    /// 空串 / 非法 URL 回退占位图，避免强制解包崩溃（RD-003-9）
+    static func validURL(_ avatar: String?) -> URL? {
+        guard let avatar = avatar else { return nil }
+        let trimmed = avatar.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        guard let url = URL(string: trimmed), let scheme = url.scheme, !scheme.isEmpty else { return nil }
+        return url
     }
 }
 

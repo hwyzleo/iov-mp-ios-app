@@ -314,28 +314,19 @@ class TspApi {
         }
     }
     
-    /// 生成头像预上传地址
-    static func generateAvatarUrl(completion: @escaping (Result<TspResponse<PreSignedUrl>, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.requestPost(path: "/mp/account/action/generateAvatarUrl", parameters: [:]) { (result: Result<TspResponse<PreSignedUrl>, Error>) in
-                completion(result)
-            }
-        } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                let res = PreSignedUrl.init(
-                    uploadUrl: "http://xxxxxx",
-                    objectKey: "xxxx"
-                )
-                completion(.success(TspResponse(code: "000000", ts: Int64(Date().timeIntervalSince1970*1000), data: res)))
-            }
-        }
+    /// 申请头像上传凭证（IOS-APP-DSN-CR-003 §5.1）
+    static func requestAvatarUpload(request: AvatarUploadRequest, completion: @escaping (Result<AvatarUploadTicket, AvatarUploadError>) -> Void) {
+        AvatarRemoteAPIClient.shared.requestTicket(request, completion: completion)
     }
-    
-    /// 修改头像
-    static func modifyAvatar(imageUrl: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/mp/account/action/modifyAvatar", parameters: ["avatar":imageUrl]) { (result: Result<TspResponse<NoReply>, Error>) in
-            completion(result)
-        }
+
+    /// 预签名直传 JPEG（IOS-APP-DSN-CR-003 §5.2）
+    static func putAvatarBinary(url: String, data: Data, contentType: String, completion: @escaping (Result<Void, AvatarUploadError>) -> Void) {
+        AvatarRemoteAPIClient.shared.uploadBinary(url: url, data: data, contentType: contentType, completion: completion)
+    }
+
+    /// 确认头像上传（IOS-APP-DSN-CR-003 §5.3）
+    static func completeAvatarUpload(uploadId: String, completion: @escaping (Result<AvatarResult, AvatarUploadError>) -> Void) {
+        AvatarRemoteAPIClient.shared.completeUpload(uploadId: uploadId, completion: completion)
     }
     
     /// 修改昵称
@@ -374,25 +365,16 @@ class TspApi {
     }
     
     /// 统一更新用户资料
-    static func updateProfile(nickname: String?, avatarUrl: String?, gender: Int?, birthday: String?, regionCode: String?, regionName: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+    /// 头像只允许通过确认端点写入，本接口不再传 avatarUrl（IOS-APP-DSN-CR-003 RD-003-8）
+    static func updateProfile(nickname: String?, gender: Int?, birthday: String?, regionCode: String?, regionName: String?, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         var params: [String: Any] = [:]
         if let nickname = nickname { params["nickname"] = nickname }
-        if let avatarUrl = avatarUrl { params["avatarUrl"] = avatarUrl }
         if let gender = gender { params["gender"] = gender }
         if let birthday = birthday { params["birthday"] = birthday }
         if let regionCode = regionCode { params["regionCode"] = regionCode }
         if let regionName = regionName { params["regionName"] = regionName }
         TspManager.requestPut(path: "/api/mobile/account/v1/profile", parameters: params) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
-        }
-    }
-    
-    // 上传COS
-    static func uploadCos(url: String, image: UIImage, objectKey: String, completion: @escaping (Result<String, Error>) -> Void) {
-        if(!AppGlobalState.shared.isMock) {
-            TspManager.uploadCos(url: url, image: image, parameters: ["key":objectKey]) { (result: Result<String, Error>) in
-                completion(result)
-            }
         }
     }
     

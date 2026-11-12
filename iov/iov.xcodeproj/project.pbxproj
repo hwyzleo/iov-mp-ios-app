@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF0CBAA7F8CBF706BDEB1195 /* AvatarImageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF9DD5D6D68FCB89352CD31D /* AvatarImageProcessor.swift */; };
+		BF08128A7C5C8B4DA202472B /* AvatarRemoteAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD6DBAB027460019CB1C868 /* AvatarRemoteAPI.swift */; };
+		BFA2D010523B5904167AFFC3 /* AvatarUploadService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7F08678B74B1D0B2852567 /* AvatarUploadService.swift */; };
+		BF17F07D0B5FEC6ABE1F1944 /* AvatarCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF29D559455D46C561EE445F /* AvatarCropView.swift */; };
+		BF2794A7BBFD7FB33B2DCE18 /* AvatarImageProcessorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF3461B2D7E5BAC070DAABB2 /* AvatarImageProcessorTests.swift */; };
+		BF4B688B933D989E8E550D2D /* AvatarUploadServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFB689BCF83B39F49E470129 /* AvatarUploadServiceTests.swift */; };
+		BFEB1A4A1725741B72FD05EB /* AvatarContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF20EC345383C95D87F4EC0E /* AvatarContractTests.swift */; };
+		BFD720C68B89DA19C232F1AE /* AvatarUploadFlowIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFDB2F8C291C78D4D40AD3C5 /* AvatarUploadFlowIntegrationTests.swift */; };
+		BF3E276B773C19A682F5A842 /* AvatarTestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEB1C0ACA595C485DF5F04F /* AvatarTestSupport.swift */; };
 		1145D8A30DEF29BEE7D1F662 /* TokenRefreshCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8B698AF85C185208A5A24F6 /* TokenRefreshCoordinatorTests.swift */; };
 		1350E8D0F514DC2448B3752D /* TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54FF8062F56FD007F58CF8D9 /* TestSupport.swift */; };
 		2A0CBFD5A356E8140C93C2F2 /* SafeLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CE7C9CBA25F802F90CA16A9 /* SafeLog.swift */; };
@@ -457,6 +466,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BF9DD5D6D68FCB89352CD31D /* AvatarImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImageProcessor.swift; sourceTree = "<group>"; };
+		BFD6DBAB027460019CB1C868 /* AvatarRemoteAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarRemoteAPI.swift; sourceTree = "<group>"; };
+		BF7F08678B74B1D0B2852567 /* AvatarUploadService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarUploadService.swift; sourceTree = "<group>"; };
+		BF29D559455D46C561EE445F /* AvatarCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarCropView.swift; sourceTree = "<group>"; };
+		BF3461B2D7E5BAC070DAABB2 /* AvatarImageProcessorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarImageProcessorTests.swift; sourceTree = "<group>"; };
+		BFB689BCF83B39F49E470129 /* AvatarUploadServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarUploadServiceTests.swift; sourceTree = "<group>"; };
+		BF20EC345383C95D87F4EC0E /* AvatarContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarContractTests.swift; sourceTree = "<group>"; };
+		BFDB2F8C291C78D4D40AD3C5 /* AvatarUploadFlowIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarUploadFlowIntegrationTests.swift; sourceTree = "<group>"; };
+		BFEB1C0ACA595C485DF5F04F /* AvatarTestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarTestSupport.swift; sourceTree = "<group>"; };
 		0CE7C9CBA25F802F90CA16A9 /* SafeLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeLog.swift; sourceTree = "<group>"; };
 		1015E21B42DD1C2A70A661EC /* LoginModelStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginModelStateTests.swift; sourceTree = "<group>"; };
 		12F5C664A99F1F66159D99AC /* SafeLogTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeLogTests.swift; sourceTree = "<group>"; };
@@ -952,6 +970,7 @@
 			children = (
 				D7C0FE8412C60DC77609FDDE /* LoginSessionIntegrationTests.swift */,
 				DC4A13E5A9ED81B55A07DF61 /* LoginFlowIntegrationTests.swift */,
+				BFDB2F8C291C78D4D40AD3C5 /* AvatarUploadFlowIntegrationTests.swift */,
 			);
 			path = Integration;
 			sourceTree = "<group>";
@@ -971,6 +990,7 @@
 			isa = PBXGroup;
 			children = (
 				317E46C74D716ED83B52BEEE /* Auth */,
+				BF2E8A04577D1D28AF4BC0E3 /* Avatar */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -1708,6 +1728,7 @@
 		BFA1884E2C84188E004D625D /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				BF9DD5D6D68FCB89352CD31D /* AvatarImageProcessor.swift */,
 				BF8914982F6537D200A3F0FE /* ServiceContainer.swift */,
 				BFA18A782C843E27004D625D /* CodableDefault.swift */,
 				BFA1887D2C841E94004D625D /* CommonUtil.swift */,
@@ -1778,6 +1799,7 @@
 			isa = PBXGroup;
 			children = (
 				BFA1887B2C841E57004D625D /* AvatarImage.swift */,
+				BF29D559455D46C561EE445F /* AvatarCropView.swift */,
 			);
 			path = Image;
 			sourceTree = "<group>";
@@ -2861,6 +2883,7 @@
 			children = (
 				2AD372472350952DAB25C562 /* Fakes.swift */,
 				54FF8062F56FD007F58CF8D9 /* TestSupport.swift */,
+				BFEB1C0ACA595C485DF5F04F /* AvatarTestSupport.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -2868,6 +2891,9 @@
 		F61F434E8B472A403A5BBA59 /* Unit */ = {
 			isa = PBXGroup;
 			children = (
+				BF3461B2D7E5BAC070DAABB2 /* AvatarImageProcessorTests.swift */,
+				BFB689BCF83B39F49E470129 /* AvatarUploadServiceTests.swift */,
+				BF20EC345383C95D87F4EC0E /* AvatarContractTests.swift */,
 				B081D0112FE20B150EA68B44 /* LoginResponseValidatorTests.swift */,
 				292ACA224D2C92EF5D7DCBF5 /* AuthErrorTests.swift */,
 				A66E109A647CD7C21BB9F230 /* MobileNumberTests.swift */,
@@ -2886,6 +2912,15 @@
 				CAAD1CB23BD55083C90C4AFB /* Pods_iovTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BF2E8A04577D1D28AF4BC0E3 /* Avatar */ = {
+			isa = PBXGroup;
+			children = (
+				BFD6DBAB027460019CB1C868 /* AvatarRemoteAPI.swift */,
+				BF7F08678B74B1D0B2852567 /* AvatarUploadService.swift */,
+			);
+			path = Avatar;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -3075,6 +3110,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF0CBAA7F8CBF706BDEB1195 /* AvatarImageProcessor.swift in Sources */,
+				BF08128A7C5C8B4DA202472B /* AvatarRemoteAPI.swift in Sources */,
+				BFA2D010523B5904167AFFC3 /* AvatarUploadService.swift in Sources */,
+				BF17F07D0B5FEC6ABE1F1944 /* AvatarCropView.swift in Sources */,
 				7C0A509948E9A57880DACDAF /* AuthSession.swift in Sources */,
 				A025F35B1CCA39DF0E58332F /* AuthError.swift in Sources */,
 				48215F9D47BE81F267828C2E /* AuthSessionRepositoryProtocol.swift in Sources */,
@@ -3503,6 +3542,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF2794A7BBFD7FB33B2DCE18 /* AvatarImageProcessorTests.swift in Sources */,
+				BF4B688B933D989E8E550D2D /* AvatarUploadServiceTests.swift in Sources */,
+				BFEB1A4A1725741B72FD05EB /* AvatarContractTests.swift in Sources */,
+				BFD720C68B89DA19C232F1AE /* AvatarUploadFlowIntegrationTests.swift in Sources */,
+				BF3E276B773C19A682F5A842 /* AvatarTestSupport.swift in Sources */,
 				F825F9595D2D58A9E18CC09C /* Fakes.swift in Sources */,
 				1350E8D0F514DC2448B3752D /* TestSupport.swift in Sources */,
 				418EBF2F876FE836250E5F74 /* LoginResponseValidatorTests.swift in Sources */,

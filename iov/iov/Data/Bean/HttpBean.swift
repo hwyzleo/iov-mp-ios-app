@@ -431,11 +431,38 @@ struct AccountQrcode: Codable {
 }
 
 /**
- * 预签名上传地址
+ * 头像上传申请参数（IOS-APP-DSN-CR-003 §4.1 / §5.1）
  */
-struct PreSignedUrl: Codable {
+struct AvatarUploadRequest: Codable {
+    /// 固定 avatar.jpg
+    var originalFilename: String
+    /// 固定 image/jpeg
+    var contentType: String
+    /// 实际字节数
+    var size: Int
+}
+
+/**
+ * 头像上传票据（IOS-APP-DSN-CR-003 §4.1 / §5.1）
+ */
+struct AvatarUploadTicket: Codable {
+    var uploadId: String
+    /// 绝对预签名地址（含 query，原值直传）
     var uploadUrl: String
-    var objectKey: String
+    var httpMethod: String
+    var contentType: String
+    /// 过期时间（epoch 毫秒）
+    var expiresAt: Int64
+}
+
+/**
+ * 头像上传结果（IOS-APP-DSN-CR-003 §4.1 / §5.3）
+ */
+struct AvatarResult: Codable, Equatable {
+    var avatarUrl: String
+    var objectId: String
+    var contentType: String
+    var size: Int
 }
 
 /// 内容块

@@ -19,6 +19,8 @@ protocol MySettingProfileModelStateProtocol {
     var birthday: Date? { get }
     var area: String { get }
     var city: String { get }
+    var avatarOperation: MySettingProfileTypes.Model.AvatarOperation { get }
+    var avatarErrorMessage: String? { get }
     var routerSubject: MySettingProfileRouter.Subjects { get }
 }
 
@@ -31,6 +33,10 @@ protocol MySettingProfileModelActionProtocol: MviModelActionProtocol {
     /// 修改昵称
     func updateNickname(nickname: String)
     func updateAvatar(imageUrl: String)
+    /// 开始头像上传（置 uploading，阻止重复触发）
+    func beginAvatarUpload()
+    /// 结束头像上传（回到 idle 并记录错误文案）
+    func finishAvatarUpload(error: String?)
     func displayError(text: String)
 }
 

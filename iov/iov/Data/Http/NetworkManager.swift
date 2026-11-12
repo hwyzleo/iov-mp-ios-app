@@ -16,8 +16,13 @@ typealias NetworkRequestCompletion = (NetworkRequestResult) -> Void
 class NetworkManager {
     // 共享对象
     static let shared = NetworkManager()
-    
-    private init() {}
+
+    /// 实际发起请求的 Session；测试可注入带 `URLProtocol` 替身的 Session
+    let session: Session
+
+    init(session: Session = Session.default) {
+        self.session = session
+    }
     
     @discardableResult
     func requestGet(path: String,
@@ -26,7 +31,7 @@ class NetworkManager {
                     // @escaping,逃逸闭包: 一个闭包被作为一个参数传递给一个函数，并且在函数return之后才被唤起执行
                     completion: @escaping NetworkRequestCompletion) -> DataRequest {
         logRequest(method: "GET", url: path)
-        return AF.request(path,
+        return session.request(path,
                    parameters: parameters,
                    headers: headers,
                    requestModifier: { $0.timeoutInterval = 30 })
@@ -45,7 +50,7 @@ class NetworkManager {
                      headers: HTTPHeaders?,
                      completion: @escaping NetworkRequestCompletion) -> DataRequest {
         logRequest(method: "POST", url: path)
-        return AF.request(path,
+        return session.request(path,
                    method: .post,
                    parameters: parameters,
                    encoding: JSONEncoding.prettyPrinted, // parameters的编码方式,默认为JSON
@@ -68,7 +73,7 @@ class NetworkManager {
                     headers: HTTPHeaders?,
                     completion: @escaping NetworkRequestCompletion) -> DataRequest {
         logRequest(method: "PUT", url: path)
-        return AF.request(path,
+        return session.request(path,
                    method: .put,
                    parameters: parameters,
                    encoding: JSONEncoding.prettyPrinted,
@@ -93,47 +98,49 @@ class NetworkManager {
         SafeLog.log("HTTP", method, url, "status:", statusCode.map(String.init) ?? "nil")
     }
 
-    // 图片上传
+    /// 预签名直传（IOS-APP-DSN-CR-003 RD-003-3）
+    /// - 使用绝对 `uploadUrl` 原值，不做域名拼接、不改写 query
+    /// - 仅发送 `Content-Type`，不携带任何业务凭证头
+    /// - 返回 HTTP 状态码，非 2xx 由调用方判定为失败
     @discardableResult
-    func uploadImg(image: UIImage,
-                   to url: String,
-                   params: [String: Any],
-                   completion: @escaping NetworkRequestCompletion) -> DataRequest
-    {
-        AF.upload(multipartFormData: { multiPart in
-            for (key, value) in params {
-                if let temp = value as? String {
-                    multiPart.append(temp.data(using: .utf8)!, withName: key)
+    func putBinary(url: String,
+                   data: Data,
+                   contentType: String,
+                   completion: @escaping (Result<Int, Error>) -> Void) -> DataRequest {
+        // 预签名地址含签名 query，日志只保留 host + path
+        logRequest(method: "PUT", url: Self.redactedURL(url))
+        var request = URLRequest(url: URL(string: url) ?? URL(string: "about:blank")!)
+        request.method = HTTPMethod.put
+        request.setValue(contentType, forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 30
+        request.httpBody = data
+
+        // 只关心状态码：COS 成功响应通常为空体，避免 `responseData` 把空体当序列化失败
+        return session.request(request)
+            .response { response in
+                self.logResponse(method: "PUT", url: Self.redactedURL(url), statusCode: response.response?.statusCode)
+                if let error = response.error {
+                    completion(.failure(self.mappedError(error)))
+                    return
                 }
-                if let temp = value as? Int {
-                    multiPart.append("\(temp)".data(using: .utf8)!, withName: key)
-                }
-                if let temp = value as? NSArray {
-                    temp.forEach({ element in
-                        let keyObj = key + "[]"
-                        if let string = element as? String {
-                            multiPart.append(string.data(using: .utf8)!, withName: keyObj)
-                        } else
-                            if let num = element as? Int {
-                                let value = "\(num)"
-                                multiPart.append(value.data(using: .utf8)!, withName: keyObj)
-                        }
-                    })
-                }
-            }
-            multiPart.append(image.jpegData(compressionQuality: 0.9)!, withName: "file", fileName: "file.png", mimeType: "image/png")
-        }, to: url)
-            .uploadProgress(queue: .main, closure: { progress in
-                print("Upload Progress: \(progress.fractionCompleted)")
-            })
-            .responseData { response in
-                switch response.result {
-                case let .success(data): completion(.success(data))
-                case let .failure(error): completion(.failure(error))
-                }
+                completion(.success(response.response?.statusCode ?? 0))
             }
     }
+
+    /// 去掉 query 的日志安全地址（禁止记录预签名参数）
+    static func redactedURL(_ url: String) -> String {
+        guard let index = url.firstIndex(of: "?") else { return url }
+        return String(url[..<index]) + "?***"
+    }
     
+    /// 归一化网络错误为 `Error`
+    private func mappedError(_ error: AFError) -> Error {
+        switch handleError(error) {
+        case let .failure(mapped): return mapped
+        case .success: return error
+        }
+    }
+
     // 处理网络请求中的错误
     private func handleError(_ error: AFError) -> NetworkRequestResult {
         if let underlyingError = error.underlyingError {

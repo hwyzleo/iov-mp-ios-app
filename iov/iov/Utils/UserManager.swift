@@ -128,6 +128,20 @@ class UserManager: Object {
         return updateNickname(nickname: nickname)
     }
 
+    /// 修改头像（Realm 资料缓存；权威来源为 CIAM profile.avatarUrl）
+    class func modifyAvatar(avatar: String) {
+        let realm = RealmManager.user.realm
+        do {
+            try realm.write {
+                if let user = realm.objects(UserManager.self).first, !user.isInvalidated {
+                    user.avatar = avatar
+                }
+            }
+        } catch {
+            SafeLog.log("更新头像缓存失败:", error.localizedDescription)
+        }
+    }
+
     /// 更新昵称和头像（登录后获取用户信息）
     class func updateNicknameAndAvatar(nickname: String, avatar: String) {
         let realm = RealmManager.user.realm

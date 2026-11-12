@@ -8,7 +8,10 @@
 import SwiftUI
 
 protocol MySettingProfileIntentProtocol: MviIntentProtocol {
-    func onSelectAvatar(image: UIImage)
+    /// 裁剪确认后上传头像（IOS-APP-DSN-CR-003）
+    func onConfirmAvatarCrop(_ input: AvatarCropInput)
+    /// 取消裁剪/结束上传（停止自动重试，不修改本地头像）
+    func onCancelAvatarCrop()
     /// 点击保存昵称按钮
     func onTapNicknameSaveButton(nickname: String)
     /// 点击保存签名按钮

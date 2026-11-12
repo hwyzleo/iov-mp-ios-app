@@ -10,12 +10,22 @@ import SwiftUI
 class MySettingProfileIntent: MviIntentProtocol {
     private weak var modelAction: MySettingProfileModelActionProtocol?
     private weak var modelRouter: MySettingProfileModelRouterProtocol?
+    private let avatarService: AvatarUploading
     @AppStorage("userNickname") private var userNickname: String = ""
     @AppStorage("userAvatar") private var userAvatar: String = ""
     
-    init(model: MySettingProfileModelActionProtocol & MySettingProfileModelRouterProtocol) {
+    init(
+        model: MySettingProfileModelActionProtocol & MySettingProfileModelRouterProtocol,
+        avatarService: AvatarUploading = AvatarUploadService()
+    ) {
         self.modelAction = model
         self.modelRouter = model
+        self.avatarService = avatarService
+    }
+
+    deinit {
+        // 离开页面：停止自动重试，不影响已生效头像（RD-003-7）
+        avatarService.cancel()
     }
     
     /// 页面出现
@@ -25,6 +35,8 @@ class MySettingProfileIntent: MviIntentProtocol {
             switch result {
             case .success(let response):
                 if response.isSuccess, let account = response.data {
+                    self.userAvatar = account.avatarUrl ?? ""
+                    UserManager.modifyAvatar(avatar: account.avatarUrl ?? "")
                     self.modelAction?.updateProfile(account: account)
                 } else {
                     self.modelAction?.displayError(text: response.message ?? "异常")
@@ -41,51 +53,35 @@ class MySettingProfileIntent: MviIntentProtocol {
 
 extension MySettingProfileIntent: MySettingProfileIntentProtocol {
     
-    func onSelectAvatar(image: UIImage) {
-        modelAction?.displayLoading()
-        TspApi.generateAvatarUrl() { (result: Result<TspResponse<PreSignedUrl>, Error>) in
+    func onConfirmAvatarCrop(_ input: AvatarCropInput) {
+        // 上传期间阻止重复触发（TC-003-9）
+        guard !avatarService.isUploading else { return }
+        modelAction?.beginAvatarUpload()
+        avatarService.upload(input) { [weak self] result in
+            guard let self = self else { return }
             switch result {
-            case .success(let response):
-                if(response.isSuccess) {
-                    let uploadUrl = response.data!.uploadUrl
-                    let objectKey = response.data!.objectKey
-                    TspApi.uploadCos(url: uploadUrl, image: image, objectKey: objectKey) { (result: Result<String, Error>) in
-                        switch result {
-                        case .success(_):
-                            let index = uploadUrl.firstIndex(of: "?")!
-                            let position = uploadUrl.distance(from: uploadUrl.startIndex, to: index)
-                            let imageUrl = uploadUrl.prefix(position)
-                            TspApi.modifyAvatar(imageUrl: String(imageUrl)) { (result: Result<TspResponse<NoReply>, Error>) in
-                                switch result {
-                                case .success(let response):
-                                    if(response.isSuccess) {
-                                        self.userAvatar = String(imageUrl)
-                                        self.modelAction?.updateAvatar(imageUrl: String(imageUrl))
-                                    } else {
-                                        self.modelAction?.displayError(text: response.message ?? "异常")
-                                    }
-                                case let .failure(error):
-                                    print(error)
-                                    self.modelAction?.displayError(text: "请求异常")
-                                }
-                            }
-                        case let .failure(error):
-                            print(error)
-                            self.modelAction?.displayError(text: "请求异常")
-                        }
-                        
-                    }
-                } else {
-                    self.modelAction?.displayError(text: response.message ?? "异常")
-                }
+            case let .success(avatar):
+                // 只有确认成功才更新本地头像（RD-003-6）
+                self.userAvatar = avatar.avatarUrl
+                UserManager.modifyAvatar(avatar: avatar.avatarUrl)
+                self.modelAction?.updateAvatar(imageUrl: avatar.avatarUrl)
             case let .failure(error):
-                print(error)
-                self.modelAction?.displayError(text: "请求异常")
+                let message = AvatarUploadErrorMessage.text(for: error)
+                self.modelAction?.finishAvatarUpload(error: message)
+                if let message = message {
+                    self.modelAction?.displayError(text: message)
+                }
             }
         }
     }
+
+    func onCancelAvatarCrop() {
+        avatarService.cancel()
+        modelAction?.finishAvatarUpload(error: nil)
+    }
+
     func onTapNicknameSaveButton(nickname: String) {
-        TspApi.updateProfile(nickname: nickname, avatarUrl: nil, gender: nil, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nickname, gender: nil, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
@@ -101,7 +97,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         }
     }
     func onTapBioSaveButton(bio: String) {
-        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: nil, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nil, gender: nil, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
@@ -122,7 +118,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         case "FEMALE": genderInt = 2
         default: genderInt = 0
         }
-        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: genderInt, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nil, gender: genderInt, birthday: nil, regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
@@ -137,7 +133,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
         }
     }
     func onTapBirthdaySaveButton(date: Date) {
-        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: nil, birthday: dateToStr(date: date), regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nil, gender: nil, birthday: dateToStr(date: date), regionCode: nil, regionName: nil) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.isSuccess) {
@@ -166,7 +162,7 @@ extension MySettingProfileIntent: MySettingProfileIntentProtocol {
     func onTapCity(city: String) {
         modelAction?.displayLoading()
         let regionCode = "china"
-        TspApi.updateProfile(nickname: nil, avatarUrl: nil, gender: nil, birthday: nil, regionCode: regionCode, regionName: city) { (result: Result<TspResponse<NoReply>, Error>) in
+        TspApi.updateProfile(nickname: nil, gender: nil, birthday: nil, regionCode: regionCode, regionName: city) { (result: Result<TspResponse<NoReply>, Error>) in
             switch result {
             case .success(let response):
                 if(response.isSuccess) {

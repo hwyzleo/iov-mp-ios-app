@@ -73,7 +73,7 @@ class TspManager {
     }
     
     // 确保 token 有效（单飞刷新由 TokenRefreshCoordinator 负责）
-    private static func ensureTokenValid(completion: @escaping (Result<Void, Error>) -> Void) {
+    static func ensureTokenValid(completion: @escaping (Result<Void, Error>) -> Void) {
         let repository = AuthEnvironment.shared.sessionRepository
         guard repository.hasSession() else {
             completion(.success(()))
@@ -134,17 +134,6 @@ class TspManager {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)
                 completion(parseResult)
-            case let .failure(error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    static func uploadCos(url: String, image: UIImage, parameters: Parameters, completion: @escaping (Result<String, Error>) -> Void) {
-        NetworkManager.shared.uploadImg(image: image, to: AppGlobalState.shared.tspUrl + url, params: parameters) { result in
-            switch result {
-            case .success(_):
-                completion(.success(""))
             case let .failure(error):
                 completion(.failure(error))
             }
