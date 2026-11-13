@@ -150,6 +150,9 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             AppGlobalState.shared.parameters["orderDetailView"] = "INVOICED"
         case .DELIVERED:
             AppGlobalState.shared.parameters["orderDetailView"] = "DELIVERED"
+        case .EXPIRED, .CANCEL, .CLOSED:
+            // 终态：进入只读失效视图（可重新支付），不再进入待支付页
+            AppGlobalState.shared.parameters["orderDetailView"] = "INVALID"
         case .ACTIVATED:
             break
         }
@@ -183,6 +186,23 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             }
         }
     }
+    /// 重新发起支付（订单已失效，OTD-VSO-DSN-CR-005）
+    /// 先调用云端恢复接口，成功后按意向金阶段发起支付
+    func onTapReopenPayment() {
+        guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else { return }
+        modelAction?.displayLoading()
+        PaymentFlowService.shared.reopenPayment(orderNo: orderNo) { [weak self] result in
+            switch result {
+            case .success(let reopened):
+                AppGlobalState.shared.parameters["reopenCount"] = reopened.reopenCount
+                self?.onTapPayOrder(orderPaymentPhase: 1, paymentAmount: 0, paymentChannel: "ALIPAY")
+            case .failure(let error):
+                self?.viewOnAppear()
+                self?.modelAction?.displayError(text: error.localizedDescription)
+            }
+        }
+    }
+
     func onTapCancelOrder() {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()

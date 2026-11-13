@@ -41,17 +41,15 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
             self.orderState = .WISHLIST
         case "ORDER":
             self.currentVehicleType = .ORDER
-            if let orderState = OrderState(rawValue: vehicle.state) {
-                self.orderState = orderState
-            } else {
-                self.orderState = .EARNEST_MONEY_UNPAID
-            }
+            // OTD-VSO-DSN-CR-005：不再将未知状态兜底成“待支付”，否则失效单会展示
+            // 一个必然失败的支付按钮；未知状态统一按终态（无支付动作）处理。
+            self.orderState = OrderState(rawValue: vehicle.state) ?? .EXPIRED
         case "ACTIVATED":
             self.currentVehicleType = .ACTIVATED
             self.orderState = .ACTIVATED
         default:
             self.currentVehicleType = .ORDER
-            self.orderState = .EARNEST_MONEY_UNPAID
+            self.orderState = .EXPIRED
         }
         self.saleModelImages = vehicle.saleModelImages ?? []
         self.totalPrice = vehicle.totalPrice ?? 0

@@ -22,6 +22,8 @@ protocol MarketingServiceProtocol {
     func deleteWishlist(wishlistId: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void)
     func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, agreementConfirmations: [AgreementConfirmation], completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void)
     func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void)
+    /// 重新发起支付（订单已失效，OTD-VSO-DSN-CR-005）
+    func reopenPayment(orderNo: String, completion: @escaping (Result<TspResponse<ReopenPaymentResult>, Error>) -> Void)
     func getPayment(orderNo: String, paymentNo: String, completion: @escaping (Result<TspResponse<PaymentRecord>, Error>) -> Void)
     func listPayments(orderNo: String, completion: @escaping (Result<TspResponse<[PaymentRecord]>, Error>) -> Void)
     func downPaymentOrder(saleModelCode: String, orderNo: String, modelCode: String, variantCode: String, optionCodes: [String], agreementConfirmations: [AgreementConfirmation], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void)
@@ -98,6 +100,10 @@ class RealMarketingService: MarketingServiceProtocol {
 
     func initiatePayment(orderNo: String, paymentChannel: String, completion: @escaping (Result<TspResponse<InitiatePaymentResult>, Error>) -> Void) {
         TspApi.initiatePayment(orderNo: orderNo, paymentChannel: paymentChannel, completion: completion)
+    }
+
+    func reopenPayment(orderNo: String, completion: @escaping (Result<TspResponse<ReopenPaymentResult>, Error>) -> Void) {
+        TspApi.reopenPayment(orderNo: orderNo, completion: completion)
     }
 
     func getPayment(orderNo: String, paymentNo: String, completion: @escaping (Result<TspResponse<PaymentRecord>, Error>) -> Void) {
@@ -311,6 +317,16 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
             paymentStatus: "PROCESSING",
             externalTradeNo: "MOCK-MOCK_PAYMENT_001",
             expireTime: Int64(Date().addingTimeInterval(900).timeIntervalSince1970 * 1000)
+        )
+        mockDelayedSuccess(data: mockResult, completion: completion)
+    }
+
+    func reopenPayment(orderNo: String, completion: @escaping (Result<TspResponse<ReopenPaymentResult>, Error>) -> Void) {
+        let mockResult = ReopenPaymentResult(
+            orderNo: orderNo,
+            orderState: 200,
+            reopenCount: 1,
+            expireTime: Int64(Date().addingTimeInterval(1800).timeIntervalSince1970 * 1000)
         )
         mockDelayedSuccess(data: mockResult, completion: completion)
     }

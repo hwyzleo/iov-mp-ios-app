@@ -37,6 +37,10 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     @Published var orderPersonIdType: Int = 0
     @Published var orderPersonIdNum: String = ""
     @Published var isFromEarnestMoneyConversion: Bool = false
+    /// 终态标题（订单已失效/已取消/已关闭）
+    var invalidTitle: String = ""
+    /// 是否允许重新发起支付（仅失效且次数未用尽）
+    var canReopenPayment: Bool = false
 }
 
 // MARK: - Action Protocol
@@ -172,6 +176,11 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     func displayError(text: String) {
         contentState = .error(text: text)
     }
+    func displayInvalidOrder(title: String, canReopenPayment: Bool) {
+        self.invalidTitle = title
+        self.canReopenPayment = canReopenPayment
+        contentState = .invalid
+    }
 }
 
 // MARK: - Route
@@ -213,6 +222,8 @@ extension MarketingTypes.Model {
         case finalPaymentPaid
         case invoiced
         case delivered
+        /// 终态（失效/取消/关闭，OTD-VSO-DSN-CR-005）
+        case invalid
         case error(text: String)
     }
 }

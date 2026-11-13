@@ -185,3 +185,11 @@
 "order_agreement" = "Order Agreement";
 "wheel" = "wheel";
 "wishlist" = "wishlist";
+"order_expired" = "Order expired";
+"order_cancelled" = "Order cancelled";
+"order_closed" = "Order closed";
+"reopen_payment" = "Pay again";
+"reopen_limit_exceeded" = "Payment retries exhausted, please place a new order";
+"reopen_not_allowed" = "Current order state does not allow payment retry";
+"order_expired_desc" = "This order expired because the payment window ended. You can pay again or place a new order.";
+"order_terminal_desc" = "This order has ended and can no longer be paid.";

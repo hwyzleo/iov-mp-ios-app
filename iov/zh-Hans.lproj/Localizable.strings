@@ -185,3 +185,11 @@
 "order_agreement" = "《订购协议》";
 "wheel" = "车轮";
 "wishlist" = "心愿单";
+"order_expired" = "订单已失效";
+"order_cancelled" = "订单已取消";
+"order_closed" = "订单已关闭";
+"reopen_payment" = "重新支付";
+"reopen_limit_exceeded" = "重新支付次数已用尽，请重新下单";
+"reopen_not_allowed" = "订单当前状态不允许重新支付";
+"order_expired_desc" = "该订单已超过支付时限并自动失效，可重新发起支付或重新下单。";
+"order_terminal_desc" = "该订单已结束，无法继续支付。";

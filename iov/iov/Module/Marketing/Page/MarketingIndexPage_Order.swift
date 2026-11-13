@@ -177,10 +177,17 @@ extension MarketingIndexPage {
                 RoundedCornerButton(nameLocal: LocalizedStringKey("delivered"), color: .black, bgColor: AppTheme.colors.fontTertiary) {
                     // 已提车
                 }
-            default:
-                RoundedCornerButton(nameLocal: LocalizedStringKey("pay_final_payment"), color: .black, bgColor: AppTheme.colors.brandMain) {
-                    intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
+            case .EXPIRED:
+                // OTD-VSO-DSN-CR-005：失效订单可重新发起支付（复用原订单，云端限制最多 2 次）
+                RoundedCornerButton(nameLocal: LocalizedStringKey("reopen_payment"), color: .black, bgColor: AppTheme.colors.brandMain) {
+                    intent.onTapReopenPayment()
                 }
+            case .CANCEL, .CLOSED:
+                // 终态：不展示任何支付动作
+                EmptyView()
+            default:
+                // 未知/中间态不提供支付动作，避免出现必然失败的按钮
+                EmptyView()
             }
         }
         
@@ -197,6 +204,9 @@ extension MarketingIndexPage {
             case .FINAL_PAYMENT_PAID: return "final_payment_paid"
             case .INVOICED: return "invoiced"
             case .DELIVERED: return "delivered"
+            case .EXPIRED: return "order_expired"
+            case .CANCEL: return "order_cancelled"
+            case .CLOSED: return "order_closed"
             default: return "my_order"
             }
         }

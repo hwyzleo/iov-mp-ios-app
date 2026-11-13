@@ -18,6 +18,8 @@ protocol MarketingIndexIntentProtocol : MviIntentProtocol {
     func onTapOrderDetail(orderState: OrderState)
     /// 点击订单支付
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String)
+    /// 点击重新发起支付（订单已失效，OTD-VSO-DSN-CR-005）
+    func onTapReopenPayment()
     /// 点击取消订单
     func onTapCancelOrder()
     /// 点击意向金转定金

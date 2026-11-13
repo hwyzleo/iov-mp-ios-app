@@ -52,6 +52,7 @@ func viewOnAppear() {
                 case 620: viewName = "FINAL_PAYMENT_PAID"
                 case 630: viewName = "INVOICED"
                 case 650: viewName = "DELIVERED"
+                case 950, 960, 970: viewName = "INVALID"
                 default: break
                 }
             }
@@ -80,11 +81,70 @@ func viewOnAppear() {
             case "FINAL_PAYMENT_PAID": handleFinalPaymentPaid()
             case "INVOICED": handleInvoiced()
             case "DELIVERED": handleDelivered()
+            case "INVALID": handleInvalidOrder()
             default: handleOrder()
             }
         }
     }
     
+    /// 终态订单（失效/取消/关闭）：只读展示，不展示支付按钮；失效可重新发起支付
+    private func handleInvalidOrder() {
+        let orderNum = orderNo.isEmpty ? (VehicleManager.shared.getCurrentVehicleId() ?? "") : orderNo
+        guard !orderNum.isEmpty else {
+            modelAction?.displayError(text: "请求异常")
+            return
+        }
+        let localState = VehicleManager.shared.getVehiclesForMock()[orderNum]?.subState
+        ServiceContainer.marketingService.getOrder(orderNo: orderNum) { [weak self] (result: Result<TspResponse<Order>, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let res):
+                guard let order = res.data else {
+                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                    return
+                }
+                let displayName = order.variantName ?? order.modelName ?? ""
+                self.modelAction?.updateSaleModelImages(saleModelImages: order.saleModelImages ?? [])
+                self.modelAction?.updateSaleModelIntro(saleModelName: displayName, saleModelDesc: order.saleModelDesc ?? "")
+                self.modelAction?.updateSaleModelPrice(saleModelName: displayName,
+                                                       saleModelPrice: order.totalPrice ?? 0,
+                                                       totalPrice: order.totalPrice ?? 0)
+                self.modelAction?.updateOrder(orderNum: order.orderNo, orderTime: order.orderTime ?? 0)
+                // 服务端状态为权威来源，同步修正本地缓存
+                VehicleManager.shared.updateSubState(id: orderNum, subState: order.orderState)
+                let info = Self.invalidTitleAndReopenFlag(for: order.orderState)
+                self.modelAction?.displayInvalidOrder(title: info.title, canReopenPayment: info.canReopen)
+            case .failure(_):
+                let info = Self.invalidTitleAndReopenFlag(for: localState ?? 0)
+                self.modelAction?.displayInvalidOrder(title: info.title, canReopenPayment: info.canReopen)
+            }
+        }
+    }
+
+    private static func invalidTitleAndReopenFlag(for state: Int) -> (title: String, canReopen: Bool) {
+        switch state {
+        case 950: return (String(localized: "order_cancelled"), false)
+        case 970: return (String(localized: "order_closed"), false)
+        default: return (String(localized: "order_expired"), true)
+        }
+    }
+
+    /// 重新发起支付：先调用云端恢复，成功后按意向金阶段发起支付
+    func onTapReopenPayment() {
+        guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else { return }
+        modelAction?.displayLoading()
+        PaymentFlowService.shared.reopenPayment(orderNo: orderNo) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.onTapPayOrder(orderPaymentPhase: 1, paymentAmount: 0, paymentChannel: "ALIPAY")
+            case .failure(let error):
+                self.viewOnAppear()
+                self.modelAction?.displayError(text: error.localizedDescription)
+            }
+        }
+    }
+
 private func convertToDynamicConfigs(configName: [String: String]?, configPrice: [String: Decimal]?) -> [(String, String, Decimal)] {
         var configs: [(String, String, Decimal)] = []
         guard let names = configName, let prices = configPrice else { return configs }

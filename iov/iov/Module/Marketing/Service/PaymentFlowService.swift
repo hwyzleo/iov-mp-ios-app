@@ -2,11 +2,24 @@
 //  PaymentFlowService.swift
 //  iov
 //
-//  IOS-APP-DSN-CR-002
+//  IOS-APP-DSN-CR-002 / IOS-APP-DSN-CR-004
 //  统一支付流程：发起支付 → 本地 Mock 网关回调 / 轮询支付单 → 返回终态。
+//  订单已失效（201057）时自动恢复一次并重试，避免用户因恰好超时而支付失败。
 //
 
 import Foundation
+
+/// 云端支付相关错误码（OTD-VSO-DSN-CR-005）
+enum PaymentErrorCode {
+    /// 订单已失效，可重新发起支付
+    static let orderExpired = "201057"
+    /// 当前状态不允许重新支付
+    static let reopenNotAllowed = "201058"
+    /// 重新支付次数已用尽
+    static let reopenLimitExceeded = "201059"
+    /// 订单不存在或已删除
+    static let orderNotExist = "201001"
+}
 
 final class PaymentFlowService {
 
@@ -27,11 +40,56 @@ final class PaymentFlowService {
              stage: PaymentStageValue,
              paymentChannel: String,
              completion: @escaping (Result<PaymentRecord?, Error>) -> Void) {
+        initiate(orderNo: orderNo,
+                 stage: stage,
+                 paymentChannel: paymentChannel,
+                 allowRecover: true,
+                 completion: completion)
+    }
+
+    /// 重新发起支付（订单已失效时由用户主动触发）
+    func reopenPayment(orderNo: String,
+                       completion: @escaping (Result<ReopenPaymentResult, Error>) -> Void) {
+        ServiceContainer.marketingService.reopenPayment(orderNo: orderNo) { result in
+            switch result {
+            case .success(let response):
+                guard response.isSuccess, let data = response.data else {
+                    completion(.failure(PaymentFlowError.failed(
+                        Self.reopenErrorMessage(code: response.code, message: response.message))))
+                    return
+                }
+                completion(.success(data))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    // MARK: - 内部实现
+
+    /// 发起支付；`allowRecover` 为 true 时允许对 201057 自动恢复一次（禁止递归）
+    private func initiate(orderNo: String,
+                          stage: PaymentStageValue,
+                          paymentChannel: String,
+                          allowRecover: Bool,
+                          completion: @escaping (Result<PaymentRecord?, Error>) -> Void) {
         ServiceContainer.marketingService.initiatePayment(orderNo: orderNo, paymentChannel: paymentChannel) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let response):
                 guard response.isSuccess, let payment = response.data else {
+                    if allowRecover, response.code == PaymentErrorCode.orderExpired {
+                        // 自动恢复一次并重试，用户无感
+                        self.recoverAndRetry(orderNo: orderNo,
+                                             stage: stage,
+                                             paymentChannel: paymentChannel,
+                                             completion: completion)
+                        return
+                    }
+                    if response.code == PaymentErrorCode.reopenLimitExceeded {
+                        completion(.failure(PaymentFlowError.failed(L10nErrorMessage.reopenLimitExceeded)))
+                        return
+                    }
                     completion(.failure(PaymentFlowError.failed(response.message ?? "发起支付失败")))
                     return
                 }
@@ -53,6 +111,39 @@ final class PaymentFlowService {
             case .failure(let error):
                 completion(.failure(error))
             }
+        }
+    }
+
+    /// 201057 自动恢复：reopen 成功后重试一次 initiate（不允许再次恢复）
+    private func recoverAndRetry(orderNo: String,
+                                 stage: PaymentStageValue,
+                                 paymentChannel: String,
+                                 completion: @escaping (Result<PaymentRecord?, Error>) -> Void) {
+        reopenPayment(orderNo: orderNo) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.initiate(orderNo: orderNo,
+                              stage: stage,
+                              paymentChannel: paymentChannel,
+                              allowRecover: false,
+                              completion: completion)
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    private static func reopenErrorMessage(code: String, message: String?) -> String {
+        switch code {
+        case PaymentErrorCode.reopenLimitExceeded:
+            return L10nErrorMessage.reopenLimitExceeded
+        case PaymentErrorCode.reopenNotAllowed:
+            return L10nErrorMessage.reopenNotAllowed
+        case PaymentErrorCode.orderNotExist:
+            return L10nErrorMessage.orderNotExist
+        default:
+            return message ?? "重新发起支付失败"
         }
     }
 
@@ -93,6 +184,19 @@ final class PaymentFlowService {
                 }
             }
         }
+    }
+}
+
+/// 支付相关用户可读文案（保持与 Localizable.strings 的 key 对应）
+enum L10nErrorMessage {
+    static var reopenLimitExceeded: String {
+        String(localized: "reopen_limit_exceeded")
+    }
+    static var reopenNotAllowed: String {
+        String(localized: "reopen_not_allowed")
+    }
+    static var orderNotExist: String {
+        String(localized: "order_not_exist")
     }
 }
 

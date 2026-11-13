@@ -11,6 +11,10 @@ import SwiftUI
 
 protocol VehicleOrderDetailModelStateProtocol {
     var contentState: MarketingTypes.Model.VehicleOrderDetailContentState { get }
+    /// 终态标题（订单已失效/已取消/已关闭）
+    var invalidTitle: String { get }
+    /// 是否允许重新发起支付
+    var canReopenPayment: Bool { get }
     var saleModelImages: [String] { get }
     var saleModelName: String { get }
     var saleModelPrice: Decimal { get }
@@ -107,6 +111,8 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func displayPrepareDeliver()
     /// 显示已支付尾款
     func displayFinalPaymentPaid()
+    /// 显示终态（失效/取消/关闭）
+    func displayInvalidOrder(title: String, canReopenPayment: Bool)
     /// 显示已开票
     func displayInvoiced()
     /// 显示已提车

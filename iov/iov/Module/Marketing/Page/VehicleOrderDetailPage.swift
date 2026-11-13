@@ -191,6 +191,14 @@ struct VehicleOrderDetailPage: View {
                     orderNum: state.orderNum,
                     orderTime: state.orderTime
                 )
+            case .invalid:
+                Invalid(
+                    container: container,
+                    saleModelImages: state.saleModelImages,
+                    saleModelName: state.saleModelName,
+                    saleModelDesc: state.saleModelDesc,
+                    totalPrice: state.totalPrice
+                )
             case let .error(text):
                 ErrorTip(text: text)
             }

@@ -340,6 +340,23 @@ enum OrderState: Int {
     case DELIVERED = 650
     /// 已激活
     case ACTIVATED = 700
+    /// 已取消（OTD-VSO-DSN-CR-005）
+    case CANCEL = 950
+    /// 已失效（小订单超时）
+    case EXPIRED = 960
+    /// 已关闭
+    case CLOSED = 970
+
+    /// 是否为终态（取消/失效/关闭），终态不应展示任何支付动作
+    var isTerminal: Bool {
+        switch self {
+        case .CANCEL, .EXPIRED, .CLOSED: return true
+        default: return false
+        }
+    }
+
+    /// 当前状态是否允许重新发起支付（仅失效且云端次数未用尽）
+    static let maxReopenCount = 2
 }
 
 /// 车辆类型

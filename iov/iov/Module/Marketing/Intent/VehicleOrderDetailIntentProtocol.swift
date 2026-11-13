@@ -7,6 +7,8 @@
 import Foundation
 
 protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
+    /// 点击重新发起支付（订单已失效，OTD-VSO-DSN-CR-005）
+    func onTapReopenPayment()
     /// 点击删除
     func onTapDelete()
     /// 点击修改销售车型配置

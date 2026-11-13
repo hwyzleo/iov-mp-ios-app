@@ -749,6 +749,18 @@ struct InitiatePaymentResult: Codable {
     @FlexibleTimestamp var expireTime: Int64?
 }
 
+/// 重新发起支付结果（OTD-VSO-DSN-CR-005）
+struct ReopenPaymentResult: Codable {
+    /// 订单号
+    var orderNo: String
+    /// 恢复后的订单状态（EARNEST_MONEY_UNPAID = 200）
+    var orderState: Int
+    /// 已使用的恢复次数（最多 2 次）
+    var reopenCount: Int
+    /// 本次支付窗口截止时间（epoch 毫秒，兼容字符串/ISO-8601）
+    @FlexibleTimestamp var expireTime: Int64?
+}
+
 /// 支付单查询结果
 struct PaymentRecord: Codable, Identifiable {
     var paymentNo: String

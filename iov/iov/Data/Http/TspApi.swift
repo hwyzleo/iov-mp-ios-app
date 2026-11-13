@@ -219,6 +219,15 @@ class TspApi {
         }
     }
 
+    /// 重新发起支付（订单已失效，OTD-VSO-DSN-CR-005）
+    static func reopenPayment(orderNo: String, completion: @escaping (Result<TspResponse<ReopenPaymentResult>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/reopenForPayment", parameters: [
+            "orderNo": orderNo
+        ]) { (result: Result<TspResponse<ReopenPaymentResult>, Error>) in
+            completion(result)
+        }
+    }
+
     /// 查询支付单
     static func getPayment(orderNo: String, paymentNo: String, completion: @escaping (Result<TspResponse<PaymentRecord>, Error>) -> Void) {
         let path = "/api/mobile/vso/v1/order/" + orderNo + "/payment/" + paymentNo
