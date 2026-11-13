@@ -192,15 +192,37 @@ class TspManager {
             }
             
             let value = try container.decode(Double.self)
-            if value >= 1_000_000_000_000 {
-                return Date(timeIntervalSince1970: value / 1000)   // 毫秒时间戳
-            }
-            if value >= 1_000_000_000 {
-                return Date(timeIntervalSince1970: value)          // 秒时间戳
+            if let date = date(fromEpochNumber: value) {
+                return date
             }
             return Date(timeIntervalSinceReferenceDate: value)     // Foundation 默认行为
         }
         return decoder
+    }
+
+    /// 数值时间戳归一：13 位 epoch 毫秒 / 10 位 epoch 秒；其它位数不猜测（返回 nil）
+    static func date(fromEpochNumber value: Double) -> Date? {
+        if value >= 1_000_000_000_000 {
+            return Date(timeIntervalSince1970: value / 1000)   // 毫秒时间戳
+        }
+        if value >= 1_000_000_000 {
+            return Date(timeIntervalSince1970: value)          // 秒时间戳
+        }
+        return nil
+    }
+
+    /// 统一时间解析入口：数字字符串 / epoch 毫秒·秒 / ISO-8601 / 常见日期格式
+    ///
+    /// 后端时间契约已统一为 ISO-8601，且 `Instant` 会带 0~9 位小数秒
+    /// （如 `2026-11-13T06:25:40.506874710Z`），这里必须优先用
+    /// `.withFractionalSeconds` 解析，否则会整段解析失败。
+    static func parseTimestamp(from text: String) -> Date? {
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let value = Double(trimmed), let date = date(fromEpochNumber: value) {
+            return date
+        }
+        return parseDate(from: trimmed)
     }
     
     /// 解析字符串日期（ISO-8601 / 常见日期格式），供自定义日期策略与 `FlexibleTimestamp` 复用

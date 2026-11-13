@@ -75,15 +75,7 @@ struct FlexibleTimestamp: Codable {
 
     /// 解析字符串形式的时间：数值时间戳 / ISO-8601 / 常见日期格式
     private static func parse(_ text: String) -> Int64? {
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        if let timestamp = Int64(trimmed) {
-            return timestamp
-        }
-        if let timestamp = Double(trimmed) {
-            return Int64(timestamp)
-        }
-        guard let date = TspManager.parseDate(from: trimmed) else { return nil }
+        guard let date = TspManager.parseTimestamp(from: text) else { return nil }
         return Int64(date.timeIntervalSince1970 * 1000)
     }
 }

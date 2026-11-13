@@ -674,15 +674,9 @@ struct EarnestMoneyOrderResult: Codable {
         orderNo = try container.decode(String.self, forKey: .orderNo)
         earnestMoneyAmount = try container.decode(Decimal.self, forKey: .earnestMoneyAmount)
         paymentChannels = try container.decode([PaymentChannelInfo].self, forKey: .paymentChannels)
-        
-        if let timestamp = try? container.decode(Int64.self, forKey: .expireTime) {
-            expireTime = Date(timeIntervalSince1970: Double(timestamp) / 1000.0)
-        } else if let dateString = try? container.decode(String.self, forKey: .expireTime) {
-            let formatter = ISO8601DateFormatter()
-            expireTime = formatter.date(from: dateString) ?? Date()
-        } else {
-            expireTime = Date()
-        }
+        expireTime = decodePaymentExpireTime(from: container,
+                                             key: .expireTime,
+                                             payload: "EarnestMoneyOrderResult")
     }
 }
 
@@ -709,15 +703,46 @@ struct DownPaymentOrderResult: Codable {
         orderNo = try? container.decode(String.self, forKey: .orderNo)
         downPaymentAmount = try container.decode(Decimal.self, forKey: .downPaymentAmount)
         paymentChannels = try container.decode([PaymentChannelInfo].self, forKey: .paymentChannels)
-        
-        if let timestamp = try? container.decode(Int64.self, forKey: .expireTime) {
-            expireTime = Date(timeIntervalSince1970: Double(timestamp) / 1000.0)
-        } else if let dateString = try? container.decode(String.self, forKey: .expireTime) {
-            let formatter = ISO8601DateFormatter()
-            expireTime = formatter.date(from: dateString) ?? Date()
-        } else {
-            expireTime = Date()
+        expireTime = decodePaymentExpireTime(from: container,
+                                             key: .expireTime,
+                                             payload: "DownPaymentOrderResult")
+    }
+}
+
+/// 支付截止时间解码
+///
+/// 后端时间契约已统一为 ISO-8601（`Instant` 会带 0~9 位小数秒，如
+/// `2026-11-13T06:25:40.506874710Z`），同时需兼容历史 epoch 毫秒/秒与数字字符串。
+///
+/// 关键：**解析失败不能退化成 `Date()`（=此刻）**——那会让支付页一进入就渲染
+/// 「支付已超时」并把「立即支付」置灰，等于把“契约解析失败”伪装成“订单已过期”。
+/// 这里回退为「当前时间 + 默认支付窗口」，页面仍可发起支付，真实过期以服务端
+/// 201057（订单已失效）为准，由 PaymentFlowService 自动恢复。
+private enum PaymentExpireTimeFallback {
+    /// 与服务端小订单默认支付窗口一致（30 分钟中取较保守的 15 分钟）
+    static let seconds: TimeInterval = 900
+}
+
+private func decodePaymentExpireTime<K: CodingKey>(from container: KeyedDecodingContainer<K>,
+                                                    key: K,
+                                                    payload: String) -> Date {
+    if let parsed = container.decodePaymentExpireTime(forKey: key) {
+        return parsed
+    }
+    SafeLog.log("⚠️ \(payload).expireTime 缺失或格式无法识别，回退默认支付窗口 \(Int(PaymentExpireTimeFallback.seconds))s")
+    return Date().addingTimeInterval(PaymentExpireTimeFallback.seconds)
+}
+
+private extension KeyedDecodingContainer {
+    /// 兼容 epoch 毫秒/秒、数字字符串、ISO-8601（含 0~9 位小数秒，`Z` 或 `+08:00` 偏移）
+    func decodePaymentExpireTime(forKey key: Key) -> Date? {
+        if let value = try? decodeIfPresent(Double.self, forKey: key) {
+            return TspManager.date(fromEpochNumber: value)
         }
+        if let text = try? decodeIfPresent(String.self, forKey: key) {
+            return TspManager.parseTimestamp(from: text)
+        }
+        return nil
     }
 }
 

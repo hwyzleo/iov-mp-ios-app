@@ -44,6 +44,7 @@
 		BFAA000A2F9A000100A3F0FE /* ConfiguratorContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA00092F9A000100A3F0FE /* ConfiguratorContractTests.swift */; };
 		BFAA000C2F9A000100A3F0FE /* OrderDetailContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA000B2F9A000100A3F0FE /* OrderDetailContractTests.swift */; };
 		BFAA00102F9A000100A3F0FE /* OrderReopenContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA000F2F9A000100A3F0FE /* OrderReopenContractTests.swift */; };
+		BFAA01022F9A000100A3F0FE /* PaymentExpireTimeContractTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA01012F9A000100A3F0FE /* PaymentExpireTimeContractTests.swift */; };
 		BFAA000E2F9A000100A3F0FE /* VehicleOrderDetailPage_Invalid.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA000D2F9A000100A3F0FE /* VehicleOrderDetailPage_Invalid.swift */; };
 		BF24BB6F2C9E8DA7007519B4 /* CircularImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB6E2C9E8DA7007519B4 /* CircularImageButton.swift */; };
 		BF24BB722C9FC40C007519B4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF24BB712C9FC40C007519B4 /* AppDelegate.swift */; };
@@ -494,6 +495,7 @@
 		BFAA00092F9A000100A3F0FE /* ConfiguratorContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfiguratorContractTests.swift; sourceTree = "<group>"; };
 		BFAA000B2F9A000100A3F0FE /* OrderDetailContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailContractTests.swift; sourceTree = "<group>"; };
 		BFAA000F2F9A000100A3F0FE /* OrderReopenContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderReopenContractTests.swift; sourceTree = "<group>"; };
+		BFAA01012F9A000100A3F0FE /* PaymentExpireTimeContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentExpireTimeContractTests.swift; sourceTree = "<group>"; };
 		BFAA000D2F9A000100A3F0FE /* VehicleOrderDetailPage_Invalid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleOrderDetailPage_Invalid.swift; sourceTree = "<group>"; };
 		2AD372472350952DAB25C562 /* Fakes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fakes.swift; sourceTree = "<group>"; };
 		3E8026B3972FF9D0FFC67348 /* AuthSessionRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSessionRepositoryTests.swift; sourceTree = "<group>"; };
@@ -2922,6 +2924,7 @@
 				BFAA00092F9A000100A3F0FE /* ConfiguratorContractTests.swift */,
 				BFAA000B2F9A000100A3F0FE /* OrderDetailContractTests.swift */,
 				BFAA000F2F9A000100A3F0FE /* OrderReopenContractTests.swift */,
+				BFAA01012F9A000100A3F0FE /* PaymentExpireTimeContractTests.swift */,
 				A66E109A647CD7C21BB9F230 /* MobileNumberTests.swift */,
 				7C1A9E4B22D3F0A15C6B00E1 /* ServerLanguageCodeTests.swift */,
 				12F5C664A99F1F66159D99AC /* SafeLogTests.swift */,
@@ -3586,6 +3589,7 @@
 				BFAA000A2F9A000100A3F0FE /* ConfiguratorContractTests.swift in Sources */,
 				BFAA000C2F9A000100A3F0FE /* OrderDetailContractTests.swift in Sources */,
 				BFAA00102F9A000100A3F0FE /* OrderReopenContractTests.swift in Sources */,
+				BFAA01022F9A000100A3F0FE /* PaymentExpireTimeContractTests.swift in Sources */,
 				7360CB79A2B00D5C77CB3A94 /* MobileNumberTests.swift in Sources */,
 				7C1A9E4B22D3F0A15C6B00E2 /* ServerLanguageCodeTests.swift in Sources */,
 				5498B35A5E3E8DD6EE893713 /* SafeLogTests.swift in Sources */,

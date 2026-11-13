@@ -79,12 +79,14 @@ class EarnestMoneyPayIntent: EarnestMoneyPayIntentProtocol {
     }
     
     func startCountdown() {
+        stopCountdown()
         countdownTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self, let info = self.payInfo else { return }
-            
-            let remaining = info.remainingSeconds - 1
+
+            // 用绝对截止时间重算，避免退到后台/主线程卡顿后定时器漂移
+            let remaining = info.remainingSeconds
             self.modelAction?.updateRemainingSeconds(seconds: remaining)
-            
+
             if remaining <= 0 {
                 self.stopCountdown()
                 self.modelAction?.displayExpired()
