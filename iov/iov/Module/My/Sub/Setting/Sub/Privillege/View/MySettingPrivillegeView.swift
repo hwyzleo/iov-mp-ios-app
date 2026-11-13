@@ -78,14 +78,14 @@ private extension MySettingPrivillegeView {
                     List(title: "相册", value: getPhotoPrivillege()) {
                         if(getPhotoPrivillege() == "未授权") {
                             requestPhotoPrivillege()
-                            refreshID == UUID()
+                            refreshID = UUID()
                         }
                         showPhoto = true
                     }
                     List(title: "相机", value: getVideoPrivillege()) {
                         if(getVideoPrivillege() == "未授权") {
                             requestVideoPrivillege()
-                            refreshID == UUID()
+                            refreshID = UUID()
                         }
                         showVideo = true
                     }
@@ -95,7 +95,7 @@ private extension MySettingPrivillegeView {
                     List(title: "蓝牙", value: getBluetoothPrivillege()) {
                         if(getBluetoothPrivillege() == "未授权") {
                             BluetoothManager.shared.scan()
-                            refreshID == UUID()
+                            refreshID = UUID()
                         }
                         showBluetooth = true
                     }
@@ -136,7 +136,7 @@ private extension MySettingPrivillegeView {
             .id(refreshID)
             .onChange(of: scenePhase) { newScenePhase in
                 if newScenePhase == .active {
-                    refreshID == UUID()
+                    refreshID = UUID()
                     getNetworkPrivillege() { result in
                         networkState = result
                     }

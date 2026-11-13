@@ -35,13 +35,35 @@ class AppGlobalState: ObservableObject {
     
     private init() {}
     
+    /// 云端上报的语言标识（单一来源，登录与切换语言共用）
+    /// 支持：`zh-Hans`（简体）/ `zh-Hant`（繁体）/ `en`，其余回落 `en`
+    /// （与本地资源回退行为一致，目前仅 zh-Hans / en 两套 lproj）
+    static func serverLanguageCode(for localeIdentifier: String) -> String {
+        let normalized = localeIdentifier
+            .replacingOccurrences(of: "_", with: "-")
+            .lowercased()
+        guard normalized.hasPrefix("zh") else { return "en" }
+        return isTraditionalChinese(normalized) ? "zh-Hant" : "zh-Hans"
+    }
+
+    /// 繁体判定：显式脚本（Hant）或港台澳地区（TW/HK/MO）
+    private static let traditionalChineseMarkers = ["hant", "-tw", "-hk", "-mo"]
+
+    private static func isTraditionalChinese(_ normalizedIdentifier: String) -> Bool {
+        traditionalChineseMarkers.contains { normalizedIdentifier.contains($0) }
+    }
+    
+    /// 当前应用语言对应的云端上报标识
+    var serverLanguageCode: String {
+        Self.serverLanguageCode(for: appLocale.identifier)
+    }
+    
     func setLanguage(_ language: String) {
         UserDefaults.standard.set(language, forKey: "AppLanguage")
         appLocale = Locale(identifier: language)
         
-        // 云端同步语言设置 (参数传 2 字缩写)
-        let langCode = language.contains("zh") ? "zh" : "en"
-        TspApi.changeLanguage(language: langCode) { _ in }
+        // 云端同步语言设置（上报 zh-Hans / zh-Hant / en）
+        TspApi.changeLanguage(language: Self.serverLanguageCode(for: language)) { _ in }
     }
     
     /// 根据可恢复的 Keychain 会话刷新登录状态

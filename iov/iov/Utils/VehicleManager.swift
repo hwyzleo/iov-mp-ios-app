@@ -7,10 +7,17 @@
 
 import Foundation
 import RealmSwift
+import Combine
 
-class VehicleManager {
+class VehicleManager: ObservableObject {
     
     static let shared = VehicleManager()
+    
+    /// 数据版本号：任何写操作（add/delete/clear/update/切换当前车）后自增。
+    /// 视图通过订阅它来感知车辆数据变化，避免在 body 中读取非响应式单例导致界面不刷新。
+    /// 只表示“数据变了”，不承载任何业务状态；读接口（getXxx）不会修改它，
+    /// 因此在视图求值期读取不会产生发布（避免 "Publishing changes from within view updates"）。
+    @Published private(set) var revision: Int = 0
     
     private var vehicles: Dictionary<String, VehiclePo> = [:]
     
@@ -20,6 +27,17 @@ class VehicleManager {
     private init() {
         for vehicle in getVehicles() {
             vehicles[vehicle.key] = vehicle.value
+        }
+    }
+    
+    /// 通知视图数据已变化（写操作后调用；保证在主线程发布）
+    private func notifyChanged() {
+        if Thread.isMainThread {
+            revision &+= 1
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                self?.revision &+= 1
+            }
         }
     }
     
@@ -51,6 +69,7 @@ class VehicleManager {
         } catch {
             print("Error saving vehicles: \(error)")
         }
+        VehicleManager.shared.notifyChanged()
     }
     
     /// 更新车辆信息
@@ -69,6 +88,7 @@ class VehicleManager {
         if !vehicles.isEmpty && (currentVehicleId == nil || !vehicles.keys.contains(currentVehicleId!)) {
             setCurrentVehicleId(id: vehicles.first!.key)
         }
+        notifyChanged()
     }
     
     /// 更新我的车辆列表（合并心愿单和订单）
@@ -91,6 +111,7 @@ class VehicleManager {
         // 如果云端返回空列表，直接返回
         if myVehicleList.isEmpty {
             print("✅ VehicleManager.update() - Cloud returned empty list, local data cleared")
+            notifyChanged()
             return
         }
         
@@ -117,6 +138,7 @@ class VehicleManager {
         }
         
         print("✅ VehicleManager.update() - Updated with \(vehicles.count) vehicles, currentVehicleId=\(currentVehicleId ?? "nil")")
+        notifyChanged()
     }
     
     /// 更新细分状态
@@ -131,6 +153,7 @@ class VehicleManager {
                 print("Error update subState: \(error)")
             }
         }
+        notifyChanged()
     }
     
     /// 添加车辆信息
@@ -149,6 +172,7 @@ class VehicleManager {
         } catch {
             print("Error saving vehicles: \(error)")
         }
+        notifyChanged()
     }
     
     /// 删除车辆信息
@@ -170,37 +194,36 @@ class VehicleManager {
                     currentVehicleId = vehicles.first?.key
                 }
             }
+            notifyChanged()
         }
     }
     
     /// 设置当前选择的车辆
     func setCurrentVehicleId(id: String) {
+        guard currentVehicleId != id else { return }
         currentVehicleId = id
+        notifyChanged()
     }
     
     /// 获取当前选择的车辆ID
+    /// - Note: 纯读接口，不修改任何状态（含 `@Published`），可安全地在视图 body 中调用
     func getCurrentVehicleId() -> String? {
         // 先检查内存缓存
-        if currentVehicleId != nil && vehicles.keys.contains(currentVehicleId!) {
-            print("📍 getCurrentVehicleId() - Returning cached ID: \(currentVehicleId!)")
+        if let currentVehicleId, vehicles.keys.contains(currentVehicleId) {
             return currentVehicleId
         }
         
-        // 内存缓存失效，清空并检查是否有订单
-        currentVehicleId = nil
+        // 缓存失效时回退到第一台车辆，但不回写 currentVehicleId（避免视图求值期发布）
         if hasOrder() {
-            currentVehicleId = vehicles.keys.first!
-            print("📍 getCurrentVehicleId() - Setting new ID: \(currentVehicleId!)")
-            return currentVehicleId
+            return vehicles.keys.first
         }
         
-        print("📍 getCurrentVehicleId() - No vehicles, returning nil")
         return nil
     }
     
     /// 获取当前选择的车辆
     func getCurrentVehicle() -> VehiclePo? {
-        guard let id = currentVehicleId else {
+        guard let id = getCurrentVehicleId() else {
             return nil
         }
         return vehicles[id]
@@ -238,6 +261,7 @@ class VehicleManager {
         
         vehicles.removeAll()
         currentVehicleId = nil
+        notifyChanged()
     }
     
     /// 强制删除 Realm 文件（最后的手段）

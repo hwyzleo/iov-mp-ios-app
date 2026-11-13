@@ -51,7 +51,8 @@ struct VehicleOrderDetailPage: View {
                     selectDealershipName: state.selectDealershipName,
                     selectDealershipCode: state.selectDealershipCode,
                     selectDeliveryCenterName: state.selectDeliveryCenterName,
-                    selectDeliveryCenterCode: state.selectDeliveryCenterCode
+                    selectDeliveryCenterCode: state.selectDeliveryCenterCode,
+                    purchaseAgreements: state.purchaseAgreements
                 )
             case .earnestMoneyUnpaid:
                 EarnestMoneyUnpaid(

@@ -10,14 +10,17 @@ import SwiftUI
 class ModelVariantSelectionIntent: MviIntentProtocol {
     private weak var modelAction: ModelVariantSelectionModelActionProtocol?
     private weak var modelRouter: ModelVariantSelectionModelRouterProtocol?
+    /// 路由携带的销售车型代码（优先于全局参数）
+    private let routeSaleModelCode: String
     
-    init(model: ModelVariantSelectionModelActionProtocol & ModelVariantSelectionModelRouterProtocol) {
+    init(model: ModelVariantSelectionModelActionProtocol & ModelVariantSelectionModelRouterProtocol, saleModelCode: String = "") {
         self.modelAction = model
         self.modelRouter = model
+        self.routeSaleModelCode = saleModelCode
     }
     
     func viewOnAppear() {
-        let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
+        let saleModelCode = syncSaleModelCode()
         let regionCode = AppGlobalState.shared.parameters["licenseCityCode"] as? String ?? ""
         
         modelAction?.displayLoading()
@@ -37,6 +40,15 @@ class ModelVariantSelectionIntent: MviIntentProtocol {
                 self?.modelAction?.displayError(text: "请求异常")
             }
         }
+    }
+    
+    /// 以路由携带的车型代码为准；仅在值发生变化时写回全局参数
+    /// （在 onAppear 阶段调用，属于合法时机，不会触发“视图更新期间发布变更”）
+    private func syncSaleModelCode() -> String {
+        let current = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
+        guard !routeSaleModelCode.isEmpty, routeSaleModelCode != current else { return current }
+        AppGlobalState.shared.parameters["saleModelCode"] = routeSaleModelCode
+        return routeSaleModelCode
     }
 }
 

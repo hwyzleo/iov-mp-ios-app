@@ -10,29 +10,30 @@ import SwiftUI
 class VehicleOrderDetailIntent: MviIntentProtocol {
     private weak var modelAction: VehicleOrderDetailModelActionProtocol?
     private weak var modelRouter: VehicleOrderDetailModelRouterProtocol?
+    private var loadedAgreements: [PurchaseAgreement] = []
+    private var agreementsLoaded = false
+    /// 路由传入的订单号/心愿单号（不再通过 AppGlobalState.parameters 传递，避免视图更新期间发布变更）
+    private let orderNo: String
     
-    init(model: VehicleOrderDetailModelActionProtocol & VehicleOrderDetailModelRouterProtocol) {
+    init(model: VehicleOrderDetailModelActionProtocol & VehicleOrderDetailModelRouterProtocol, orderNo: String = "") {
         self.modelAction = model
         self.modelRouter = model
+        self.orderNo = orderNo
     }
     
 func viewOnAppear() {
         let currentState = modelAction?.getContentState()
-        print("🔍 VehicleOrderDetailIntent.viewOnAppear() - currentState: \(String(describing: currentState))")
-        print("🔍 VehicleOrderDetailIntent.viewOnAppear() - orderDetailView: \(String(describing: AppGlobalState.shared.parameters["orderDetailView"]))")
         
         if modelAction?.getContentState() == .order && AppGlobalState.shared.parameters["orderDetailView"] == nil {
-            print("🔍 VehicleOrderDetailIntent.viewOnAppear() - Early return: state is .order and no orderDetailView")
             return
         }
         if currentState != .loading && currentState != .wishlist {
-            print("🔍 VehicleOrderDetailIntent.viewOnAppear() - Early return: state is not .loading or .wishlist")
             return
         }
         
         var viewName: String? = AppGlobalState.shared.parameters["orderDetailView"] as? String
         
-        let orderNum = AppGlobalState.shared.parameters["orderNum"] as? String ?? VehicleManager.shared.getCurrentVehicleId()
+        let orderNum: String? = orderNo.isEmpty ? VehicleManager.shared.getCurrentVehicleId() : orderNo
         
         if viewName != nil {
             AppGlobalState.shared.parameters["orderDetailView"] = nil
@@ -165,6 +166,48 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
     
     private func handleOrder() {
         let saleModelCode = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
+        loadPurchaseAgreements(saleModelCode: saleModelCode) { [weak self] in
+            self?.loadOrderConfigurator(saleModelCode: saleModelCode)
+        }
+    }
+
+    /// 加载当前车型生效购车协议（下单前必须携带 agreementCode + versionNo）
+    private func loadPurchaseAgreements(saleModelCode: String, completion: @escaping () -> Void) {
+        guard !saleModelCode.isEmpty else {
+            agreementsLoaded = true
+            loadedAgreements = []
+            modelAction?.updatePurchaseAgreements([])
+            completion()
+            return
+        }
+        ServiceContainer.marketingService.getPurchaseAgreements(saleModelCode: saleModelCode) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let response):
+                    if response.isSuccess {
+                        self?.loadedAgreements = response.data ?? []
+                    } else {
+                        self?.loadedAgreements = []
+                    }
+                case .failure:
+                    self?.loadedAgreements = []
+                }
+                self?.agreementsLoaded = true
+                self?.modelAction?.updatePurchaseAgreements(self?.loadedAgreements ?? [])
+                completion()
+            }
+        }
+    }
+
+    /// 当前确认的购车协议（与后端 agreementConfirmations 结构一致）
+    private func currentAgreementConfirmations() -> [AgreementConfirmation] {
+        return loadedAgreements.map {
+            AgreementConfirmation(agreementCode: $0.agreementCode, versionNo: $0.versionNo)
+        }
+    }
+
+    /// 加载选配器 + 实时报价，并进入下单页
+    private func loadOrderConfigurator(saleModelCode: String) {
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
         let regionCode = AppGlobalState.shared.parameters["licenseCityCode"] as? String ?? ""
         let savedOptionCodes = AppGlobalState.shared.parameters["optionCodes"] as? [String] ?? []
@@ -228,8 +271,13 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
             return
         }
         
-        let saleModelImages: [String] = firstModel.marketingImage != nil ? [firstModel.marketingImage!] : []
-        self.modelAction?.updateSaleModelImages(saleModelImages: saleModelImages)
+        // 车型图片：model.marketingImage 可能为空串（真正图片在 variant.marketingImage 上），
+        // 需过滤空串，否则会把 [""] 传给图片轮播导致顶部图片区域空白
+        let saleModelImages = nonEmptyImageURLs([firstModel.marketingImage, firstVariant.marketingImage])
+        if !saleModelImages.isEmpty {
+            // 配置器未提供有效图片时保留已有图片（例如从心愿单进入时的车辆图片）
+            self.modelAction?.updateSaleModelImages(saleModelImages: saleModelImages)
+        }
         
         self.modelAction?.updateSaleModelIntro(
             saleModelName: firstModel.modelName,
@@ -1187,7 +1235,8 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             variantCode: variantCode,
             orderNo: nil,
             optionCodes: optionCodes,
-            licenseCityCode: licenseCityCode
+            licenseCityCode: licenseCityCode,
+            agreementConfirmations: currentAgreementConfirmations()
         ) { [weak self] (result: Result<TspResponse<EarnestMoneyOrderResult>, Error>) in
             switch result {
             case .success(let res):
@@ -1216,12 +1265,19 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
             orderNo = id
         }
         let saleModelConfigType = AppGlobalState.shared.parameters["saleModelConfigType"] as? [String: String] ?? [:]
+        let modelCode = AppGlobalState.shared.parameters["selectedModelCode"] as? String ?? ""
+        let variantCode = AppGlobalState.shared.parameters["selectedVariantCode"] as? String ?? ""
+        let savedOptionCodes = AppGlobalState.shared.parameters["optionCodes"] as? [String] ?? []
+        let optionCodes = savedOptionCodes.isEmpty ? self.extractSelectedOptionCodes(from: nil, saleModelConfigType: saleModelConfigType) : savedOptionCodes
         let customerType = "personal"
         let paymentMethod = purchasePlan == 1 ? "full_payment" : "loan"
         ServiceContainer.marketingService.downPaymentOrder(
             saleModelCode: AppGlobalState.shared.parameters["saleModelCode"] as? String ?? "",
             orderNo: orderNo,
-            saleModelConfigType: saleModelConfigType,
+            modelCode: modelCode,
+            variantCode: variantCode,
+            optionCodes: optionCodes,
+            agreementConfirmations: orderNo.isEmpty ? currentAgreementConfirmations() : [],
             customerType: customerType,
             paymentMethod: paymentMethod,
             orderPersonType: orderPersonType,
@@ -1313,39 +1369,30 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         }
     }
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String) {
-        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
-            modelAction?.displayLoading()
-            ServiceContainer.marketingService.payOrder(orderNo: orderNo, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { [weak self] (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
-                switch result {
-                case .success(let res):
-                    if res.isSuccess {
-                        // 根据支付阶段更新本地状态码
-                        let nextSubState: Int
-                        if orderPaymentPhase == 1 {
-                            nextSubState = 210 // 意向金已支付
-                        } else if orderPaymentPhase == 2 {
-                            nextSubState = 310 // 定金已支付
-                        } else {
-                            nextSubState = 700 // 其他（如尾款）支付后视为激活/完成
-                        }
-                        
-                        // 更新本地存储
-                        VehicleManager.shared.updateSubState(id: orderNo, subState: nextSubState)
-                        
-                        // 如果原来是心愿单，支付后应变为订单类型
-                        if let vehicle = VehicleManager.shared.getCurrentVehicle(), vehicle.type == .WISHLIST {
-                            VehicleManager.shared.add(orderNum: orderNo, type: .ORDER, subState: nextSubState, displayName: vehicle.displayName)
-                        }
-                        
-                        AppGlobalState.shared.needRefresh = true
-                        // 不再关闭页面，而是原地刷新状态
-                        self?.viewOnAppear()
-                    } else {
-                        self?.modelAction?.displayError(text: res.message ?? "请求异常")
-                    }
-                case .failure(_):
-                    self?.modelAction?.displayError(text: "请求异常")
+        guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else { return }
+        modelAction?.displayLoading()
+
+        // 后端仅支持意向金/定金两个支付阶段；尾款暂无支付接口，保留本地演示推进
+        guard orderPaymentPhase == 1 || orderPaymentPhase == 2 else {
+            VehicleManager.shared.updateSubState(id: orderNo, subState: 700)
+            AppGlobalState.shared.needRefresh = true
+            self.viewOnAppear()
+            return
+        }
+
+        let stage: PaymentStageValue = orderPaymentPhase == 1 ? .earnestMoney : .downPayment
+        PaymentFlowService.shared.pay(orderNo: orderNo, stage: stage, paymentChannel: paymentChannel) { [weak self] result in
+            switch result {
+            case .success:
+                let nextSubState = orderPaymentPhase == 1 ? 210 : 310
+                VehicleManager.shared.updateSubState(id: orderNo, subState: nextSubState)
+                if let vehicle = VehicleManager.shared.getCurrentVehicle(), vehicle.type == .WISHLIST {
+                    VehicleManager.shared.add(orderNum: orderNo, type: .ORDER, subState: nextSubState, displayName: vehicle.displayName)
                 }
+                AppGlobalState.shared.needRefresh = true
+                self?.viewOnAppear()
+            case .failure(let error):
+                self?.modelAction?.displayError(text: error.localizedDescription)
             }
         }
     }
@@ -1388,6 +1435,7 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
     func onTapEarnestMoneyToDownPayment() {
         handleDownPaymentUnpaidFromEarnestMoneyPaid()
     }
+
     func onTapConvertToDownPayment(orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, dealership: String, deliveryCenter: String) {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
@@ -1406,10 +1454,15 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 "orderStoreCode": dealership,
                 "deliveryStoreCode": deliveryCenter
             ]
-            ServiceContainer.marketingService.earnestMoneyToDownPayment(parameters: parameters) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
+            ServiceContainer.marketingService.earnestMoneyToDownPayment(parameters: parameters) { [weak self] (result: Result<TspResponse<EarnestToDownResponse>, Error>) in
                 switch result {
                 case .success(let res):
                     if res.isSuccess {
+                        if let supplementary = res.data?.supplementaryPayment {
+                            let amount = supplementary.amount ?? 0
+                            self?.modelAction?.displayError(text: "需补款 ￥\(amount.formatted())，补款支付暂未接入")
+                            return
+                        }
                         VehicleManager.shared.updateSubState(id: orderNo, subState: 310)
                         AppGlobalState.shared.needRefresh = true
                         self?.handleDownPaymentPaid()

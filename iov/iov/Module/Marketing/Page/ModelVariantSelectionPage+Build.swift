@@ -9,9 +9,9 @@ import SwiftUI
 
 extension ModelVariantSelectionPage {
     
-    static func buildContainer() -> some MviContainer<ModelVariantSelectionIntentProtocol, ModelVariantSelectionModelStateProtocol> {
+    static func buildContainer(saleModelCode: String = "") -> some MviContainer<ModelVariantSelectionIntentProtocol, ModelVariantSelectionModelStateProtocol> {
         let model = ModelVariantSelectionModel()
-        let intent = ModelVariantSelectionIntent(model: model)
+        let intent = ModelVariantSelectionIntent(model: model, saleModelCode: saleModelCode)
         let container = MviContainer(
             intent: intent as ModelVariantSelectionIntentProtocol,
             model: model as ModelVariantSelectionModelStateProtocol,
@@ -20,8 +20,8 @@ extension ModelVariantSelectionPage {
         return container
     }
     
-    static func build() -> some View {
-        return ModelVariantSelectionPage(container: buildContainer())
+    static func build(saleModelCode: String = "") -> some View {
+        return ModelVariantSelectionPage(container: buildContainer(saleModelCode: saleModelCode))
     }
     
 }

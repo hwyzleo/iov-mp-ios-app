@@ -24,6 +24,7 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     var orderTime: Int64 = 0
     @Published var selectBookMethod: String = ""
     @Published var agreementIsChecked: Bool = false
+    @Published var purchaseAgreements: [PurchaseAgreement] = []
     @Published var selectLicenseCityName: String = ""
     @Published var selectLicenseCityCode: String = ""
     @Published var selectDealershipName: String = ""
@@ -119,6 +120,9 @@ extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     }
     func toggleAgreement() {
         self.agreementIsChecked.toggle()
+    }
+    func updatePurchaseAgreements(_ agreements: [PurchaseAgreement]) {
+        self.purchaseAgreements = agreements
     }
     func setIsFromEarnestMoneyConversion(isFrom: Bool) {
         self.isFromEarnestMoneyConversion = isFrom

@@ -43,6 +43,8 @@ extension VehicleOrderDetailPage {
         @State var selectDealershipCode: String
         @State var selectDeliveryCenterName: String
         @State var selectDeliveryCenterCode: String
+        var purchaseAgreements: [PurchaseAgreement]
+        @State private var showAgreements = false
 
         var body: some View {
             ZStack(alignment: .top) {
@@ -194,9 +196,15 @@ extension VehicleOrderDetailPage {
                             Text(L10n.i_have_read_and_agree)
                                 .font(AppTheme.fonts.subtext)
                                 .foregroundColor(AppTheme.colors.fontSecondary)
-                            Text(L10n.order_agreement)
-                                .font(AppTheme.fonts.subtext)
-                                .foregroundColor(AppTheme.colors.brandMain)
+                            Button(action: { showAgreements = true }) {
+                                Text(L10n.order_agreement)
+                                    .font(AppTheme.fonts.subtext)
+                                    .foregroundColor(AppTheme.colors.brandMain)
+                            }
+                            .buttonStyle(.plain)
+                            .sheet(isPresented: $showAgreements) {
+                                agreementSheet
+                            }
                         }
                         
                         RoundedCornerButton(
@@ -204,6 +212,7 @@ extension VehicleOrderDetailPage {
                             color: .black,
                             bgColor: (state.agreementIsChecked && (state.selectBookMethod != "earnestMoney" || !selectLicenseCityName.isEmpty)) ? AppTheme.colors.brandMain : AppTheme.colors.brandMain.opacity(0.3)
                         ) {
+                            guard state.agreementIsChecked else { return }
                             if state.selectBookMethod == "downPayment" {
                                 validateAndSubmit()
                             } else {
@@ -264,6 +273,55 @@ extension VehicleOrderDetailPage {
                 dealership: selectDealershipCode,
                 deliveryCenter: selectDeliveryCenterCode
             )
+        }
+
+        /// 购车协议查看
+        private var agreementSheet: some View {
+            NavigationView {
+                ScrollView {
+                    if purchaseAgreements.isEmpty {
+                        Text("暂无生效购车协议")
+                            .font(AppTheme.fonts.body)
+                            .foregroundColor(AppTheme.colors.fontSecondary)
+                            .padding(24)
+                    } else {
+                        VStack(alignment: .leading, spacing: 20) {
+                            ForEach(purchaseAgreements) { agreement in
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Text(agreement.title ?? agreement.agreementCode)
+                                        .font(AppTheme.fonts.title1)
+                                        .foregroundColor(AppTheme.colors.fontPrimary)
+                                    Text("版本 V\(agreement.versionNo)")
+                                        .font(AppTheme.fonts.subtext)
+                                        .foregroundColor(AppTheme.colors.fontTertiary)
+                                    if let intro = agreement.intro, !intro.isEmpty {
+                                        Text(intro)
+                                            .font(AppTheme.fonts.body)
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                    }
+                                    if let detail = agreement.detail, !detail.isEmpty {
+                                        Text(detail)
+                                            .font(AppTheme.fonts.subtext)
+                                            .foregroundColor(AppTheme.colors.fontSecondary)
+                                    }
+                                    Divider().background(Color.white.opacity(0.1))
+                                }
+                            }
+                        }
+                        .padding(24)
+                    }
+                }
+                .background(AppTheme.colors.background.ignoresSafeArea())
+                .navigationTitle("购车协议")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("关闭") { showAgreements = false }
+                            .foregroundColor(AppTheme.colors.brandMain)
+                    }
+                }
+            }
+            .preferredColorScheme(.dark)
         }
     }
 }
@@ -362,6 +420,7 @@ private struct InputField: View {
             }
         }
     }
+
 }
 
 private struct SelectField: View {

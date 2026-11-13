@@ -10,10 +10,13 @@ import SwiftUI
 class VehicleModelConfigIntent: MviIntentProtocol {
     private weak var modelAction: VehicleModelConfigModelActionProtocol?
     private weak var modelRouter: VehicleModelConfigModelRouterProtocol?
+    /// 路由携带的销售车型代码（优先于全局参数）
+    private let routeSaleModelCode: String
     
-    init(model: VehicleModelConfigModelActionProtocol & VehicleModelConfigModelRouterProtocol) {
+    init(model: VehicleModelConfigModelActionProtocol & VehicleModelConfigModelRouterProtocol, saleModelCode: String = "") {
         self.modelAction = model
         self.modelRouter = model
+        self.routeSaleModelCode = saleModelCode
     }
     
     func viewOnAppear() {
@@ -28,7 +31,8 @@ class VehicleModelConfigIntent: MviIntentProtocol {
         } else {
             let mode = AppGlobalState.shared.parameters["modifyConfigMode"] as? String ?? "wishlist"
             
-            guard let saleCode = AppGlobalState.shared.parameters["saleModelCode"] as? String, !saleCode.isEmpty else {
+            let saleCode = syncSaleModelCode()
+            guard !saleCode.isEmpty else {
                 self.modelAction?.displayError(text: "销售车型代码不能为空")
                 return
             }
@@ -42,6 +46,15 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                 loadWishlistConfig(saleCode: saleCode)
             }
         }
+    }
+    
+    /// 以路由携带的车型代码为准；仅在值发生变化时写回全局参数
+    /// （在 onAppear 阶段调用，属于合法时机，不会触发“视图更新期间发布变更”）
+    private func syncSaleModelCode() -> String {
+        let current = AppGlobalState.shared.parameters["saleModelCode"] as? String ?? ""
+        guard !routeSaleModelCode.isEmpty, routeSaleModelCode != current else { return current }
+        AppGlobalState.shared.parameters["saleModelCode"] = routeSaleModelCode
+        return routeSaleModelCode
     }
     
     private func loadFromPreselectedVariant(saleCode: String, selectableFamilies: [ConfiguratorResult.SelectableFamily], mode: String) {
@@ -94,7 +107,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                     featureCode: option.optionCode,
                     featureName: option.optionName,
                     featurePrice: option.price,
-                    featureImage: option.image != nil ? [option.image!] : [],
+                    featureImage: nonEmptyImageURLs([option.image]),
                     featureDesc: option.marketingCopy,
                     featureParam: nil,
                     enable: option.saleStatus == "active",
@@ -106,7 +119,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                 familyCode: family.optionFamilyCode,
                 familyName: family.optionFamilyName,
                 familyPrice: 0,
-                familyImage: family.marketingImage != nil ? [family.marketingImage!] : [],
+                familyImage: nonEmptyImageURLs([family.marketingImage]),
                 familyDesc: family.marketingDesc,
                 familyParam: nil,
                 enable: true,
@@ -202,7 +215,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                     featureCode: option.optionCode,
                     featureName: option.optionName,
                     featurePrice: option.price,
-                    featureImage: option.image != nil ? [option.image!] : [],
+                    featureImage: nonEmptyImageURLs([option.image]),
                     featureDesc: option.marketingCopy,
                     featureParam: nil,
                     enable: option.saleStatus == "ON_SALE",
@@ -214,7 +227,7 @@ class VehicleModelConfigIntent: MviIntentProtocol {
                 familyCode: family.optionFamilyCode,
                 familyName: family.optionFamilyName,
                 familyPrice: 0,
-                familyImage: family.marketingImage != nil ? [family.marketingImage!] : [],
+                familyImage: nonEmptyImageURLs([family.marketingImage]),
                 familyDesc: family.marketingDesc,
                 familyParam: nil,
                 enable: true,
@@ -246,14 +259,16 @@ extension VehicleModelConfigIntent: VehicleModelConfigIntentProtocol {
         
         let selections = modelState.selections
         
-        var saleModelConfigType: [String: String] = [:]
+        var optionCodes: [String] = []
         for (familyCode, feature) in selections {
-            saleModelConfigType[familyCode] = feature.featureCode
+            if familyCode != "MODEL" && familyCode != "VARIANT" {
+                optionCodes.append(feature.featureCode)
+            }
         }
         
         ServiceContainer.marketingService.modifyConfig(
             orderNo: orderNo,
-            saleModelConfigType: saleModelConfigType
+            optionCodes: optionCodes
         ) { [weak self] result in
             switch result {
             case .success(let res):

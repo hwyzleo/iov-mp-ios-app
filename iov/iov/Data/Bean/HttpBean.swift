@@ -79,7 +79,14 @@ struct TspResponse<Model: Codable>: Codable {
         }
         message = try? container.decode(String.self, forKey: .message)
         ts = (try? container.decode(Int64.self, forKey: .ts)) ?? 0
-        data = try? container.decode(Model.self, forKey: .data)
+        // 注意：原来用 `try?` 直接吞掉内层模型的解码错误，导致“HTTP 200 但 data 为 nil”，
+        // 调用方只能看到“请求异常”而无法定位字段问题。这里保留 nil 语义，但把错误打出来。
+        do {
+            data = try container.decodeIfPresent(Model.self, forKey: .data)
+        } catch {
+            data = nil
+            SafeLog.log("⚠️ TspResponse.data 解码失败（已按 nil 处理）:", String(describing: error))
+        }
         traceId = try? container.decode(String.self, forKey: .traceId)
         timestamp = (try? container.decode(Int64.self, forKey: .timestamp)) ?? 0
     }
@@ -313,7 +320,8 @@ struct Order: Codable {
     var saleModelImages: [String]?
     var saleModelDesc: String?
     var totalPrice: Decimal?
-    var orderTime: Int64?
+    /// 订单时间（兼容时间戳与 ISO-8601 字符串，见 `FlexibleTimestamp`）
+    @FlexibleTimestamp var orderTime: Int64?
     var customerType: String?
     var paymentMethod: String?
     var orderPersonType: Int?
@@ -733,6 +741,90 @@ struct InitiatePaymentResult: Codable {
     var paymentAmount: Decimal
     var paymentMerchant: String?
     var paymentReference: String?
+    /// 支付状态（PENDING_PAYMENT/PROCESSING/PAID/PAYMENT_FAILED/CANCELLED/CLOSED）
+    var paymentStatus: String?
+    /// 外部交易单号
+    var externalTradeNo: String?
+    /// 支付截止时间（epoch millis）
+    @FlexibleTimestamp var expireTime: Int64?
+}
+
+/// 支付单查询结果
+struct PaymentRecord: Codable, Identifiable {
+    var paymentNo: String
+    var orderNo: String?
+    var paymentStage: String?
+    var paymentChannel: String?
+    var paymentAmount: Decimal?
+    var paymentStatus: String?
+    var externalTradeNo: String?
+    /// 支付时间（epoch millis）
+    @FlexibleTimestamp var payTime: Int64?
+    /// 支付截止时间（epoch millis）
+    @FlexibleTimestamp var expireTime: Int64?
+    var failReason: String?
+
+    var id: String { paymentNo }
+}
+
+/// 购车协议
+struct PurchaseAgreement: Codable, Identifiable {
+    var agreementId: String?
+    var agreementCode: String
+    var saleModelCode: String?
+    var versionNo: Int
+    var title: String?
+    var intro: String?
+    var detail: String?
+    var agreementStatus: String?
+    /// 生效开始时间（epoch millis）
+    @FlexibleTimestamp var effectiveFrom: Int64?
+    /// 生效结束时间（epoch millis）
+    @FlexibleTimestamp var effectiveTo: Int64?
+
+    var id: String { agreementId ?? "\(agreementCode)_\(versionNo)" }
+}
+
+/// 购车协议确认参数
+struct AgreementConfirmation: Codable {
+    var agreementCode: String
+    var versionNo: Int
+}
+
+/// 订单时间线事件
+struct OrderTimelineEvent: Codable, Identifiable {
+    var eventType: String
+    var eventName: String?
+    /// 事件时间（epoch millis）
+    @FlexibleTimestamp var eventTime: Int64?
+    var beforeStatus: String?
+    var afterStatus: String?
+    var operatorId: String?
+    var operatorRole: String?
+    var operateSource: String?
+    var relatedDocNo: String?
+    var result: String?
+    var failReason: String?
+    var eventRemark: String?
+
+    var id: String { "\(eventType)_\(eventTime ?? 0)_\(relatedDocNo ?? "")" }
+}
+
+/// 意向金转定金结果
+struct EarnestToDownResponse: Codable {
+    var orderNo: String?
+    var orderType: String?
+    var orderState: String?
+    var supplementaryPayment: SupplementaryPayment?
+}
+
+/// 补款任务
+struct SupplementaryPayment: Codable {
+    var supplementaryNo: String?
+    var amount: Decimal?
+    var currency: String?
+    /// 补款截止时间（epoch millis）
+    @FlexibleTimestamp var expireTime: Int64?
 }
 
 /// 销售车型（手机端）

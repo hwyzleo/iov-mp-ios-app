@@ -9,9 +9,9 @@ import SwiftUI
 
 extension VehicleModelConfigPage {
     
-    static func buildContainer() -> some MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol> {
+    static func buildContainer(saleModelCode: String = "") -> some MviContainer<VehicleModelConfigIntentProtocol, VehicleModelConfigModelStateProtocol> {
         let model = VehicleModelConfigModel()
-        let intent = VehicleModelConfigIntent(model: model)
+        let intent = VehicleModelConfigIntent(model: model, saleModelCode: saleModelCode)
         let container = MviContainer(
             intent: intent as VehicleModelConfigIntentProtocol,
             model: model as VehicleModelConfigModelStateProtocol,
@@ -20,8 +20,8 @@ extension VehicleModelConfigPage {
         return container
     }
     
-    static func build() -> some View {
-        return VehicleModelConfigPage(container: buildContainer())
+    static func build(saleModelCode: String = "") -> some View {
+        return VehicleModelConfigPage(container: buildContainer(saleModelCode: saleModelCode))
     }
     
 }

@@ -11,6 +11,8 @@ struct ContentView: View {
     
     @EnvironmentObject var globalState: AppGlobalState
     @StateObject private var appRouter = AppRouter.shared
+    /// 订阅车辆数据版本号，保证车辆增删后 Tab 能自动切换（避免 body 里读非响应式单例）
+    @ObservedObject private var vehicleManager = VehicleManager.shared
     
     init() {
         // 设置 TabBar 的外观以适配深色主题
@@ -58,7 +60,7 @@ struct ContentView: View {
                         }
                         .tag(1)
                     
-                    if VehicleManager.shared.hasVehicle() {
+                    if vehicleManager.hasVehicle() {
                         VehiclePage.build()
                             .tabItem {
                                 Image(globalState.selectedTab == 2 ? "icon_hwyz_active_60" : "icon_hwyz_60").renderingMode(.template)
@@ -111,7 +113,6 @@ struct ContentView: View {
     
     @ViewBuilder
     func destinationView(for route: AppRoute) -> some View {
-        let _ = print("🔍 ContentView - destinationView: \(route)")
         switch route {
         case .marketing(let marketingRoute):
             marketingDestination(for: marketingRoute)
@@ -135,17 +136,12 @@ struct ContentView: View {
             MarketingIndexPage.build()
                 .navigationBarHidden(true)
         case .modelVariantSelection(let saleModelCode):
-            ModelVariantSelectionPage.build()
+            // 车型代码由路由直接注入 Intent，避免在视图生命周期里写全局状态
+            ModelVariantSelectionPage.build(saleModelCode: saleModelCode)
                 .navigationBarHidden(true)
-                .onAppear {
-                    AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
-                }
         case .modelConfig(let saleModelCode):
-            VehicleModelConfigPage.build()
+            VehicleModelConfigPage.build(saleModelCode: saleModelCode)
                 .navigationBarHidden(true)
-                .onAppear {
-                    AppGlobalState.shared.parameters["saleModelCode"] = saleModelCode
-                }
         case .orderDetail(let orderNo):
             VehicleOrderDetailPage.build(orderNo: orderNo)
                 .navigationBarHidden(true)

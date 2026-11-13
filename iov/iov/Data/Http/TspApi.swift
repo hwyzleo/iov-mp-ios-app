@@ -32,7 +32,7 @@ class TspApi {
     
     /// 手机号验证码登录
     static func mobileVerifyCodeLogin(countryRegionCode: String, mobile: String, verifyCode: String, completion: @escaping (Result<TspResponse<LoginResponse>, Error>) -> Void) {
-        let langCode = AppGlobalState.shared.appLocale.identifier.contains("zh") ? "zh" : "en"
+        let langCode = AppGlobalState.shared.serverLanguageCode
         let request = MobileLoginRequest(mobile: mobile, countryCode: countryRegionCode, code: verifyCode, deviceInfo: DeviceInfo(deviceName: UIDevice.current.name, deviceFingerprint: UIDevice.current.identifierForVendor?.uuidString, language: langCode))
         let parameters = TspManager.model2Dic(request) ?? [:]
         NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + "/api/mobile/auth/v1/login/mobile", parameters: parameters, headers: tspHeaders) { result in
@@ -86,6 +86,14 @@ class TspApi {
     
     static func getSaleModelList(completion: @escaping (Result<TspResponse<[SaleModelMp]>, Error>) -> Void) {
         TspManager.requestGet(path: "/api/mobile/saleModel/v1", parameters: [:]) { (result: Result<TspResponse<[SaleModelMp]>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 获取销售车型当前生效购车协议
+    static func getPurchaseAgreements(saleModelCode: String, completion: @escaping (Result<TspResponse<[PurchaseAgreement]>, Error>) -> Void) {
+        let path = "/api/mobile/saleModel/v1/purchaseAgreements/" + saleModelCode
+        TspManager.requestGet(path: path, parameters: [:]) { (result: Result<TspResponse<[PurchaseAgreement]>, Error>) in
             completion(result)
         }
     }
@@ -184,13 +192,14 @@ class TspApi {
     }
     
     /// 意向金下订单
-    static func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
+    static func earnestMoneyOrder(saleModelCode: String, modelCode: String, variantCode: String, orderNo: String?, optionCodes: [String], licenseCityCode: String, agreementConfirmations: [AgreementConfirmation], completion: @escaping (Result<TspResponse<EarnestMoneyOrderResult>, Error>) -> Void) {
         var parameters: [String: Any] = [
             "saleModelCode": saleModelCode,
             "modelCode": modelCode,
             "variantCode": variantCode,
             "optionCodes": optionCodes,
-            "licenseCityCode": licenseCityCode
+            "licenseCityCode": licenseCityCode,
+            "agreementConfirmations": agreementConfirmations.map { ["agreementCode": $0.agreementCode, "versionNo": $0.versionNo] }
         ]
         if let orderNo = orderNo {
             parameters["orderNo"] = orderNo
@@ -209,31 +218,30 @@ class TspApi {
             completion(result)
         }
     }
-    
-    /// 支付回调（模拟）
-    static func paymentCallback(paymentNo: String, externalTradeNo: String, paymentStage: String, paymentAmount: Decimal, paymentStatus: String, payTime: Date, idempotentKey: String? = nil, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        var parameters: [String: Any] = [
-            "paymentNo": paymentNo,
-            "externalTradeNo": externalTradeNo,
-            "paymentStage": paymentStage,
-            "paymentAmount": paymentAmount,
-            "paymentStatus": paymentStatus,
-            "payTime": Int(payTime.timeIntervalSince1970)
-        ]
-        if let idempotentKey = idempotentKey {
-            parameters["idempotentKey"] = idempotentKey
+
+    /// 查询支付单
+    static func getPayment(orderNo: String, paymentNo: String, completion: @escaping (Result<TspResponse<PaymentRecord>, Error>) -> Void) {
+        let path = "/api/mobile/vso/v1/order/" + orderNo + "/payment/" + paymentNo
+        TspManager.requestGet(path: path, parameters: [:]) { (result: Result<TspResponse<PaymentRecord>, Error>) in
+            completion(result)
         }
-        TspManager.requestPost(path: "/api/open/vsoCallback/v1/payment", parameters: parameters) { (result: Result<TspResponse<NoReply>, Error>) in
+    }
+
+    /// 查询订单支付记录
+    static func listPayments(orderNo: String, completion: @escaping (Result<TspResponse<[PaymentRecord]>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/vso/v1/order/" + orderNo + "/payments", parameters: [:]) { (result: Result<TspResponse<[PaymentRecord]>, Error>) in
             completion(result)
         }
     }
     
     /// 定金下订单
-    static func downPaymentOrder(saleModelCode: String, orderNo: String, saleModelConfigType: [String: String], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/action/downPaymentOrder", parameters: [
+    static func downPaymentOrder(saleModelCode: String, orderNo: String, modelCode: String, variantCode: String, optionCodes: [String], agreementConfirmations: [AgreementConfirmation], customerType: String, paymentMethod: String, orderPersonType: Int, purchasePlan: Int, orderPersonName: String, orderPersonIdType: Int, orderPersonIdNum: String, licenseCityCode: String, orderStoreCode: String, deliveryStoreCode: String, completion: @escaping (Result<TspResponse<DownPaymentOrderResult>, Error>) -> Void) {
+        var parameters: [String: Any] = [
             "saleModelCode": saleModelCode,
-            "orderNo": orderNo,
-            "saleModelConfigType": saleModelConfigType,
+            "modelCode": modelCode,
+            "variantCode": variantCode,
+            "optionCodes": optionCodes,
+            "agreementConfirmations": agreementConfirmations.map { ["agreementCode": $0.agreementCode, "versionNo": $0.versionNo] },
             "customerType": customerType,
             "paymentMethod": paymentMethod,
             "orderPersonType": orderPersonType,
@@ -244,7 +252,11 @@ class TspApi {
             "licenseCityCode": licenseCityCode,
             "orderStoreCode": orderStoreCode,
             "deliveryStoreCode": deliveryStoreCode
-        ]) { (result: Result<TspResponse<DownPaymentOrderResult>, Error>) in
+        ]
+        if !orderNo.isEmpty {
+            parameters["orderNo"] = orderNo
+        }
+        TspManager.requestPost(path: "/api/mobile/vso/v1/action/downPaymentOrder", parameters: parameters) { (result: Result<TspResponse<DownPaymentOrderResult>, Error>) in
             completion(result)
         }
     }
@@ -263,25 +275,27 @@ class TspApi {
         }
     }
     
-    /// 支付订单
-    static func payOrder(orderNo: String, orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String, completion: @escaping (Result<TspResponse<OrderPaymentResponse>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/pay", parameters: [
-            "orderNo": orderNo,
-            "orderPaymentPhase": orderPaymentPhase,
-            "paymentAmount": paymentAmount,
-            "paymentChannel": paymentChannel
-        ]) { (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
+    /// 查询订单时间线
+    static func getOrderTimeline(orderNo: String, completion: @escaping (Result<TspResponse<[OrderTimelineEvent]>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/vso/v1/order/" + orderNo + "/timeline", parameters: [:]) { (result: Result<TspResponse<[OrderTimelineEvent]>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 申请退款
+    static func requestRefund(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/requestRefund", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)
         }
     }
     
     /// 意向金转定金
-    static func earnestMoneyToDownPayment(parameters: [String: Any], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
-        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/earnestMoneyToDownPayment", parameters: parameters) { (result: Result<TspResponse<NoReply>, Error>) in
+    static func earnestMoneyToDownPayment(parameters: [String: Any], completion: @escaping (Result<TspResponse<EarnestToDownResponse>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/earnestMoneyToDownPayment", parameters: parameters) { (result: Result<TspResponse<EarnestToDownResponse>, Error>) in
             completion(result)
         }
     }
-    
+
     /// 锁定订单
     static func lockOrder(orderNo: String, completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/lock", parameters: ["orderNo": orderNo]) { (result: Result<TspResponse<NoReply>, Error>) in
@@ -290,10 +304,10 @@ class TspApi {
     }
     
     /// 修改订单配置
-    static func modifyConfig(orderNo: String, saleModelConfigType: [String: String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
+    static func modifyConfig(orderNo: String, optionCodes: [String], completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         let parameters: [String: Any] = [
             "orderNo": orderNo,
-            "saleModelConfigType": saleModelConfigType
+            "optionCodes": optionCodes
         ]
         TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/modifyConfig", parameters: parameters) { (result: Result<TspResponse<NoReply>, Error>) in
             completion(result)

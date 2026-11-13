@@ -13,6 +13,8 @@ extension MarketingIndexPage {
     struct Order: View {
         @StateObject var container: MviContainer<MarketingIndexIntentProtocol, MarketingIndexModelStateProtocol>
         private var intent: MarketingIndexIntentProtocol { container.intent }
+        /// 订阅车辆数据变化，避免在 body 中读取非响应式单例
+        @ObservedObject private var vehicleManager = VehicleManager.shared
         var currentVehicleType: VehicleType
         var orderState: OrderState
         var saleModelImages: [String]
@@ -24,7 +26,7 @@ extension MarketingIndexPage {
         var body: some View {
             VStack(spacing: AppTheme.layout.spacing) {
                 Spacer().frame(height: kStatusBarHeight)
-                if let vehiclePo = VehicleManager.shared.getCurrentVehicle() {
+                if let vehiclePo = vehicleManager.getCurrentVehicle() {
                     HStack {
                         Text(vehiclePo.displayName)
                             .font(AppTheme.fonts.title1)

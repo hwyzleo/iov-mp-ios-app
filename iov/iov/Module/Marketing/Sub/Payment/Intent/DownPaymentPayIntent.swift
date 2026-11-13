@@ -53,64 +53,29 @@ class DownPaymentPayIntent: DownPaymentPayIntentProtocol {
         stopCountdown()
         modelAction?.displayPaying()
         
-        ServiceContainer.marketingService.initiatePayment(
+        PaymentFlowService.shared.pay(
             orderNo: orderNo,
+            stage: .downPayment,
             paymentChannel: channel.channelCode
         ) { [weak self] result in
             switch result {
-            case .success(let res):
-                print("initiatePayment result: code=\(res.code), isSuccess=\(res.isSuccess), data=\(res.data != nil)")
-                if res.isSuccess, let paymentResult = res.data {
-                    self?.modelAction?.updatePaymentResult(result: paymentResult)
-                    print("simulatePayment called: paymentNo=\(paymentResult.paymentNo), amount=\(paymentResult.paymentAmount)")
-                    self?.simulatePayment(paymentNo: paymentResult.paymentNo, paymentAmount: paymentResult.paymentAmount)
-                } else {
-                    self?.modelAction?.displayFailed(text: res.message ?? "发起支付失败")
+            case .success:
+                self?.modelAction?.displaySuccess()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    AppGlobalState.shared.needRefresh = true
+                    AppGlobalState.shared.needCloseOrderDetail = true
+                    DispatchQueue.main.async {
+                        AppRouter.shared.popToRoot()
+                    }
                 }
             case .failure(let error):
-                print("initiatePayment failure: \(error)")
-                self?.modelAction?.displayFailed(text: "网络请求失败")
+                self?.modelAction?.displayFailed(text: error.localizedDescription)
             }
         }
     }
     
     private func selectedChannel() -> PaymentChannelInfo? {
         return (modelAction as? DownPaymentPayModel)?.selectedChannel
-    }
-    
-    private func simulatePayment(paymentNo: String, paymentAmount: Decimal) {
-        print("simulatePayment entering: paymentNo=\(paymentNo), amount=\(paymentAmount)")
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            print("simulatePayment asyncAfter triggered")
-            ServiceContainer.marketingService.paymentCallback(
-                paymentNo: paymentNo,
-                externalTradeNo: "MOCK_TRADE_" + UUID().uuidString,
-                paymentStage: "DOWN_PAYMENT",
-                paymentAmount: paymentAmount,
-                paymentStatus: "SUCCESS",
-                payTime: Date(),
-                idempotentKey: nil
-            ) { result in
-                print("paymentCallback result: \(result)")
-                switch result {
-                case .success(let res):
-                    if res.isSuccess {
-                        self?.modelAction?.displaySuccess()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            AppGlobalState.shared.needRefresh = true
-                            AppGlobalState.shared.needCloseOrderDetail = true
-                            DispatchQueue.main.async {
-                                AppRouter.shared.popToRoot()
-                            }
-                        }
-                    } else {
-                        self?.modelAction?.displayFailed(text: res.message ?? "支付失败")
-                    }
-                case .failure:
-                    self?.modelAction?.displayFailed(text: "网络请求失败")
-                }
-            }
-        }
     }
     
     func startCountdown() {

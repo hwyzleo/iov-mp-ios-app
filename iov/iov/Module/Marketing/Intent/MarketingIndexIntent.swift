@@ -156,40 +156,30 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
     }
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String) {
-        if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
-            modelAction?.displayLoading()
-            ServiceContainer.marketingService.payOrder(orderNo: orderNo, orderPaymentPhase: orderPaymentPhase, paymentAmount: paymentAmount, paymentChannel: paymentChannel) { [weak self] (result: Result<TspResponse<OrderPaymentResponse>, Error>) in
-                switch result {
-                case .success(let res):
-                    if res.isSuccess {
-                        // 根据支付阶段更新本地状态码
-                        let nextSubState: Int
-                        if orderPaymentPhase == 1 {
-                            nextSubState = 210 // 意向金已支付
-                        } else if orderPaymentPhase == 2 {
-                            nextSubState = 310 // 定金已支付
-                        } else {
-                            nextSubState = 700 // 其他（如尾款）支付后视为激活/完成
-                        }
-                        
-                        // 更新本地存储
-                        VehicleManager.shared.updateSubState(id: orderNo, subState: nextSubState)
-                        
-                        // 如果原来是心愿单，支付后应变为订单类型
-                        if let vehicle = VehicleManager.shared.getCurrentVehicle(), vehicle.type == .WISHLIST {
-                            VehicleManager.shared.add(orderNum: orderNo, type: .ORDER, subState: nextSubState, displayName: vehicle.displayName)
-                        }
-                        
-                        if orderPaymentPhase == 3 {
-                            AppGlobalState.shared.needRefresh = true
-                        }
-                        self?.viewOnAppear()
-                    } else {
-                        self?.modelAction?.displayError(text: res.message ?? "请求异常")
-                    }
-                case .failure(_):
-                    self?.modelAction?.displayError(text: "请求异常")
+        guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else { return }
+        modelAction?.displayLoading()
+
+        // 后端仅支持意向金/定金两个支付阶段；尾款暂无支付接口，保留本地演示推进
+        guard orderPaymentPhase == 1 || orderPaymentPhase == 2 else {
+            VehicleManager.shared.updateSubState(id: orderNo, subState: 700)
+            AppGlobalState.shared.needRefresh = true
+            self.viewOnAppear()
+            return
+        }
+
+        let stage: PaymentStageValue = orderPaymentPhase == 1 ? .earnestMoney : .downPayment
+        PaymentFlowService.shared.pay(orderNo: orderNo, stage: stage, paymentChannel: paymentChannel) { [weak self] result in
+            switch result {
+            case .success:
+                let nextSubState = orderPaymentPhase == 1 ? 210 : 310
+                VehicleManager.shared.updateSubState(id: orderNo, subState: nextSubState)
+                if let vehicle = VehicleManager.shared.getCurrentVehicle(), vehicle.type == .WISHLIST {
+                    VehicleManager.shared.add(orderNum: orderNo, type: .ORDER, subState: nextSubState, displayName: vehicle.displayName)
                 }
+                AppGlobalState.shared.needRefresh = true
+                self?.viewOnAppear()
+            case .failure(let error):
+                self?.modelAction?.displayError(text: error.localizedDescription)
             }
         }
     }
@@ -215,10 +205,14 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         if let orderNo = VehicleManager.shared.getCurrentVehicleId() {
             modelAction?.displayLoading()
             let parameters: [String: Any] = ["orderNo": orderNo]
-            ServiceContainer.marketingService.earnestMoneyToDownPayment(parameters: parameters) { [weak self] (result: Result<TspResponse<NoReply>, Error>) in
+            ServiceContainer.marketingService.earnestMoneyToDownPayment(parameters: parameters) { [weak self] (result: Result<TspResponse<EarnestToDownResponse>, Error>) in
                 switch result {
-                case .success(_):
-                    self?.viewOnAppear()
+                case .success(let res):
+                    if res.isSuccess {
+                        self?.viewOnAppear()
+                    } else {
+                        self?.modelAction?.displayError(text: res.message ?? "请求异常")
+                    }
                 case .failure(_):
                     self?.modelAction?.displayError(text: "请求异常")
                 }

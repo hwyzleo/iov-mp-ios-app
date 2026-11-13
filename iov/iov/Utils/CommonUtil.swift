@@ -42,6 +42,21 @@ func strToDate(str: String, format: String = "yyyy-MM-dd") -> Date? {
     }
 }
 
+/// 汇总非空图片地址
+/// 后端常用空串（`""`）表示“无图”（例如 configurator 里 model.marketingImage 为空、
+/// 真正的图片在 variant.marketingImage 上），直接当成有效 URL 会导致图片区域空白。
+/// - 过滤 nil / 空白串，并按顺序去重
+func nonEmptyImageURLs(_ candidates: [String?]) -> [String] {
+    var images: [String] = []
+    for candidate in candidates {
+        guard let image = candidate?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !image.isEmpty,
+              !images.contains(image) else { continue }
+        images.append(image)
+    }
+    return images
+}
+
 /// 显示时间戳
 func tsDisplay(ts: Int64) -> String {
     let now = Int64(Date().timeIntervalSince1970*1000)

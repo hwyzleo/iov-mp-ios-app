@@ -24,6 +24,7 @@ protocol VehicleOrderDetailModelStateProtocol {
     var earnestMoney: Bool { get }
     var earnestMoneyPrice: Decimal { get }
     var agreementIsChecked: Bool { get }
+    var purchaseAgreements: [PurchaseAgreement] { get }
     var orderNum: String { get }
     var orderTime: Int64 { get }
     var selectLicenseCityName: String { get }
@@ -81,6 +82,8 @@ protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     func updateDeliveryCenter(code: String, name: String)
     /// 切换订购协议
     func toggleAgreement()
+    /// 更新购车协议列表
+    func updatePurchaseAgreements(_ agreements: [PurchaseAgreement])
     func setIsFromEarnestMoneyConversion(isFrom: Bool)
     /// 显示心愿单
     func displayWishlist()

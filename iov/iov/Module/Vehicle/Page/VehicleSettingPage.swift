@@ -9,6 +9,8 @@ import SwiftUI
 
 struct VehicleSettingPage: View {
     @State var clearCount: Int = 0
+    /// 订阅车辆数据变化，避免在 body 中读取非响应式单例
+    @ObservedObject private var vehicleManager = VehicleManager.shared
     
     var body: some View {
         TopBackTitleBar(title: "车辆设置")
@@ -23,7 +25,7 @@ struct VehicleSettingPage: View {
                     Text("车辆信息")
                         .font(.system(size: 18))
                         .bold()
-                    if(VehicleManager.shared.hasVehicle()) {
+                    if(vehicleManager.hasVehicle()) {
                         Text("(1)")
                             .font(.system(size: 18))
                             .bold()
