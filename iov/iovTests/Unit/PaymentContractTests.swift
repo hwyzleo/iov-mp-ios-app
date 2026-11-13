@@ -3,31 +3,14 @@
 //  iovTests
 //
 //  IOS-APP-DSN-CR-002
+//  注：客户端伪造网关回调的 MockPaymentGateway 已下线（IOS-APP-DSN-CR-007），
+//  mock 支付终态改由服务端扮演渠道自回调驱动，故此处不再校验客户端签名。
 //
 
 import XCTest
 @testable import iov
 
 final class PaymentContractTests: XCTestCase {
-
-    // MARK: - Mock 网关签名
-
-    func testMockPaymentSignatureMatchesBackendContract() {
-        let signature = MockPaymentGateway.buildSignature(
-            paymentNo: "P123",
-            externalTradeNo: "MOCK-P123",
-            status: "PAID",
-            amount: 5000,
-            nonce: "abc",
-            timestamp: 1700000000
-        )
-        XCTAssertEqual(signature, "b54c1db1d0f6a59da0c7a5064215f2939d27704ea378a84c5b2601cdd15d1a6c")
-    }
-
-    func testHMACSHA256UsesLowercaseHex() {
-        let value = MockPaymentGateway.hmacSHA256(content: "abc", secret: "key")
-        XCTAssertEqual(value, "9c196e32dc0175f86f4b1cb89289d6619de6bee699e4c378e68309ed97a1a6ab")
-    }
 
     // MARK: - 发起支付响应
 

@@ -2,12 +2,20 @@
 //  PaymentFlowService.swift
 //  iov
 //
-//  IOS-APP-DSN-CR-002 / IOS-APP-DSN-CR-004
-//  统一支付流程：发起支付 → 本地 Mock 网关回调 / 轮询支付单 → 返回终态。
+//  IOS-APP-DSN-CR-002 / DSN-CR-004 / DSN-CR-007
+//  统一支付流程：发起支付 → 轮询支付单 → 返回终态。
+//  支付终态始终由服务端决定：真实环境由支付渠道签名回调驱动，mock 环境由服务端扮演渠道自回调
+//  （客户端不再持回调签名密钥、不伪造回调）。
 //  订单已失效（201057）时自动恢复一次并重试，避免用户因恰好超时而支付失败。
 //
 
 import Foundation
+
+/// 支付阶段（与后端 PaymentStage 保持一致）
+enum PaymentStageValue: String {
+    case earnestMoney = "EARNEST_MONEY"
+    case downPayment = "DOWN_PAYMENT"
+}
 
 /// 云端支付相关错误码（OTD-VSO-DSN-CR-005）
 enum PaymentErrorCode {
@@ -93,21 +101,9 @@ final class PaymentFlowService {
                     completion(.failure(PaymentFlowError.failed(response.message ?? "发起支付失败")))
                     return
                 }
-                if MockPaymentGateway.isEnabled {
-                    // 本地联调：模拟外部支付网关签名回调，随后轮询服务端支付单确认状态
-                    MockPaymentGateway.simulateSuccess(paymentNo: payment.paymentNo,
-                                                       paymentStage: stage,
-                                                       paymentAmount: payment.paymentAmount) { mockResult in
-                        switch mockResult {
-                        case .success:
-                            self.pollPayment(orderNo: orderNo, paymentNo: payment.paymentNo, completion: completion)
-                        case .failure(let error):
-                            completion(.failure(error))
-                        }
-                    }
-                } else {
-                    self.pollPayment(orderNo: orderNo, paymentNo: payment.paymentNo, completion: completion)
-                }
+                // mock 模式下的支付终态由**服务端**扮演支付渠道触发签名回调（OTD-VSO-DSN-CR-007），
+                // 客户端不持任何密钥、不伪造回调，只轮询服务端支付单状态。
+                self.pollPayment(orderNo: orderNo, paymentNo: payment.paymentNo, completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }

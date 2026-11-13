@@ -96,7 +96,6 @@
 		BF8914A22F65451900A3F0FE /* VehicleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A02F65451900A3F0FE /* VehicleService.swift */; };
 		BF8914A52F65479000A3F0FE /* LoginService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A32F65479000A3F0FE /* LoginService.swift */; };
 		BF8914A82F6549F600A3F0FE /* MarketingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8914A62F6549F600A3F0FE /* MarketingService.swift */; };
-		BFAA00022F9A000100A3F0FE /* MockPaymentGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA00012F9A000100A3F0FE /* MockPaymentGateway.swift */; };
 		BFAA00042F9A000100A3F0FE /* PaymentFlowService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAA00032F9A000100A3F0FE /* PaymentFlowService.swift */; };
 		BF95DD0D2FB420410008EF8C /* EarnestMoneyPayInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD092FB420410008EF8C /* EarnestMoneyPayInfo.swift */; };
 		BF95DD0E2FB420410008EF8C /* EarnestMoneyPayModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF95DD022FB420410008EF8C /* EarnestMoneyPayModelProtocol.swift */; };
@@ -566,7 +565,6 @@
 		BF8914A02F65451900A3F0FE /* VehicleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleService.swift; sourceTree = "<group>"; };
 		BF8914A32F65479000A3F0FE /* LoginService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginService.swift; sourceTree = "<group>"; };
 		BF8914A62F6549F600A3F0FE /* MarketingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarketingService.swift; sourceTree = "<group>"; };
-		BFAA00012F9A000100A3F0FE /* MockPaymentGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentGateway.swift; sourceTree = "<group>"; };
 		BFAA00032F9A000100A3F0FE /* PaymentFlowService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentFlowService.swift; sourceTree = "<group>"; };
 		BF95DCFE2FB420410008EF8C /* EarnestMoneyPayIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayIntent.swift; sourceTree = "<group>"; };
 		BF95DCFF2FB420410008EF8C /* EarnestMoneyPayIntentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarnestMoneyPayIntentProtocol.swift; sourceTree = "<group>"; };
@@ -1802,7 +1800,6 @@
 				BFA188632C841B6D004D625D /* TspApi.swift */,
 				BFA188652C841B98004D625D /* TspManager.swift */,
 				BFA188672C841BB3004D625D /* NetworkManager.swift */,
-				BFAA00012F9A000100A3F0FE /* MockPaymentGateway.swift */,
 			);
 			path = Http;
 			sourceTree = "<group>";
@@ -3328,7 +3325,6 @@
 				BFA189EE2C84335B004D625D /* TestDriveReportModel.swift in Sources */,
 				BFA188CE2C842444004D625D /* SettingPage.swift in Sources */,
 				BFA188642C841B6D004D625D /* TspApi.swift in Sources */,
-				BFAA00022F9A000100A3F0FE /* MockPaymentGateway.swift in Sources */,
 				BF3CA33E2CCE2B49006CD801 /* LicenseAreaModelProtocol.swift in Sources */,
 				BF3CA33C2CCD132A006CD801 /* LicenseAreaPage+Build.swift in Sources */,
 				BFA1894D2C842B5E004D625D /* MySettingPrivillegeModelProtocol.swift in Sources */,
