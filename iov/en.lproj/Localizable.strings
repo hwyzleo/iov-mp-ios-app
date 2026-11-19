@@ -193,3 +193,11 @@
 "reopen_not_allowed" = "Current order state does not allow payment retry";
 "order_expired_desc" = "This order expired because the payment window ended. You can pay again or place a new order.";
 "order_terminal_desc" = "This order has ended and can no longer be paid.";
+"contract_signed" = "contract signed";
+"refresh_contract_status" = "refresh signing status";
+"sign_contract_failed" = "Signing service is unavailable, please try again later";
+"tail_payment_sign_first" = "Please sign the vehicle purchase contract first";
+"tail_payment_contract_signing" = "Contract is being signed; final payment will be available afterwards";
+"tail_payment_amount_pending" = "Final payment amount is not confirmed yet";
+"tail_payment_stage_mismatch" = "Unexpected payment stage, please refresh and try again";
+"tail_payment_pending" = "Payment accepted, please refresh the order later";

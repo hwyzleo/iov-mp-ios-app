@@ -51,6 +51,14 @@ protocol VehicleOrderDetailIntentProtocol : MviIntentProtocol {
     func onTapCancelOrder()
     /// 点击订单支付
     func onTapPayOrder(orderPaymentPhase: Int, paymentAmount: Decimal, paymentChannel: String)
+    /// 点击签署购车合同（OTD-VSO-DSN-CR-014）
+    func onTapSignContract()
+    /// 刷新购车合同签署状态（OTD-VSO-DSN-CR-014）
+    func onTapRefreshContract()
+    /// 点击支付尾款（OTD-VSO-DSN-CR-014）
+    func onTapPayTailPayment()
+    /// 关闭合同签署页（OTD-VSO-DSN-CR-014）
+    func onCloseContractWebPage()
     /// 点击支付意向金（跳转到支付渠道选择页）
     func onTapPayEarnestMoney()
     /// 点击意向金转定金

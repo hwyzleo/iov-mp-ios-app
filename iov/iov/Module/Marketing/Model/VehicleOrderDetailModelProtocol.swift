@@ -43,6 +43,32 @@ protocol VehicleOrderDetailModelStateProtocol {
     var orderPersonIdType: Int { get }
     var orderPersonIdNum: String { get }
     var isFromEarnestMoneyConversion: Bool { get }
+
+    // MARK: - 购车合同与尾款（OTD-VSO-DSN-CR-014）
+    /// 订单状态（服务端权威值）
+    var orderState: Int { get }
+    /// 支付方式（full_payment / loan）
+    var paymentMethod: String? { get }
+    /// 合同状态（DRAFT/GENERATED/SIGNING/SIGNED/EFFECTIVE/INVALID，nil = 未签署）
+    var contractStatus: String? { get }
+    /// 合同签署页地址（仅 SIGNING 且为 http(s) 时存在）
+    var contractWebUrl: URL? { get }
+    /// 尾款金额（服务端金额快照）
+    var tailPaymentAmount: Decimal { get }
+    /// 合同请求进行中
+    var contractBusy: Bool { get }
+    /// 尾款支付请求进行中
+    var tailPaymentBusy: Bool { get }
+    /// 是否全款订单
+    var isFullPayment: Bool { get }
+    /// 合同是否已签署（SIGNED/EFFECTIVE）
+    var isContractSigned: Bool { get }
+    /// 合同是否签署中
+    var isContractSigning: Bool { get }
+    /// 是否可发起签署
+    var canSignContract: Bool { get }
+    /// 是否可支付尾款
+    var canPayTailPayment: Bool { get }
 }
 
 // MARK: - Intent Action
@@ -50,6 +76,26 @@ protocol VehicleOrderDetailModelStateProtocol {
 protocol VehicleOrderDetailModelActionProtocol: MviModelActionProtocol {
     /// 获取当前内容状态
     func getContentState() -> MarketingTypes.Model.VehicleOrderDetailContentState
+    /// 获取当前订单号（会话内）
+    func getOrderNum() -> String
+    /// 是否可发起合同签署
+    func getCanSignContract() -> Bool
+    /// 是否可支付尾款
+    func getCanPayTailPayment() -> Bool
+    /// 更新订单状态与支付方式（服务端权威值）
+    func updateOrderState(orderState: Int, paymentMethod: String?)
+    /// 更新合同状态
+    func updateContract(status: String?, signUrl: String?, fileUrl: String?)
+    /// 更新尾款金额
+    func updateTailPaymentAmount(_ amount: Decimal)
+    /// 设置合同请求进行中
+    func setContractBusy(_ busy: Bool)
+    /// 设置尾款支付请求进行中
+    func setTailPaymentBusy(_ busy: Bool)
+    /// 展示合同签署页（仅 http/https）
+    func showContractWebPage(url: URL)
+    /// 关闭合同签署页
+    func clearContractWebPage()
     /// 更新销售车型图片集
     func updateSaleModelImages(saleModelImages: [String])
     /// 更新销售车型简介

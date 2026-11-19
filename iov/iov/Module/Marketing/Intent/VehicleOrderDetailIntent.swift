@@ -51,7 +51,7 @@ func viewOnAppear() {
                 case 600: viewName = "PREPARE_DELIVER"
                 case 620: viewName = "FINAL_PAYMENT_PAID"
                 case 630: viewName = "INVOICED"
-                case 650: viewName = "DELIVERED"
+                case 650, 900: viewName = "DELIVERED"
                 case 950, 960, 970: viewName = "INVALID"
                 default: break
                 }
@@ -974,6 +974,11 @@ private func convertToDynamicConfigs(configName: [String: String]?, configPrice:
                         orderNum: orderResponse.orderNo,
                         orderTime: orderResponse.orderTime ?? 0
                     )
+                    // 购车合同与尾款以服务端为唯一事实源（OTD-VSO-DSN-CR-014）
+                    self.modelAction?.updateOrderState(orderState: orderResponse.orderState,
+                                                       paymentMethod: orderResponse.paymentMethod)
+                    self.modelAction?.updateTailPaymentAmount(orderResponse.tailPaymentAmount ?? 0)
+                    self.loadContract(orderNo: orderResponse.orderNo)
                     
                     if let modelCode = orderResponse.modelCode, let variantCode = orderResponse.variantCode {
                         AppGlobalState.shared.parameters["selectedModelCode"] = modelCode
@@ -1432,11 +1437,10 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
         guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else { return }
         modelAction?.displayLoading()
 
-        // 后端仅支持意向金/定金两个支付阶段；尾款暂无支付接口，保留本地演示推进
+        // 后端仅支持意向金/定金两个支付阶段；尾款走独立入口（OTD-VSO-DSN-CR-014），
+        // 金额与阶段由服务端判定，客户端不做本地状态推进。
         guard orderPaymentPhase == 1 || orderPaymentPhase == 2 else {
-            VehicleManager.shared.updateSubState(id: orderNo, subState: 700)
-            AppGlobalState.shared.needRefresh = true
-            self.viewOnAppear()
+            onTapPayTailPayment()
             return
         }
 
@@ -1455,6 +1459,147 @@ extension VehicleOrderDetailIntent: VehicleOrderDetailIntentProtocol {
                 self?.modelAction?.displayError(text: error.localizedDescription)
             }
         }
+    }
+
+    // MARK: - 购车合同签署与尾款（OTD-VSO-DSN-CR-014）
+
+    /// 发起合同签署：已签署直接刷新状态；SIGNING 时仅在 signUrl 可加载时打开签署页
+    func onTapSignContract() {
+        guard let orderNo = currentOrderNo() else {
+            modelAction?.displayError(text: String(localized: "order_not_exist"))
+            return
+        }
+        guard modelAction?.getCanSignContract() == true else { return }
+        modelAction?.setContractBusy(true)
+        ServiceContainer.marketingService.initiateContractSign(orderNo: orderNo) { [weak self] (result: Result<TspResponse<ContractInfo>, Error>) in
+            guard let self = self else { return }
+            self.modelAction?.setContractBusy(false)
+            switch result {
+            case .success(let res):
+                guard res.isSuccess, let contract = res.data else {
+                    self.modelAction?.displayError(text: res.message ?? String(localized: "sign_contract_failed"))
+                    return
+                }
+                self.applyContract(contract)
+                if contract.isSignEffective {
+                    return
+                }
+                if contract.isSigning, let url = Self.loadableSignUrl(contract.signUrl) {
+                    self.modelAction?.showContractWebPage(url: url)
+                }
+            case .failure(let error):
+                self.modelAction?.displayError(text: error.localizedDescription)
+            }
+        }
+    }
+
+    /// 刷新合同签署状态（仅拉取事实，不代替用户签署）
+    func onTapRefreshContract() {
+        guard let orderNo = currentOrderNo() else { return }
+        modelAction?.setContractBusy(true)
+        ServiceContainer.marketingService.getContract(orderNo: orderNo) { [weak self] (result: Result<TspResponse<ContractInfo>, Error>) in
+            guard let self = self else { return }
+            self.modelAction?.setContractBusy(false)
+            switch result {
+            case .success(let res):
+                if res.isSuccess, let contract = res.data {
+                    self.applyContract(contract)
+                } else if res.code == ContractErrorCode.notExist {
+                    self.modelAction?.updateContract(status: nil, signUrl: nil, fileUrl: nil)
+                } else {
+                    self.modelAction?.displayError(text: res.message ?? String(localized: "sign_contract_failed"))
+                }
+            case .failure(let error):
+                self.modelAction?.displayError(text: error.localizedDescription)
+            }
+        }
+    }
+
+    /// 支付尾款：请求不传金额/阶段，成功以服务端 orderState=620 为准
+    func onTapPayTailPayment() {
+        guard let orderNo = currentOrderNo() else { return }
+        guard modelAction?.getCanPayTailPayment() == true else {
+            modelAction?.displayError(text: String(localized: "tail_payment_sign_first"))
+            return
+        }
+        modelAction?.setTailPaymentBusy(true)
+        PaymentFlowService.shared.pay(orderNo: orderNo,
+                                      stage: .tailPayment,
+                                      paymentChannel: "ALIPAY") { [weak self] result in
+            guard let self = self else { return }
+            self.modelAction?.setTailPaymentBusy(false)
+            switch result {
+            case .success:
+                self.refreshAfterTailPayment(orderNo: orderNo)
+            case .failure(let error):
+                self.modelAction?.displayError(text: error.localizedDescription)
+            }
+        }
+    }
+
+    func onCloseContractWebPage() {
+        modelAction?.clearContractWebPage()
+        onTapRefreshContract()
+    }
+
+    private func currentOrderNo() -> String? {
+        if !orderNo.isEmpty { return orderNo }
+        return VehicleManager.shared.getCurrentVehicleId()
+    }
+
+    private func applyContract(_ contract: ContractInfo) {
+        modelAction?.updateContract(status: contract.contractStatus,
+                                    signUrl: contract.signUrl,
+                                    fileUrl: contract.fileUrl)
+    }
+
+    /// 加载合同：201061 视为未签署；其他错误不阻断详情页，交给后续操作暴露
+    private func loadContract(orderNo: String) {
+        ServiceContainer.marketingService.getContract(orderNo: orderNo) { [weak self] (result: Result<TspResponse<ContractInfo>, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let res):
+                if res.isSuccess, let contract = res.data {
+                    self.applyContract(contract)
+                } else if res.code == ContractErrorCode.notExist {
+                    self.modelAction?.updateContract(status: nil, signUrl: nil, fileUrl: nil)
+                }
+            case .failure:
+                break
+            }
+        }
+    }
+
+    /// 尾款支付成功：重新拉订单，以服务端状态刷新页面
+    private func refreshAfterTailPayment(orderNo: String) {
+        ServiceContainer.marketingService.getOrder(orderNo: orderNo) { [weak self] (result: Result<TspResponse<Order>, Error>) in
+            guard let self = self else { return }
+            switch result {
+            case .success(let res):
+                guard let order = res.data else {
+                    self.modelAction?.displayError(text: res.message ?? "请求异常")
+                    return
+                }
+                VehicleManager.shared.updateSubState(id: orderNo, subState: order.orderState)
+                AppGlobalState.shared.needRefresh = true
+                if order.orderState == OrderState.FINAL_PAYMENT_PAID.rawValue {
+                    self.handleFinalPaymentPaid()
+                } else {
+                    self.modelAction?.displayError(text: String(localized: "tail_payment_pending"))
+                }
+            case .failure(let error):
+                self.modelAction?.displayError(text: error.localizedDescription)
+            }
+        }
+    }
+
+    /// 仅 http/https 的签署地址可加载；Mock 的 mock:// 走「签署中」占位
+    private static func loadableSignUrl(_ raw: String?) -> URL? {
+        guard let raw = raw, let url = URL(string: raw),
+              let scheme = url.scheme?.lowercased(), scheme == "http" || scheme == "https" else {
+            return nil
+        }
+        return url
     }
     
     func onTapPayEarnestMoney() {

@@ -178,15 +178,46 @@ class TspApi {
     }
     
     /// 获取销售门店
+    /// 门店接口已由 OTD-VSO 统一封装（OTD-VSO-DSN-CR-008），不再直连 EDD-ORG 的 Mobile 路由
     static func getDealership(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/api/mobile/dealership/v1", parameters: ["serviceType":"S"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
-            completion(result)
-        }
+        getDealershipList(serviceType: "S", completion: completion)
     }
     
     /// 获取交付中心
     static func getDeliveryCenter(completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
-        TspManager.requestGet(path: "/api/mobile/dealership/v1", parameters: ["serviceType":"D"]) { (result: Result<TspResponse<[Dealership]>, Error>) in
+        getDealershipList(serviceType: "D", completion: completion)
+    }
+    
+    /// 获取销售/交付门店选项
+    ///
+    /// GET /api/mobile/vso/v1/dealership/list
+    /// - serviceType 仅支持 S（销售门店）/ D（交付中心）
+    /// - provinceCode / cityCode / countyCode / requestLon / requestLat 为可选过滤条件，由 VSO 透传 EDD-ORG
+    /// - 响应字段固定为 code / name / address / distance（distance 可能为 null）
+    private static func getDealershipList(serviceType: String,
+                                          provinceCode: String? = nil,
+                                          cityCode: String? = nil,
+                                          countyCode: String? = nil,
+                                          requestLon: String? = nil,
+                                          requestLat: String? = nil,
+                                          completion: @escaping (Result<TspResponse<[Dealership]>, Error>) -> Void) {
+        var parameters: [String: Any] = ["serviceType": serviceType]
+        if let provinceCode = provinceCode {
+            parameters["provinceCode"] = provinceCode
+        }
+        if let cityCode = cityCode {
+            parameters["cityCode"] = cityCode
+        }
+        if let countyCode = countyCode {
+            parameters["countyCode"] = countyCode
+        }
+        if let requestLon = requestLon {
+            parameters["requestLon"] = requestLon
+        }
+        if let requestLat = requestLat {
+            parameters["requestLat"] = requestLat
+        }
+        TspManager.requestGet(path: "/api/mobile/vso/v1/dealership/list", parameters: parameters) { (result: Result<TspResponse<[Dealership]>, Error>) in
             completion(result)
         }
     }
@@ -215,6 +246,30 @@ class TspApi {
             "orderNo": orderNo,
             "paymentChannel": paymentChannel
         ]) { (result: Result<TspResponse<InitiatePaymentResult>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 发起购车合同签署（OTD-VSO-DSN-CR-014）
+    ///
+    /// POST /api/mobile/vso/v1/order/action/initiateContractSign
+    /// - 账号只取登录态；服务端要求本人 + PREPARE_DELIVER(600) + full_payment
+    /// - 重复发起幂等：SIGNING 复用 signNo，SIGNED/EFFECTIVE 返回当前事实
+    static func initiateContractSign(orderNo: String, completion: @escaping (Result<TspResponse<ContractInfo>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/vso/v1/order/action/initiateContractSign", parameters: [
+            "orderNo": orderNo
+        ]) { (result: Result<TspResponse<ContractInfo>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 查询当前购车合同（OTD-VSO-DSN-CR-014）
+    ///
+    /// GET /api/mobile/vso/v1/order/{orderNo}/contract
+    /// - 无合同时业务码 201061（视为未签署，不是错误）
+    /// - signUrl 仅 SIGNING 时返回
+    static func getContract(orderNo: String, completion: @escaping (Result<TspResponse<ContractInfo>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/vso/v1/order/" + orderNo + "/contract", parameters: [:]) { (result: Result<TspResponse<ContractInfo>, Error>) in
             completion(result)
         }
     }

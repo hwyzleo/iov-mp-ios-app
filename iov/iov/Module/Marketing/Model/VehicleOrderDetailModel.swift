@@ -41,6 +41,42 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
     var invalidTitle: String = ""
     /// 是否允许重新发起支付（仅失效且次数未用尽）
     var canReopenPayment: Bool = false
+
+    // MARK: - 购车合同与尾款（OTD-VSO-DSN-CR-014）
+    /// 订单状态（服务端权威值）
+    @Published var orderState: Int = 0
+    /// 支付方式（full_payment / loan）
+    var paymentMethod: String?
+    /// 合同状态（nil = 未签署）
+    @Published var contractStatus: String?
+    /// 合同签署页地址（仅 http/https）
+    @Published var contractWebUrl: URL?
+    /// 尾款金额（服务端金额快照）
+    @Published var tailPaymentAmount: Decimal = 0
+    /// 合同请求进行中
+    @Published var contractBusy: Bool = false
+    /// 尾款支付请求进行中
+    @Published var tailPaymentBusy: Bool = false
+
+    /// 是否全款订单
+    var isFullPayment: Bool { paymentMethod == TailPaymentRules.fullPayment }
+    /// 合同是否已签署
+    var isContractSigned: Bool { contractStatus == "SIGNED" || contractStatus == "EFFECTIVE" }
+    /// 合同是否签署中
+    var isContractSigning: Bool { contractStatus == "SIGNING" }
+    /// 是否可发起签署
+    var canSignContract: Bool {
+        TailPaymentRules.canSignContract(orderState: orderState,
+                                         paymentMethod: paymentMethod,
+                                         contractStatus: contractStatus)
+    }
+    /// 是否可支付尾款
+    var canPayTailPayment: Bool {
+        TailPaymentRules.canPayTailPayment(orderState: orderState,
+                                           paymentMethod: paymentMethod,
+                                           contractStatus: contractStatus,
+                                           tailPaymentAmount: tailPaymentAmount)
+    }
 }
 
 // MARK: - Action Protocol
@@ -48,6 +84,37 @@ final class VehicleOrderDetailModel: ObservableObject, VehicleOrderDetailModelSt
 extension VehicleOrderDetailModel: VehicleOrderDetailModelActionProtocol {
     func getContentState() -> MarketingTypes.Model.VehicleOrderDetailContentState {
         return contentState
+    }
+    func getOrderNum() -> String {
+        return orderNum
+    }
+    func getCanSignContract() -> Bool {
+        return canSignContract
+    }
+    func getCanPayTailPayment() -> Bool {
+        return canPayTailPayment
+    }
+    func updateOrderState(orderState: Int, paymentMethod: String?) {
+        self.orderState = orderState
+        self.paymentMethod = paymentMethod
+    }
+    func updateContract(status: String?, signUrl: String?, fileUrl: String?) {
+        self.contractStatus = status
+    }
+    func updateTailPaymentAmount(_ amount: Decimal) {
+        self.tailPaymentAmount = amount
+    }
+    func setContractBusy(_ busy: Bool) {
+        self.contractBusy = busy
+    }
+    func setTailPaymentBusy(_ busy: Bool) {
+        self.tailPaymentBusy = busy
+    }
+    func showContractWebPage(url: URL) {
+        self.contractWebUrl = url
+    }
+    func clearContractWebPage() {
+        self.contractWebUrl = nil
     }
     func updateSaleModelImages(saleModelImages: [String]) {
         self.saleModelImages = saleModelImages

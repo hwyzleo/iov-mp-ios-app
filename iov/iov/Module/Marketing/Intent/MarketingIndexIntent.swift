@@ -148,13 +148,11 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
             AppGlobalState.shared.parameters["orderDetailView"] = "FINAL_PAYMENT_PAID"
         case .INVOICED:
             AppGlobalState.shared.parameters["orderDetailView"] = "INVOICED"
-        case .DELIVERED:
+        case .DELIVERED, .COMPLETED:
             AppGlobalState.shared.parameters["orderDetailView"] = "DELIVERED"
         case .EXPIRED, .CANCEL, .CLOSED:
             // 终态：进入只读失效视图（可重新支付），不再进入待支付页
             AppGlobalState.shared.parameters["orderDetailView"] = "INVALID"
-        case .ACTIVATED:
-            break
         }
         AppRouter.shared.push(.marketing(.orderDetail(orderNo: "")))
     }
@@ -162,11 +160,9 @@ extension MarketingIndexIntent: MarketingIndexIntentProtocol {
         guard let orderNo = VehicleManager.shared.getCurrentVehicleId() else { return }
         modelAction?.displayLoading()
 
-        // 后端仅支持意向金/定金两个支付阶段；尾款暂无支付接口，保留本地演示推进
+        // 后端仅支持意向金/定金两个支付阶段；尾款走详情页入口（OTD-VSO-DSN-CR-014），
+        // 不再做任何本地状态推进（OTD-VSO-DSN-CR-016 已删除 700 激活态）
         guard orderPaymentPhase == 1 || orderPaymentPhase == 2 else {
-            VehicleManager.shared.updateSubState(id: orderNo, subState: 700)
-            AppGlobalState.shared.needRefresh = true
-            self.viewOnAppear()
             return
         }
 

@@ -15,6 +15,57 @@ import Foundation
 enum PaymentStageValue: String {
     case earnestMoney = "EARNEST_MONEY"
     case downPayment = "DOWN_PAYMENT"
+    /// 尾款（OTD-VSO-DSN-CR-014）
+    case tailPayment = "TAIL_PAYMENT"
+}
+
+/// 购车合同相关错误码（OTD-VSO-DSN-CR-014）
+enum ContractErrorCode {
+    /// 购车合同不存在（视为未签署，不是错误）
+    static let notExist = "201061"
+    /// 合同当前状态不允许该操作
+    static let statusNotAllowed = "201062"
+    /// 电子签网关失败
+    static let esignFailed = "201063"
+    /// 尾款不允许（未签署/非全款/状态或金额不满足）
+    static let tailNotAllowed = "201064"
+    /// 金额快照缺失或异常（需人工处理）
+    static let amountSnapshotMissing = "201050"
+}
+
+/// 尾款支付与签署资格（纯逻辑，UI 与 Intent 共用；OTD-VSO-DSN-CR-014）
+enum TailPaymentRules {
+    static let fullPayment = "full_payment"
+
+    /// 是否可发起合同签署：600 + 全款 + 合同不在签署中/已签署/已生效
+    static func canSignContract(orderState: Int,
+                                paymentMethod: String?,
+                                contractStatus: String?) -> Bool {
+        guard orderState == OrderState.PREPARE_DELIVER.rawValue,
+              paymentMethod == fullPayment else {
+            return false
+        }
+        switch contractStatus {
+        case "SIGNING", "SIGNED", "EFFECTIVE":
+            return false
+        default:
+            return true
+        }
+    }
+
+    /// 是否可支付尾款：600 + 全款 + 合同 SIGNED/EFFECTIVE + 尾款金额大于 0
+    static func canPayTailPayment(orderState: Int,
+                                  paymentMethod: String?,
+                                  contractStatus: String?,
+                                  tailPaymentAmount: Decimal) -> Bool {
+        guard orderState == OrderState.PREPARE_DELIVER.rawValue,
+              paymentMethod == fullPayment,
+              contractStatus == "SIGNED" || contractStatus == "EFFECTIVE",
+              tailPaymentAmount > 0 else {
+            return false
+        }
+        return true
+    }
 }
 
 /// 云端支付相关错误码（OTD-VSO-DSN-CR-005）
@@ -103,6 +154,13 @@ final class PaymentFlowService {
                 }
                 // mock 模式下的支付终态由**服务端**扮演支付渠道触发签名回调（OTD-VSO-DSN-CR-007），
                 // 客户端不持任何密钥、不伪造回调，只轮询服务端支付单状态。
+                // 尾款需校验服务端判定的阶段，避免在非尾款场景误用（OTD-VSO-DSN-CR-014）。
+                if stage == .tailPayment,
+                   payment.paymentStage != PaymentStageValue.tailPayment.rawValue {
+                    completion(.failure(PaymentFlowError.failed(
+                        String(localized: "tail_payment_stage_mismatch"))))
+                    return
+                }
                 self.pollPayment(orderNo: orderNo, paymentNo: payment.paymentNo, completion: completion)
             case .failure(let error):
                 completion(.failure(error))

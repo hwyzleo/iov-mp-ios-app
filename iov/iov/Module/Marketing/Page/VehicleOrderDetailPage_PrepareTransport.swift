@@ -99,32 +99,6 @@ VehicleOrderDetailPage.Price(
                     }
                 }
                 
-                // 底部操作区
-                VStack(spacing: 0) {
-                    Spacer()
-                    HStack(spacing: 16) {
-                        RoundedCornerButton(
-                            nameLocal: L10n.sign_contract,
-                            color: .white,
-                            bgColor: Color.white.opacity(0.1)
-                        ) {
-                            
-                        }
-                        
-                        RoundedCornerButton(
-                            nameLocal: L10n.pay_final_payment,
-                            color: .black,
-                            bgColor: AppTheme.colors.brandMain
-                        ) {
-                            intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
-                        }
-                    }
-                    .padding(.horizontal, AppTheme.layout.margin)
-                    .padding(.top, 20)
-                    .padding(.bottom, 34)
-                    .background(AppTheme.colors.cardBackground.shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5))
-                }
-                .ignoresSafeArea()
             }
             .preferredColorScheme(.dark)
             .onAppear {

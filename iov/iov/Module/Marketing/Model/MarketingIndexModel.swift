@@ -35,21 +35,25 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
     }
     func displayMyVehicle(vehicle: MyVehicleVo) {
         self.hasOrder = true
-        switch vehicle.type {
-        case "WISHLIST":
-            self.currentVehicleType = .WISHLIST
-            self.orderState = .WISHLIST
-        case "ORDER":
-            self.currentVehicleType = .ORDER
-            // OTD-VSO-DSN-CR-005：不再将未知状态兜底成“待支付”，否则失效单会展示
-            // 一个必然失败的支付按钮；未知状态统一按终态（无支付动作）处理。
-            self.orderState = OrderState(rawValue: vehicle.state) ?? .EXPIRED
-        case "ACTIVATED":
+        // OTD-VSO-DSN-CR-009 / CR-016：650 已交付、900 已完成即进入车辆场景，不依赖云端 type 是否映射
+        let vehicleType = VehicleType.resolve(cloudType: vehicle.type, state: vehicle.state)
+        if vehicleType == .ACTIVATED {
             self.currentVehicleType = .ACTIVATED
-            self.orderState = .ACTIVATED
-        default:
-            self.currentVehicleType = .ORDER
-            self.orderState = .EXPIRED
+            self.orderState = OrderState(rawValue: vehicle.state) ?? .COMPLETED
+        } else {
+            switch vehicle.type {
+            case "WISHLIST":
+                self.currentVehicleType = .WISHLIST
+                self.orderState = .WISHLIST
+            case "ORDER":
+                self.currentVehicleType = .ORDER
+                // OTD-VSO-DSN-CR-005：不再将未知状态兜底成“待支付”，否则失效单会展示
+                // 一个必然失败的支付按钮；未知状态统一按终态（无支付动作）处理。
+                self.orderState = OrderState(rawValue: vehicle.state) ?? .EXPIRED
+            default:
+                self.currentVehicleType = .ORDER
+                self.orderState = .EXPIRED
+            }
         }
         self.saleModelImages = vehicle.saleModelImages ?? []
         self.totalPrice = vehicle.totalPrice ?? 0
@@ -60,7 +64,7 @@ extension MarketingIndexModel: MarketingIndexModelActionProtocol {
         AppGlobalState.shared.needRefresh = true
         self.hasOrder = true
         self.currentVehicleType = .ACTIVATED
-        self.orderState = .ACTIVATED
+        self.orderState = .COMPLETED
         contentState = .content
     }
     func displaySaleModelList(saleModelList: [SaleModelMp]) {

@@ -346,6 +346,8 @@ struct Order: Codable {
     var configurationCode: String?
     var optionCodes: [String]?
     var optionBreakdown: [OptionBreakdownItem]?
+    /// 尾款金额（OTD-VSO-DSN-CR-014：服务端金额快照，只读展示；缺失为 nil）
+    var tailPaymentAmount: Decimal?
 }
 
 /// 选项明细项
@@ -770,6 +772,8 @@ struct InitiatePaymentResult: Codable {
     var paymentStatus: String?
     /// 外部交易单号
     var externalTradeNo: String?
+    /// 支付阶段（OTD-VSO-DSN-CR-014：尾款返回 TAIL_PAYMENT）
+    var paymentStage: String?
     /// 支付截止时间（epoch millis）
     @FlexibleTimestamp var expireTime: Int64?
 }
@@ -802,6 +806,39 @@ struct PaymentRecord: Codable, Identifiable {
     var failReason: String?
 
     var id: String { paymentNo }
+}
+
+/// 购车合同（OTD-VSO-DSN-CR-014）
+///
+/// 发起签署与查询合同共用；发起响应是查询响应的子集，缺失字段为 nil。
+struct ContractInfo: Codable {
+    var contractNo: String?
+    var contractType: String?
+    /// DRAFT / GENERATED / SIGNING / SIGNED / EFFECTIVE / INVALID
+    var contractStatus: String?
+    var signNo: String?
+    /// 签署地址（仅 SIGNING 时返回；Mock 为 mock://，不可直接加载）
+    var signUrl: String?
+    var fileUrl: String?
+    /// 生成时间（epoch millis）
+    @FlexibleTimestamp var generateTime: Int64?
+    /// 签署时间（epoch millis）
+    @FlexibleTimestamp var signTime: Int64?
+    /// 生效时间（epoch millis）
+    @FlexibleTimestamp var effectiveTime: Int64?
+    /// 失效时间（epoch millis）
+    @FlexibleTimestamp var invalidTime: Int64?
+    var invalidReason: String?
+
+    /// 是否已签署到可用于尾款门槛的状态（SIGNED / EFFECTIVE）
+    var isSignEffective: Bool {
+        contractStatus == "SIGNED" || contractStatus == "EFFECTIVE"
+    }
+
+    /// 是否签署中
+    var isSigning: Bool {
+        contractStatus == "SIGNING"
+    }
 }
 
 /// 购车协议

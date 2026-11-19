@@ -99,34 +99,74 @@ VehicleOrderDetailPage.Price(
                     }
                 }
                 
-                // 底部操作区
-                VStack(spacing: 0) {
-                    Spacer()
-                    HStack(spacing: 16) {
-                        RoundedCornerButton(
-                            nameLocal: L10n.sign_contract,
-                            color: .white,
-                            bgColor: Color.white.opacity(0.1)
-                        ) {
-                            
+                // 底部操作区（OTD-VSO-DSN-CR-014：签署与尾款均以服务端事实为准）
+                if state.isFullPayment {
+                    VStack(spacing: 0) {
+                        Spacer()
+                        VStack(spacing: 10) {
+                            if state.tailPaymentAmount > 0 {
+                                HStack {
+                                    Text("应付尾款")
+                                        .font(AppTheme.fonts.subtext)
+                                        .foregroundColor(AppTheme.colors.fontSecondary)
+                                    Spacer()
+                                    Text("￥\(state.tailPaymentAmount.formatted())")
+                                        .font(AppTheme.fonts.title1)
+                                        .foregroundColor(AppTheme.colors.brandMain)
+                                }
+                            }
+                            if let hint = tailPaymentHint {
+                                Text(hint)
+                                    .font(AppTheme.fonts.subtext)
+                                    .foregroundColor(AppTheme.colors.fontTertiary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            HStack(spacing: 16) {
+                                RoundedCornerButton(
+                                    nameLocal: signButtonTitle,
+                                    color: .white,
+                                    bgColor: Color.white.opacity(0.1)
+                                ) {
+                                    if state.isContractSigning {
+                                        intent.onTapRefreshContract()
+                                    } else {
+                                        intent.onTapSignContract()
+                                    }
+                                }
+                                .disabled(signButtonDisabled)
+                                .opacity(signButtonDisabled ? 0.5 : 1)
+
+                                RoundedCornerButton(
+                                    nameLocal: L10n.pay_final_payment,
+                                    color: .black,
+                                    bgColor: AppTheme.colors.brandMain
+                                ) {
+                                    intent.onTapPayTailPayment()
+                                }
+                                .disabled(payButtonDisabled)
+                                .opacity(payButtonDisabled ? 0.5 : 1)
+                            }
                         }
-                        
-                        RoundedCornerButton(
-                            nameLocal: L10n.pay_final_payment,
-                            color: .black,
-                            bgColor: AppTheme.colors.brandMain
-                        ) {
-                            intent.onTapPayOrder(orderPaymentPhase: 3, paymentAmount: 183888, paymentChannel: "ALIPAY")
-                        }
+                        .padding(.horizontal, AppTheme.layout.margin)
+                        .padding(.top, 16)
+                        .padding(.bottom, 34)
+                        .background(AppTheme.colors.cardBackground.shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5))
                     }
-                    .padding(.horizontal, AppTheme.layout.margin)
-                    .padding(.top, 20)
-                    .padding(.bottom, 34)
-                    .background(AppTheme.colors.cardBackground.shadow(color: .black.opacity(0.3), radius: 10, x: 0, y: -5))
+                    .ignoresSafeArea()
                 }
-                .ignoresSafeArea()
             }
             .preferredColorScheme(.dark)
+            .sheet(isPresented: Binding(
+                get: { state.contractWebUrl != nil },
+                set: { presented in
+                    if !presented { intent.onCloseContractWebPage() }
+                }
+            )) {
+                if let url = state.contractWebUrl {
+                    WebView(url: url)
+                        .ignoresSafeArea()
+                }
+            }
             .onAppear {
                 licenseCityCode = "3101"
             }
@@ -142,6 +182,33 @@ VehicleOrderDetailPage.Price(
         
         private func cityName(_ code: String) -> String {
             return Cities[code] ?? Provinces[code] ?? code
+        }
+
+        // MARK: - 签署/尾款状态（OTD-VSO-DSN-CR-014）
+
+        private var signButtonTitle: LocalizedStringKey {
+            if state.isContractSigned { return "contract_signed" }
+            if state.isContractSigning { return "refresh_contract_status" }
+            return "sign_contract"
+        }
+
+        private var signButtonDisabled: Bool {
+            if state.contractBusy { return true }
+            if state.isContractSigned { return true }
+            if state.isContractSigning { return false }
+            return !state.canSignContract
+        }
+
+        private var payButtonDisabled: Bool {
+            return state.tailPaymentBusy || !state.canPayTailPayment
+        }
+
+        private var tailPaymentHint: LocalizedStringKey? {
+            if state.isContractSigned {
+                return state.tailPaymentAmount > 0 ? nil : "tail_payment_amount_pending"
+            }
+            if state.isContractSigning { return "tail_payment_contract_signing" }
+            return "tail_payment_sign_first"
         }
     }
 }

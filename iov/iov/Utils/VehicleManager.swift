@@ -79,8 +79,8 @@ class VehicleManager: ObservableObject {
             switch vehicleSaleOrder.orderState {
             case 100:
                 add(orderNum: vehicleSaleOrder.orderNum, type: .WISHLIST, subState: 100, displayName: vehicleSaleOrder.displayName)
-            case 700:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, subState: 700, displayName: vehicleSaleOrder.displayName)
+            case 650, 900:
+                add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName)
             default:
                 add(orderNum: vehicleSaleOrder.orderNum, type: .ORDER, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName)
             }
@@ -119,21 +119,17 @@ class VehicleManager: ObservableObject {
         for myVehicle in myVehicleList {
             // 处理 displayName 为 nil 的情况
             let displayName = myVehicle.displayName ?? "未命名车辆"
-            
-            switch myVehicle.type {
-            case "WISHLIST":
-                add(orderNum: myVehicle.id, type: .WISHLIST, subState: myVehicle.state, displayName: displayName)
-            case "ORDER":
-                add(orderNum: myVehicle.id, type: .ORDER, subState: myVehicle.state, displayName: displayName)
-            case "ACTIVATED":
-                add(orderNum: myVehicle.id, type: .ACTIVATED, subState: myVehicle.state, displayName: displayName)
-            default:
-                add(orderNum: myVehicle.id, type: .ORDER, subState: myVehicle.state, displayName: displayName)
-            }
+            // OTD-VSO-DSN-CR-009 / CR-016：是否已交付并进入车辆场景以 state=650/900 为准，不依赖云端 type 是否映射
+            let type = VehicleType.resolve(cloudType: myVehicle.type, state: myVehicle.state)
+            add(orderNum: myVehicle.id, type: type, subState: myVehicle.state, displayName: displayName)
         }
         
-        // 设置当前车辆
-        if !vehicles.isEmpty {
+        // 设置当前车辆：多车场景下优先选中已激活车辆，保证切到车控页后操作对象正确
+        if let activated = myVehicleList.first(where: {
+            VehicleType.resolve(cloudType: $0.type, state: $0.state) == .ACTIVATED
+        }) {
+            setCurrentVehicleId(id: activated.id)
+        } else if !vehicles.isEmpty {
             setCurrentVehicleId(id: vehicles.first!.key)
         }
         
@@ -338,8 +334,8 @@ enum OrderState: Int {
     case INVOICED = 630
     /// 已交付
     case DELIVERED = 650
-    /// 已激活
-    case ACTIVATED = 700
+    /// 已完成（正常终态，OTD-VSO-DSN-CR-016 取代原 ACTIVATED(700)）
+    case COMPLETED = 900
     /// 已取消（OTD-VSO-DSN-CR-005）
     case CANCEL = 950
     /// 已失效（小订单超时）
@@ -367,6 +363,28 @@ enum VehicleType: String, PersistableEnum {
     case ORDER
     /// 心愿单车辆
     case WISHLIST
+}
+
+// MARK: - 云端数据 → 本地车辆类型（OTD-VSO-DSN-CR-009）
+
+extension VehicleType {
+    /// 云端 myVehicleList 条目到本地车辆类型的唯一判定入口。
+    ///
+    /// VSO 对订单固定返回 `type=ORDER`，订单是否已进入车辆场景只体现在 `state` 上，
+    /// 因此类型判定以 state 为准，避免跨仓库强耦合；云端显式 `ACTIVATED` 同样生效。
+    /// - Parameters:
+    ///   - cloudType: 云端 `type` 字段（WISHLIST / ORDER / ACTIVATED）
+    ///   - state: 云端 `state` 字段（订单状态值）
+    /// - Note: OTD-VSO-DSN-CR-016 删除 700 激活态，650 已交付、900 已完成均属车辆场景。
+    static func resolve(cloudType: String, state: Int) -> VehicleType {
+        if cloudType == "WISHLIST" || state == OrderState.WISHLIST.rawValue {
+            return .WISHLIST
+        }
+        if cloudType == "ACTIVATED" || state == OrderState.DELIVERED.rawValue || state == OrderState.COMPLETED.rawValue {
+            return .ACTIVATED
+        }
+        return .ORDER
+    }
 }
 
 /// 车辆持久化对象

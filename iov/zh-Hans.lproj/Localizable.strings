@@ -193,3 +193,11 @@
 "reopen_not_allowed" = "订单当前状态不允许重新支付";
 "order_expired_desc" = "该订单已超过支付时限并自动失效，可重新发起支付或重新下单。";
 "order_terminal_desc" = "该订单已结束，无法继续支付。";
+"contract_signed" = "合同已签署";
+"refresh_contract_status" = "刷新签署状态";
+"sign_contract_failed" = "签署服务暂不可用，请稍后重试";
+"tail_payment_sign_first" = "请先签署购车合同";
+"tail_payment_contract_signing" = "合同签署中，签署完成后可支付尾款";
+"tail_payment_amount_pending" = "尾款金额待确认，暂不可支付";
+"tail_payment_stage_mismatch" = "支付阶段异常，请刷新后重试";
+"tail_payment_pending" = "支付已受理，请稍后刷新订单";

@@ -132,4 +132,191 @@ final class OrderDetailContractTests: XCTestCase {
         XCTAssertEqual(record.payTime, 1794532510160)
         XCTAssertEqual(record.expireTime, 1794532510160)
     }
+
+    // MARK: - 订单详情门店选项（OTD-VSO-DSN-CR-008）
+
+    /// 真实后端响应（GET /api/mobile/vso/v1/dealership/list?serviceType=S）
+    private let dealershipListJSON = """
+    {
+      "code": "000000",
+      "message": "成功",
+      "data": [
+        {"code": "STORE001", "name": "深圳南山销售门店", "address": "深圳市南山区示例路 1 号", "distance": 3.2},
+        {"code": "STORE002", "name": "深圳福田销售门店", "address": "深圳市福田区示例路 2 号", "distance": null}
+      ],
+      "timestamp": 1794532510160
+    }
+    """.data(using: .utf8)!
+
+    func testDealershipListDecodesVSOResponse() throws {
+        let response: Result<TspResponse<[Dealership]>, Error> = TspManager.parseData(dealershipListJSON)
+
+        guard case .success(let value) = response else {
+            return XCTFail("门店选项解析失败: \(response)")
+        }
+        let list = try XCTUnwrap(value.data, "门店选项 data 不应为 nil")
+        XCTAssertEqual(list.count, 2)
+        XCTAssertEqual(list[0].code, "STORE001")
+        XCTAssertEqual(list[0].name, "深圳南山销售门店")
+        XCTAssertEqual(list[0].address, "深圳市南山区示例路 1 号")
+        XCTAssertEqual(list[0].distance, 3.2)
+        XCTAssertNil(list[1].distance, "ORG 无法计算距离时 distance 为 null，不应导致整页解析失败")
+    }
+
+    func testDealershipListReturnsEmptyArray() throws {
+        let json = """
+        {"code": "000000", "message": "成功", "data": [], "timestamp": 1}
+        """.data(using: .utf8)!
+
+        let response: Result<TspResponse<[Dealership]>, Error> = TspManager.parseData(json)
+        guard case .success(let value) = response else {
+            return XCTFail("空门店列表解析失败: \(response)")
+        }
+        XCTAssertEqual(value.data?.count, 0)
+    }
+
+    // MARK: - 购车合同与尾款（OTD-VSO-DSN-CR-014）
+
+    func testOrderDetailDecodesTailPaymentAmount() throws {
+        let json = """
+        {"code": "000000", "data": {"orderNo": "O1", "orderState": 600, "paymentMethod": "full_payment", "totalPrice": 203000, "tailPaymentAmount": 183000}, "timestamp": 1}
+        """.data(using: .utf8)!
+
+        let response: Result<TspResponse<Order>, Error> = TspManager.parseData(json)
+        guard case .success(let value) = response else {
+            return XCTFail("订单详情解析失败: \(response)")
+        }
+        let order = try XCTUnwrap(value.data)
+        XCTAssertEqual(order.orderState, 600)
+        XCTAssertEqual(order.paymentMethod, "full_payment")
+        XCTAssertEqual(order.tailPaymentAmount, Decimal(183000))
+    }
+
+    func testOrderDetailDecodesNullAndMissingTailPaymentAmount() throws {
+        let nullJSON = """
+        {"code": "000000", "data": {"orderNo": "O1", "orderState": 300, "tailPaymentAmount": null}, "timestamp": 1}
+        """.data(using: .utf8)!
+        let missingJSON = """
+        {"code": "000000", "data": {"orderNo": "O1", "orderState": 300}, "timestamp": 1}
+        """.data(using: .utf8)!
+
+        for json in [nullJSON, missingJSON] {
+            let response: Result<TspResponse<Order>, Error> = TspManager.parseData(json)
+            guard case .success(let value) = response else {
+                return XCTFail("tailPaymentAmount 缺失/null 不应导致解析失败: \(response)")
+            }
+            XCTAssertNotNil(value.data)
+            XCTAssertNil(value.data?.tailPaymentAmount)
+        }
+    }
+
+    func testContractInfoDecodesSignedContract() throws {
+        let json = """
+        {
+          "code": "000000",
+          "data": {
+            "contractNo": "CT001",
+            "contractType": "VEHICLE_PURCHASE",
+            "contractStatus": "SIGNED",
+            "signNo": "SIGN001",
+            "fileUrl": "mock://esign/contract/O1/EXT001",
+            "generateTime": "2026-11-19T07:00:00.000+00:00",
+            "signTime": "2026-11-19T07:05:00.000+00:00",
+            "effectiveTime": null,
+            "invalidTime": null,
+            "invalidReason": null
+          },
+          "timestamp": 1
+        }
+        """.data(using: .utf8)!
+
+        let response: Result<TspResponse<ContractInfo>, Error> = TspManager.parseData(json)
+        guard case .success(let value) = response else {
+            return XCTFail("合同详情解析失败: \(response)")
+        }
+        let contract = try XCTUnwrap(value.data)
+        XCTAssertEqual(contract.contractNo, "CT001")
+        XCTAssertEqual(contract.contractStatus, "SIGNED")
+        XCTAssertTrue(contract.isSignEffective)
+        XCTAssertFalse(contract.isSigning)
+        XCTAssertNil(contract.signUrl, "SIGNED 不再返回签署地址")
+        XCTAssertNotNil(contract.signTime)
+    }
+
+    func testContractInfoDecodesSigningContractWithMockSignUrl() throws {
+        let json = """
+        {
+          "code": "000000",
+          "data": {
+            "contractNo": "CT001",
+            "contractType": "VEHICLE_PURCHASE",
+            "contractStatus": "SIGNING",
+            "signNo": "SIGN001",
+            "signUrl": "mock://esign/sign/SIGN001",
+            "generateTime": 1794551140508
+          },
+          "timestamp": 1
+        }
+        """.data(using: .utf8)!
+
+        let response: Result<TspResponse<ContractInfo>, Error> = TspManager.parseData(json)
+        guard case .success(let value) = response else {
+            return XCTFail("合同解析失败: \(response)")
+        }
+        let contract = try XCTUnwrap(value.data)
+        XCTAssertTrue(contract.isSigning)
+        XCTAssertFalse(contract.isSignEffective)
+        XCTAssertEqual(contract.signUrl, "mock://esign/sign/SIGN001")
+        XCTAssertEqual(contract.generateTime, 1794551140508)
+        XCTAssertNil(contract.signTime)
+    }
+
+    func testContractNotExistMapsToNoData() throws {
+        let json = """
+        {"code": "201061", "message": "购车合同不存在", "data": null, "timestamp": 1}
+        """.data(using: .utf8)!
+
+        let response: Result<TspResponse<ContractInfo>, Error> = TspManager.parseData(json)
+        guard case .success(let value) = response else {
+            return XCTFail("201061 响应不应解析失败: \(response)")
+        }
+        XCTAssertEqual(value.code, ContractErrorCode.notExist)
+        XCTAssertNil(value.data, "201061 表示未签署，data 为空不应视为错误")
+    }
+}
+
+// MARK: - 订单交付/完成后切换车辆状态页（IOS-APP-DSN-CR-009 / OTD-VSO-DSN-CR-016）
+
+final class VehicleActivationMappingTests: XCTestCase {
+
+    func testDeliveredAndCompletedStatesMapToVehicleEvenIfCloudTypeIsOrder() {
+        // OTD-VSO-DSN-CR-016：700 退出订单生命周期，650 已交付、900 已完成均进入车辆场景
+        XCTAssertEqual(VehicleType.resolve(cloudType: "ORDER", state: 650), .ACTIVATED,
+                       "VSO myVehicleList 对订单固定返回 type=ORDER，650 必须以 state 判定为车辆场景")
+        XCTAssertEqual(VehicleType.resolve(cloudType: "ORDER", state: 900), .ACTIVATED,
+                       "900 已完成必须以 state 判定为车辆场景")
+    }
+
+    func testLegacyActivated700IsNoLongerATransition() {
+        // 700 已删除，不再映射为车辆场景（历史数据由 VSO V1.43.0 迁移为 650/900）
+        XCTAssertNil(OrderState(rawValue: 700), "700 激活态已从 OrderState 删除")
+        XCTAssertEqual(VehicleType.resolve(cloudType: "ORDER", state: 700), .ORDER)
+    }
+
+    func testOtherOrderStatesStayOrder() {
+        for state in [200, 300, 310, 600, 620] {
+            XCTAssertEqual(VehicleType.resolve(cloudType: "ORDER", state: state), .ORDER,
+                           "state=\(state) 不应切换到车辆状态页")
+        }
+    }
+
+    func testWishlistAndExplicitActivatedType() {
+        XCTAssertEqual(VehicleType.resolve(cloudType: "WISHLIST", state: 100), .WISHLIST)
+        XCTAssertEqual(VehicleType.resolve(cloudType: "ORDER", state: 100), .WISHLIST)
+        XCTAssertEqual(VehicleType.resolve(cloudType: "ACTIVATED", state: 620), .ACTIVATED)
+    }
+
+    func testCompletedStateValueIsStable() {
+        XCTAssertEqual(OrderState.COMPLETED.rawValue, 900)
+    }
 }
