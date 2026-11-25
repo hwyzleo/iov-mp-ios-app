@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct VehiclePage_TopBar: View {
+    var onTapScan: (() -> Void)? = nil
+
     var body: some View {
         HStack(spacing: 20) {
             HStack(spacing: 4) {
@@ -22,14 +24,10 @@ struct VehiclePage_TopBar: View {
             Spacer()
             
             HStack(spacing: 24) {
-                // 扫码
-                NavigationLink(
-                    destination: CustomScannerView() { qrcode in
-                        debugPrint("QRCode: \(qrcode)")
-                    }
-                    .ignoresSafeArea()
-                    .navigationBarBackButtonHidden()
-                ) {
+                // 扫码（绑车激活入口，不代表已绑定；需登录，未登录先登录并在登录后续跑已扫到的二维码）
+                Button {
+                    onTapScan?()
+                } label: {
                     Image("icon_scan_qrcode")
                         .resizable()
                         .renderingMode(.template)

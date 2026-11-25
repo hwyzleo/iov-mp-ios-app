@@ -620,6 +620,68 @@ class TspApi {
         }
     }
     
+    // MARK: - 绑车激活（IOV-TSP-DSN-CR-017 C 端接口）
+    //
+    // 不使用 mock 伪造绑定结果：扫码 / 取消 / 确认 / 操作查询均走真实链路，
+    // 服务端不可用时按未知/失败如实展示。
+
+    /// 查询当前账号在指定 VIN 上的人车关系（IOV-TSP-DSN-CR-018）
+    /// GET /api/mobile/activation/v1/binding?vin=...
+    /// - accountId 只取登录态；VIN 必须为单个合法 17 位值
+    static func queryUserVehicleRelation(vin: String,
+                                         completion: @escaping (Result<TspResponse<UserVehicleRelationResult>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/activation/v1/binding",
+                              parameters: ["vin": vin]) { (result: Result<TspResponse<UserVehicleRelationResult>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 扫码认领激活会话并获取最小待确认车辆信息
+    /// POST /api/mobile/activation/v1/session/scan
+    static func scanActivationSession(qrToken: String,
+                                      completion: @escaping (Result<TspResponse<ActivationScanResult>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/activation/v1/session/scan",
+                               parameters: ["qrToken": qrToken]) { (result: Result<TspResponse<ActivationScanResult>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 取消激活会话（不修改已有云端关系）
+    /// POST /api/mobile/activation/v1/session/cancel?sessionId=...
+    static func cancelActivationSession(sessionId: String,
+                                        completion: @escaping (Result<TspResponse<Bool>, Error>) -> Void) {
+        let encoded = sessionId.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? sessionId
+        TspManager.requestPost(path: "/api/mobile/activation/v1/session/cancel?sessionId=\(encoded)",
+                               parameters: [:]) { (result: Result<TspResponse<Bool>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 确认绑定（幂等：同一 idempotencyKey + 同内容返回原结果）
+    /// POST /api/mobile/activation/v1/binding/confirm
+    static func confirmVehicleBinding(sessionId: String,
+                                      idempotencyKey: String,
+                                      completion: @escaping (Result<TspResponse<ActivationConfirmResult>, Error>) -> Void) {
+        TspManager.requestPost(path: "/api/mobile/activation/v1/binding/confirm",
+                               parameters: [
+                                   "sessionId": sessionId,
+                                   "idempotencyKey": idempotencyKey
+                               ]) { (result: Result<TspResponse<ActivationConfirmResult>, Error>) in
+            completion(result)
+        }
+    }
+
+    /// 查询绑定操作权威结果（仅本人操作；查询不到不等于已失败）
+    /// GET /api/mobile/activation/v1/binding/operations/{operationId}
+    static func queryBindingOperation(operationId: String,
+                                      completion: @escaping (Result<TspResponse<ActivationOperationResult>, Error>) -> Void) {
+        let encoded = operationId.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? operationId
+        TspManager.requestGet(path: "/api/mobile/activation/v1/binding/operations/\(encoded)",
+                              parameters: [:]) { (result: Result<TspResponse<ActivationOperationResult>, Error>) in
+            completion(result)
+        }
+    }
+
     /// 解锁车辆
     static func unlockVehicle(completion: @escaping (Result<TspResponse<NoReply>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {

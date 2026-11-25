@@ -1,0 +1,4 @@
+"NSCameraUsageDescription" = "Camera access is required to scan the vehicle QR code";
+"NSPhotoLibraryUsageDescription" = "Photo library access is required to choose your avatar";
+"NSLocationWhenInUseUsageDescription" = "Your location is used to fill in the city while you use the app";
+"NSBluetoothAlwaysUsageDescription" = "Bluetooth access is required to connect to and control your vehicle";

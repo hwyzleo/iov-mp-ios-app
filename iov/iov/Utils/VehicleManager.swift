@@ -78,11 +78,11 @@ class VehicleManager: ObservableObject {
         for (_, vehicleSaleOrder) in vehicleSaleOrderList.enumerated() {
             switch vehicleSaleOrder.orderState {
             case 100:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .WISHLIST, subState: 100, displayName: vehicleSaleOrder.displayName)
+                add(orderNum: vehicleSaleOrder.orderNum, type: .WISHLIST, subState: 100, displayName: vehicleSaleOrder.displayName, vin: vehicleSaleOrder.vin)
             case 650, 900:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName)
+                add(orderNum: vehicleSaleOrder.orderNum, type: .ACTIVATED, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName, vin: vehicleSaleOrder.vin)
             default:
-                add(orderNum: vehicleSaleOrder.orderNum, type: .ORDER, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName)
+                add(orderNum: vehicleSaleOrder.orderNum, type: .ORDER, subState: vehicleSaleOrder.orderState, displayName: vehicleSaleOrder.displayName, vin: vehicleSaleOrder.vin)
             }
         }
         if !vehicles.isEmpty && (currentVehicleId == nil || !vehicles.keys.contains(currentVehicleId!)) {
@@ -121,7 +121,7 @@ class VehicleManager: ObservableObject {
             let displayName = myVehicle.displayName ?? "未命名车辆"
             // OTD-VSO-DSN-CR-009 / CR-016：是否已交付并进入车辆场景以 state=650/900 为准，不依赖云端 type 是否映射
             let type = VehicleType.resolve(cloudType: myVehicle.type, state: myVehicle.state)
-            add(orderNum: myVehicle.id, type: type, subState: myVehicle.state, displayName: displayName)
+            add(orderNum: myVehicle.id, type: type, subState: myVehicle.state, displayName: displayName, vin: myVehicle.vin)
         }
         
         // 设置当前车辆：多车场景下优先选中已激活车辆，保证切到车控页后操作对象正确
@@ -153,12 +153,13 @@ class VehicleManager: ObservableObject {
     }
     
     /// 添加车辆信息
-    func add(orderNum: String, type: VehicleType, subState: Int = 0, displayName: String) {
+    func add(orderNum: String, type: VehicleType, subState: Int = 0, displayName: String, vin: String? = nil) {
         let vehicle = VehiclePo()
         vehicle.id = orderNum
         vehicle.type = type
         vehicle.subState = subState
         vehicle.displayName = displayName
+        vehicle.vin = vin?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let realm = RealmManager.vehicle.realm
         do {
             try realm.write {
@@ -225,6 +226,14 @@ class VehicleManager: ObservableObject {
         return vehicles[id]
     }
     
+    /// 获取当前选择车辆的 VIN（缺失返回 nil；VSO 订单当前可能不返回 VIN）
+    /// - Note: 纯读接口，不修改任何状态（含 `@Published`），可安全地在视图 body 中调用
+    func getCurrentVin() -> String? {
+        guard let vin = getCurrentVehicle()?.vin else { return nil }
+        let trimmed = vin.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
     /// 清除车辆（彻底清除，包括 Realm 文件）
     func clear() {
         let realm = RealmManager.vehicle.realm

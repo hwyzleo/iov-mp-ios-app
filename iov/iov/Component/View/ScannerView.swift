@@ -123,7 +123,7 @@ struct CustomScannerView: View {
                     .frame(height: 530)
                 HStack {
                     Spacer()
-                    Text("请对准需要识别的二维码")
+                    Text("scanner_hint")
                         .font(.system(size: 16))
                     Spacer()
                 }
@@ -141,24 +141,7 @@ struct CustomScannerView: View {
                         .buttonStyle(.plain)
                         Spacer()
                             .frame(height: 15)
-                        Text("照亮")
-                            .font(.system(size: 14))
-                    }
-                    Spacer()
-                        .frame(width: 150)
-                    VStack {
-                        Button(action: {}) {
-                            Image(systemName: "photo.on.rectangle.angled")
-                                .font(.system(size: 20))
-                        }
-                        .frame(width: 45, height: 45)
-                        .background(.gray)
-                        .clipShape(Circle())
-                        .shadow(color: Color.gray, radius: 1, x: 0, y: 0)
-                        .buttonStyle(.plain)
-                        Spacer()
-                            .frame(height: 15)
-                        Text("相册")
+                        Text("scanner_torch")
                             .font(.system(size: 14))
                     }
                     Spacer()

@@ -20,11 +20,13 @@ struct VehicleRouter: RouterProtocol {
 extension VehicleRouter {
     enum ScreenType: RouterScreenProtocol {
         case scan
+        /// 扫码前登录门禁（IOS-APP-DSN-CR-011 D-011-1）
+        case login
 
         var routeType: RouterScreenPresentationType {
             switch self {
-            case .scan:
-                return .navigationLink
+            case .scan, .login:
+                return .fullScreenCover
             }
         }
     }
@@ -33,9 +35,11 @@ extension VehicleRouter {
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
         case .scan:
-            CustomScannerView()
-                .ignoresSafeArea()
-                .navigationBarHidden(true)
+            VehicleBindingScanView(onResult: { code in
+                intent.onScanResult(payload: code)
+            })
+        case .login:
+            LoginPage.buildMobileLogin()
         }
     }
 

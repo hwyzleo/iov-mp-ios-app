@@ -37,6 +37,10 @@ var tspHeaders: HTTPHeaders {
 
 /// TSP 管理
 class TspManager {
+
+    /// 网络执行器注入点（默认共享单例）。
+    /// 仅用于单测：注入带 `StubURLProtocol` 的 `NetworkManager` 以断言请求构造契约。
+    static var networkManagerProvider: () -> NetworkManager = { NetworkManager.shared }
     
     // POST 请求
     static func requestPost<T: Codable>(path: String, parameters: Parameters, headers: HTTPHeaders? = nil, completion: @escaping (Result<T, Error>) -> Void) {
@@ -105,7 +109,7 @@ class TspManager {
             extraHeaders.forEach { headers[$0.name] = $0.value }
         }
         SafeLog.log("request post tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: headers))
-        NetworkManager.shared.requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: headers) { result in
+        networkManagerProvider().requestPost(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: headers) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)
@@ -119,7 +123,7 @@ class TspManager {
     // 实际执行 GET 请求
     private static func performRequestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
         SafeLog.log("request get tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspHeaders))
-        NetworkManager.shared.requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
+        networkManagerProvider().requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)
@@ -133,7 +137,7 @@ class TspManager {
     // 实际执行 PUT 请求
     private static func performRequestPut<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
         SafeLog.log("request put tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspHeaders))
-        NetworkManager.shared.requestPut(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
+        networkManagerProvider().requestPut(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
                 let parseResult: Result<T, Error> = parseData(data)

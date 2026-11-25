@@ -147,6 +147,8 @@ struct VehicleSaleOrder: Codable {
     var orderState: Int
     /// 显示名称
     var displayName: String
+    /// 车辆 VIN（OTD-VSO-DSN-CR-017：未交付车辆时为空）
+    var vin: String? = nil
 }
 
 /// 销售车型配置
@@ -253,6 +255,8 @@ struct MyVehicleVo: Codable {
     var saleModelImages: [String]?
     var totalPrice: Decimal?
     var saleModelDesc: String?
+    /// 车辆 VIN（可选：VSO 当前可能不返回；缺失时不得推断）
+    var vin: String? = nil
 }
 
 /// 心愿单详情
@@ -313,6 +317,8 @@ struct Order: Codable {
     var saleCode: String?
     var orderNo: String
     var orderState: Int
+    /// 车辆 VIN（OTD-VSO-DSN-CR-017：未交付车辆时为空）
+    var vin: String?
     var saleModelCode: String?
     var saleModelConfigType: [String:String]?
     var saleModelConfigName: [String:String]?

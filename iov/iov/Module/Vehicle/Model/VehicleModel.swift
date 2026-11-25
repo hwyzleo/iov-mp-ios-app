@@ -20,6 +20,36 @@ final class VehicleModel: ObservableObject, VehicleModelStateProtocol {
     @Published var findLoading: Bool = false
     @Published var findDuration: Double = 0.0
     var cmdMapping: [String : String] = [:]
+
+    // MARK: - 绑定 / 关系状态（IOS-APP-DSN-CR-010）
+
+    @Published private(set) var relationshipState: VehicleRelationshipState = .loading
+    /// 当前 App 无车机登录状态查询接口，按 unknown 保持（不声称待完成或失败）
+    @Published private(set) var loginState: VehicleLoginState = .unknown
+    @Published private(set) var bindingOperationState: VehicleBindingOperationState = .idle
+    @Published private(set) var bindingSession: VehicleBindingSession?
+    @Published private(set) var lastBindingFailure: VehicleBindingFailure?
+    @Published private(set) var scanFailure: VehicleBindingFailure?
+    /// 结果未知轮询已耗尽（IOS-APP-DSN-CR-011 D-011-3）
+    @Published private(set) var pollingExhausted: Bool = false
+    /// 会话不可提交原因（IOS-APP-DSN-CR-011 D-011-2）
+    @Published private(set) var sessionBlockReason: VehicleBindingSessionBlockReason?
+    /// 登录门禁提示（IOS-APP-DSN-CR-011 D-011-1）
+    @Published private(set) var loginHint: VehicleBindingLoginHint?
+    private(set) var pageContext: VehiclePageContext?
+
+    /// 扫码失败的动作分类（弹窗按钮据此渲染）
+    var scanFailureAction: ScanFailureAction? {
+        scanFailure?.scanFailureAction
+    }
+
+    var displayState: VehiclePageDisplayState {
+        VehiclePageDisplayState.derive(relationship: relationshipState, login: loginState)
+    }
+
+    var maskedVin: String? {
+        VehicleVinMask.mask(pageContext?.vin ?? bindingSession?.vin ?? vehicle?.vin)
+    }
 }
 
 // MARK: - Action Protocol
@@ -60,6 +90,70 @@ extension VehicleModel: VehicleModelActionProtocol {
     func displayError(text: String) {
         contentState = .error(text: text)
     }
+
+    func setContext(_ context: VehiclePageContext) {
+        pageContext = context
+        relationshipState = .loading
+        loginState = .unknown
+        bindingOperationState = .idle
+        bindingSession = nil
+        lastBindingFailure = nil
+        scanFailure = nil
+        pollingExhausted = false
+        sessionBlockReason = nil
+    }
+
+    func updateRelationship(_ state: VehicleRelationshipState, context: VehiclePageContext) {
+        guard isCurrent(context) else { return }
+        relationshipState = state
+    }
+
+    func updateBindingSession(_ session: VehicleBindingSession?, context: VehiclePageContext) {
+        guard isCurrent(context) else { return }
+        bindingSession = session
+        if session != nil { scanFailure = nil }
+        if session == nil {
+            sessionBlockReason = nil
+            pollingExhausted = false
+        }
+    }
+
+    func updateBindingOperation(_ state: VehicleBindingOperationState,
+                                failure: VehicleBindingFailure?,
+                                context: VehiclePageContext) {
+        guard isCurrent(context) else { return }
+        bindingOperationState = state
+        lastBindingFailure = failure
+    }
+
+    func updateScanFailure(_ failure: VehicleBindingFailure?, context: VehiclePageContext) {
+        guard isCurrent(context) else { return }
+        scanFailure = failure
+    }
+
+    func clearScanFailure() {
+        scanFailure = nil
+    }
+
+    func updateSessionBlockReason(_ reason: VehicleBindingSessionBlockReason?, context: VehiclePageContext) {
+        guard isCurrent(context) else { return }
+        sessionBlockReason = reason
+    }
+
+    func updatePollingExhausted(_ exhausted: Bool, context: VehiclePageContext) {
+        guard isCurrent(context) else { return }
+        pollingExhausted = exhausted
+    }
+
+    func updateLoginHint(_ hint: VehicleBindingLoginHint?) {
+        loginHint = hint
+    }
+
+    /// 迟到响应与切换账号/车辆后的旧响应一律丢弃
+    private func isCurrent(_ context: VehiclePageContext) -> Bool {
+        guard let pageContext else { return false }
+        return pageContext == context
+    }
     
     private func setButton(button: String, loading: Bool, duration: Double) {
         switch button {
@@ -86,6 +180,9 @@ extension VehicleModel: VehicleModelRouterProtocol {
     func closeScreen() {}
     func routeToScan() {
         routerSubject.screen.send(.scan)
+    }
+    func routeToLogin() {
+        routerSubject.screen.send(.login)
     }
 }
 

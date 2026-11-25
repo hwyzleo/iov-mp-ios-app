@@ -246,7 +246,8 @@ func getMyVehicleList(completion: @escaping (Result<TspResponse<[MyVehicleVo]>, 
                         state: po.subState,
                         saleModelImages: nil,
                         totalPrice: nil,
-                        saleModelDesc: nil
+                        saleModelDesc: nil,
+                        vin: po.vin.isEmpty ? nil : po.vin
                     ))
                 }
             }
