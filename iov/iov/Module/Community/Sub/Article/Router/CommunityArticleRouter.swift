@@ -19,11 +19,11 @@ struct CommunityArticleRouter: RouterProtocol {
 
 extension CommunityArticleRouter {
     enum ScreenType: RouterScreenProtocol {
-        case product
+        case nativeOrderDetail(orderNo: String)
 
         var routeType: RouterScreenPresentationType {
             switch self {
-            case .product:
+            case .nativeOrderDetail:
                 return .navigationLink
             }
         }
@@ -32,8 +32,8 @@ extension CommunityArticleRouter {
     @ViewBuilder
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
-        case .product:
-            ProductView.build()
+        case let .nativeOrderDetail(orderNo):
+            VehicleOrderDetailPage.build(orderNo: orderNo)
                 .navigationBarHidden(true)
         }
     }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 extension CommunitySubjectView {
     
@@ -16,9 +17,30 @@ extension CommunitySubjectView {
         var body: some View {
             VStack {
                 ForEach(baseContents, id:\.id) { baseContent in
-                    CommunityPage.Article(baseContent: baseContent) { id, type in
-                        action?(id, type)
+                    Button(action: { action?(baseContent.id, baseContent.type) }) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text(baseContent.title)
+                                .font(AppTheme.fonts.title1)
+                                .foregroundColor(AppTheme.colors.fontPrimary)
+                            if let intro = baseContent.intro, !intro.isEmpty {
+                                Text(intro)
+                                    .font(AppTheme.fonts.body)
+                                    .foregroundColor(AppTheme.colors.fontSecondary)
+                                    .lineLimit(3)
+                            }
+                            if let first = baseContent.images.first, let url = URL(string: first) {
+                                KFImage(url)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 160)
+                                    .clipped()
+                                    .cornerRadius(AppTheme.layout.radiusMedium)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .buttonStyle(.plain)
+                    .appCardStyle()
                     Divider()
                         .padding(.leading, 20)
                         .padding(.trailing, 20)

@@ -268,3 +268,30 @@
 "vehicle_binding_polling_exhausted" = "仍未确认，可稍后刷新或联系客服";
 "scanner_hint" = "请对准需要识别的二维码";
 "scanner_torch" = "照亮";
+
+// MARK: - Explore (IOS-APP-DSN-CR-012)
+"explore_image_unavailable" = "图片暂不可用";
+"explore_open_content" = "打开内容";
+"explore_empty_channels" = "暂无可用频道";
+"explore_refresh" = "刷新";
+"explore_retry" = "重试";
+"explore_dismiss" = "关闭";
+"explore_load_more" = "加载更多";
+"explore_web_unavailable" = "页面暂不可用";
+"explore_article_title" = "文章";
+"explore_topic_title" = "专题";
+"explore_article_unavailable" = "该文章暂不可用";
+"explore_error_network" = "网络异常，请稍后重试";
+"explore_error_service_unavailable" = "服务暂不可用，请稍后重试";
+"explore_error_content_unavailable" = "内容不可用";
+"explore_error_no_content" = "暂无内容";
+"explore_error_invalid_argument" = "请求参数异常，请刷新后重试";
+"explore_error_release_changed" = "内容已更新，请刷新";
+"explore_error_unsupported_version" = "当前版本暂不支持该内容";
+"explore_error_invalid_response" = "服务响应异常";
+"explore_error_invalid_target" = "该链接暂不可用";
+"explore_error_unauthorized" = "登录已失效，请重新登录";
+"explore_error_unknown" = "操作失败，请稍后重试";
+"explore_image_total" = "共 %d 张";
+
+"explore_web_title" = "详情";

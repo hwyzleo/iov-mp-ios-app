@@ -8,29 +8,46 @@
 import SwiftUI
 
 struct CommunityPage: View {
-    
+
     @StateObject var container: MviContainer<CommunityIntentProtocol, CommunityModelStateProtocol>
     private var intent: CommunityIntentProtocol { container.intent }
     private var state: CommunityModelStateProtocol { container.model }
-    
+
+    @State private var isRefreshing = false
+
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             switch state.contentState {
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
-                    .scaleEffect(2)
+                    .tint(ExploreTheme.Colors.brand)
+                    .scaleEffect(1.6)
             case .content:
-                RefreshContent(intent: intent, state: state)
-            case let .error(text):
-                ErrorTip(text: text)
+                ContentView(intent: intent, state: state, isRefreshing: $isRefreshing)
+            case .empty:
+                EmptyStateView(onRefresh: { intent.refresh() })
+            case let .error(failure):
+                ErrorStateView(failure: failure, onRetry: { intent.retry() })
+            }
+
+            if let error = state.presentationError {
+                ExploreInlineErrorBanner(message: error.messageKey,
+                                         canRetry: error.canRetry,
+                                         onRetry: { intent.retryPresentationError() },
+                                         onDismiss: { intent.dismissPresentationError() })
+                    .padding(.horizontal, ExploreTheme.Layout.margin)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
-        .background(AppTheme.colors.background) // 使用不忽略安全区的背景
+        .animation(.easeInOut(duration: 0.2), value: state.presentationError)
+        .background(ExploreTheme.Colors.background)
+        .onChange(of: state.isRefreshing) { refreshing in
+            isRefreshing = refreshing
+        }
         .onAppear {
-            if state.contentBlocks.count == 0 {
-                intent.viewOnAppear()
-            }
+            intent.viewOnAppear()
         }
         .modifier(CommunityRouter(
             subjects: state.routerSubject,
@@ -39,188 +56,279 @@ struct CommunityPage: View {
     }
 }
 
+// MARK: - 内容
+
 extension CommunityPage {
-    struct RefreshContent: View {
+
+    struct ContentView: View {
         let intent: CommunityIntentProtocol
         let state: CommunityModelStateProtocol
-        @State var isRefresh = false
-        @State var isMore = false
+        @Binding var isRefreshing: Bool
+
         @State private var searchText = ""
-        @State private var selectedMenu = 0
-        
+
         var body: some View {
             VStack(spacing: 0) {
-                // 1. 顶部搜索区
-                HStack(spacing: 16) {
-                    HStack {
+                // 顶部搜索区（搜索执行不在本 CR 范围）
+                HStack(spacing: 12) {
+                    HStack(spacing: 8) {
                         Image(systemName: "magnifyingglass")
-                            .foregroundColor(AppTheme.colors.fontTertiary)
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(ExploreTheme.Colors.textTertiary)
                         TextField(LocalizedStringKey("search_explore_placeholder"), text: $searchText)
-                            .font(.system(size: 14))
-                            .foregroundColor(AppTheme.colors.fontPrimary)
+                            .font(ExploreTheme.Fonts.secondary)
+                            .foregroundColor(ExploreTheme.Colors.textPrimary)
+                            .tint(ExploreTheme.Colors.brand)
                     }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .background(AppTheme.colors.cardBackground)
-                    .cornerRadius(AppTheme.layout.radiusSmall)
-                    
-                    Button(action: { /* 发布逻辑 */ }) {
-                        Image(systemName: "plus.circle.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 28, height: 28)
-                            .foregroundColor(AppTheme.colors.brandMain)
-                            .shadow(color: AppTheme.colors.brandMain.opacity(0.3), radius: 5)
+                    .padding(.horizontal, 14)
+                    .frame(minHeight: 44)
+                    .background(ExploreTheme.Colors.surface2)
+                    .clipShape(RoundedRectangle(cornerRadius: ExploreTheme.Radius.card, style: .continuous))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: ExploreTheme.Radius.card, style: .continuous)
+                            .strokeBorder(ExploreTheme.Colors.border, lineWidth: 1)
+                    )
+
+                    Button(action: { /* 发布逻辑不在本 CR 范围 */ }) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(ExploreTheme.Colors.brand)
+                            .frame(width: 44, height: 44)
+                            .background(ExploreTheme.Colors.surface2)
+                            .clipShape(Circle())
+                            .overlay(Circle().strokeBorder(ExploreTheme.Colors.border, lineWidth: 1))
+                            .shadow(color: ExploreTheme.Colors.brand.opacity(0.22), radius: 6)
                     }
+                    .buttonStyle(.plain)
                 }
-                .padding(.horizontal, AppTheme.layout.margin)
-                .padding(.top, 10) // 这里的 padding 会在安全区域之后累加
-                .padding(.bottom, 16)
-                
-                // 2. 二级导航菜单
-                HStack(spacing: 32) {
-                    MenuItem(title: "推荐", isSelected: selectedMenu == 0) { selectedMenu = 0 }
-                    MenuItem(title: "活动", isSelected: selectedMenu == 1) { selectedMenu = 1 }
-                    MenuItem(title: "此地", isSelected: selectedMenu == 2) { selectedMenu = 2 }
-                    Spacer()
-                }
-                .padding(.horizontal, AppTheme.layout.margin)
+                .padding(.horizontal, ExploreTheme.Layout.margin)
+                .padding(.top, 8)
                 .padding(.bottom, 12)
-                
-                // 3. 内容滚动区
-                RefreshScrollView(offDown: CGFloat(state.contentBlocks.count) * 100.0, listH: ScreenH - kNavHeight - kBottomSafeHeight - 100, refreshing: $isRefresh, isMore: $isMore) {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                        intent.viewOnAppear()
-                        isRefresh = false
-                    })
-                } moreTrigger: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                        isMore = false
-                    })
-                } content: {
-                    Content(intent: intent, contentBlocks: state.contentBlocks)
+
+                ChannelBar(channels: state.channels,
+                           selectedChannelCode: state.selectedChannelCode,
+                           onSelect: { intent.selectChannel(code: $0) })
+
+                RefreshScrollView(offDown: CGFloat(state.page?.components.count ?? 0) * 220.0,
+                                  listH: ScreenH - kNavHeight - kBottomSafeHeight - 100,
+                                  refreshing: $isRefreshing,
+                                  refreshTrigger: {
+                                      isRefreshing = false
+                                      intent.refresh()
+                                  }) {
+                    Content(intent: intent, state: state)
                 }
                 .scrollIndicators(.hidden)
             }
-            .background(AppTheme.colors.background) // 不使用 .appBackground() 以免忽略安全区
+            .background(ExploreTheme.Colors.background)
         }
     }
-    
-    private struct MenuItem: View {
-        var title: String
-        var isSelected: Bool
-        var action: () -> Void
-        
+
+    struct ChannelBar: View {
+        let channels: [ExploreChannelViewState]
+        let selectedChannelCode: String?
+        let onSelect: (String) -> Void
+
         var body: some View {
-            Button(action: action) {
-                VStack(spacing: 6) {
-                    Text(title)
-                        .font(.system(size: 16, weight: isSelected ? .bold : .regular))
-                        .foregroundColor(isSelected ? AppTheme.colors.fontPrimary : AppTheme.colors.fontSecondary)
-                    
-                    if isSelected {
-                        Capsule()
-                            .fill(AppTheme.colors.brandMain)
-                            .frame(width: 16, height: 3)
-                    } else {
-                        Capsule().fill(Color.clear).frame(width: 16, height: 3)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 24) {
+                    ForEach(channels) { channel in
+                        let selected = channel.code == selectedChannelCode
+                        Button(action: { onSelect(channel.code) }) {
+                            VStack(spacing: 6) {
+                                Text(channel.name)
+                                    .font(selected ? .headline : .body)
+                                    .foregroundColor(selected ? ExploreTheme.Colors.textPrimary : ExploreTheme.Colors.textSecondary)
+                                Capsule()
+                                    .fill(selected ? ExploreTheme.Colors.brand : Color.clear)
+                                    .frame(width: 18, height: 3)
+                                    .shadow(color: selected ? ExploreTheme.Colors.brand.opacity(0.55) : .clear, radius: 4)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(selected ? .isSelected : [])
                     }
                 }
+                .padding(.horizontal, ExploreTheme.Layout.margin)
+                .padding(.bottom, 10)
+                .animation(.easeInOut(duration: 0.18), value: selectedChannelCode)
             }
-            .buttonStyle(.plain)
         }
     }
-    
+
     struct Content: View {
         let intent: CommunityIntentProtocol
-        var contentBlocks: [ContentBlock] = []
-        @EnvironmentObject var appGlobalState: AppGlobalState
-        
+        let state: CommunityModelStateProtocol
+
         var body: some View {
-            VStack(spacing: AppTheme.layout.spacing) {
-                ForEach(contentBlocks, id: \.id) { contentBlock in
-                    switch contentBlock.type {
-                    case "carousel":
-                        CommunityPage.Carousel(baseContents: contentBlock.data) { id, type in
-                            appGlobalState.parameters["id"] = id
-                            intent.onTapContent(type: type)
+            VStack(spacing: ExploreTheme.Layout.spacing) {
+                if let page = state.page {
+                    ForEach(page.components) { component in
+                        VStack(alignment: .leading, spacing: 12) {
+                            ExploreComponentHeader(title: component.title)
+
+                            switch component.content {
+                            case let .banner(banner):
+                                CommunityPage.BannerCarousel(state: banner,
+                                                             action: { intent.onTapItem(target: $0) })
+                            case let .topicGrid(grid):
+                                CommunityPage.TopicGrid(state: grid,
+                                                        action: { intent.onTapItem(target: $0) })
+                            case let .articleFeed(feed):
+                                CommunityPage.ArticleFeed(
+                                    componentId: component.id,
+                                    state: feed,
+                                    isLoadingMore: state.loadingMoreComponentIds.contains(component.id),
+                                    action: { intent.onTapItem(target: $0) },
+                                    loadMore: { intent.loadMore(componentId: component.id) }
+                                )
+                            case .unknown:
+                                EmptyView()
+                            }
                         }
-                        .padding(.horizontal, AppTheme.layout.margin)
-                    case "navigation":
-                        CommunityPage.Navi(title: contentBlock.title, baseContents: contentBlock.data) { id, type in
-                            appGlobalState.parameters["id"] = id
-                            intent.onTapContent(type: type)
-                        }
-                        .padding(.horizontal, AppTheme.layout.margin)
-                    case "topic":
-                        CommunityPage.Topic(contentBlock: contentBlock) { id, type in
-                            appGlobalState.parameters["id"] = id
-                            intent.onTapContent(type: type)
-                        }
-                        .padding(.horizontal, AppTheme.layout.margin)
-                    case "article":
-                        CommunityPage.Article(baseContent: contentBlock.data[0]) { id, type in
-                            appGlobalState.parameters["id"] = id
-                            intent.onTapContent(type: type)
-                        }
-                        .padding(.horizontal, AppTheme.layout.margin)
-                    default:
-                        EmptyView()
+                        .padding(.horizontal, ExploreTheme.Layout.margin)
                     }
                 }
+
                 Spacer()
                     .frame(height: 120)
             }
-            .padding(.top, 20)
+            .padding(.top, 16)
         }
     }
 }
 
+// MARK: - 状态视图
+
+extension CommunityPage {
+
+    struct EmptyStateView: View {
+        let onRefresh: () -> Void
+
+        var body: some View {
+            ExploreStatusView(icon: "square.grid.2x2",
+                              message: L10n.explore_empty_channels,
+                              actionTitle: L10n.explore_refresh,
+                              action: onRefresh)
+        }
+    }
+
+    struct ErrorStateView: View {
+        let failure: ExploreFailure
+        let onRetry: () -> Void
+
+        var body: some View {
+            ExploreStatusView(icon: "exclamationmark.triangle",
+                              message: failure.localizedKey,
+                              actionTitle: L10n.explore_retry,
+                              iconColor: ExploreTheme.Colors.warning,
+                              action: onRetry)
+        }
+    }
+}
+
+// MARK: - Previews
+
+#if DEBUG
 struct CommunityView_Previews: PreviewProvider {
-    @StateObject static var appGlobalState = AppGlobalState.shared
-    static var data: [ContentBlock] = [
-        ContentBlock.init(id: "1", type: "carousel", data: [
-            BaseContent.init(id: "1", type: "article", title: "尽享雪地之美", intro: "", images: ["https://pic.imgdb.cn/item/65df049a9f345e8d031861c3.png"], ts: 1709114457603),
-            BaseContent.init(id: "2", type: "", title: "露营最佳伴侣", intro: "", images: ["https://pic.imgdb.cn/item/65df12989f345e8d033afff7.png"], ts: 1709114457603),
-            BaseContent.init(id: "4", type: "", title: "霸气尽显", intro: "", images: ["https://pic.imgdb.cn/item/65df13699f345e8d033d24f6.png"], ts: 1709114457603)
-        ]),
-        ContentBlock.init(id: "2", type: "navigation", data: [
-            BaseContent.init(id: "1", type: "topic", title: "最新活动", images: ["https://pic.imgdb.cn/item/65df202d9f345e8d03619d29.png"], ts: 1709121879408),
-            BaseContent.init(id: "2", type: "article", title: "预约试驾", images: ["https://pic.imgdb.cn/item/65df254c9f345e8d0372105c.png"], ts: 1709122924212),
-            BaseContent.init(id: "3", type: "subject", title: "产品解读", images: ["https://pic.imgdb.cn/item/65df27319f345e8d03780cb0.png"], ts: 1709123418329)
-        ]),
-        ContentBlock.init(id: "3", type: "article", data: [
-            BaseContent.init(
-                id: "1", type: "article", title: "开源汽车——旅途的最佳伴侣!",
-                intro: "趁春节假期，一家四口回了趟四川老家，途径乐山、石棉、泸定、康定、宜宾等地，总……",
-                images: [
-                    "https://pic.imgdb.cn/item/65df360f9f345e8d03ae3131.png",
-                    "https://pic.imgdb.cn/item/65e0201e9f345e8d03620461.png",
-                    "https://pic.imgdb.cn/item/65df4e159f345e8d0301a944.png",
-                    "https://pic.imgdb.cn/item/65df55069f345e8d0318a51c.png"
-                ],
-                ts: 1709124212841, username: "hwyz_leo",
-                avatar: "https://profile-photo.s3.cn-north-1.amazonaws.com.cn/files/avatar/50531/MTAxMDYzNDY0Nzd4d2h2cWFt/avatar.png?v=c4af49f3cbedbc00f76256a03298b663",
-                location: "万达广场",
-                commentCount: 3,
-                likeCount: 13
-            )
-        ]),
-        ContentBlock.init(id: "4", type: "topic", title: "北境之旅，开源出发", data: [
-            BaseContent.init(id: "1", type: "article", title: "首批车主用车心声", images: ["https://pic.imgdb.cn/item/65e012a79f345e8d03444608.png"], ts: 1709182971760),
-            BaseContent.init(id: "2", type: "article", title: "沉浸式露营", images: ["https://pic.imgdb.cn/item/65df12989f345e8d033afff7.png"], ts: 1709182971760),
-            BaseContent.init(id: "3", type: "article", title: "内饰揭秘", images: ["https://pic.imgdb.cn/item/65df13639f345e8d033d11fb.png"], ts: 1709182971760),
-            BaseContent.init(id: "4", type: "article", title: "城市穿越", images: ["https://pic.imgdb.cn/item/65df13699f345e8d033d24f6.png"], ts: 1709182971760)
-        ])
-    ]
     static var previews: some View {
-        let container = CommunityPage.buildContainer()
-        ScrollView {
-            CommunityPage.Content(intent: container.intent, contentBlocks: data)
-                .environmentObject(appGlobalState)
-        }
-        .scrollIndicators(.hidden)
-        .ignoresSafeArea()
+        let page = ExplorePageViewState(
+            schemaVersion: 1,
+            channelCode: "recommend",
+            channelName: "推荐",
+            releaseId: "release-1",
+            publishedAt: Date(),
+            components: [
+                ExploreComponentViewState(
+                    id: "banner-1",
+                    sortNo: 1,
+                    title: nil,
+                    content: .banner(ExploreBannerComponentViewState(
+                        intervalSeconds: 5,
+                        items: [
+                            ExploreBannerItemViewState(id: "b1",
+                                                       title: "尽享雪地之美",
+                                                       image: ExploreImageViewState(url: nil,
+                                                                                   width: nil,
+                                                                                   height: nil,
+                                                                                   mime: nil,
+                                                                                   size: nil),
+                                                       target: .invalid)
+                        ]
+                    ))
+                ),
+                ExploreComponentViewState(
+                    id: "feed-1",
+                    sortNo: 2,
+                    title: "最新",
+                    content: .articleFeed(ExploreArticleFeedComponentViewState(
+                        items: [
+                            ExploreArticleCardViewState(
+                                id: "a1",
+                                sortNo: 1,
+                                title: "开源汽车——旅途的最佳伴侣",
+                                summary: "趁春节假期，一家四口回了趟四川老家。",
+                                authorName: "hwyz_leo",
+                                authorAvatarURL: nil,
+                                displayAt: Date(),
+                                images: [],
+                                imageCount: 0,
+                                imageLayout: nil,
+                                target: .invalid
+                            )
+                        ],
+                        hasMore: false,
+                        nextCursor: nil
+                    ))
+                )
+            ]
+        )
+        let state = PreviewCommunityState(page: page)
+        CommunityPage.Content(intent: PreviewCommunityIntent(), state: state)
+            .background(ExploreTheme.Colors.background)
+            .previewLayout(.sizeThatFits)
+            .preferredColorScheme(.dark)
     }
 }
 
+private final class PreviewCommunityState: CommunityModelStateProtocol {
+    let channels: [ExploreChannelViewState] = [ExploreChannelViewState(code: "recommend", name: "推荐", sortNo: 1)]
+    let selectedChannelCode: String? = "recommend"
+    let contentState: ExploreContentState = .content
+    let isRefreshing = false
+    let page: ExplorePageViewState?
+    let presentationError: ExplorePresentationError? = nil
+    let loadingMoreComponentIds: Set<String> = []
+    let routerSubject = CommunityRouter.Subjects()
+
+    init(page: ExplorePageViewState?) {
+        self.page = page
+    }
+}
+
+private final class PreviewCommunityIntent: CommunityIntentProtocol {
+    func viewOnAppear() {}
+    func refresh() {}
+    func retry() {}
+    func selectChannel(code: String) {}
+    func loadMore(componentId: String) {}
+    func onTapItem(target: ExploreTargetViewState) {}
+    func retryPresentationError() {}
+    func dismissPresentationError() {}
+}
+#endif
+
+#if DEBUG
+struct CommunityPageState_Previews: PreviewProvider {
+    static var previews: some View {
+        Group {
+            CommunityPage.EmptyStateView(onRefresh: {})
+                .previewDisplayName("Empty")
+            CommunityPage.ErrorStateView(failure: .serviceUnavailable, onRetry: {})
+                .previewDisplayName("Error")
+        }
+        .preferredColorScheme(.dark)
+        .environment(\.sizeCategory, .accessibilityExtraLarge)
+    }
+}
+#endif

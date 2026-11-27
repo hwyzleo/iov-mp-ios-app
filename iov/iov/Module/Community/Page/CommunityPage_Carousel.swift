@@ -1,90 +1,95 @@
 //
-//  CommunityView_Carousel.swift
+//  CommunityPage_Carousel.swift
 //  iov
 //
 //  Created by hwyz_leo on 2024/9/1.
 //
 
 import SwiftUI
-import Kingfisher
 
 extension CommunityPage {
-    struct Carousel: View {
-        var baseContents: [BaseContent] = []
-        var action: ((_ id: String, _ type: String) -> Void)?
-        
+    /// CMS `BANNER_CAROUSEL`
+    struct BannerCarousel: View {
+        let state: ExploreBannerComponentViewState
+        let action: (ExploreTargetViewState) -> Void
+
         @State private var currentIndex = 0
-        private let timer = Timer.publish(every: 4, on: .main, in: .common).autoconnect()
-        
+
+        private var count: Int { state.items.count }
+
         var body: some View {
-            VStack(spacing: 12) {
-                ZStack(alignment: .bottomLeading) {
-                    TabView(selection: $currentIndex) {
-                        ForEach(0..<baseContents.count, id: \.self) { index in
-                            Button(action: {
-                                action?(baseContents[index].id, baseContents[index].type)
-                            }) {
-                                ZStack(alignment: .bottomLeading) {
-                                    if !baseContents[index].images.isEmpty {
-                                        KFImage(URL(string: baseContents[index].images[0])!)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(height: 200)
-                                            .clipped()
+            if count == 0 {
+                EmptyView()
+            } else {
+                VStack(spacing: 12) {
+                    ZStack(alignment: .bottomLeading) {
+                        TabView(selection: $currentIndex) {
+                            ForEach(Array(state.items.enumerated()), id: \.element.id) { index, item in
+                                Button(action: { action(item.target) }) {
+                                    ZStack(alignment: .bottomLeading) {
+                                        ExploreRemoteImage(image: item.image,
+                                                           height: ExploreTheme.Layout.heroHeight,
+                                                           cornerRadius: ExploreTheme.Radius.panel,
+                                                           accessibilityLabel: item.title)
+
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [.clear, .black.opacity(0.78)]),
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
+                                        .clipShape(RoundedRectangle(cornerRadius: ExploreTheme.Radius.panel, style: .continuous))
+                                        .allowsHitTesting(false)
+
+                                        if let title = item.title, !title.isEmpty {
+                                            Text(title)
+                                                .font(ExploreTheme.Fonts.cardTitle)
+                                                .foregroundColor(ExploreTheme.Colors.textPrimary)
+                                                .lineLimit(2)
+                                                .padding(16)
+                                                .padding(.bottom, 10)
+                                        }
                                     }
-                                    
-                                    // 渐变蒙层
-                                    LinearGradient(
-                                        gradient: Gradient(colors: [.clear, .black.opacity(0.7)]),
-                                        startPoint: .top,
-                                        endPoint: .bottom
-                                    )
-                                    
-                                    Text(baseContents[index].title)
-                                        .font(AppTheme.fonts.title1)
-                                        .foregroundColor(.white)
-                                        .padding(16)
-                                        .padding(.bottom, 10)
+                                }
+                                .buttonStyle(ExploreCardButtonStyle())
+                                .tag(index)
+                                .accessibilityLabel(Text(item.title ?? NSLocalizedString("explore_image_unavailable", comment: "")))
+                            }
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .never))
+                        .frame(height: ExploreTheme.Layout.heroHeight)
+                        .clipShape(RoundedRectangle(cornerRadius: ExploreTheme.Radius.panel, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: ExploreTheme.Radius.panel, style: .continuous)
+                                .strokeBorder(ExploreTheme.Colors.border, lineWidth: 1)
+                        )
+
+                        if count > 1 {
+                            HStack(spacing: 6) {
+                                ForEach(0..<count, id: \.self) { index in
+                                    Capsule()
+                                        .fill(currentIndex == index ? ExploreTheme.Colors.brand : Color.white.opacity(0.25))
+                                        .frame(width: currentIndex == index ? 18 : 6, height: 4)
+                                        .shadow(color: currentIndex == index ? ExploreTheme.Colors.brand.opacity(0.55) : .clear, radius: 4)
+                                        .animation(.spring(), value: currentIndex)
                                 }
                             }
-                            .buttonStyle(.plain)
-                            .tag(index)
+                            .padding(.leading, 16)
+                            .padding(.bottom, 12)
                         }
                     }
-                    .tabViewStyle(.page(indexDisplayMode: .never)) // 隐藏原生指示器
-                    .frame(height: 200)
-                    .cornerRadius(AppTheme.layout.radiusMedium)
-                    
-                    // 自定义精致指示器
-                    HStack(spacing: 6) {
-                        ForEach(0..<baseContents.count, id: \.self) { index in
-                            Capsule()
-                                .fill(currentIndex == index ? AppTheme.colors.brandMain : Color.white.opacity(0.3))
-                                .frame(width: currentIndex == index ? 16 : 6, height: 4)
-                                .animation(.spring(), value: currentIndex)
-                        }
-                    }
-                    .padding(.leading, 16)
-                    .padding(.bottom, 12)
                 }
-            }
-            .onReceive(timer) { _ in
-                withAnimation {
-                    currentIndex = (currentIndex + 1) % (baseContents.count > 0 ? baseContents.count : 1)
+                .onReceive(Timer.publish(every: TimeInterval(state.intervalSeconds), on: .main, in: .common).autoconnect()) { _ in
+                    guard count > 1 else { return }
+                    withAnimation {
+                        currentIndex = (currentIndex + 1) % count
+                    }
+                }
+                .onChange(of: count) { newCount in
+                    if currentIndex >= newCount {
+                        currentIndex = 0
+                    }
                 }
             }
         }
-    }
-}
-
-struct CommunityPage_Carousel_Previews: PreviewProvider {
-    static var baseContents: [BaseContent] = [
-        BaseContent.init(id: "1", type: "article", title: "测试标题1", images: ["https://pic.imgdb.cn/item/65df049a9f345e8d031861c3.png"], ts: 1709117949996),
-        BaseContent.init(id: "2", type: "article", title: "测试标题2", images: ["https://pic.imgdb.cn/item/65df12989f345e8d033afff7.png"], ts: 1709117949996)
-    ]
-    static var intent = CommunityPage.buildContainer().intent
-    
-    static var previews: some View {
-        CommunityPage.Carousel(baseContents: baseContents)
     }
 }

@@ -9,3 +9,11 @@ enum CommunityTopicTypes {
     enum Intent {}
     enum Model {}
 }
+
+extension CommunityTopicTypes.Model {
+    enum ContentState: Equatable {
+        case loading
+        case content
+        case error(ExploreFailure)
+    }
+}

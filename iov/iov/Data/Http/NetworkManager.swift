@@ -12,6 +12,17 @@ import UIKit
 typealias NetworkRequestResult = Result<Data, Error>
 typealias NetworkRequestCompletion = (NetworkRequestResult) -> Void
 
+/// 条件 GET 结果：保留状态码与响应头，供 ETag / HTTP 304 判定（IOS-APP-DSN-CR-012 §4.5）
+struct HTTPConditionalResponse {
+    let statusCode: Int
+    let headers: [String: String]
+    let data: Data
+
+    var etag: String? {
+        headers.first { $0.key.caseInsensitiveCompare("ETag") == .orderedSame }?.value
+    }
+}
+
 // 网络模块,设计为单例模式
 class NetworkManager {
     // 共享对象
@@ -40,6 +51,40 @@ class NetworkManager {
                 switch response.result {
                 case let .success(data): completion(.success(data))
                 case let .failure(error): completion(self.handleError(error))
+                }
+            }
+    }
+
+    /// 条件 GET：返回状态码 / 响应头 / 响应体，不改变既有 `requestGet` 语义。
+    /// 304 不包含 `TspResponse` 响应体，调用方必须自行判定，不能走通用解包。
+    @discardableResult
+    func requestGetWithStatus(path: String,
+                              parameters: Parameters?,
+                              headers: HTTPHeaders?,
+                              completion: @escaping (Result<HTTPConditionalResponse, Error>) -> Void) -> DataRequest {
+        logRequest(method: "GET", url: path)
+        return session.request(path,
+                   parameters: parameters,
+                   headers: headers,
+                   requestModifier: { $0.timeoutInterval = 30 })
+            .responseData(emptyResponseCodes: Set(200...599)) { response in
+                self.logResponse(method: "GET", url: path, statusCode: response.response?.statusCode)
+                switch response.result {
+                case let .success(data):
+                    var headerMap: [String: String] = [:]
+                    if let rawHeaders = response.response?.allHeaderFields {
+                        for (key, value) in rawHeaders {
+                            headerMap[String(describing: key)] = String(describing: value)
+                        }
+                    }
+                    let conditional = HTTPConditionalResponse(
+                        statusCode: response.response?.statusCode ?? 0,
+                        headers: headerMap,
+                        data: data
+                    )
+                    completion(.success(conditional))
+                case let .failure(error):
+                    completion(.failure(self.mappedError(error)))
                 }
             }
     }

@@ -19,17 +19,14 @@ struct CommunityRouter: RouterProtocol {
 
 extension CommunityRouter {
     enum ScreenType: RouterScreenProtocol {
-        case article
-        case subject
-        case topic
+        case article(articleId: String, revisionId: String)
+        case topic(topicId: String, revisionId: String)
+        case web(URL)
+        case nativeOrderDetail(orderNo: String)
 
         var routeType: RouterScreenPresentationType {
             switch self {
-            case .article:
-                return .navigationLink
-            case .subject:
-                return .navigationLink
-            case .topic:
+            case .article, .topic, .web, .nativeOrderDetail:
                 return .navigationLink
             }
         }
@@ -38,14 +35,17 @@ extension CommunityRouter {
     @ViewBuilder
     func makeScreen(type: RouterScreenType) -> some View {
         switch type {
-        case .article:
-            CommunityArticleView.build()
+        case let .article(articleId, revisionId):
+            CommunityArticleView.build(articleId: articleId, revisionId: revisionId)
                 .navigationBarHidden(true)
-        case .subject:
-            CommunitySubjectView.build()
+        case let .topic(topicId, revisionId):
+            CommunityTopicView.build(topicId: topicId, revisionId: revisionId)
                 .navigationBarHidden(true)
-        case .topic:
-            CommunityTopicView.build()
+        case let .web(url):
+            ExploreManagedWebView(url: url)
+                .navigationBarHidden(true)
+        case let .nativeOrderDetail(orderNo):
+            VehicleOrderDetailPage.build(orderNo: orderNo)
                 .navigationBarHidden(true)
         }
     }

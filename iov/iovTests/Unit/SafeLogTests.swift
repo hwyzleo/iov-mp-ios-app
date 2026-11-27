@@ -49,6 +49,12 @@ final class SafeLogTests: XCTestCase {
         XCTAssertTrue(sanitized.contains("138****00"))
     }
 
+    func testExploreCursorIsRedacted() {
+        let sanitized = SafeLog.redacted(parameters: ["cursor": "opaque-cursor-value", "nextCursor": "next-value"])
+        XCTAssertFalse(sanitized.contains("opaque-cursor-value"))
+        XCTAssertFalse(sanitized.contains("next-value"))
+    }
+
     func testNonSensitiveContentIsPreserved() {
         let text = "request get tsp: /api/mobile/account/v1/profile"
         XCTAssertEqual(SafeLog.sanitized(text), text)

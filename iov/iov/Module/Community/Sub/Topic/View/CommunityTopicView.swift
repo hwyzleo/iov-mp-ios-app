@@ -6,127 +6,127 @@
 //
 
 import SwiftUI
-import Kingfisher
 
 struct CommunityTopicView: View {
     @StateObject var container: MviContainer<CommunityTopicIntentProtocol, CommunityTopicModelStateProtocol>
     private var intent: CommunityTopicIntentProtocol { container.intent }
     private var state: CommunityTopicModelStateProtocol { container.model }
-    @EnvironmentObject var appGlobalState: AppGlobalState
-    
+
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             switch state.contentState {
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
-                    .scaleEffect(2)
+                    .tint(ExploreTheme.Colors.brand)
+                    .scaleEffect(1.6)
             case .content:
-                Content(
-                    topic: state.topic,
-                    refreshAction: {
-                        if appGlobalState.parameters.keys.contains("id") {
-                            intent.viewOnAppear(id: appGlobalState.parameters["id"] as! String)
-                        }
-                    },
-                    tapContentAction: { type in
-                        intent.onTapContent(type: type)
-                    }
-                )
-            case let .error(text):
-                ErrorTip(text: text)
+                if let topic = state.topic {
+                    content(topic)
+                }
+            case let .error(failure):
+                error(failure)
+            }
+
+            if let failure = state.presentationError {
+                ExploreInlineErrorBanner(message: failure.localizedKey,
+                                         canRetry: failure != .invalidTarget,
+                                         onRetry: {
+                                             if failure == .releaseChanged {
+                                                 intent.retry()
+                                             } else {
+                                                 intent.loadMore()
+                                             }
+                                         },
+                                         onDismiss: { intent.dismissPresentationError() })
+                    .padding(.horizontal, ExploreTheme.Layout.margin)
+                    .padding(.top, 56)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
+        .animation(.easeInOut(duration: 0.2), value: state.presentationError)
+        .background(ExploreTheme.Colors.background)
         .onAppear {
-            if appGlobalState.parameters.keys.contains("id") {
-                intent.viewOnAppear(id: appGlobalState.parameters["id"] as! String)
-            }
-            appGlobalState.currentView = "CommunityTopic"
+            intent.viewOnAppear()
         }
         .modifier(CommunityTopicRouter(
             subjects: state.routerSubject,
             intent: intent
         ))
     }
-}
 
-extension CommunityTopicView {
-    
-    struct Content: View {
-        var topic: Topic
-        var refreshAction: (() -> Void)?
-        var tapContentAction: ((_ type: String) -> Void)?
-        @EnvironmentObject var appGlobalState: AppGlobalState
-        @State var isRefresh = false
-        
-        var body: some View {
-            VStack {
-                RefreshScrollView(offDown: 300.0 + CGFloat(topic.contents.count * 100), listH: ScreenH - kNavHeight - kBottomSafeHeight, refreshing: $isRefresh) {
-                    // 下拉刷新触发
-                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                        // 刷新完成，关闭刷新
-                        refreshAction?()
-                        isRefresh = false
-                    })
-                } content: {
-                    ZStack(alignment: .top) {
-                        if let image = topic.image {
-                            KFImage(URL(string: image)!)
-                                .resizable()
-                                .scaledToFit()
-                        }
-                        TopBackTitleBar(title: "", color: .white)
-                            .padding(.top, 60)
-                    }
-                    VStack {
-                        HStack {
-                            Text(topic.title)
-                                .bold()
-                            Spacer()
-                        }
-                        .padding(20)
-                        ForEach(topic.contents, id: \.id) { content in
-                            Button(action: {
-                                appGlobalState.parameters["id"] = content.id
-                                tapContentAction?(content.type)
-                            }) {
-                                CommunityTopicView.Article(baseContent: content)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .ignoresSafeArea()
+    @ViewBuilder
+    private func content(_ topic: ExploreTopicDetailViewState) -> some View {
+        VStack(spacing: 0) {
+            // 顶部栏直接展示当前专题标题，不再固定「专题」
+            if let name = topic.name, !name.isEmpty {
+                TopBackTitleBar(title: name)
+            } else {
+                TopBackTitleBar(titleLocal: L10n.explore_topic_title)
             }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    // 专题详情顶部：单图直显，多图轮播（不再按 imageLayout 平铺）
+                    if !topic.galleryImages.isEmpty {
+                        ExploreMediaCarousel(images: topic.galleryImages,
+                                             accessibilityLabel: topic.name)
+                    }
+
+                    let summary = topic.summary?.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if let summary = summary, !summary.isEmpty {
+                        Text(summary)
+                            .font(ExploreTheme.Fonts.body)
+                            .foregroundColor(ExploreTheme.Colors.textSecondary)
+                    }
+
+                    // 摘要与文章列表之间增加行间距与分割线
+                    if let summary = summary, !summary.isEmpty, !topic.items.isEmpty {
+                        Rectangle()
+                            .fill(ExploreTheme.Colors.border)
+                            .frame(height: 1)
+                            .padding(.top, 4)
+                    }
+
+                    ForEach(topic.items) { item in
+                        ExploreTopicArticleRow(item: item,
+                                              action: { intent.onTapItem(target: $0) })
+                    }
+
+                    if topic.hasMore {
+                        if state.isLoadingMore {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                                .tint(ExploreTheme.Colors.brand)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                        } else {
+                            Button(action: { intent.loadMore() }) {
+                                Text(L10n.explore_load_more)
+                            }
+                            .buttonStyle(ExploreSecondaryButtonStyle())
+                        }
+                    }
+
+                    Spacer()
+                        .frame(height: 40)
+                }
+                .padding(.horizontal, ExploreTheme.Layout.margin)
+                .padding(.top, 12)
+            }
+            .scrollIndicators(.hidden)
         }
+        .exploreScreenBackground()
     }
-}
 
-// MARK: - Error View
-
-private struct ErrorContent: View {
-    let text: String
-
-    var body: some View {
-        ZStack {
-            Color.white
-            Text(text)
+    private func error(_ failure: ExploreFailure) -> some View {
+        VStack(spacing: 0) {
+            TopBackTitleBar(titleLocal: L10n.explore_topic_title)
+            ExploreStatusView(icon: "square.stack.3d.up",
+                              message: failure.localizedKey,
+                              actionTitle: L10n.explore_retry,
+                              iconColor: ExploreTheme.Colors.warning,
+                              action: { intent.retry() })
         }
-    }
-}
-
-struct CommunityTopicView_Previews: PreviewProvider {
-    static var topic: Topic = Topic.init(
-        id: "1", title: "测试标题",
-        image: "https://pic.imgdb.cn/item/65df4e159f345e8d0301a944.png",
-        contents: [
-            BaseContent.init(id: "1", type: "aritcle", title: "智能穿越助你探索山西", images: ["https://pic.imgdb.cn/item/65e012a79f345e8d03444608.png"], ts: 1709284625762, username: "hwyz_leo", avatar: "https://profile-photo.s3.cn-north-1.amazonaws.com.cn/files/avatar/50531/MTAxMDYzNDY0Nzd4d2h2cWFt/avatar.png?v=c4af49f3cbedbc00f76256a03298b663"),
-            BaseContent.init(id: "2", type: "aritcle", title: "户外露营生活新选择", images: ["https://pic.imgdb.cn/item/65df3bb89f345e8d03c2306c.png"], ts: 1709284625762, username: "山高第九"),
-            BaseContent.init(id: "3", type: "aritcle", title: "一键舒享的航空座椅", images: ["https://pic.imgdb.cn/item/65df13639f345e8d033d11fb.png"], ts: 1709284625762, username: "一起探索")
-        ]
-    )
-    static var previews: some View {
-        CommunityTopicView.Content(topic: topic)
+        .exploreScreenBackground()
     }
 }

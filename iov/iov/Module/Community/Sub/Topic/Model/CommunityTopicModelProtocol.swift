@@ -9,27 +9,29 @@ import SwiftUI
 
 // MARK: - View State
 
-protocol CommunityTopicModelStateProtocol {
+protocol CommunityTopicModelStateProtocol: AnyObject {
     var contentState: CommunityTopicTypes.Model.ContentState { get }
+    var topic: ExploreTopicDetailViewState? { get }
+    var isLoadingMore: Bool { get }
+    var presentationError: ExploreFailure? { get }
     var routerSubject: CommunityTopicRouter.Subjects { get }
-    var topic: Topic { get }
 }
 
 // MARK: - Intent Action
 
 protocol CommunityTopicModelActionProtocol: MviModelActionProtocol {
-    /// 更新页面内容
-    func updateContent(topic: Topic)
+    func updateTopic(_ topic: ExploreTopicDetailViewState)
+    func appendTopicPage(_ page: ExploreTopicDetailViewState)
+    func displayTopicError(_ failure: ExploreFailure)
+    func beginLoadMore()
+    func setPresentationError(_ failure: ExploreFailure?)
 }
 
 // MARK: - Route
 
 protocol CommunityTopicModelRouterProtocol: MviModelRouterProtocol {
-    /// 跳转至文章页
-    func routeToArticle()
-    /// 跳转至话题页
-    func routeToSubject()
-    /// 跳转至专题页
-    func routeToTopic()
+    func routeToArticle(ref: ArticleRevisionRef)
+    func routeToTopic(ref: TopicRevisionRef)
+    func routeToWeb(url: URL)
+    func routeToNative(_ destination: ExploreNativeDestination)
 }
-

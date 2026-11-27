@@ -19,13 +19,22 @@ final class StubURLProtocol: URLProtocol {
     struct StubResponse {
         var status: Int
         var body: Data
+        var headers: [String: String]
 
-        static func json(_ data: Data, status: Int = 200) -> StubResponse {
-            return StubResponse(status: status, body: data)
+        init(status: Int, body: Data, headers: [String: String] = ["Content-Type": "application/json"]) {
+            self.status = status
+            self.body = body
+            self.headers = headers
         }
 
-        static func empty(status: Int = 200) -> StubResponse {
-            return StubResponse(status: status, body: Data())
+        static func json(_ data: Data, status: Int = 200, headers: [String: String]? = nil) -> StubResponse {
+            return StubResponse(status: status,
+                                body: data,
+                                headers: headers ?? ["Content-Type": "application/json"])
+        }
+
+        static func empty(status: Int = 200, headers: [String: String] = ["Content-Type": "application/json"]) -> StubResponse {
+            return StubResponse(status: status, body: Data(), headers: headers)
         }
     }
 
@@ -76,7 +85,7 @@ final class StubURLProtocol: URLProtocol {
             url: url,
             statusCode: stub.status,
             httpVersion: "HTTP/1.1",
-            headerFields: ["Content-Type": "application/json"]
+            headerFields: stub.headers
         )!
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
         if !stub.body.isEmpty {

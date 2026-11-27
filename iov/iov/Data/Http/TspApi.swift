@@ -456,6 +456,74 @@ class TspApi {
         }
     }
     
+    // MARK: - 探索页只读 API（IOS-APP-DSN-CR-012）
+
+    /// 已启用频道列表
+    static func getExploreChannels(completion: @escaping (Result<TspResponse<[ExploreChannelDTO]>, Error>) -> Void) {
+        TspManager.requestGet(path: "/api/mobile/explore/v1/channels", parameters: [:], logResponseBody: false, completion: completion)
+    }
+
+    /// 当前频道页面（条件 GET，支持 ETag / HTTP 304）
+    static func getExploreCurrentPage(channelCode: String,
+                                      pageSize: Int,
+                                      ifNoneMatch: String?,
+                                      completion: @escaping (Result<TspManager.ConditionalGetOutcome<ExplorePageDTO>, Error>) -> Void) {
+        TspManager.requestConditionalGet(
+            path: "/api/mobile/explore/v1/pages/current",
+            parameters: ["channelCode": channelCode, "pageSize": pageSize],
+            ifNoneMatch: ifNoneMatch,
+            completion: completion
+        )
+    }
+
+    /// 文章流独立游标分页
+    static func getExploreArticleFeed(channelCode: String,
+                                      componentId: String,
+                                      releaseId: String,
+                                      cursor: String?,
+                                      pageSize: Int,
+                                      completion: @escaping (Result<TspResponse<ExploreFeedPageDTO>, Error>) -> Void) {
+        var parameters: Parameters = [
+            "channelCode": channelCode,
+            "componentId": componentId,
+            "releaseId": releaseId,
+            "pageSize": pageSize
+        ]
+        if let cursor = cursor, !cursor.isEmpty {
+            parameters["cursor"] = cursor
+        }
+        TspManager.requestGet(path: "/api/mobile/explore/v1/article-feed", parameters: parameters, logResponseBody: false, completion: completion)
+    }
+
+    /// 指定文章修订详情
+    static func getExploreArticleDetail(articleId: String,
+                                        revisionId: String,
+                                        completion: @escaping (Result<TspResponse<ExploreArticleDetailDTO>, Error>) -> Void) {
+        let path = "/api/mobile/explore/v1/articles/\(explorePathComponent(articleId))/revisions/\(explorePathComponent(revisionId))"
+        TspManager.requestGet(path: path, parameters: [:], logResponseBody: false, completion: completion)
+    }
+
+    /// 指定专题修订详情（游标分页）
+    static func getExploreTopicDetail(topicId: String,
+                                     revisionId: String,
+                                     cursor: String?,
+                                     pageSize: Int,
+                                     completion: @escaping (Result<TspResponse<ExploreTopicDetailDTO>, Error>) -> Void) {
+        let path = "/api/mobile/explore/v1/topics/\(explorePathComponent(topicId))/revisions/\(explorePathComponent(revisionId))"
+        var parameters: Parameters = ["pageSize": pageSize]
+        if let cursor = cursor, !cursor.isEmpty {
+            parameters["cursor"] = cursor
+        }
+        TspManager.requestGet(path: path, parameters: parameters, logResponseBody: false, completion: completion)
+    }
+
+    /// 路径标识严格百分号编码（不解析、不合成游标）
+    private static func explorePathComponent(_ value: String) -> String {
+        var allowed = CharacterSet.urlPathAllowed
+        allowed.remove(charactersIn: "/?#%")
+        return value.addingPercentEncoding(withAllowedCharacters: allowed) ?? value
+    }
+
     /// 获取内容块
     static func getContentBlock(channel: String, completion: @escaping (Result<TspResponse<Array<ContentBlock>>, Error>) -> Void) {
         if(!AppGlobalState.shared.isMock) {

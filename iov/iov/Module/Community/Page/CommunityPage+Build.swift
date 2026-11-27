@@ -8,10 +8,10 @@
 import SwiftUI
 
 extension CommunityPage {
-    
-    static func buildContainer() -> some MviContainer<CommunityIntentProtocol, CommunityModelStateProtocol> {
+
+    static func buildContainer(service: ExploreServiceProtocol = RealExploreService()) -> some MviContainer<CommunityIntentProtocol, CommunityModelStateProtocol> {
         let model = CommunityModel()
-        let intent = CommunityIntent(model: model)
+        let intent = CommunityIntent(model: model, service: service)
         let container = MviContainer(
             intent: intent as CommunityIntentProtocol,
             model: model as CommunityModelStateProtocol,
@@ -19,9 +19,9 @@ extension CommunityPage {
         )
         return container
     }
-    
-    static func build() -> some View {
-        return CommunityPage(container: buildContainer())
+
+    static func build(service: ExploreServiceProtocol = RealExploreService()) -> some View {
+        return CommunityPage(container: buildContainer(service: service))
     }
-    
+
 }

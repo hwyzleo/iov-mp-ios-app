@@ -8,9 +8,8 @@
 import SwiftUI
 
 final class CommunityArticleModel: ObservableObject, CommunityArticleModelStateProtocol {
-    @Published var contentState: CommunityArticleTypes.Model.ContentState = .content
+    @Published private(set) var contentState: CommunityArticleTypes.Model.ContentState = .loading
     let routerSubject = CommunityArticleRouter.Subjects()
-    var article: Article = Article.init(id: "", title: "", content: "", images: [], ts: 0, username: "", views: 0, tags: [], comments: [], likeCount: 0, liked: false, shareCount: 0)
 }
 
 // MARK: - Action Protocol
@@ -19,30 +18,33 @@ extension CommunityArticleModel: CommunityArticleModelActionProtocol {
     func displayLoading() {
         contentState = .loading
     }
-    func updateContent(article: Article) {
-        self.article = article
-        contentState = .content
-    }
-    func updateLike(liked: Bool) {
-        self.article.liked = liked
-    }
+
     func displayError(text: String) {
-        contentState = .error(text: text)
+        contentState = .error(.unknown)
+    }
+
+    func updateContent(_ detail: ExploreArticleDetailViewState) {
+        contentState = .content(detail)
+    }
+
+    func displayUnavailable() {
+        contentState = .unavailable
+    }
+
+    func displayError(_ failure: ExploreFailure) {
+        contentState = .error(failure)
     }
 }
 
 // MARK: - Route
 
 extension CommunityArticleModel: CommunityArticleModelRouterProtocol {
-    func closeScreen() {
-        
-    }
-}
+    func closeScreen() {}
 
-extension CommunityArticleTypes.Model {
-    enum ContentState {
-        case loading
-        case content
-        case error(text: String)
+    func routeToNative(_ destination: ExploreNativeDestination) {
+        switch destination {
+        case let .orderDetail(orderNo):
+            routerSubject.screen.send(.nativeOrderDetail(orderNo: orderNo))
+        }
     }
 }

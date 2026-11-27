@@ -9,23 +9,21 @@ import SwiftUI
 
 // MARK: - View State
 
-protocol CommunityArticleModelStateProtocol {
+protocol CommunityArticleModelStateProtocol: AnyObject {
     var contentState: CommunityArticleTypes.Model.ContentState { get }
     var routerSubject: CommunityArticleRouter.Subjects { get }
-    var article: Article { get }
 }
 
 // MARK: - Intent Action
 
 protocol CommunityArticleModelActionProtocol: MviModelActionProtocol {
-    /// 更新页面内容
-    func updateContent(article: Article)
-    /// 更新点赞效果
-    func updateLike(liked: Bool)
+    func updateContent(_ detail: ExploreArticleDetailViewState)
+    func displayUnavailable()
+    func displayError(_ failure: ExploreFailure)
 }
 
 // MARK: - Route
 
 protocol CommunityArticleModelRouterProtocol: MviModelRouterProtocol {
-    
+    func routeToNative(_ destination: ExploreNativeDestination)
 }

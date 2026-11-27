@@ -111,4 +111,62 @@ struct L10n {
     static let view_benefits_detail = LocalizedStringKey("view_benefits_detail")
     static let wheel = LocalizedStringKey("wheel")
     static let wishlist = LocalizedStringKey("wishlist")
+
+    // MARK: - Explore (IOS-APP-DSN-CR-012)
+    static let explore_image_unavailable = LocalizedStringKey("explore_image_unavailable")
+    static let explore_open_content = LocalizedStringKey("explore_open_content")
+    static let explore_empty_channels = LocalizedStringKey("explore_empty_channels")
+    static let explore_refresh = LocalizedStringKey("explore_refresh")
+    static let explore_retry = LocalizedStringKey("explore_retry")
+    static let explore_dismiss = LocalizedStringKey("explore_dismiss")
+    static let explore_load_more = LocalizedStringKey("explore_load_more")
+    static let explore_web_title = LocalizedStringKey("explore_web_title")
+    static let explore_web_unavailable = LocalizedStringKey("explore_web_unavailable")
+    static let explore_article_title = LocalizedStringKey("explore_article_title")
+    static let explore_topic_title = LocalizedStringKey("explore_topic_title")
+    static let explore_article_unavailable = LocalizedStringKey("explore_article_unavailable")
+    static let explore_error_network = LocalizedStringKey("explore_error_network")
+    static let explore_error_service_unavailable = LocalizedStringKey("explore_error_service_unavailable")
+    static let explore_error_content_unavailable = LocalizedStringKey("explore_error_content_unavailable")
+    static let explore_error_no_content = LocalizedStringKey("explore_error_no_content")
+    static let explore_error_invalid_argument = LocalizedStringKey("explore_error_invalid_argument")
+    static let explore_error_release_changed = LocalizedStringKey("explore_error_release_changed")
+    static let explore_error_unsupported_version = LocalizedStringKey("explore_error_unsupported_version")
+    static let explore_error_invalid_response = LocalizedStringKey("explore_error_invalid_response")
+    static let explore_error_invalid_target = LocalizedStringKey("explore_error_invalid_target")
+    static let explore_error_unauthorized = LocalizedStringKey("explore_error_unauthorized")
+    static let explore_error_unknown = LocalizedStringKey("explore_error_unknown")
+    static let explore_image_total = LocalizedStringKey("explore_image_total")
+}
+
+
+// MARK: - Explore 失败文案
+
+extension ExploreFailure {
+    var localizedKey: LocalizedStringKey {
+        switch self {
+        case .network:
+            return L10n.explore_error_network
+        case .serviceUnavailable:
+            return L10n.explore_error_service_unavailable
+        case .contentUnavailable:
+            return L10n.explore_error_content_unavailable
+        case .noContent:
+            return L10n.explore_error_no_content
+        case .invalidArgument:
+            return L10n.explore_error_invalid_argument
+        case .releaseChanged:
+            return L10n.explore_error_release_changed
+        case .unsupportedSchemaVersion:
+            return L10n.explore_error_unsupported_version
+        case .invalidResponse:
+            return L10n.explore_error_invalid_response
+        case .invalidTarget:
+            return L10n.explore_error_invalid_target
+        case .unauthorized:
+            return L10n.explore_error_unauthorized
+        case .unknown:
+            return L10n.explore_error_unknown
+        }
+    }
 }

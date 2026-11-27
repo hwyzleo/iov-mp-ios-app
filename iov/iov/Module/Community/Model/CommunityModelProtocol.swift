@@ -9,29 +9,43 @@ import SwiftUI
 
 // MARK: - View State
 
-protocol CommunityModelStateProtocol {
-    var contentState: CommunityTypes.Model.ContentState { get }
+protocol CommunityModelStateProtocol: AnyObject {
+    var channels: [ExploreChannelViewState] { get }
+    var selectedChannelCode: String? { get }
+    var contentState: ExploreContentState { get }
+    var isRefreshing: Bool { get }
+    var page: ExplorePageViewState? { get }
+    var presentationError: ExplorePresentationError? { get }
+    var loadingMoreComponentIds: Set<String> { get }
     var routerSubject: CommunityRouter.Subjects { get }
-    var contentBlocks: [ContentBlock] { get }
 }
 
 // MARK: - Intent Action
 
 protocol CommunityModelActionProtocol: MviModelActionProtocol {
-    /// 更新内容
-    func updateContent(contentBlocks: [ContentBlock])
-    /// 显示错误
-    func displayError(text: String)
+    func beginInitialLoad()
+    func beginRefresh()
+    func beginChannelChange(code: String)
+    func updateChannels(_ channels: [ExploreChannelViewState], selectedChannelCode: String?)
+    func applyPage(_ page: ExplorePageViewState)
+    func applyNotModified()
+    func applyNoContent()
+    func applyPageFailure(_ failure: ExploreFailure)
+    func discardFeedPagination()
+
+    func beginFeedLoad(componentId: String)
+    func applyFeedPage(_ page: ExploreFeedPageViewState)
+    func failFeedLoad(componentId: String, failure: ExploreFailure)
+    func endFeedLoad(componentId: String)
+
+    func setPresentationError(_ error: ExplorePresentationError?)
 }
 
 // MARK: - Route
 
 protocol CommunityModelRouterProtocol: MviModelRouterProtocol {
-    /// 跳转至文章页
-    func routeToArticle()
-    /// 跳转至话题页
-    func routeToSubject()
-    /// 跳转至专题页
-    func routeToTopic()
+    func routeToArticle(ref: ArticleRevisionRef)
+    func routeToTopic(ref: TopicRevisionRef)
+    func routeToWeb(url: URL)
+    func routeToNative(_ destination: ExploreNativeDestination)
 }
-

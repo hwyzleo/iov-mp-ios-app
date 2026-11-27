@@ -54,11 +54,17 @@ class TspManager {
         }
     }
     
-    static func requestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
+    static func requestGet<T: Codable>(path: String,
+                                       parameters: Parameters,
+                                       logResponseBody: Bool = true,
+                                       completion: @escaping (Result<T, Error>) -> Void) {
         ensureTokenValid { result in
             switch result {
             case .success:
-                performRequestGet(path: path, parameters: parameters, completion: completion)
+                performRequestGet(path: path,
+                                  parameters: parameters,
+                                  logResponseBody: logResponseBody,
+                                  completion: completion)
             case let .failure(error):
                 completion(.failure(error))
             }
@@ -121,12 +127,15 @@ class TspManager {
     }
     
     // 实际执行 GET 请求
-    private static func performRequestGet<T: Codable>(path: String, parameters: Parameters, completion: @escaping (Result<T, Error>) -> Void) {
+    private static func performRequestGet<T: Codable>(path: String,
+                                                      parameters: Parameters,
+                                                      logResponseBody: Bool,
+                                                      completion: @escaping (Result<T, Error>) -> Void) {
         SafeLog.log("request get tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: tspHeaders))
         networkManagerProvider().requestGet(path: AppGlobalState.shared.tspUrl + path, parameters: parameters, headers: tspHeaders) { result in
             switch result {
             case let .success(data):
-                let parseResult: Result<T, Error> = parseData(data)
+                let parseResult: Result<T, Error> = parseData(data, logResponseBody: logResponseBody)
                 completion(parseResult)
             case let .failure(error):
                 completion(.failure(error))
@@ -148,12 +157,60 @@ class TspManager {
         }
     }
     
+    /// 条件 GET 结果（200 带 ETag / 304 无响应体）
+    enum ConditionalGetOutcome<T: Codable> {
+        case notModified(etag: String?)
+        case loaded(TspResponse<T>, etag: String?)
+    }
+
+    /// 条件 GET：在共享请求签名与 token 刷新语义上增加 `If-None-Match`。
+    /// HTTP 304 不解析 `TspResponse` 包络。
+    static func requestConditionalGet<T: Codable>(path: String,
+                                                  parameters: Parameters,
+                                                  ifNoneMatch: String?,
+                                                  completion: @escaping (Result<ConditionalGetOutcome<T>, Error>) -> Void) {
+        ensureTokenValid { result in
+            switch result {
+            case let .failure(error):
+                completion(.failure(error))
+            case .success:
+                var headers = tspHeaders
+                if let tag = ifNoneMatch, !tag.isEmpty {
+                    headers["If-None-Match"] = tag
+                }
+                SafeLog.log("request conditional get tsp:", path, SafeLog.redacted(parameters: parameters), SafeLog.redacted(headers: headers))
+                networkManagerProvider().requestGetWithStatus(path: AppGlobalState.shared.tspUrl + path,
+                                                              parameters: parameters,
+                                                              headers: headers) { result in
+                    switch result {
+                    case let .failure(error):
+                        completion(.failure(error))
+                    case let .success(conditional):
+                        if conditional.statusCode == 304 {
+                            completion(.success(.notModified(etag: conditional.etag)))
+                            return
+                        }
+                        let parsed: Result<TspResponse<T>, Error> = parseData(conditional.data, logResponseBody: false)
+                        switch parsed {
+                        case let .success(response):
+                            completion(.success(.loaded(response, etag: conditional.etag)))
+                        case let .failure(error):
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // json -> model
-    static func parseData<T: Decodable>(_ data: Data) -> Result<T, Error> {
+    static func parseData<T: Decodable>(_ data: Data, logResponseBody: Bool = true) -> Result<T, Error> {
         let decoder = makeDecoder()
 
-        let dataStr = String(data: data, encoding: .utf8) ?? "<unreadable response>"
-        SafeLog.log("response tsp:", SafeLog.redacted(responseBody: dataStr))
+        if logResponseBody {
+            let dataStr = String(data: data, encoding: .utf8) ?? "<unreadable response>"
+            SafeLog.log("response tsp:", SafeLog.redacted(responseBody: dataStr))
+        }
 
         if let rawResponse = try? decoder.decode(TspResponse<AnyCodable>.self, from: data),
            rawResponse.code == AuthServerCode.sessionExpired {

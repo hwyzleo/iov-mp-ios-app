@@ -1,83 +1,174 @@
 //
-//  CommunityView_Topic.swift
+//  CommunityPage_Topic.swift
 //  iov
 //
 //  Created by hwyz_leo on 2024/9/1.
 //
 
 import SwiftUI
-import Kingfisher
 
 extension CommunityPage {
-    struct Topic: View {
-        var contentBlock: ContentBlock
-        var action: ((_ id: String, _ type: String) -> Void)?
-        
+    /// CMS `TOPIC_GRID`：ADAPTIVE_GRID / HORIZONTAL_SCROLL / IMAGE_TEXT_LIST
+    struct TopicGrid: View {
+        let state: ExploreTopicGridComponentViewState
+        let action: (ExploreTargetViewState) -> Void
+
         var body: some View {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Text(contentBlock.title ?? "")
-                        .font(AppTheme.fonts.title1)
-                        .bold()
-                        .foregroundColor(AppTheme.colors.fontPrimary)
-                    Spacer()
-                    Button(action: {
-                        action?(contentBlock.id, "topic")
-                    }) {
-                        HStack(spacing: 4) {
-                            Text("查看更多")
-                                .font(.system(size: 14))
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 12))
-                        }
-                        .foregroundColor(AppTheme.colors.fontSecondary)
-                    }
-                    .buttonStyle(.plain)
+            if state.items.isEmpty {
+                EmptyView()
+            } else {
+                switch state.style {
+                case let .adaptiveGrid(columns):
+                    adaptiveGrid(columns: columns)
+                case .horizontalScroll:
+                    horizontalScroll
+                case .imageTextList:
+                    imageTextList
                 }
-                
-                if contentBlock.data.count > 0 {
-                    // 使用 2 列等分网格，间距 12pt
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 16) {
-                        ForEach(contentBlock.data.prefix(4), id: \.id) { item in
-                            Button(action: {
-                                action?(item.id, item.type)
-                            }) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    if !item.images.isEmpty {
-                                        KFImage(URL(string: item.images[0])!)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(minWidth: 0, maxWidth: .infinity)
-                                            .frame(height: 110) // 强制固定高度防止重叠
-                                            .cornerRadius(AppTheme.layout.radiusMedium)
-                                            .clipped()
-                                    }
-                                    
-                                    Text(item.title)
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(AppTheme.colors.fontPrimary)
-                                        .lineLimit(1)
+            }
+        }
+
+        private func adaptiveGrid(columns: Int) -> some View {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: columns),
+                      spacing: 16) {
+                ForEach(state.items) { item in
+                    Button(action: { action(item.target) }) {
+                        VStack(alignment: .center, spacing: 8) {
+                            ExploreRemoteImage(image: item.cover,
+                                               height: nil,
+                                               aspectRatio: 1,
+                                               cornerRadius: ExploreTheme.Radius.badge,
+                                               accessibilityLabel: item.name)
+                            if let name = item.name, !name.isEmpty {
+                                Text(name)
+                                    .font(ExploreTheme.Fonts.secondary.weight(.medium))
+                                    .foregroundColor(ExploreTheme.Colors.textPrimary)
+                                    .multilineTextAlignment(.center)
+                                    .lineLimit(2)
+                                    .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                    .buttonStyle(ExploreCardButtonStyle())
+                    .exploreSurface(radius: ExploreTheme.Radius.card,
+                                    padding: ExploreTheme.Layout.compactPadding)
+                }
+            }
+        }
+
+        private var horizontalScroll: some View {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(state.items) { item in
+                        Button(action: { action(item.target) }) {
+                            VStack(alignment: .center, spacing: 8) {
+                                ExploreRemoteImage(image: item.cover,
+                                                   height: 120,
+                                                   cornerRadius: ExploreTheme.Radius.badge,
+                                                   accessibilityLabel: item.name)
+                                    .frame(width: 134)
+                                if let name = item.name, !name.isEmpty {
+                                    Text(name)
+                                        .font(ExploreTheme.Fonts.secondary.weight(.medium))
+                                        .foregroundColor(ExploreTheme.Colors.textPrimary)
+                                        .multilineTextAlignment(.center)
+                                        .lineLimit(2)
+                                        .frame(maxWidth: .infinity)
                                 }
                             }
-                            .buttonStyle(.plain)
+                            .frame(width: 134)
                         }
+                        .buttonStyle(ExploreCardButtonStyle())
+                        .exploreSurface(radius: ExploreTheme.Radius.card,
+                                        padding: ExploreTheme.Layout.compactPadding)
                     }
                 }
             }
-            .appCardStyle()
+        }
+
+        private var imageTextList: some View {
+            VStack(spacing: 12) {
+                ForEach(state.items) { item in
+                    Button(action: { action(item.target) }) {
+                        HStack(alignment: .center, spacing: 12) {
+                            ExploreRemoteImage(image: item.cover,
+                                               height: nil,
+                                               aspectRatio: 1,
+                                               cornerRadius: ExploreTheme.Radius.badge,
+                                               accessibilityLabel: item.name)
+                                .frame(width: 80)
+                            VStack(alignment: .leading, spacing: 6) {
+                                if let name = item.name, !name.isEmpty {
+                                    Text(name)
+                                        .font(ExploreTheme.Fonts.secondary.weight(.medium))
+                                        .foregroundColor(ExploreTheme.Colors.textPrimary)
+                                        .lineLimit(2)
+                                }
+                                if let summary = item.summary, !summary.isEmpty {
+                                    Text(summary)
+                                        .font(ExploreTheme.Fonts.caption)
+                                        .foregroundColor(ExploreTheme.Colors.textSecondary)
+                                        .lineLimit(2)
+                                }
+                            }
+                            Spacer(minLength: 0)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(ExploreTheme.Colors.textTertiary)
+                        }
+                    }
+                    .buttonStyle(ExploreCardButtonStyle())
+                    .exploreSurface(radius: ExploreTheme.Radius.card, padding: 12)
+                }
+            }
         }
     }
 }
 
+#if DEBUG
+struct CommunityPage_TopicGrid_Previews: PreviewProvider {
 
-struct CommunityView_Topic_Previews: PreviewProvider {
-    static var contentBlock: ContentBlock = ContentBlock.init(id: "1", type: "topic", title: "北境之旅，开源出发", data: [
-        BaseContent.init(id: "1", type: "article", title: "首批车主用车心声", images: ["https://pic.imgdb.cn/item/65e012a79f345e8d03444608.png"], ts: 1709182971760),
-        BaseContent.init(id: "2", type: "article", title: "沉浸式露营", images: ["https://pic.imgdb.cn/item/65df12989f345e8d033afff7.png"], ts: 1709182971760),
-        BaseContent.init(id: "3", type: "article", title: "内饰揭秘", images: ["https://pic.imgdb.cn/item/65df13639f345e8d033d11fb.png"], ts: 1709182971760),
-        BaseContent.init(id: "4", type: "article", title: "城市穿越", images: ["https://pic.imgdb.cn/item/65df13699f345e8d033d24f6.png"], ts: 1709182971760)
-    ])
+    private static func item(_ id: String, _ name: String) -> ExploreTopicItemViewState {
+        ExploreTopicItemViewState(
+            id: id,
+            topicId: id,
+            name: name,
+            summary: "专题摘要",
+            cover: ExploreImageViewState(url: nil, width: nil, height: nil, mime: nil, size: nil),
+            target: .invalid
+        )
+    }
+
     static var previews: some View {
-        CommunityPage.Topic(contentBlock: contentBlock)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                CommunityPage.TopicGrid(
+                    state: ExploreTopicGridComponentViewState(
+                        style: .adaptiveGrid(columns: 4),
+                        items: (1...4).map { item("a\($0)", "自适应 \($0)") }
+                    ),
+                    action: { _ in }
+                )
+                CommunityPage.TopicGrid(
+                    state: ExploreTopicGridComponentViewState(
+                        style: .horizontalScroll,
+                        items: (1...3).map { item("h\($0)", "横向 \($0)") }
+                    ),
+                    action: { _ in }
+                )
+                CommunityPage.TopicGrid(
+                    state: ExploreTopicGridComponentViewState(
+                        style: .imageTextList,
+                        items: (1...2).map { item("l\($0)", "图文行 \($0)") }
+                    ),
+                    action: { _ in }
+                )
+            }
+            .padding()
+        }
+        .background(ExploreTheme.Colors.background)
+        .preferredColorScheme(.dark)
+        .environment(\.sizeCategory, .accessibilityExtraLarge)
     }
 }
+#endif

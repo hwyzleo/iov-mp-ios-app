@@ -268,3 +268,30 @@
 "vehicle_binding_polling_exhausted" = "Not confirmed yet. You can refresh later or contact support";
 "scanner_hint" = "Align the QR code within the frame";
 "scanner_torch" = "Light";
+
+// MARK: - Explore (IOS-APP-DSN-CR-012)
+"explore_image_unavailable" = "Image unavailable";
+"explore_open_content" = "Open content";
+"explore_empty_channels" = "No channels available";
+"explore_refresh" = "Refresh";
+"explore_retry" = "Retry";
+"explore_dismiss" = "Dismiss";
+"explore_load_more" = "Load more";
+"explore_web_unavailable" = "This page is temporarily unavailable";
+"explore_article_title" = "Article";
+"explore_topic_title" = "Topic";
+"explore_article_unavailable" = "This article is unavailable";
+"explore_error_network" = "Network error, please try again";
+"explore_error_service_unavailable" = "Service temporarily unavailable, please try again";
+"explore_error_content_unavailable" = "Content unavailable";
+"explore_error_no_content" = "No content available";
+"explore_error_invalid_argument" = "Request rejected, please refresh";
+"explore_error_release_changed" = "Content updated, please refresh";
+"explore_error_unsupported_version" = "This version of the app cannot display this content";
+"explore_error_invalid_response" = "Unexpected service response";
+"explore_error_invalid_target" = "This link is unavailable";
+"explore_error_unauthorized" = "Your sign-in has expired, please sign in again";
+"explore_error_unknown" = "Something went wrong, please try again";
+"explore_image_total" = "%d photos";
+
+"explore_web_title" = "Details";

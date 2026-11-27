@@ -11,202 +11,132 @@ struct CommunityArticleView: View {
     @StateObject var container: MviContainer<CommunityArticleIntentProtocol, CommunityArticleModelStateProtocol>
     private var intent: CommunityArticleIntentProtocol { container.intent }
     private var state: CommunityArticleModelStateProtocol { container.model }
-    @EnvironmentObject var appGlobalState: AppGlobalState
-    
+
+    /// 正文 WebView 自适应高度（嵌入外层 ScrollView）
+    @State private var bodyHeight: CGFloat = 1
+
     var body: some View {
         ZStack {
             switch state.contentState {
             case .loading:
                 ProgressView()
                     .progressViewStyle(.circular)
-                    .scaleEffect(2)
-            case .content:
-                Content(
-                    article: state.article,
-                    likeCount: state.article.likeCount,
-                    liked: state.article.liked,
-                    refreshAction: {
-                        if appGlobalState.parameters.keys.contains("id") {
-                            intent.viewOnAppear(id: appGlobalState.parameters["id"] as! String)
-                        }
-                    },
-                    tapLikeAction: {
-                        intent.onTapLike(id: state.article.id, liked: !state.article.liked)
-                    }
-                )
-            case let .error(text):
-                ErrorTip(text: text)
+                    .tint(ExploreTheme.Colors.brand)
+                    .scaleEffect(1.6)
+            case let .content(detail):
+                content(detail)
+            case .unavailable:
+                unavailable
+            case let .error(failure):
+                error(failure)
             }
         }
-        .appBackground()
+        .background(ExploreTheme.Colors.background)
         .onAppear {
-            if appGlobalState.parameters.keys.contains("id") {
-                intent.viewOnAppear(id: appGlobalState.parameters["id"] as! String)
-            }
-            appGlobalState.currentView = "CommunityArticle"
+            intent.viewOnAppear()
         }
         .modifier(CommunityArticleRouter(
             subjects: state.routerSubject,
             intent: intent
         ))
     }
-}
 
-extension CommunityArticleView {
-    struct Content: View {
-        var article: Article
-        @State var comment: String = ""
-        @State var likeCount: Int64 = 0
-        @State var liked: Bool = false
-        var refreshAction: (() -> Void)?
-        var tapLikeAction: (() -> Void)?
-        @State private var showShare = false
-        @State private var showHiddenBar = false
-        @State var isRefresh = false
-        @State var isMore = false
-        
-        var body: some View {
-            ZStack(alignment: .top) {
-                VStack {
-                    RefreshScrollView(offDown: 500.0, listH: ScreenH - kNavHeight - kBottomSafeHeight, refreshing: $isRefresh, isMore: $isMore) {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                            refreshAction?()
-                            isRefresh = false
-                        })
-                    } moreTrigger: {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3), execute: {
-                            isMore = false
-                        })
-                    } content: {
-                        ZStack(alignment: .top) {
-                            GeometryReader { geometry in
-                                Color.clear
-                                    .onChange(of: geometry.frame(in: .global).minY) { value in
-                                        showHiddenBar = value < 0
-                                    }
-                            }
-                            .frame(height: 0)
-                            CommunityArticleView.Carousel(images: article.images)
+    @ViewBuilder
+    private func content(_ detail: ExploreArticleDetailViewState) -> some View {
+        if let html = ExploreArticleHTMLDocumentBuilder.makeDocument(detail) {
+            VStack(spacing: 0) {
+                TopBackTitleBar(title: displayTitle(detail))
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // 1. 文章图集轮播（无可用图时整块省略）
+                        if !detail.galleryImages.isEmpty {
+                            ExploreMediaCarousel(images: detail.galleryImages,
+                                                 accessibilityLabel: detail.title)
                         }
-                        VStack(alignment: .leading, spacing: 20) {
-                            HStack {
-                                AvatarImage(avatar: article.avatar ?? "", width: 44)
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(article.username)
-                                        .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(AppTheme.colors.fontPrimary)
-                                    HStack {
-                                        Text(tsDisplay(ts: article.ts))
-                                        Text("·")
-                                        Text("\(article.views)次浏览")
-                                        Text("·")
-                                        Text(article.location ?? "")
-                                    }
-                                    .font(.system(size: 12))
-                                    .foregroundColor(AppTheme.colors.fontSecondary)
-                                }
-                                Spacer()
-                            }
-                            
-                            Text(article.title)
-                                .font(AppTheme.fonts.title1)
-                                .bold()
-                                .foregroundColor(AppTheme.colors.fontPrimary)
-                            
+
+                        // 2. 作者（头像可选，头头像居左）
+                        if showsAuthorRow(detail) {
                             HStack(spacing: 8) {
-                                ForEach(article.tags, id: \.self) { tag in
-                                    Text("# \(tag)")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(AppTheme.colors.brandMain)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 4)
-                                        .background(Color.white.opacity(0.05))
-                                        .cornerRadius(AppTheme.layout.radiusSmall)
+                                if let avatar = detail.authorAvatarURL {
+                                    ExploreAvatarView(url: avatar, size: 28)
                                 }
+                                if let author = trimmed(detail.authorName) {
+                                    Text(author)
+                                        .font(ExploreTheme.Fonts.secondary)
+                                        .foregroundColor(ExploreTheme.Colors.textSecondary)
+                                }
+                                Spacer(minLength: 0)
                             }
-                            
-                            Text(article.content)
-                                .font(AppTheme.fonts.body)
-                                .foregroundColor(AppTheme.colors.fontPrimary)
-                                .lineSpacing(6)
-                            
-                            Divider().background(Color.white.opacity(0.1))
-                            
-                            Text("评论")
-                                .font(.system(size: 18, weight: .bold))
-                                .foregroundColor(AppTheme.colors.fontPrimary)
-                            
-                            CommunityArticleView_Comment(comments: article.comments)
                         }
-                        .padding(AppTheme.layout.margin)
+
+                        // 3. 正文（官方已清洗 HTML，无脚本）
+                        ExploreArticleHTMLView(html: html,
+                                               isScrollEnabled: false,
+                                               onContentHeightChange: { height in
+                                                   guard abs(bodyHeight - height) > 0.5 else { return }
+                                                   bodyHeight = height
+                                               })
+                            .frame(maxWidth: .infinity)
+                            .frame(height: max(bodyHeight, 1))
+
+                        // 4. 文章时间（页面最下方）
+                        if let date = detail.displayAt {
+                            Text(ExploreArticleHTMLDocumentBuilder.formatDate(date, locale: .current))
+                                .font(ExploreTheme.Fonts.caption)
+                                .monospacedDigit()
+                                .foregroundColor(ExploreTheme.Colors.textTertiary)
+                        }
+
+                        Spacer()
+                            .frame(height: 40)
                     }
-                    .scrollIndicators(.hidden)
-                    .ignoresSafeArea()
-                    
-                    // 底部交互栏
-                    HStack(spacing: 20) {
-                        TextField("说点什么吧", text: $comment)
-                            .padding(12)
-                            .background(AppTheme.colors.cardBackground)
-                            .cornerRadius(AppTheme.layout.radiusSmall)
-                        
-                        InteractionButton(icon: "bubble", count: "\(article.comments.count)")
-                        
-                        Button(action: {
-                            tapLikeAction?()
-                            if liked { likeCount -= 1 } else { likeCount += 1 }
-                            liked.toggle()
-                        }) {
-                            InteractionButton(icon: liked ? "hand.thumbsup.fill" : "hand.thumbsup", count: "\(likeCount)", active: liked)
-                        }
-                        .buttonStyle(.plain)
-                        
-                        Button(action: { showShare = true }) {
-                            InteractionButton(icon: "square.and.arrow.up", count: "\(article.shareCount)")
-                        }
-                        .buttonStyle(.plain)
-                    }
-                    .padding(.horizontal, AppTheme.layout.margin)
-                    .padding(.vertical, 12)
-                    .background(AppTheme.colors.background)
+                    .padding(.horizontal, ExploreTheme.Layout.margin)
+                    .padding(.top, 12)
                 }
-                .sheet(isPresented: $showShare) {
-                    CommunityArticleView.Share(showShare: $showShare)
-                        .padding(20)
-                        .presentationDetents([.height(250)])
-                        .preferredColorScheme(.dark)
-                }
-                
-                TopBackTitleBar()
-                    .background(AppTheme.colors.background)
-                    .opacity(showHiddenBar ? 1 : 0)
-                
-                TopBackTitleBar(color: .white)
-                    .opacity(showHiddenBar ? 0 : 1)
+                .scrollIndicators(.hidden)
             }
+            .exploreScreenBackground()
+        } else {
+            unavailable
         }
     }
-}
 
-private struct InteractionButton: View {
-    var icon: String
-    var count: String
-    var active: Bool = false
-    
-    var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: icon)
-                .font(.system(size: 18))
-                .foregroundColor(active ? AppTheme.colors.brandMain : AppTheme.colors.fontPrimary)
-            Text(count)
-                .font(.system(size: 10))
-                .foregroundColor(AppTheme.colors.fontSecondary)
-        }
+    private func displayTitle(_ detail: ExploreArticleDetailViewState) -> String {
+        return trimmed(detail.title) ?? NSLocalizedString("explore_article_title", comment: "")
     }
-}
 
-struct CommunityArticleView_Previews: PreviewProvider {
-    static var previews: some View {
-        CommunityArticleView.Content(article: mockArticle())
+    private func showsAuthorRow(_ detail: ExploreArticleDetailViewState) -> Bool {
+        return detail.authorAvatarURL != nil || trimmed(detail.authorName) != nil
+    }
+
+    private func trimmed(_ text: String?) -> String? {
+        guard let value = text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !value.isEmpty else {
+            return nil
+        }
+        return value
+    }
+
+    private var unavailable: some View {
+        VStack(spacing: 0) {
+            TopBackTitleBar(titleLocal: L10n.explore_article_title)
+            ExploreStatusView(icon: "doc.text",
+                              message: L10n.explore_article_unavailable,
+                              actionTitle: L10n.explore_retry,
+                              action: { intent.retry() })
+        }
+        .exploreScreenBackground()
+    }
+
+    private func error(_ failure: ExploreFailure) -> some View {
+        VStack(spacing: 0) {
+            TopBackTitleBar(titleLocal: L10n.explore_article_title)
+            ExploreStatusView(icon: "exclamationmark.triangle",
+                              message: failure.localizedKey,
+                              actionTitle: L10n.explore_retry,
+                              iconColor: ExploreTheme.Colors.warning,
+                              action: { intent.retry() })
+        }
+        .exploreScreenBackground()
     }
 }

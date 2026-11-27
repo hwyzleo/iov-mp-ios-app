@@ -12,7 +12,7 @@ import Foundation
 /// 另外禁止输出 VIN / accountId / userId / orderNo / qrToken / sessionId / operationId / idempotencyKey。
 enum SafeLog {
 
-    private static let jsonSensitivePattern = "(?i)\"?(accessToken|refreshToken|refresh_token|access_token|token|authorization|password|code|mobile|phone|vin|accountId|userId|orderNo|qrToken|sessionId|operationId|idempotencyKey)\"?\\s*[:=]\\s*\"?([^\",\\s\\)\\]\\}]+)\"?"
+    private static let jsonSensitivePattern = "(?i)\"?(accessToken|refreshToken|refresh_token|access_token|token|authorization|password|code|mobile|phone|vin|accountId|userId|orderNo|qrToken|sessionId|operationId|idempotencyKey|cursor|nextCursor)\"?\\s*[:=]\\s*\"?([^\",\\s\\)\\]\\}]+)\"?"
     private static let bearerPattern = "(?i)bearer\\s+[A-Za-z0-9._\\-]+"
     private static let mainlandMobilePattern = "\\b1[3-9]\\d{9}\\b"
     /// 17 位 VIN（ISO 3779：不含 I/O/Q）

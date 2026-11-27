@@ -9,3 +9,12 @@ enum CommunityArticleTypes {
     enum Intent {}
     enum Model {}
 }
+
+extension CommunityArticleTypes.Model {
+    enum ContentState: Equatable {
+        case loading
+        case content(ExploreArticleDetailViewState)
+        case unavailable
+        case error(ExploreFailure)
+    }
+}
